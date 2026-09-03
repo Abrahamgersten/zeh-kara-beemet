@@ -1,4 +1,4 @@
-const SHELL_CACHE = "zkb-shell-v1";
+const SHELL_CACHE = "zkb-shell-v2";
 const MEDIA_CACHE = "zkb-media-v1";
 
 const SHELL_ASSETS = [
@@ -9,6 +9,9 @@ const SHELL_ASSETS = [
   "./manifest.json",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
+  "./en/index.html",
+  "./en/js/app.js",
+  "./en/manifest.json",
 ];
 
 self.addEventListener("install", (event) => {

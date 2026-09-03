@@ -1,0 +1,611 @@
+"use strict";
+
+/* ---------------------------------------------------------------
+   Content data (English)
+   ---------------------------------------------------------------
+   Every category holds episodes. The episodes here are sample
+   content only (sample: true) to demonstrate the layout. To add
+   real content: fill in title / description / image / audio on
+   the matching object, and remove sample: true.
+
+   image: path to a cover image, or null to show a placeholder with
+          the category icon.
+   audio: path to an mp3 file, or null to show a "coming soon" label.
+--------------------------------------------------------------- */
+const CATEGORIES = [
+  {
+    id: "tzadikim",
+    name: "It Really Happened",
+    icon: "🕯️",
+    color: "#f0812c",
+    type: "audio",
+    tagline: "Stories from real life, told by storytellers, about the great sages and tzaddikim of the generations - faith, good character, and love of Israel.",
+    episodes: [
+      {
+        title: "Example: A Story About Hospitality",
+        description: "Here you'll find a short summary of the real story - who the story is about, what happened, and the lesson learned from it. This is sample text only, to demonstrate the card layout.",
+        image: null,
+        audio: null,
+        sample: true,
+      },
+      {
+        title: "Example: A Story About Trust and Strength in Faith",
+        description: "Here a real description of the episode will go - who the story is about and what can be learned from it. This is sample text only.",
+        image: null,
+        audio: null,
+        sample: true,
+      },
+    ],
+  },
+  {
+    id: "wonders",
+    name: "Wonders of Creation",
+    icon: "🦋",
+    color: "#4caf6d",
+    type: "audio",
+    tagline: "Audio tours through the natural world - animals, plants, and amazing phenomena that show how everything was created with wisdom.",
+    episodes: [
+      {
+        title: "Example: How Does an Ant Find Its Way Home?",
+        description: "Here a real description of the episode will go - which natural phenomenon is featured and what's special about it. This is sample text only.",
+        image: null,
+        audio: null,
+        sample: true,
+      },
+      {
+        title: "Example: The Secret Behind the Colors of the Rainbow",
+        description: "Here a real description of the episode will go. This is sample text only, to demonstrate the card layout.",
+        image: null,
+        audio: null,
+        sample: true,
+      },
+    ],
+  },
+  {
+    id: "parasha-what",
+    name: "This Week's Parsha",
+    icon: "📜",
+    color: "#3aa8e0",
+    type: "audio",
+    tagline: "The story of the weekly Torah portion in simple, clear language - a short episode you can listen to on the way to school.",
+    episodes: [
+      {
+        title: "Example: This Week's Parsha in Brief",
+        description: "Here a real summary of this week's parsha will go - the parsha's storyline in simple language for kids. This is sample text only.",
+        image: null,
+        audio: null,
+        sample: true,
+      },
+      {
+        title: "Example: Next Week's Parsha in Brief",
+        description: "Here a real summary of next week's parsha will go. This is sample text only.",
+        image: null,
+        audio: null,
+        sample: true,
+      },
+    ],
+  },
+  {
+    id: "parasha-idea",
+    name: "An Idea from the Parsha",
+    icon: "💡",
+    color: "#f2c230",
+    type: "audio",
+    tagline: "One deep, practical idea, straight from the weekly Torah portion.",
+    episodes: [
+      {
+        title: "Example: An Idea from This Week's Parsha",
+        description: "Here a real description of the episode's central idea will go - what's the question, and what's the insight. This is sample text only.",
+        image: null,
+        audio: null,
+        sample: true,
+      },
+      {
+        title: "Example: Another Idea for the Shabbat Table",
+        description: "Here a real description of the idea will go. This is sample text only, to demonstrate the card layout.",
+        image: null,
+        audio: null,
+        sample: true,
+      },
+    ],
+  },
+  {
+    id: "enlightenment",
+    name: "A Spark of Knowledge",
+    icon: "📚",
+    color: "#9b6fd1",
+    type: "audio",
+    tagline: "General knowledge and science, presented tastefully, to broaden horizons without losing our identity.",
+    episodes: [
+      {
+        title: "Example: How Were the Pyramids Built?",
+        description: "Here a real description of the episode's topic and what's interesting about it will go. This is sample text only.",
+        image: null,
+        audio: null,
+        sample: true,
+      },
+      {
+        title: "Example: What Happens in Our Bodies When We Sleep?",
+        description: "Here a real description of the episode's topic will go. This is sample text only, to demonstrate the card layout.",
+        image: null,
+        audio: null,
+        sample: true,
+      },
+    ],
+  },
+  {
+    id: "spot-diff",
+    name: "Spot the Difference",
+    icon: "🔍",
+    color: "#f26d7d",
+    type: "spot-diff",
+    tagline: "A picture game - compare the two pictures and find all the differences between them.",
+    episodes: [
+      {
+        title: "Example: The House and the Tree",
+        description: "Compare the two pictures and find all the differences. Click \"Show Solution\" to see where they're hiding.",
+        imageA: "../assets/images/spot-diff-a.svg",
+        imageB: "../assets/images/spot-diff-b.svg",
+        diffCount: 6,
+        spots: [
+          { x: 82.5, y: 20 },
+          { x: 46.25, y: 11.7 },
+          { x: 19.4, y: 31.7 },
+          { x: 37.75, y: 73 },
+          { x: 30.75, y: 80.3 },
+          { x: 53.75, y: 88.3 },
+        ],
+        sample: true,
+      },
+    ],
+  },
+  {
+    id: "what-to-do",
+    name: "What Would You Do?",
+    icon: "❓",
+    color: "#22bcc7",
+    type: "audio",
+    tagline: "A halachic question for kids, with the answer - all read together in one recording.",
+    episodes: [
+      {
+        title: "Example: I Found Something That Isn't Mine - What Should I Do?",
+        description: "Here you'll hear a halachic question for kids and its answer, read together in one recording. This is sample text only - before uploading a real episode, make sure the answer has been checked and approved by a qualified rabbi.",
+        image: null,
+        audio: null,
+        sample: true,
+      },
+      {
+        title: "Example: A Holy Book on the Floor - What Should I Do?",
+        description: "Here you'll hear a halachic question for kids and its answer, read together in one recording. This is sample text only - before uploading a real episode, make sure the answer has been checked and approved by a qualified rabbi.",
+        image: null,
+        audio: null,
+        sample: true,
+      },
+    ],
+  },
+];
+
+/* ---------------------------------------------------------------
+   Utilities
+--------------------------------------------------------------- */
+function formatTime(sec) {
+  if (!isFinite(sec) || sec < 0) return "0:00";
+  const m = Math.floor(sec / 60);
+  const s = Math.floor(sec % 60).toString().padStart(2, "0");
+  return `${m}:${s}`;
+}
+
+function safeStorage() {
+  try {
+    const k = "__zkb_test__";
+    localStorage.setItem(k, "1");
+    localStorage.removeItem(k);
+    return localStorage;
+  } catch (e) {
+    return null;
+  }
+}
+const storage = safeStorage();
+
+/* ---------------------------------------------------------------
+   Render: category quick-nav grid
+--------------------------------------------------------------- */
+function renderCatNav() {
+  const grid = document.getElementById("cat-nav-grid");
+  grid.innerHTML = CATEGORIES.map(
+    (cat) => `
+    <a class="cat-pill" href="#cat-${cat.id}">
+      <span class="cat-pill__icon" aria-hidden="true" style="background:${cat.color}">${cat.icon}</span>
+      <span>
+        <span class="cat-pill__title">${cat.name}</span>
+        <p class="cat-pill__desc">${cat.episodes.length} episodes</p>
+      </span>
+    </a>`
+  ).join("");
+}
+
+/* ---------------------------------------------------------------
+   Render: episode / content cards per type
+--------------------------------------------------------------- */
+function mediaHTML(cat, ep, idx) {
+  const badge = ep.sample ? `<span class="content-card__badge">Sample content</span>` : "";
+  if (ep.image) {
+    return `
+      <div class="content-card__media">
+        ${badge}
+        <img class="content-card__main-img" src="${ep.image}" alt="${ep.title}" loading="lazy" data-full="${ep.image}">
+      </div>`;
+  }
+  return `
+      <div class="content-card__media">
+        ${badge}
+        <div class="cover-placeholder" style="background: linear-gradient(150deg, color-mix(in srgb, ${cat.color} 65%, white), ${cat.color})"><span aria-hidden="true">${cat.icon}</span></div>
+      </div>`;
+}
+
+function playerHTML(ep, idx) {
+  if (ep.audio) {
+    return `
+      <div class="player" data-src="${ep.audio}">
+        <button class="player__btn" type="button" aria-label="Play narration">▶</button>
+        <div class="player__body">
+          <input class="player__seek" type="range" min="0" max="100" value="0" step="0.1" aria-label="Playback progress">
+          <div class="player__times">
+            <span class="player__current">0:00</span>
+            <span class="player__duration">--:--</span>
+          </div>
+        </div>
+      </div>`;
+  }
+  return `
+      <div class="player player--soon">
+        <span class="player__soon-icon" aria-hidden="true">🎙️</span>
+        <span class="player__soon-label">Recording coming soon</span>
+      </div>`;
+}
+
+function audioCardHTML(cat, ep, idx) {
+  const reverseClass = idx % 2 === 1 ? " content-card--reverse" : "";
+  return `
+  <article class="content-card${reverseClass}">
+    ${mediaHTML(cat, ep, idx)}
+    <div class="content-card__body">
+      <span class="content-card__eyebrow">${cat.name}</span>
+      <h3 class="content-card__title">${ep.title}</h3>
+      <p class="content-card__desc"><strong>About this episode: </strong>${ep.description}</p>
+      ${playerHTML(ep, idx)}
+    </div>
+  </article>`;
+}
+
+function spotDiffCardHTML(cat, ep, idx) {
+  const badge = ep.sample ? `<span class="content-card__badge--inline">Sample content</span>` : "";
+  const markers = (ep.spots || [])
+    .map((p) => `<span class="spot-card__marker" style="left:${p.x}%; top:${p.y}%"></span>`)
+    .join("");
+  return `
+  <article class="content-card content-card--full spot-card">
+    <div class="content-card__body">
+      <div class="content-card__head-row">
+        <span class="content-card__eyebrow">${cat.name}</span>
+        ${badge}
+      </div>
+      <h3 class="content-card__title">${ep.title}</h3>
+      <p class="content-card__desc">${ep.description}</p>
+      <div class="spot-card__images">
+        <div class="spot-card__frame">
+          <span class="spot-card__label">Image A</span>
+          <img src="${ep.imageA}" alt="Image A for comparison">
+          ${markers}
+        </div>
+        <div class="spot-card__frame">
+          <span class="spot-card__label">Image B</span>
+          <img src="${ep.imageB}" alt="Image B for comparison">
+          ${markers}
+        </div>
+      </div>
+      <div class="spot-card__actions">
+        <button class="btn btn--primary" type="button" data-spot-toggle>Show Solution (${ep.diffCount} differences)</button>
+      </div>
+    </div>
+  </article>`;
+}
+
+function renderCategorySections() {
+  const host = document.getElementById("category-sections");
+  host.innerHTML = CATEGORIES.map((cat) => {
+    const cardsHTML = cat.episodes
+      .map((ep, idx) => {
+        if (cat.type === "spot-diff") return spotDiffCardHTML(cat, ep, idx);
+        return audioCardHTML(cat, ep, idx);
+      })
+      .join("");
+    return `
+    <section class="category-section" id="cat-${cat.id}">
+      <div class="category-section__inner">
+        <div class="category-section__head">
+          <span class="category-section__icon" aria-hidden="true" style="background:${cat.color}">${cat.icon}</span>
+          <h2 class="category-section__title">${cat.name}</h2>
+        </div>
+        <p class="category-section__tagline">${cat.tagline}</p>
+        <span class="category-section__note">🧩 The items below are structural examples only - they'll be replaced with real recordings and content</span>
+        <div class="cards-list">${cardsHTML}</div>
+      </div>
+    </section>`;
+  }).join("");
+}
+
+/* ---------------------------------------------------------------
+   Image lightbox
+--------------------------------------------------------------- */
+function setupMediaInteractions() {
+  const host = document.getElementById("category-sections");
+  const lightbox = document.getElementById("lightbox");
+  const lightboxImg = document.getElementById("lightbox-img");
+  const lightboxClose = document.getElementById("lightbox-close");
+
+  host.addEventListener("click", (e) => {
+    const mainImg = e.target.closest(".content-card__main-img");
+    if (mainImg) {
+      lightboxImg.src = mainImg.dataset.full || mainImg.src;
+      lightboxImg.alt = mainImg.alt;
+      lightbox.hidden = false;
+      document.body.style.overflow = "hidden";
+    }
+  });
+
+  function closeLightbox() {
+    lightbox.hidden = true;
+    lightboxImg.src = "";
+    document.body.style.overflow = "";
+  }
+  lightboxClose.addEventListener("click", closeLightbox);
+  lightbox.addEventListener("click", (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !lightbox.hidden) closeLightbox();
+  });
+}
+
+/* ---------------------------------------------------------------
+   Spot-the-difference reveal
+--------------------------------------------------------------- */
+function setupSpotDiff() {
+  const host = document.getElementById("category-sections");
+  host.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-spot-toggle]");
+    if (!btn) return;
+    const card = btn.closest(".spot-card");
+    const solved = card.classList.toggle("is-solved");
+    btn.textContent = solved
+      ? "Hide Solution"
+      : `Show Solution (${card.querySelectorAll(".spot-card__frame:first-child .spot-card__marker").length} differences)`;
+  });
+}
+
+/* ---------------------------------------------------------------
+   Audio players
+--------------------------------------------------------------- */
+function setupPlayers() {
+  const players = Array.from(document.querySelectorAll(".player:not(.player--soon)"));
+
+  players.forEach((el) => {
+    const src = el.dataset.src;
+    const btn = el.querySelector(".player__btn");
+    const seek = el.querySelector(".player__seek");
+    const current = el.querySelector(".player__current");
+    const duration = el.querySelector(".player__duration");
+    let audio = null;
+    let seeking = false;
+
+    function ensureAudio() {
+      if (audio) return audio;
+      audio = new Audio(src);
+      audio.preload = "none";
+
+      audio.addEventListener("loadedmetadata", () => {
+        seek.max = audio.duration || 0;
+        duration.textContent = formatTime(audio.duration);
+      });
+      audio.addEventListener("timeupdate", () => {
+        if (seeking) return;
+        seek.value = audio.currentTime;
+        current.textContent = formatTime(audio.currentTime);
+      });
+      audio.addEventListener("play", () => {
+        players.forEach((other) => {
+          if (other !== el) other.dispatchEvent(new CustomEvent("zkb-pause-request"));
+        });
+        btn.textContent = "⏸";
+        btn.classList.add("is-playing");
+        btn.setAttribute("aria-label", "Pause");
+      });
+      audio.addEventListener("pause", () => {
+        btn.textContent = "▶";
+        btn.classList.remove("is-playing");
+        btn.setAttribute("aria-label", "Resume narration");
+      });
+      audio.addEventListener("ended", () => {
+        btn.textContent = "▶";
+        btn.classList.remove("is-playing");
+        seek.value = 0;
+        current.textContent = "0:00";
+      });
+      return audio;
+    }
+
+    btn.addEventListener("click", () => {
+      const a = ensureAudio();
+      if (a.paused) a.play().catch(() => {});
+      else a.pause();
+    });
+
+    el.addEventListener("zkb-pause-request", () => {
+      if (audio && !audio.paused) audio.pause();
+    });
+
+    seek.addEventListener("input", () => {
+      seeking = true;
+      current.textContent = formatTime(Number(seek.value));
+    });
+    seek.addEventListener("change", () => {
+      const a = ensureAudio();
+      a.currentTime = Number(seek.value);
+      seeking = false;
+    });
+  });
+}
+
+/* ---------------------------------------------------------------
+   Scroll reveal
+--------------------------------------------------------------- */
+function setupScrollReveal() {
+  const cards = document.querySelectorAll(".content-card");
+  if (!("IntersectionObserver" in window)) {
+    cards.forEach((c) => c.classList.add("is-visible"));
+    return;
+  }
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          io.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.1, rootMargin: "0px 0px -60px 0px" }
+  );
+  cards.forEach((c) => io.observe(c));
+}
+
+/* ---------------------------------------------------------------
+   Mobile "install the app" banner (PWA)
+--------------------------------------------------------------- */
+function setupInstallBanner() {
+  const banner = document.getElementById("install-banner");
+  const actionBtn = document.getElementById("install-banner-action");
+  const closeBtn = document.getElementById("install-banner-close");
+  const subEl = document.getElementById("install-banner-sub");
+
+  const ua = navigator.userAgent || "";
+  const isIOS =
+    /iPhone|iPad|iPod/.test(ua) ||
+    (ua.includes("Macintosh") && navigator.maxTouchPoints > 1);
+  const isAndroid = /Android/.test(ua);
+  const isMobileUA = isIOS || isAndroid || /Mobi/i.test(ua);
+
+  const isStandalone =
+    window.matchMedia("(display-mode: standalone)").matches ||
+    window.navigator.standalone === true;
+
+  const dismissKey = "zkb-install-dismissed-en";
+  const alreadyDismissed = storage && storage.getItem(dismissKey) === "1";
+
+  if (!isMobileUA || isStandalone || alreadyDismissed) return;
+
+  let deferredPrompt = null;
+
+  function showBanner() {
+    banner.hidden = false;
+  }
+
+  function hideBanner() {
+    banner.hidden = true;
+  }
+
+  function dismiss() {
+    hideBanner();
+    if (storage) storage.setItem(dismissKey, "1");
+    closeInstructions();
+  }
+
+  closeBtn.addEventListener("click", dismiss);
+
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    subEl.textContent = "Get to everything with one tap, right from your home screen";
+    showBanner();
+  });
+
+  window.addEventListener("appinstalled", () => {
+    dismiss();
+  });
+
+  const instructions = document.createElement("div");
+  instructions.className = "install-steps";
+  instructions.innerHTML = isIOS
+    ? `<button class="install-steps__close" type="button" aria-label="Close">✕</button>
+       <h3>How to install on iPhone?</h3>
+       <ol>
+         <li>Tap the Share button ⬆️ in Safari's toolbar</li>
+         <li>Scroll down and choose "Add to Home Screen"</li>
+         <li>Tap "Add" - and that's it, the app is ready!</li>
+       </ol>`
+    : `<button class="install-steps__close" type="button" aria-label="Close">✕</button>
+       <h3>How to install?</h3>
+       <ol>
+         <li>Open the browser menu (three dots)</li>
+         <li>Choose "Install app" or "Add to Home Screen"</li>
+         <li>Confirm - and that's it, the app is ready!</li>
+       </ol>`;
+  document.body.appendChild(instructions);
+
+  function openInstructions() {
+    instructions.classList.add("is-open");
+  }
+  function closeInstructions() {
+    instructions.classList.remove("is-open");
+  }
+  instructions.querySelector(".install-steps__close").addEventListener("click", closeInstructions);
+
+  actionBtn.addEventListener("click", async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const choice = await deferredPrompt.userChoice.catch(() => null);
+      deferredPrompt = null;
+      if (choice && choice.outcome === "accepted") dismiss();
+    } else {
+      openInstructions();
+    }
+  });
+
+  if (isIOS) {
+    subEl.textContent = "Add it to your home screen and get a real app on your phone";
+    showBanner();
+  } else {
+    setTimeout(() => {
+      if (!deferredPrompt && banner.hidden) {
+        subEl.textContent = "Add the app to your home screen";
+        showBanner();
+      }
+    }, 2500);
+  }
+}
+
+/* ---------------------------------------------------------------
+   Service worker
+--------------------------------------------------------------- */
+function setupServiceWorker() {
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("../sw.js").catch(() => {});
+    });
+  }
+}
+
+/* ---------------------------------------------------------------
+   Init
+--------------------------------------------------------------- */
+document.addEventListener("DOMContentLoaded", () => {
+  renderCatNav();
+  renderCategorySections();
+  setupMediaInteractions();
+  setupSpotDiff();
+  setupPlayers();
+  setupScrollReveal();
+  setupInstallBanner();
+  setupServiceWorker();
+});
