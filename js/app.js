@@ -1,0 +1,617 @@
+"use strict";
+
+/* ---------------------------------------------------------------
+   Content data
+   ---------------------------------------------------------------
+   כל קטגוריה מכילה episodes. הפרקים כאן הם תוכן לדוגמה בלבד
+   (sample: true) - להמחשת המבנה. כדי להוסיף תוכן אמיתי: מחליפים
+   title / description / image / audio באובייקט המתאים, ומורידים
+   את sample: true.
+
+   image: נתיב לתמונת שער, או null להצגת placeholder עם אייקון הקטגוריה.
+   audio: נתיב לקובץ mp3, או null להצגת תווית "בקרוב".
+--------------------------------------------------------------- */
+const CATEGORIES = [
+  {
+    id: "tzadikim",
+    name: "סיפורי צדיקים",
+    icon: "🕯️",
+    type: "audio",
+    tagline: "סיפורים מהחיים, מפי מספרים, על גדולי ישראל וצדיקי הדורות - אמונה, מידות טובות ואהבת ישראל.",
+    episodes: [
+      {
+        title: "לדוגמה: סיפור על מידת הכנסת אורחים",
+        description: "כאן יופיע תקציר קצר של הסיפור האמיתי - מי גיבור הסיפור, מה קרה, ומה הלקח שלומדים ממנו. זהו טקסט לדוגמה בלבד, להמחשת מבנה הכרטיס.",
+        image: null,
+        audio: null,
+        sample: true,
+      },
+      {
+        title: "לדוגמה: סיפור על ביטחון וחוסן באמונה",
+        description: "כאן יבוא תיאור אמיתי של הפרק - על מי מספר הסיפור ומה אפשר ללמוד ממנו. זהו טקסט לדוגמה בלבד.",
+        image: null,
+        audio: null,
+        sample: true,
+      },
+    ],
+  },
+  {
+    id: "wonders",
+    name: "נפלאות הבריאה",
+    icon: "🦋",
+    type: "audio",
+    tagline: "סיורים קוליים בעולם הטבע - בעלי חיים, צמחים ותופעות מדהימות, שמראות איך הכול נברא בחוכמה.",
+    episodes: [
+      {
+        title: "לדוגמה: איך הנמלה מוצאת את דרכה הביתה?",
+        description: "כאן יבוא תיאור אמיתי של הפרק - איזו תופעת טבע מככבת בו ומה מיוחד בה. זהו טקסט לדוגמה בלבד.",
+        image: null,
+        audio: null,
+        sample: true,
+      },
+      {
+        title: "לדוגמה: הסוד שמאחורי צבעי הקשת",
+        description: "כאן יבוא תיאור אמיתי של הפרק. זהו טקסט לדוגמה בלבד, להמחשת מבנה הכרטיס.",
+        image: null,
+        audio: null,
+        sample: true,
+      },
+    ],
+  },
+  {
+    id: "parasha-what",
+    name: "מה בפרשה",
+    icon: "📜",
+    type: "audio",
+    tagline: "סיפור פרשת השבוע בשפה פשוטה וברורה - פרק קצר שאפשר להקשיב לו בדרך לבית הספר.",
+    episodes: [
+      {
+        title: "לדוגמה: פרשת השבוע בקיצור",
+        description: "כאן יבוא תקציר אמיתי של פרשת השבוע - עלילת הפרשה בשפה פשוטה לילדים. זהו טקסט לדוגמה בלבד.",
+        image: null,
+        audio: null,
+        sample: true,
+      },
+      {
+        title: "לדוגמה: פרשת השבוע הבאה בקיצור",
+        description: "כאן יבוא תקציר אמיתי של פרשת השבוע הבאה. זהו טקסט לדוגמה בלבד.",
+        image: null,
+        audio: null,
+        sample: true,
+      },
+    ],
+  },
+  {
+    id: "parasha-idea",
+    name: "רעיון בפרשה",
+    icon: "💡",
+    type: "audio",
+    tagline: "רעיון אחד, עמוק ומעשי, שיוצא היישר מתוך פרשת השבוע.",
+    episodes: [
+      {
+        title: "לדוגמה: רעיון מתוך פרשת השבוע",
+        description: "כאן יבוא תיאור אמיתי של הרעיון המרכזי בפרק - מה השאלה ומה התובנה. זהו טקסט לדוגמה בלבד.",
+        image: null,
+        audio: null,
+        sample: true,
+      },
+      {
+        title: "לדוגמה: עוד רעיון לשולחן שבת",
+        description: "כאן יבוא תיאור אמיתי של הרעיון. זהו טקסט לדוגמה בלבד, להמחשת מבנה הכרטיס.",
+        image: null,
+        audio: null,
+        sample: true,
+      },
+    ],
+  },
+  {
+    id: "enlightenment",
+    name: "אור בהשכלה",
+    icon: "📚",
+    type: "audio",
+    tagline: "ידע כללי ומדע, מוגשים בטוב טעם, כדי להרחיב אופקים בלי לאבד את הזהות.",
+    episodes: [
+      {
+        title: "לדוגמה: איך נבנו הפירמידות?",
+        description: "כאן יבוא תיאור אמיתי של נושא הפרק ומה מעניין בו. זהו טקסט לדוגמה בלבד.",
+        image: null,
+        audio: null,
+        sample: true,
+      },
+      {
+        title: "לדוגמה: מה קורה בגוף שלנו כשאנחנו ישנים?",
+        description: "כאן יבוא תיאור אמיתי של נושא הפרק. זהו טקסט לדוגמה בלבד, להמחשת מבנה הכרטיס.",
+        image: null,
+        audio: null,
+        sample: true,
+      },
+    ],
+  },
+  {
+    id: "spot-diff",
+    name: "מצא את ההבדלים",
+    icon: "🔍",
+    type: "spot-diff",
+    tagline: "משחק תמונות - השוו בין שתי התמונות ומצאו את כל ההבדלים ביניהן.",
+    episodes: [
+      {
+        title: "לדוגמה: הבית והעץ",
+        description: "השוו בין שתי התמונות ומצאו את כל ההבדלים. לחצו על \"הצג פתרון\" כדי לראות איפה הם מסתתרים.",
+        imageA: "assets/images/spot-diff-a.svg",
+        imageB: "assets/images/spot-diff-b.svg",
+        diffCount: 6,
+        spots: [
+          { x: 82.5, y: 20 },
+          { x: 46.25, y: 11.7 },
+          { x: 19.4, y: 31.7 },
+          { x: 37.75, y: 73 },
+          { x: 30.75, y: 80.3 },
+          { x: 53.75, y: 88.3 },
+        ],
+        sample: true,
+      },
+    ],
+  },
+  {
+    id: "what-to-do",
+    name: "מה לעשו״ת?",
+    icon: "❓",
+    type: "qa",
+    tagline: "שאלה הלכתית לילדים, עם רגע למחשבה - ואז גילוי התשובה.",
+    episodes: [
+      {
+        question: "המורה שכחה בכיתה ילקוט עם כסף אחרי הלימודים - מה עושים?",
+        answer: "זו שאלה לדוגמה בלבד. לפני העלאת שאלה אמיתית לאתר, יש לכתוב כאן תשובה שנבדקה מול מקורות הלכתיים ואושרה על ידי רב מוסמך.",
+        sample: true,
+      },
+      {
+        question: "מצאתי ספר קודש מונח על הרצפה בבית הכנסת - מה עושים?",
+        answer: "זו שאלה לדוגמה בלבד. לפני העלאת שאלה אמיתית לאתר, יש לכתוב כאן תשובה שנבדקה מול מקורות הלכתיים ואושרה על ידי רב מוסמך.",
+        sample: true,
+      },
+    ],
+  },
+];
+
+/* ---------------------------------------------------------------
+   Utilities
+--------------------------------------------------------------- */
+function formatTime(sec) {
+  if (!isFinite(sec) || sec < 0) return "0:00";
+  const m = Math.floor(sec / 60);
+  const s = Math.floor(sec % 60).toString().padStart(2, "0");
+  return `${m}:${s}`;
+}
+
+function safeStorage() {
+  try {
+    const k = "__zkb_test__";
+    localStorage.setItem(k, "1");
+    localStorage.removeItem(k);
+    return localStorage;
+  } catch (e) {
+    return null;
+  }
+}
+const storage = safeStorage();
+
+/* ---------------------------------------------------------------
+   Render: category quick-nav grid
+--------------------------------------------------------------- */
+function renderCatNav() {
+  const grid = document.getElementById("cat-nav-grid");
+  grid.innerHTML = CATEGORIES.map(
+    (cat) => `
+    <a class="cat-pill" href="#cat-${cat.id}">
+      <span class="cat-pill__icon" aria-hidden="true">${cat.icon}</span>
+      <span>
+        <span class="cat-pill__title">${cat.name}</span>
+        <p class="cat-pill__desc">${cat.episodes.length} תכנים</p>
+      </span>
+    </a>`
+  ).join("");
+}
+
+/* ---------------------------------------------------------------
+   Render: episode / content cards per type
+--------------------------------------------------------------- */
+function mediaHTML(cat, ep, idx) {
+  const badge = ep.sample ? `<span class="content-card__badge">תוכן לדוגמה</span>` : "";
+  if (ep.image) {
+    return `
+      <div class="content-card__media">
+        ${badge}
+        <img class="content-card__main-img" src="${ep.image}" alt="${ep.title}" loading="lazy" data-full="${ep.image}">
+      </div>`;
+  }
+  return `
+      <div class="content-card__media">
+        ${badge}
+        <div class="cover-placeholder"><span aria-hidden="true">${cat.icon}</span></div>
+      </div>`;
+}
+
+function playerHTML(ep, idx) {
+  if (ep.audio) {
+    return `
+      <div class="player" data-src="${ep.audio}">
+        <button class="player__btn" type="button" aria-label="הפעל הקראה">▶</button>
+        <div class="player__body">
+          <input class="player__seek" type="range" min="0" max="100" value="0" step="0.1" aria-label="התקדמות ההקראה">
+          <div class="player__times">
+            <span class="player__current">0:00</span>
+            <span class="player__duration">--:--</span>
+          </div>
+        </div>
+      </div>`;
+  }
+  return `
+      <div class="player player--soon">
+        <span class="player__soon-icon" aria-hidden="true">🎙️</span>
+        <span class="player__soon-label">ההקלטה תעלה בקרוב</span>
+      </div>`;
+}
+
+function audioCardHTML(cat, ep, idx) {
+  const reverseClass = idx % 2 === 1 ? " content-card--reverse" : "";
+  return `
+  <article class="content-card${reverseClass}">
+    ${mediaHTML(cat, ep, idx)}
+    <div class="content-card__body">
+      <span class="content-card__eyebrow">${cat.name}</span>
+      <h3 class="content-card__title">${ep.title}</h3>
+      <p class="content-card__desc"><strong>על הפרק: </strong>${ep.description}</p>
+      ${playerHTML(ep, idx)}
+    </div>
+  </article>`;
+}
+
+function spotDiffCardHTML(cat, ep, idx) {
+  const badge = ep.sample ? `<span class="content-card__badge--inline">תוכן לדוגמה</span>` : "";
+  const markers = (ep.spots || [])
+    .map((p) => `<span class="spot-card__marker" style="left:${p.x}%; top:${p.y}%"></span>`)
+    .join("");
+  return `
+  <article class="content-card content-card--full spot-card">
+    <div class="content-card__body">
+      <div class="content-card__head-row">
+        <span class="content-card__eyebrow">${cat.name}</span>
+        ${badge}
+      </div>
+      <h3 class="content-card__title">${ep.title}</h3>
+      <p class="content-card__desc">${ep.description}</p>
+      <div class="spot-card__images">
+        <div class="spot-card__frame">
+          <span class="spot-card__label">תמונה א</span>
+          <img src="${ep.imageA}" alt="תמונה א להשוואה">
+          ${markers}
+        </div>
+        <div class="spot-card__frame">
+          <span class="spot-card__label">תמונה ב</span>
+          <img src="${ep.imageB}" alt="תמונה ב להשוואה">
+          ${markers}
+        </div>
+      </div>
+      <div class="spot-card__actions">
+        <button class="btn btn--primary" type="button" data-spot-toggle>הצג פתרון (${ep.diffCount} הבדלים)</button>
+      </div>
+    </div>
+  </article>`;
+}
+
+function qaCardHTML(cat, ep, idx) {
+  const badge = ep.sample ? `<span class="content-card__badge--inline">תוכן לדוגמה</span>` : "";
+  return `
+  <article class="content-card content-card--full qa-card">
+    <div class="content-card__body">
+      <div class="content-card__head-row">
+        <span class="content-card__eyebrow">${cat.name}</span>
+        ${badge}
+      </div>
+      <details class="qa-card__box">
+        <summary>${ep.question}</summary>
+        <div class="qa-card__answer">${ep.answer}</div>
+      </details>
+    </div>
+  </article>`;
+}
+
+function renderCategorySections() {
+  const host = document.getElementById("category-sections");
+  host.innerHTML = CATEGORIES.map((cat) => {
+    const cardsHTML = cat.episodes
+      .map((ep, idx) => {
+        if (cat.type === "spot-diff") return spotDiffCardHTML(cat, ep, idx);
+        if (cat.type === "qa") return qaCardHTML(cat, ep, idx);
+        return audioCardHTML(cat, ep, idx);
+      })
+      .join("");
+    return `
+    <section class="category-section" id="cat-${cat.id}">
+      <div class="category-section__inner">
+        <div class="category-section__head">
+          <span class="category-section__icon" aria-hidden="true">${cat.icon}</span>
+          <h2 class="category-section__title">${cat.name}</h2>
+        </div>
+        <p class="category-section__tagline">${cat.tagline}</p>
+        <span class="category-section__note">🧩 התכנים שלהלן הם דוגמה למבנה בלבד - הם יוחלפו בהקלטות ובתכנים אמיתיים</span>
+        <div class="cards-list">${cardsHTML}</div>
+      </div>
+    </section>`;
+  }).join("");
+}
+
+/* ---------------------------------------------------------------
+   Image lightbox
+--------------------------------------------------------------- */
+function setupMediaInteractions() {
+  const host = document.getElementById("category-sections");
+  const lightbox = document.getElementById("lightbox");
+  const lightboxImg = document.getElementById("lightbox-img");
+  const lightboxClose = document.getElementById("lightbox-close");
+
+  host.addEventListener("click", (e) => {
+    const mainImg = e.target.closest(".content-card__main-img");
+    if (mainImg) {
+      lightboxImg.src = mainImg.dataset.full || mainImg.src;
+      lightboxImg.alt = mainImg.alt;
+      lightbox.hidden = false;
+      document.body.style.overflow = "hidden";
+    }
+  });
+
+  function closeLightbox() {
+    lightbox.hidden = true;
+    lightboxImg.src = "";
+    document.body.style.overflow = "";
+  }
+  lightboxClose.addEventListener("click", closeLightbox);
+  lightbox.addEventListener("click", (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !lightbox.hidden) closeLightbox();
+  });
+}
+
+/* ---------------------------------------------------------------
+   Spot-the-difference reveal
+--------------------------------------------------------------- */
+function setupSpotDiff() {
+  const host = document.getElementById("category-sections");
+  host.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-spot-toggle]");
+    if (!btn) return;
+    const card = btn.closest(".spot-card");
+    const solved = card.classList.toggle("is-solved");
+    btn.textContent = solved
+      ? "הסתר פתרון"
+      : `הצג פתרון (${card.querySelectorAll(".spot-card__frame:first-child .spot-card__marker").length} הבדלים)`;
+  });
+}
+
+/* ---------------------------------------------------------------
+   Audio players
+--------------------------------------------------------------- */
+function setupPlayers() {
+  const players = Array.from(document.querySelectorAll(".player:not(.player--soon)"));
+
+  players.forEach((el) => {
+    const src = el.dataset.src;
+    const btn = el.querySelector(".player__btn");
+    const seek = el.querySelector(".player__seek");
+    const current = el.querySelector(".player__current");
+    const duration = el.querySelector(".player__duration");
+    let audio = null;
+    let seeking = false;
+
+    function ensureAudio() {
+      if (audio) return audio;
+      audio = new Audio(src);
+      audio.preload = "none";
+
+      audio.addEventListener("loadedmetadata", () => {
+        seek.max = audio.duration || 0;
+        duration.textContent = formatTime(audio.duration);
+      });
+      audio.addEventListener("timeupdate", () => {
+        if (seeking) return;
+        seek.value = audio.currentTime;
+        current.textContent = formatTime(audio.currentTime);
+      });
+      audio.addEventListener("play", () => {
+        players.forEach((other) => {
+          if (other !== el) other.dispatchEvent(new CustomEvent("zkb-pause-request"));
+        });
+        btn.textContent = "⏸";
+        btn.classList.add("is-playing");
+        btn.setAttribute("aria-label", "השהה");
+      });
+      audio.addEventListener("pause", () => {
+        btn.textContent = "▶";
+        btn.classList.remove("is-playing");
+        btn.setAttribute("aria-label", "המשך הקראה");
+      });
+      audio.addEventListener("ended", () => {
+        btn.textContent = "▶";
+        btn.classList.remove("is-playing");
+        seek.value = 0;
+        current.textContent = "0:00";
+      });
+      return audio;
+    }
+
+    btn.addEventListener("click", () => {
+      const a = ensureAudio();
+      if (a.paused) a.play().catch(() => {});
+      else a.pause();
+    });
+
+    el.addEventListener("zkb-pause-request", () => {
+      if (audio && !audio.paused) audio.pause();
+    });
+
+    seek.addEventListener("input", () => {
+      seeking = true;
+      current.textContent = formatTime(Number(seek.value));
+    });
+    seek.addEventListener("change", () => {
+      const a = ensureAudio();
+      a.currentTime = Number(seek.value);
+      seeking = false;
+    });
+  });
+}
+
+/* ---------------------------------------------------------------
+   Scroll reveal
+--------------------------------------------------------------- */
+function setupScrollReveal() {
+  const cards = document.querySelectorAll(".content-card");
+  if (!("IntersectionObserver" in window)) {
+    cards.forEach((c) => c.classList.add("is-visible"));
+    return;
+  }
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          io.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.1, rootMargin: "0px 0px -60px 0px" }
+  );
+  cards.forEach((c) => io.observe(c));
+}
+
+/* ---------------------------------------------------------------
+   Mobile "install the app" banner (PWA)
+--------------------------------------------------------------- */
+function setupInstallBanner() {
+  const banner = document.getElementById("install-banner");
+  const actionBtn = document.getElementById("install-banner-action");
+  const closeBtn = document.getElementById("install-banner-close");
+  const subEl = document.getElementById("install-banner-sub");
+
+  const ua = navigator.userAgent || "";
+  const isIOS =
+    /iPhone|iPad|iPod/.test(ua) ||
+    (ua.includes("Macintosh") && navigator.maxTouchPoints > 1);
+  const isAndroid = /Android/.test(ua);
+  const isMobileUA = isIOS || isAndroid || /Mobi/i.test(ua);
+
+  const isStandalone =
+    window.matchMedia("(display-mode: standalone)").matches ||
+    window.navigator.standalone === true;
+
+  const dismissKey = "zkb-install-dismissed";
+  const alreadyDismissed = storage && storage.getItem(dismissKey) === "1";
+
+  if (!isMobileUA || isStandalone || alreadyDismissed) return;
+
+  let deferredPrompt = null;
+
+  function showBanner() {
+    banner.hidden = false;
+  }
+
+  function hideBanner() {
+    banner.hidden = true;
+  }
+
+  function dismiss() {
+    hideBanner();
+    if (storage) storage.setItem(dismissKey, "1");
+    closeInstructions();
+  }
+
+  closeBtn.addEventListener("click", dismiss);
+
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    subEl.textContent = "גשו לכל התכנים בלחיצה אחת, ישר מהמסך הראשי";
+    showBanner();
+  });
+
+  window.addEventListener("appinstalled", () => {
+    dismiss();
+  });
+
+  const instructions = document.createElement("div");
+  instructions.className = "install-steps";
+  instructions.innerHTML = isIOS
+    ? `<button class="install-steps__close" type="button" aria-label="סגירה">✕</button>
+       <h3>איך מתקינים באייפון?</h3>
+       <ol>
+         <li>הקישו על כפתור השיתוף ⬆️ בסרגל הכלים של Safari</li>
+         <li>גללו ובחרו "הוסף למסך הבית" (Add to Home Screen)</li>
+         <li>הקישו "הוספה" - וזהו, האפליקציה מוכנה!</li>
+       </ol>`
+    : `<button class="install-steps__close" type="button" aria-label="סגירה">✕</button>
+       <h3>איך מתקינים?</h3>
+       <ol>
+         <li>פתחו את התפריט (שלוש הנקודות) בדפדפן</li>
+         <li>בחרו "התקן אפליקציה" או "הוסף למסך הבית"</li>
+         <li>אשרו - וזהו, האפליקציה מוכנה!</li>
+       </ol>`;
+  document.body.appendChild(instructions);
+
+  function openInstructions() {
+    instructions.classList.add("is-open");
+  }
+  function closeInstructions() {
+    instructions.classList.remove("is-open");
+  }
+  instructions.querySelector(".install-steps__close").addEventListener("click", closeInstructions);
+
+  actionBtn.addEventListener("click", async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const choice = await deferredPrompt.userChoice.catch(() => null);
+      deferredPrompt = null;
+      if (choice && choice.outcome === "accepted") dismiss();
+    } else {
+      openInstructions();
+    }
+  });
+
+  if (isIOS) {
+    subEl.textContent = "הוסיפו למסך הבית וקבלו אפליקציה אמיתית לטלפון";
+    showBanner();
+  } else {
+    setTimeout(() => {
+      if (!deferredPrompt && banner.hidden) {
+        subEl.textContent = "הוסיפו את האפליקציה למסך הבית שלכם";
+        showBanner();
+      }
+    }, 2500);
+  }
+}
+
+/* ---------------------------------------------------------------
+   Service worker
+--------------------------------------------------------------- */
+function setupServiceWorker() {
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("sw.js").catch(() => {});
+    });
+  }
+}
+
+/* ---------------------------------------------------------------
+   Init
+--------------------------------------------------------------- */
+document.addEventListener("DOMContentLoaded", () => {
+  renderCatNav();
+  renderCategorySections();
+  setupMediaInteractions();
+  setupSpotDiff();
+  setupPlayers();
+  setupScrollReveal();
+  setupInstallBanner();
+  setupServiceWorker();
+});

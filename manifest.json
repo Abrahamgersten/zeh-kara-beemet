@@ -1,0 +1,18 @@
+{
+  "name": "זה קרה באמת",
+  "short_name": "זה קרה באמת",
+  "description": "פלטפורמת תכני אודיו לילדים - סיפורי צדיקים, נפלאות הבריאה, תכני פרשת השבוע, השכלה כללית ומשחקים",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0b3b45",
+  "theme_color": "#0b3b45",
+  "lang": "he",
+  "dir": "rtl",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

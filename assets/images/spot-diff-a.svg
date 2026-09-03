@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="תמונה א: בית עם עץ, שמש וענן">
+  <defs>
+    <linearGradient id="skyA" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#bfe6ea"/>
+      <stop offset="100%" stop-color="#eaf6f2"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#skyA)"/>
+  <rect y="470" width="800" height="130" fill="#a9d18e"/>
+
+  <!-- sun: 8 rays -->
+  <g transform="translate(660,120)">
+    <circle r="55" fill="#f3bf5f"/>
+    <g stroke="#f3bf5f" stroke-width="10" stroke-linecap="round">
+      <line x1="0" y1="-78" x2="0" y2="-95"/>
+      <line x1="0" y1="78" x2="0" y2="95"/>
+      <line x1="-78" y1="0" x2="-95" y2="0"/>
+      <line x1="78" y1="0" x2="95" y2="0"/>
+      <line x1="-55" y1="-55" x2="-67" y2="-67"/>
+      <line x1="55" y1="-55" x2="67" y2="-67"/>
+      <line x1="-55" y1="55" x2="-67" y2="67"/>
+      <line x1="55" y1="55" x2="67" y2="67"/>
+    </g>
+  </g>
+
+  <!-- single cloud -->
+  <g fill="#ffffff" opacity="0.9">
+    <ellipse cx="200" cy="110" rx="55" ry="28"/>
+    <ellipse cx="245" cy="100" rx="40" ry="24"/>
+    <ellipse cx="160" cy="105" rx="35" ry="22"/>
+  </g>
+
+  <!-- tree -->
+  <g transform="translate(600,420)">
+    <rect x="-14" y="0" width="28" height="90" fill="#8a5a2b" rx="6"/>
+    <circle cx="0" cy="-40" r="70" fill="#3f9457"/>
+    <circle cx="-45" cy="0" r="45" fill="#3f9457"/>
+    <circle cx="45" cy="0" r="45" fill="#3f9457"/>
+    <circle cx="-18" cy="-55" r="10" fill="#d9622b"/>
+    <circle cx="28" cy="-20" r="10" fill="#d9622b"/>
+  </g>
+
+  <!-- bird -->
+  <g stroke="#166473" stroke-width="5" stroke-linecap="round" fill="none">
+    <path d="M120,180 q15,-16 30,0"/>
+    <path d="M170,200 q15,-16 30,0"/>
+  </g>
+
+  <!-- house -->
+  <g transform="translate(230,380)">
+    <rect x="-110" y="0" width="220" height="150" fill="#fdecc8"/>
+    <polygon points="-130,0 0,-90 130,0" fill="#d9622b"/>
+    <rect x="-28" y="55" width="56" height="95" fill="#8a5a2b" rx="4"/>
+    <circle cx="16" cy="102" r="4" fill="#fdecc8"/>
+    <rect x="-95" y="35" width="46" height="46" fill="#8ecfd3" stroke="#166473" stroke-width="4"/>
+    <rect x="49" y="35" width="46" height="46" fill="#8ecfd3" stroke="#166473" stroke-width="4"/>
+  </g>
+
+  <!-- flower box -->
+  <g transform="translate(430,540)">
+    <rect x="-40" y="0" width="80" height="18" fill="#8a5a2b" rx="4"/>
+    <g fill="#d9698f">
+      <circle cx="-24" cy="-6" r="9"/>
+      <circle cx="0" cy="-10" r="9"/>
+      <circle cx="24" cy="-6" r="9"/>
+    </g>
+  </g>
+</svg>

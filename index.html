@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>זה קרה באמת</title>
+<meta name="description" content="זה קרה באמת - פלטפורמת תכני אודיו לילדים: סיפורי צדיקים, נפלאות הבריאה, תכני פרשת השבוע, השכלה כללית ומשחקים.">
+<meta name="theme-color" content="#0b3b45">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="icons/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Suez+One&family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="install-banner" class="install-banner" hidden>
+  <div class="install-banner__icon">
+    <img src="icons/icon-192.png" alt="" width="44" height="44">
+  </div>
+  <div class="install-banner__text">
+    <strong id="install-banner-title">התקינו את האפליקציה</strong>
+    <span id="install-banner-sub">גשו לכל התכנים בלחיצה אחת, ישר מהמסך הראשי</span>
+  </div>
+  <button id="install-banner-action" class="install-banner__btn" type="button">התקנה</button>
+  <button id="install-banner-close" class="install-banner__close" type="button" aria-label="סגירה">✕</button>
+</div>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a href="#top" class="brand">
+      <span class="brand__mark" aria-hidden="true">🕯️</span>
+      <span class="brand__name">זה קרה באמת</span>
+    </a>
+    <nav class="site-nav" aria-label="ניווט ראשי">
+      <a href="#about">על הפרויקט</a>
+      <a href="#categories">כל הקטגוריות</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero" id="hero">
+    <div class="hero__bg" aria-hidden="true"></div>
+    <div class="hero__content">
+      <p class="hero__eyebrow">תכני אודיו ותוכן לילדים ולכל המשפחה</p>
+      <h1 class="hero__title">זֶה קָרָה בֶּאֱמֶת</h1>
+      <p class="hero__subtitle">סיפורי צדיקים, נפלאות הבריאה, תכני פרשת השבוע, השכלה כללית ומשחקים - הכל במקום אחד, פרק אחר פרק</p>
+      <div class="hero__cta-row">
+        <a href="#categories" class="btn btn--primary">לכל התכנים 🎧</a>
+        <a href="#about" class="btn btn--ghost">קצת עלינו</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="about" id="about">
+    <div class="about__inner">
+      <span class="section-eyebrow">על הפרויקט</span>
+      <h2 class="section-title">מה זה "זה קרה באמת"?</h2>
+      <p class="about__text">
+        "זה קרה באמת" היא פלטפורמת תוכן להאזנה ולצפייה, שבה עולה תוכן חדש תחת כמה קטגוריות קבועות -
+        מסיפורי צדיקים וגדולי ישראל, דרך נפלאות הבריאה שסביבנו, ועד תכנים על פרשת השבוע, השכלה כללית ומשחקים לילדים.
+      </p>
+      <p class="about__text">
+        לכל פרק מוקלט יש גם תיאור קצר שמסביר במה הוא עוסק - כדי שתדעו למה להקשיב לפני שאתם לוחצים play.
+      </p>
+    </div>
+  </section>
+
+  <section class="cat-nav" id="categories">
+    <div class="cat-nav__inner">
+      <div class="chapters__head" style="text-align:center; margin-bottom:2rem;">
+        <span class="section-eyebrow">מוכנים להתחיל?</span>
+        <h2 class="section-title">כל הקטגוריות</h2>
+      </div>
+      <div class="cat-nav__grid" id="cat-nav-grid"><!-- injected by js/app.js --></div>
+    </div>
+  </section>
+
+  <div id="category-sections"><!-- injected by js/app.js --></div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <span class="brand__mark" aria-hidden="true">🕯️</span>
+      <span>זה קרה באמת</span>
+    </div>
+    <p class="site-footer__note">תוכן מקורי לכל המשפחה - נהניתם? שתפו עם עוד משפחות שיאהבו להקשיב 🎧</p>
+  </div>
+</footer>
+
+<div id="lightbox" class="lightbox" hidden>
+  <button id="lightbox-close" class="lightbox__close" type="button" aria-label="סגירה">✕</button>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<script src="js/app.js" defer></script>
+</body>
+</html>
