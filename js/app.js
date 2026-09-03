@@ -16,6 +16,7 @@ const CATEGORIES = [
     id: "tzadikim",
     name: "זה קרה באמת",
     icon: "🕯️",
+    color: "#f0812c",
     type: "audio",
     tagline: "סיפורים מהחיים, מפי מספרים, על גדולי ישראל וצדיקי הדורות - אמונה, מידות טובות ואהבת ישראל.",
     episodes: [
@@ -39,6 +40,7 @@ const CATEGORIES = [
     id: "wonders",
     name: "נפלאות הבריאה",
     icon: "🦋",
+    color: "#4caf6d",
     type: "audio",
     tagline: "סיורים קוליים בעולם הטבע - בעלי חיים, צמחים ותופעות מדהימות, שמראות איך הכול נברא בחוכמה.",
     episodes: [
@@ -62,6 +64,7 @@ const CATEGORIES = [
     id: "parasha-what",
     name: "מה בפרשה",
     icon: "📜",
+    color: "#3aa8e0",
     type: "audio",
     tagline: "סיפור פרשת השבוע בשפה פשוטה וברורה - פרק קצר שאפשר להקשיב לו בדרך לבית הספר.",
     episodes: [
@@ -85,6 +88,7 @@ const CATEGORIES = [
     id: "parasha-idea",
     name: "רעיון בפרשה",
     icon: "💡",
+    color: "#f2c230",
     type: "audio",
     tagline: "רעיון אחד, עמוק ומעשי, שיוצא היישר מתוך פרשת השבוע.",
     episodes: [
@@ -108,6 +112,7 @@ const CATEGORIES = [
     id: "enlightenment",
     name: "אור בהשכלה",
     icon: "📚",
+    color: "#9b6fd1",
     type: "audio",
     tagline: "ידע כללי ומדע, מוגשים בטוב טעם, כדי להרחיב אופקים בלי לאבד את הזהות.",
     episodes: [
@@ -131,6 +136,7 @@ const CATEGORIES = [
     id: "spot-diff",
     name: "מצא את ההבדלים",
     icon: "🔍",
+    color: "#f26d7d",
     type: "spot-diff",
     tagline: "משחק תמונות - השוו בין שתי התמונות ומצאו את כל ההבדלים ביניהן.",
     episodes: [
@@ -156,6 +162,7 @@ const CATEGORIES = [
     id: "what-to-do",
     name: "מה לעשו״ת?",
     icon: "❓",
+    color: "#22bcc7",
     type: "audio",
     tagline: "שאלה הלכתית לילדים, עם התשובה - הכול מוקרא יחד בהקלטה אחת.",
     episodes: [
@@ -207,7 +214,7 @@ function renderCatNav() {
   grid.innerHTML = CATEGORIES.map(
     (cat) => `
     <a class="cat-pill" href="#cat-${cat.id}">
-      <span class="cat-pill__icon" aria-hidden="true">${cat.icon}</span>
+      <span class="cat-pill__icon" aria-hidden="true" style="background:${cat.color}">${cat.icon}</span>
       <span>
         <span class="cat-pill__title">${cat.name}</span>
         <p class="cat-pill__desc">${cat.episodes.length} תכנים</p>
@@ -231,7 +238,7 @@ function mediaHTML(cat, ep, idx) {
   return `
       <div class="content-card__media">
         ${badge}
-        <div class="cover-placeholder"><span aria-hidden="true">${cat.icon}</span></div>
+        <div class="cover-placeholder" style="background: linear-gradient(150deg, color-mix(in srgb, ${cat.color} 65%, white), ${cat.color})"><span aria-hidden="true">${cat.icon}</span></div>
       </div>`;
 }
 
@@ -316,7 +323,7 @@ function renderCategorySections() {
     <section class="category-section" id="cat-${cat.id}">
       <div class="category-section__inner">
         <div class="category-section__head">
-          <span class="category-section__icon" aria-hidden="true">${cat.icon}</span>
+          <span class="category-section__icon" aria-hidden="true" style="background:${cat.color}">${cat.icon}</span>
           <h2 class="category-section__title">${cat.name}</h2>
         </div>
         <p class="category-section__tagline">${cat.tagline}</p>

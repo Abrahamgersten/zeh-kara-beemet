@@ -1,27 +1,34 @@
 :root {
-  --ink: #1b2c30;
-  --ink-soft: #3c5157;
+  --ink: #23343a;
+  --ink-soft: #4c6067;
 
-  --teal-950: #072229;
-  --teal-900: #0b3b45;
-  --teal-850: #0e4652;
-  --teal-800: #114f5c;
-  --teal-700: #166473;
-  --teal-600: #1c7a8b;
-  --teal-500: #2f9aa3;
-  --teal-300: #8ecfd3;
-  --teal-200: #c7e7e9;
+  --teal-950: #0a6e78;
+  --teal-900: #0f8793;
+  --teal-850: #12959f;
+  --teal-800: #15a8b5;
+  --teal-700: #22bcc7;
+  --teal-600: #3fc9d3;
+  --teal-500: #63d5de;
+  --teal-300: #a8e9ee;
+  --teal-200: #d3f4f6;
 
-  --sand-50: #fffbf2;
-  --sand-100: #fbf2df;
-  --sand-200: #f4e6c8;
+  --sand-50: #fffdf6;
+  --sand-100: #fff5e2;
+  --sand-200: #ffe7bc;
 
-  --gold-700: #b57a1e;
-  --gold-600: #d99a2b;
-  --gold-500: #eab04a;
-  --gold-400: #f3bf5f;
-  --gold-300: #f7d38b;
-  --gold-100: #fdecc8;
+  --gold-700: #c85a1a;
+  --gold-600: #f0812c;
+  --gold-500: #ff9d47;
+  --gold-400: #ffb768;
+  --gold-300: #ffd28f;
+  --gold-100: #ffedcf;
+
+  /* Dark, WCAG-safe variants for text on light backgrounds - the scales
+     above are tuned bright for cheerful decorative use (buttons, icons,
+     gradients) and don't have enough contrast on their own for body text. */
+  --teal-heading: #0b6b76;
+  --teal-ink: #0a7681;
+  --gold-ink: #a8481a;
 
   --white: #ffffff;
 
@@ -87,7 +94,7 @@ h1, h2, h3 {
 
 .btn--primary {
   background: linear-gradient(135deg, var(--gold-400), var(--gold-600));
-  color: var(--teal-950);
+  color: var(--ink);
   box-shadow: 0 10px 24px -8px rgba(217, 154, 43, 0.6);
 }
 .btn--primary:hover { box-shadow: 0 14px 30px -8px rgba(217, 154, 43, 0.75); }
@@ -103,13 +110,13 @@ h1, h2, h3 {
   display: block;
   font-weight: 700;
   letter-spacing: 0.06em;
-  color: var(--gold-700);
+  color: var(--gold-ink);
   font-size: 0.95rem;
   margin-bottom: 0.6em;
 }
 .section-title {
   font-size: clamp(1.8rem, 4vw, 2.6rem);
-  color: var(--teal-900);
+  color: var(--teal-heading);
   margin-bottom: 0.5em;
   line-height: 1.25;
 }
@@ -119,7 +126,7 @@ h1, h2, h3 {
   position: sticky;
   top: 0;
   z-index: 40;
-  background: rgba(11, 59, 69, 0.92);
+  background: rgba(15, 135, 147, 0.92);
   backdrop-filter: blur(8px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
@@ -145,7 +152,7 @@ h1, h2, h3 {
 }
 .brand__mark {
   font-size: 1.05em;
-  filter: drop-shadow(0 0 6px rgba(243, 191, 95, 0.55));
+  filter: drop-shadow(0 0 6px rgba(255, 183, 104, 0.55));
 }
 .site-nav { display: flex; align-items: center; gap: 1.4rem; }
 .site-nav a {
@@ -180,7 +187,7 @@ h1, h2, h3 {
 .install-banner__btn {
   flex-shrink: 0;
   background: var(--gold-400);
-  color: var(--teal-950);
+  color: var(--ink);
   border: none;
   border-radius: 999px;
   padding: 0.55em 1.1em;
@@ -215,7 +222,7 @@ h1, h2, h3 {
   margin: 0 auto;
 }
 .install-steps.is-open { display: block; }
-.install-steps h3 { font-size: 1.1rem; margin-bottom: 0.5em; color: var(--teal-900); }
+.install-steps h3 { font-size: 1.1rem; margin-bottom: 0.5em; color: var(--teal-heading); }
 .install-steps ol { margin: 0; padding-inline-start: 1.2em; line-height: 1.7; }
 .install-steps__close {
   position: absolute;
@@ -244,9 +251,9 @@ h1, h2, h3 {
   inset: 0;
   z-index: 0;
   background:
-    radial-gradient(55% 55% at 22% 20%, rgba(243, 191, 95, 0.20), transparent 60%),
-    radial-gradient(65% 60% at 82% 85%, rgba(142, 207, 211, 0.22), transparent 60%),
-    linear-gradient(160deg, var(--teal-950) 0%, var(--teal-900) 45%, var(--teal-700) 100%);
+    radial-gradient(55% 55% at 22% 20%, rgba(255, 183, 104, 0.28), transparent 60%),
+    radial-gradient(65% 60% at 82% 85%, rgba(168, 233, 238, 0.24), transparent 60%),
+    linear-gradient(160deg, #063d46 0%, #0a5c66 45%, #0f7f8c 100%);
 }
 .hero__content { position: relative; z-index: 2; width: 100%; max-width: 760px; }
 .hero__eyebrow {
@@ -343,7 +350,7 @@ h1, h2, h3 {
   justify-content: center;
   font-size: 1.35rem;
 }
-.cat-pill__title { font-weight: 700; color: var(--teal-900); margin: 0 0 0.2em; font-size: 1.02rem; }
+.cat-pill__title { font-weight: 700; color: var(--teal-heading); margin: 0 0 0.2em; font-size: 1.02rem; }
 .cat-pill__desc { margin: 0; font-size: 0.86rem; color: var(--ink-soft); line-height: 1.5; }
 
 /* ---------- Category sections ---------- */
@@ -376,7 +383,7 @@ h1, h2, h3 {
   font-size: 1.7rem;
   box-shadow: 0 8px 18px -4px rgba(0,0,0,0.3);
 }
-.category-section__title { font-size: clamp(1.5rem, 3.2vw, 2rem); color: var(--teal-900); margin: 0; }
+.category-section__title { font-size: clamp(1.5rem, 3.2vw, 2rem); color: var(--teal-heading); margin: 0; }
 .category-section__tagline {
   color: var(--ink-soft);
   font-size: 1.02rem;
@@ -389,7 +396,7 @@ h1, h2, h3 {
   align-items: center;
   gap: 0.5em;
   font-size: 0.86rem;
-  color: var(--teal-700);
+  color: var(--teal-ink);
   background: var(--teal-200);
   border: 1px dashed var(--teal-500);
   border-radius: 999px;
@@ -445,8 +452,8 @@ h1, h2, h3 {
   align-items: center;
   justify-content: center;
   background: linear-gradient(150deg, var(--teal-800), var(--teal-950));
-  color: var(--gold-300);
-  font-size: 3rem;
+  font-size: 3.4rem;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.18));
 }
 
 .content-card__badge {
@@ -485,14 +492,14 @@ h1, h2, h3 {
   gap: 0.7rem;
 }
 .content-card__eyebrow {
-  color: var(--teal-600);
+  color: var(--teal-ink);
   font-weight: 700;
   font-size: 0.82rem;
   letter-spacing: 0.05em;
 }
 .content-card__title {
   font-size: clamp(1.25rem, 2.4vw, 1.55rem);
-  color: var(--teal-900);
+  color: var(--teal-heading);
   line-height: 1.3;
 }
 .content-card__desc {
@@ -501,7 +508,7 @@ h1, h2, h3 {
   font-size: 0.99rem;
   margin: 0;
 }
-.content-card__desc strong { color: var(--teal-800); }
+.content-card__desc strong { color: var(--teal-ink); }
 
 /* ---------- Audio player ---------- */
 .player {
@@ -531,7 +538,7 @@ h1, h2, h3 {
 }
 .player__btn:hover { transform: scale(1.06); }
 .player__btn:focus-visible { outline: 3px solid var(--gold-500); outline-offset: 2px; }
-.player__btn.is-playing { background: linear-gradient(135deg, var(--gold-400), var(--gold-600)); color: var(--teal-950); }
+.player__btn.is-playing { background: linear-gradient(135deg, var(--gold-400), var(--gold-600)); color: var(--ink); }
 
 .player__body { flex: 1 1 auto; min-width: 0; }
 .player__seek {
@@ -634,7 +641,7 @@ h1, h2, h3 {
   font-size: 1.3rem;
   margin-bottom: 0.6em;
 }
-.site-footer__note { color: var(--teal-300); font-size: 0.95rem; max-width: 480px; margin: 0 auto; }
+.site-footer__note { color: var(--sand-200); font-size: 0.95rem; max-width: 480px; margin: 0 auto; }
 
 /* ---------- Lightbox ---------- */
 .lightbox {
