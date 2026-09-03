@@ -615,39 +615,6 @@ h1, h2, h3 {
 .spot-card.is-solved .spot-card__marker { display: block; }
 .spot-card__actions { display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; }
 
-/* ---------- Q&A card ---------- */
-.qa-card__box {
-  border: 1px solid var(--sand-200);
-  border-radius: var(--radius-md);
-  background: var(--sand-100);
-  padding: 0.2rem 1rem;
-}
-.qa-card__box summary {
-  cursor: pointer;
-  padding: 0.9rem 0;
-  font-weight: 700;
-  color: var(--teal-800);
-  list-style: none;
-}
-.qa-card__box summary::-webkit-details-marker { display: none; }
-.qa-card__box summary::before {
-  content: "▶";
-  display: inline-block;
-  margin-inline-end: 0.6em;
-  color: var(--gold-600);
-  transition: transform 0.2s ease;
-  font-size: 0.8em;
-}
-.qa-card__box[open] summary::before { transform: rotate(90deg); }
-.qa-card__answer {
-  padding: 0 0 1rem;
-  color: var(--ink-soft);
-  line-height: 1.75;
-  border-top: 1px dashed var(--sand-200);
-  margin-top: -0.3rem;
-  padding-top: 0.8rem;
-}
-
 /* ---------- Footer ---------- */
 .site-footer {
   background: var(--teal-950);

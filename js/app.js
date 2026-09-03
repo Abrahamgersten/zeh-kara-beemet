@@ -14,7 +14,7 @@
 const CATEGORIES = [
   {
     id: "tzadikim",
-    name: "סיפורי צדיקים",
+    name: "זה קרה באמת",
     icon: "🕯️",
     type: "audio",
     tagline: "סיפורים מהחיים, מפי מספרים, על גדולי ישראל וצדיקי הדורות - אמונה, מידות טובות ואהבת ישראל.",
@@ -156,17 +156,21 @@ const CATEGORIES = [
     id: "what-to-do",
     name: "מה לעשו״ת?",
     icon: "❓",
-    type: "qa",
-    tagline: "שאלה הלכתית לילדים, עם רגע למחשבה - ואז גילוי התשובה.",
+    type: "audio",
+    tagline: "שאלה הלכתית לילדים, עם התשובה - הכול מוקרא יחד בהקלטה אחת.",
     episodes: [
       {
-        question: "המורה שכחה בכיתה ילקוט עם כסף אחרי הלימודים - מה עושים?",
-        answer: "זו שאלה לדוגמה בלבד. לפני העלאת שאלה אמיתית לאתר, יש לכתוב כאן תשובה שנבדקה מול מקורות הלכתיים ואושרה על ידי רב מוסמך.",
+        title: "לדוגמה: מצאתי חפץ שאינו שלי - מה עושים?",
+        description: "כאן תישמע שאלה הלכתית לילדים ותשובה עליה, מוקראות יחד בהקלטה אחת. זהו טקסט לדוגמה בלבד - לפני העלאת פרק אמיתי יש לוודא שהתשובה נבדקה ואושרה על ידי רב מוסמך.",
+        image: null,
+        audio: null,
         sample: true,
       },
       {
-        question: "מצאתי ספר קודש מונח על הרצפה בבית הכנסת - מה עושים?",
-        answer: "זו שאלה לדוגמה בלבד. לפני העלאת שאלה אמיתית לאתר, יש לכתוב כאן תשובה שנבדקה מול מקורות הלכתיים ואושרה על ידי רב מוסמך.",
+        title: "לדוגמה: ספר קודש על הרצפה - מה עושים?",
+        description: "כאן תישמע שאלה הלכתית לילדים ותשובה עליה, מוקראות יחד בהקלטה אחת. זהו טקסט לדוגמה בלבד - לפני העלאת פרק אמיתי יש לוודא שהתשובה נבדקה ואושרה על ידי רב מוסמך.",
+        image: null,
+        audio: null,
         sample: true,
       },
     ],
@@ -299,30 +303,12 @@ function spotDiffCardHTML(cat, ep, idx) {
   </article>`;
 }
 
-function qaCardHTML(cat, ep, idx) {
-  const badge = ep.sample ? `<span class="content-card__badge--inline">תוכן לדוגמה</span>` : "";
-  return `
-  <article class="content-card content-card--full qa-card">
-    <div class="content-card__body">
-      <div class="content-card__head-row">
-        <span class="content-card__eyebrow">${cat.name}</span>
-        ${badge}
-      </div>
-      <details class="qa-card__box">
-        <summary>${ep.question}</summary>
-        <div class="qa-card__answer">${ep.answer}</div>
-      </details>
-    </div>
-  </article>`;
-}
-
 function renderCategorySections() {
   const host = document.getElementById("category-sections");
   host.innerHTML = CATEGORIES.map((cat) => {
     const cardsHTML = cat.episodes
       .map((ep, idx) => {
         if (cat.type === "spot-diff") return spotDiffCardHTML(cat, ep, idx);
-        if (cat.type === "qa") return qaCardHTML(cat, ep, idx);
         return audioCardHTML(cat, ep, idx);
       })
       .join("");
