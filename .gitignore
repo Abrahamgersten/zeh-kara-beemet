@@ -1,2 +1,7 @@
 .DS_Store
 Thumbs.db
+
+# Production workspace (source Word docs, raw TTS output, Audacity projects/
+# work files, background music library) - not part of the deployed site.
+# Finished per-episode audio gets copied into assets/audio/ deliberately.
+יצירת אודיו באנגלית/

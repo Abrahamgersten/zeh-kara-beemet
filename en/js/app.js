@@ -22,18 +22,10 @@ const CATEGORIES = [
     tagline: "Stories from real life, told by storytellers, about the great sages and tzaddikim of the generations - faith, good character, and love of Israel.",
     episodes: [
       {
-        title: "Example: A Story About Hospitality",
-        description: "Here you'll find a short summary of the real story - who the story is about, what happened, and the lesson learned from it. This is sample text only, to demonstrate the card layout.",
+        title: "The Drunkard of Kol Nidrei",
+        description: "A true story about the Alter Rebbe, Rabbi Schneur Zalman of Liadi, and Reb Shmuel - a man who did something extraordinary on the eve of Yom Kippur to save a Jewish family from jail, and why the Rebbe said his heart had already reached the joy of Simchat Torah.",
         image: null,
-        audio: null,
-        sample: true,
-      },
-      {
-        title: "Example: A Story About Trust and Strength in Faith",
-        description: "Here a real description of the episode will go - who the story is about and what can be learned from it. This is sample text only.",
-        image: null,
-        audio: null,
-        sample: true,
+        audio: "../assets/audio/en/kol-nidrei-drunkard.mp3",
       },
     ],
   },
