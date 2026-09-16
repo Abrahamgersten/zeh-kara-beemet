@@ -24,7 +24,7 @@ const CATEGORIES = [
       {
         title: "The Drunkard of Kol Nidrei",
         description: "A true story about the Alter Rebbe, Rabbi Schneur Zalman of Liadi, and Reb Shmuel - a man who did something extraordinary on the eve of Yom Kippur to save a Jewish family from jail, and why the Rebbe said his heart had already reached the joy of Simchat Torah.",
-        image: null,
+        image: "../assets/images/en/kol-nidrei-drunkard.jpeg",
         audio: "../assets/audio/en/kol-nidrei-drunkard.mp3",
       },
     ],
