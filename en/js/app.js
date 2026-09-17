@@ -27,6 +27,12 @@ const CATEGORIES = [
         image: "../assets/images/en/kol-nidrei-drunkard.jpeg",
         audio: "../assets/audio/en/kol-nidrei-drunkard.mp3",
       },
+      {
+        title: "A Debt of Gratitude",
+        description: "A true story about Rabbi Isser Zalman Meltzer, the great Rosh Yeshiva of Etz Chaim in Jerusalem - and why, in his old age, he made the difficult climb to a simple family's bar mitzvah to personally thank them for a gift they never knew they'd given him.",
+        image: null,
+        audio: "../assets/audio/en/isser-zalman-gratitude.mp3",
+      },
     ],
   },
   {
