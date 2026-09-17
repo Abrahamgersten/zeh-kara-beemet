@@ -309,15 +309,33 @@ function spotDiffCardHTML(cat, ep, idx) {
   </article>`;
 }
 
+const INITIAL_VISIBLE_EPISODES = 4;
+
 function renderCategorySections() {
   const host = document.getElementById("category-sections");
   host.innerHTML = CATEGORIES.map((cat) => {
-    const cardsHTML = cat.episodes
+    // Newest-added episode first, regardless of the order it was pushed into
+    // the data array - keeps the freshest content most discoverable without
+    // needing to remember to unshift instead of push when adding one.
+    const episodesNewestFirst = [...cat.episodes].reverse();
+    const hasSample = cat.episodes.some((ep) => ep.sample);
+    const overflowCount = Math.max(0, episodesNewestFirst.length - INITIAL_VISIBLE_EPISODES);
+
+    const cardsHTML = episodesNewestFirst
       .map((ep, idx) => {
-        if (cat.type === "spot-diff") return spotDiffCardHTML(cat, ep, idx);
-        return audioCardHTML(cat, ep, idx);
+        const hiddenAttr = idx >= INITIAL_VISIBLE_EPISODES ? ' hidden data-overflow-card="true"' : "";
+        const card = cat.type === "spot-diff" ? spotDiffCardHTML(cat, ep, idx) : audioCardHTML(cat, ep, idx);
+        return card.replace("<article ", `<article${hiddenAttr} `);
       })
       .join("");
+
+    const noteHTML = hasSample
+      ? `<span class="category-section__note">🧩 The items below are structural examples only - they'll be replaced with real recordings and content</span>`
+      : "";
+    const showMoreHTML = overflowCount > 0
+      ? `<button class="btn btn--ghost category-section__more" type="button" data-show-more="cat-${cat.id}">Show all ${episodesNewestFirst.length} episodes</button>`
+      : "";
+
     return `
     <section class="category-section" id="cat-${cat.id}">
       <div class="category-section__inner">
@@ -326,11 +344,25 @@ function renderCategorySections() {
           <h2 class="category-section__title">${cat.name}</h2>
         </div>
         <p class="category-section__tagline">${cat.tagline}</p>
-        <span class="category-section__note">🧩 The items below are structural examples only - they'll be replaced with real recordings and content</span>
+        ${noteHTML}
         <div class="cards-list">${cardsHTML}</div>
+        ${showMoreHTML}
       </div>
     </section>`;
   }).join("");
+}
+
+function setupShowMore() {
+  const host = document.getElementById("category-sections");
+  host.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-show-more]");
+    if (!btn) return;
+    const section = document.getElementById(btn.dataset.showMore);
+    section.querySelectorAll('[data-overflow-card="true"]').forEach((card) => {
+      card.hidden = false;
+    });
+    btn.remove();
+  });
 }
 
 /* ---------------------------------------------------------------
@@ -602,6 +634,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderCategorySections();
   setupMediaInteractions();
   setupSpotDiff();
+  setupShowMore();
   setupPlayers();
   setupScrollReveal();
   setupInstallBanner();

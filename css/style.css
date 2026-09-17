@@ -420,6 +420,14 @@ h1, h2, h3 {
   flex-direction: column;
   gap: 2rem;
 }
+.category-section__more {
+  display: flex;
+  margin: 2rem auto 0;
+  background: var(--white);
+  color: var(--teal-heading);
+  border-color: var(--teal-700);
+}
+.category-section__more:hover { background: var(--teal-200); }
 
 /* ---------- Content card (audio episodes) ---------- */
 .content-card {
@@ -436,6 +444,7 @@ h1, h2, h3 {
   transition: opacity 0.6s ease, transform 0.6s ease;
 }
 .content-card.is-visible { opacity: 1; transform: translateY(0); }
+.content-card[hidden] { display: none; }
 @media (min-width: 820px) {
   .content-card { grid-template-columns: 38% minmax(0, 1fr); align-items: stretch; }
   .content-card--reverse { grid-template-columns: minmax(0, 1fr) 38%; }
