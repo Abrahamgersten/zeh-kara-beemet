@@ -57,6 +57,12 @@ const CATEGORIES = [
         image: null,
         audio: "../assets/audio/en/baal-shem-tov-water.mp3",
       },
+      {
+        title: "A Share in Heaven",
+        description: "A true story about Rabbi Levi Yitzchak of Berditchev, the defender of Israel, and a dying man tormented by his past - and the extraordinary gift the Rabbi offered him in his final moments.",
+        image: null,
+        audio: "../assets/audio/en/share-in-heaven.mp3",
+      },
     ],
   },
   {

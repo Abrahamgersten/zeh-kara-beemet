@@ -50,6 +50,12 @@ const CATEGORIES = [
         image: null,
         audio: "assets/audio/baal-shem-tov-water.mp3",
       },
+      {
+        title: "חלק בגן עדן",
+        description: "סיפור אמיתי על רבי לוי יצחק מברדיטשוב, סנגורם של ישראל, ועל חולה שייסר אותו עברו - ועל המתנה היוצאת דופן שהרבי הציע לו ברגעיו האחרונים.",
+        image: null,
+        audio: "assets/audio/share-in-heaven.mp3",
+      },
     ],
   },
   {
