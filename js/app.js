@@ -38,6 +38,12 @@ const CATEGORIES = [
         image: null,
         audio: "assets/audio/chazon-ish-calculation.mp3",
       },
+      {
+        title: "לכל אחד יש מה לתת",
+        description: "סיפור אמיתי על רבי שמואל הלוי ווזנר, שביקר חולה סובל בבית החולים וסיפר לו סיפור מנעוריו - על חולה אחר שגילה שגם לו, כשנדמה שאין לו כלום לתת, עדיין יש מה לתת.",
+        image: null,
+        audio: "assets/audio/something-to-give.mp3",
+      },
     ],
   },
   {

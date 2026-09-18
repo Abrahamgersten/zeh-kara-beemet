@@ -45,6 +45,12 @@ const CATEGORIES = [
         image: null,
         audio: "../assets/audio/en/chazon-ish-calculation.mp3",
       },
+      {
+        title: "Everyone Has Something to Give",
+        description: "A true story about Rabbi Shmuel HaLevi Wozner visiting a suffering patient in the hospital - and the story he told him about a sick man from his own youth who found he still had one thing left to give.",
+        image: null,
+        audio: "../assets/audio/en/something-to-give.mp3",
+      },
     ],
   },
   {
