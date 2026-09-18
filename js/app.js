@@ -56,6 +56,12 @@ const CATEGORIES = [
         image: null,
         audio: "assets/audio/share-in-heaven.mp3",
       },
+      {
+        title: "הקצין המאמין",
+        description: "סיפור אמיתי שסיפר קצין חילוני לרבי שלמה קרליבך במלחמת יום הכיפורים - על בקשתו האחרונה של חבר פצוע, ועל הרגע ששתי מילים שינו הכול.",
+        image: null,
+        audio: "assets/audio/believing-officer.mp3",
+      },
     ],
   },
   {

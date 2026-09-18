@@ -63,6 +63,12 @@ const CATEGORIES = [
         image: null,
         audio: "../assets/audio/en/share-in-heaven.mp3",
       },
+      {
+        title: "The Believing Officer",
+        description: "A true story told to Rabbi Shlomo Carlebach by a secular officer during the Yom Kippur War - about a wounded friend's final request, and the moment two words changed everything he believed.",
+        image: null,
+        audio: "../assets/audio/en/believing-officer.mp3",
+      },
     ],
   },
   {
