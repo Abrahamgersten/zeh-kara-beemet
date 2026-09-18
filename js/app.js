@@ -44,6 +44,12 @@ const CATEGORIES = [
         image: null,
         audio: "assets/audio/something-to-give.mp3",
       },
+      {
+        title: "מים במדבר",
+        description: "סיפור אמיתי על הבעל שם טוב הקדוש ועל תלמיד צמא שלמד, באמצע המדבר, עד כמה ההשגחה העליונה רואה רחוק לפנינו.",
+        image: null,
+        audio: "assets/audio/baal-shem-tov-water.mp3",
+      },
     ],
   },
   {

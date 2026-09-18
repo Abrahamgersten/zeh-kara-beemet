@@ -51,6 +51,12 @@ const CATEGORIES = [
         image: null,
         audio: "../assets/audio/en/something-to-give.mp3",
       },
+      {
+        title: "Water in the Desert",
+        description: "A true story about the holy Baal Shem Tov and a thirsty student who learned, in the middle of the desert, just how far Divine Providence sees ahead of us.",
+        image: null,
+        audio: "../assets/audio/en/baal-shem-tov-water.mp3",
+      },
     ],
   },
   {
