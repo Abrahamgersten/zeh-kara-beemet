@@ -26,6 +26,12 @@ const CATEGORIES = [
         image: null,
         audio: "assets/audio/kol-nidrei-drunkard.mp3",
       },
+      {
+        title: "הבן איש חי",
+        description: "סיפור אמיתי על רבי יוסף חיים מבגדד, המכונה \"הבן איש חי\", ועל תלמיד סקרן שניסה יום אחד לרוץ במעלה המדרגות כדי לחזות באליהו הנביא - ומה הוא למד במקום זה על הדרך האמיתית להגיע לגדלות.",
+        image: null,
+        audio: "assets/audio/ben-ish-chai.mp3",
+      },
     ],
   },
   {

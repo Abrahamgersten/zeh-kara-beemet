@@ -33,6 +33,12 @@ const CATEGORIES = [
         image: null,
         audio: "../assets/audio/en/isser-zalman-gratitude.mp3",
       },
+      {
+        title: "Step by Step",
+        description: "A true story about Rabbi Yosef Chaim of Baghdad, known as the Ben Ish Chai - and about a curious student who once tried to race up the stairs for a glimpse of Eliyahu HaNavi, and what he learned instead about the real way to reach greatness.",
+        image: null,
+        audio: "../assets/audio/en/ben-ish-chai.mp3",
+      },
     ],
   },
   {
