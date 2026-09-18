@@ -32,6 +32,12 @@ const CATEGORIES = [
         image: null,
         audio: "assets/audio/ben-ish-chai.mp3",
       },
+      {
+        title: "טעות בחישוב",
+        description: "סיפור אמיתי על החזון איש, רבי אברהם ישעיהו קרליץ, מגדולי פוסקי ההלכה בדור האחרון - ועל הלילה שתלמידו מצא אותו שוכב על הרצפה, ומה הוא סיפר לו שהשתבש.",
+        image: null,
+        audio: "assets/audio/chazon-ish-calculation.mp3",
+      },
     ],
   },
   {

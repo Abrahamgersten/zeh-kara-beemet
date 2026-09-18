@@ -39,6 +39,12 @@ const CATEGORIES = [
         image: null,
         audio: "../assets/audio/en/ben-ish-chai.mp3",
       },
+      {
+        title: "A Mistake in the Math",
+        description: "A true story about the Chazon Ish, Rabbi Avraham Yeshayahu Karelitz, one of the greatest halachic authorities of the last generation - and about the night his student found him collapsed on the floor, and what he said had gone wrong.",
+        image: null,
+        audio: "../assets/audio/en/chazon-ish-calculation.mp3",
+      },
     ],
   },
   {
