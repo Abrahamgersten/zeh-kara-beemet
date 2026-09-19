@@ -68,6 +68,24 @@ const CATEGORIES = [
         image: "assets/images/believing-officer.jpeg",
         audio: "assets/audio/believing-officer.mp3",
       },
+      {
+        title: "הבבא סלי מלמד על כבוד חכמים",
+        description: "סיפור אמיתי על הבבא סלי, רבי ישראל אבוחצירא, ועל אדם שכתב ספר שבו חלק על האור החיים הקדוש - ומה קרה כשהגיע לביתו של הבבא סלי בנטיבות, ומה אפשר ללמוד מזה על היחס לדברי חכמים.",
+        image: null,
+        audio: "assets/audio/baba-sali-respect.mp3",
+      },
+      {
+        title: "ורחמיו על כל מעשיו",
+        description: "סיפור אמיתי על האר\"י הקדוש ועל זוג טוב לב, מכניסי אורחים, שחיכו שנים לילדים - ועל דבר קטן מהעבר שהאר\"י עזר להם להבין.",
+        image: null,
+        audio: "assets/audio/ari-kindness-to-animals.mp3",
+      },
+      {
+        title: "הבעל שם טוב והנער המאמין",
+        description: "סיפור אמיתי על הבעל שם טוב ועל נער כפרי פשוט שלא ידע להתפלל ולא ללמוד תורה - ומה עשה כדי להראות כמה הוא אוהב את ה'.",
+        image: null,
+        audio: "assets/audio/besht-flute-boy.mp3",
+      },
     ],
   },
   {
