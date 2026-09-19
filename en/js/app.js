@@ -29,7 +29,7 @@ const CATEGORIES = [
       },
       {
         title: "A Debt of Gratitude",
-        description: "A true story about Rabbi Isser Zalman Meltzer, the great Rosh Yeshiva of Etz Chaim in Jerusalem - and why, in his old age, he made the difficult climb to a simple family's bar mitzvah to personally thank them for a gift they never knew they'd given him.",
+        description: "A true story about Rabbi Isser Zalman Meltzer, the great head of the Etz Chaim Yeshiva in Jerusalem - and why, in his old age, he made the difficult climb to a simple family's bar mitzvah to personally thank them for a gift they never knew they'd given him.",
         image: "../assets/images/en/isser-zalman-gratitude.jpeg",
         audio: "../assets/audio/en/isser-zalman-gratitude.mp3",
       },
@@ -41,7 +41,7 @@ const CATEGORIES = [
       },
       {
         title: "A Mistake in the Math",
-        description: "A true story about the Chazon Ish, Rabbi Avraham Yeshayahu Karelitz, one of the greatest halachic authorities of the last generation - and about the night his student found him collapsed on the floor, and what he said had gone wrong.",
+        description: "A true story about the Chazon Ish, Rabbi Avraham Yeshayahu Karelitz, one of the greatest rabbis of recent times - and about the night his student found him collapsed on the floor, and what he said had gone wrong.",
         image: "../assets/images/en/chazon-ish-calculation.jpeg",
         audio: "../assets/audio/en/chazon-ish-calculation.mp3",
       },
@@ -53,13 +53,13 @@ const CATEGORIES = [
       },
       {
         title: "Water in the Desert",
-        description: "A true story about the holy Baal Shem Tov and a thirsty student who learned, in the middle of the desert, just how far Divine Providence sees ahead of us.",
+        description: "A true story about the holy Baal Shem Tov and a thirsty student who learned, in the middle of the desert, that G-d takes care of us long before we even know we need help.",
         image: "../assets/images/en/baal-shem-tov-water.jpeg",
         audio: "../assets/audio/en/baal-shem-tov-water.mp3",
       },
       {
         title: "A Share in Heaven",
-        description: "A true story about Rabbi Levi Yitzchak of Berditchev, the defender of Israel, and a dying man tormented by his past - and the extraordinary gift the Rabbi offered him in his final moments.",
+        description: "A true story about Rabbi Levi Yitzchak of Berditchev, the defender of the Jewish people, and a dying man tormented by his past - and the extraordinary gift the Rabbi offered him in his final moments.",
         image: "../assets/images/en/share-in-heaven.jpeg",
         audio: "../assets/audio/en/share-in-heaven.mp3",
       },
