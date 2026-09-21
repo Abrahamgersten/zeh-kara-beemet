@@ -72,19 +72,19 @@ const CATEGORIES = [
       {
         title: "Respect for the Sages",
         description: "A true story about the Baba Sali, Rabbi Yisrael Abuhatzeira, and a man who wrote a book challenging the holy Ohr HaChaim - what happened when he came to the Baba Sali's home in Netivot, and what it teaches us about how to approach the words of our great sages.",
-        image: null,
+        image: "../assets/images/en/baba-sali-respect.jpeg",
         audio: "../assets/audio/en/baba-sali-respect.mp3",
       },
       {
         title: "Kindness to Every Creature",
         description: "A true story about the holy Ari and a kind, welcoming couple who waited years for children - and the small thing from long ago that the Ari helped them understand.",
-        image: null,
+        image: "../assets/images/en/ari-kindness-to-animals.jpeg",
         audio: "../assets/audio/en/ari-kindness-to-animals.mp3",
       },
       {
         title: "The Boy and the Flute",
         description: "A true story about the Baal Shem Tov and a simple village boy who didn't know how to pray or learn Torah - and what he did to show G-d how much he loved Him.",
-        image: null,
+        image: "../assets/images/en/besht-flute-boy.jpeg",
         audio: "../assets/audio/en/besht-flute-boy.mp3",
       },
     ],
