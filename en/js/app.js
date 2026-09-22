@@ -100,13 +100,13 @@ const CATEGORIES = [
       {
         title: "The Amazing Bat",
         description: "How can a bat fly at night, in total darkness, without crashing into anything? Discover the amazing secret of the only mammal in the world that can really fly.",
-        image: "../assets/images/en/amazing-bat.jpeg",
+        images: ["../assets/images/en/amazing-bat-main.jpeg", "../assets/images/en/amazing-bat.jpeg"],
         audio: "../assets/audio/en/amazing-bat.mp3",
       },
       {
         title: "The Platypus",
         description: "An animal with fur like a mammal, a bill like a duck, and webbed feet - that lays eggs! Meet the platypus, one of the strangest and most surprising animals in the world.",
-        image: "../assets/images/en/platypus.jpeg",
+        images: ["../assets/images/en/platypus-main.jpeg", "../assets/images/en/platypus.jpeg"],
         audio: "../assets/audio/en/platypus.mp3",
       },
     ],
@@ -271,11 +271,21 @@ function renderCatNav() {
 --------------------------------------------------------------- */
 function mediaHTML(cat, ep, idx) {
   const badge = ep.sample ? `<span class="content-card__badge">Sample content</span>` : "";
-  if (ep.image) {
+  // ep.images: [main, thumb] - a second illustration per episode (same pattern as the "Diamond Island" site): the
+  // main one shows large, the second is a small thumb that swaps places with it on click. ep.image (single) still
+  // works exactly as before - this is purely an optional addition.
+  const [main, thumb] = ep.images || (ep.image ? [ep.image] : []);
+  if (main) {
+    const thumbHTML = thumb
+      ? `<button class="content-card__thumb" type="button" data-swap aria-label="Switch to the second image">
+           <img src="${thumb}" alt="${ep.title}" loading="lazy">
+         </button>`
+      : "";
     return `
       <div class="content-card__media">
         ${badge}
-        <img class="content-card__main-img" src="${ep.image}" alt="${ep.title}" loading="lazy" data-full="${ep.image}">
+        <img class="content-card__main-img" src="${main}" alt="${ep.title}" loading="lazy" data-full="${main}">
+        ${thumbHTML}
       </div>`;
   }
   return `
@@ -419,6 +429,22 @@ function setupMediaInteractions() {
   const lightboxClose = document.getElementById("lightbox-close");
 
   host.addEventListener("click", (e) => {
+    const swapBtn = e.target.closest("[data-swap]");
+    if (swapBtn) {
+      const media = swapBtn.closest(".content-card__media");
+      const mainImg = media.querySelector(".content-card__main-img");
+      const thumbImg = swapBtn.querySelector("img");
+      const tmpSrc = mainImg.src;
+      mainImg.style.opacity = "0";
+      setTimeout(() => {
+        mainImg.src = thumbImg.src;
+        mainImg.dataset.full = thumbImg.src;
+        thumbImg.src = tmpSrc;
+        mainImg.style.opacity = "1";
+      }, 120);
+      return;
+    }
+
     const mainImg = e.target.closest(".content-card__main-img");
     if (mainImg) {
       lightboxImg.src = mainImg.dataset.full || mainImg.src;

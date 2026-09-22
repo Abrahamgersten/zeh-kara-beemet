@@ -99,13 +99,13 @@ const CATEGORIES = [
       {
         title: "העטלף המופלא",
         description: "איך עטלף מצליח לעוף בלילה, בחשכה מוחלטת, בלי להתנגש בשום דבר? גלו את הסוד המדהים של היונק היחיד בעולם שיכול לעוף.",
-        image: "assets/images/amazing-bat.jpeg",
+        images: ["assets/images/amazing-bat-main.jpeg", "assets/images/amazing-bat.jpeg"],
         audio: "assets/audio/amazing-bat.mp3",
       },
       {
         title: "הברווזן",
         description: "בעל חיים עם פרווה של יונק, מקור של ברווז וקרומי שחייה - שמטיל ביצים! הכירו את הברווזן, אחד מבעלי החיים המוזרים והמפתיעים ביותר בעולם.",
-        image: "assets/images/platypus.jpeg",
+        images: ["assets/images/platypus-main.jpeg", "assets/images/platypus.jpeg"],
         audio: "assets/audio/platypus.mp3",
       },
     ],
@@ -270,11 +270,20 @@ function renderCatNav() {
 --------------------------------------------------------------- */
 function mediaHTML(cat, ep, idx) {
   const badge = ep.sample ? `<span class="content-card__badge">תוכן לדוגמה</span>` : "";
-  if (ep.image) {
+  // ep.images: [main, thumb] - שני איורים לפרק (בהשראת "אי היהלומים"): הראשי מוצג גדול, השני כתמונה קטנה
+  // שמחליפה מקום עם הראשי בלחיצה. ep.image (יחיד) ממשיך לעבוד בדיוק כמו קודם - זה רק תוספת אופציונלית.
+  const [main, thumb] = ep.images || (ep.image ? [ep.image] : []);
+  if (main) {
+    const thumbHTML = thumb
+      ? `<button class="content-card__thumb" type="button" data-swap aria-label="החלף לתמונה השנייה">
+           <img src="${thumb}" alt="${ep.title}" loading="lazy">
+         </button>`
+      : "";
     return `
       <div class="content-card__media">
         ${badge}
-        <img class="content-card__main-img" src="${ep.image}" alt="${ep.title}" loading="lazy" data-full="${ep.image}">
+        <img class="content-card__main-img" src="${main}" alt="${ep.title}" loading="lazy" data-full="${main}">
+        ${thumbHTML}
       </div>`;
   }
   return `
@@ -416,6 +425,22 @@ function setupMediaInteractions() {
   const lightboxClose = document.getElementById("lightbox-close");
 
   host.addEventListener("click", (e) => {
+    const swapBtn = e.target.closest("[data-swap]");
+    if (swapBtn) {
+      const media = swapBtn.closest(".content-card__media");
+      const mainImg = media.querySelector(".content-card__main-img");
+      const thumbImg = swapBtn.querySelector("img");
+      const tmpSrc = mainImg.src;
+      mainImg.style.opacity = "0";
+      setTimeout(() => {
+        mainImg.src = thumbImg.src;
+        mainImg.dataset.full = thumbImg.src;
+        thumbImg.src = tmpSrc;
+        mainImg.style.opacity = "1";
+      }, 120);
+      return;
+    }
+
     const mainImg = e.target.closest(".content-card__main-img");
     if (mainImg) {
       lightboxImg.src = mainImg.dataset.full || mainImg.src;
