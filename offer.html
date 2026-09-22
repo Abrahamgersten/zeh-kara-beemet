@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>הצטרפות למנוי - זה קרה באמת</title>
+<meta name="description" content="הצטרפו למנוי זה קרה באמת - חודש ראשון ב-1 ₪, ואז 18 ₪ לחודש. סיפורי צדיקים, נפלאות הבריאה, פרשת השבוע ועוד.">
+<meta name="theme-color" content="#0f8793">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="icons/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="alternate" hreflang="he" href="./offer.html">
+<link rel="alternate" hreflang="en" href="en/offer.html">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Suez+One&family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="auth-pending">
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a href="offer.html" class="brand">
+      <img class="brand__mark" src="icons/brand-mark.png" alt="" width="40" height="40">
+      <span class="brand__name">זה קרה באמת</span>
+    </a>
+    <nav class="site-nav" aria-label="ניווט">
+      <a href="login.html">כבר נרשמתי - התחברות</a>
+      <a href="en/offer.html" class="lang-switch">English</a>
+    </nav>
+  </div>
+</header>
+
+<main class="offer-page">
+  <section class="offer-hero">
+    <p class="hero__eyebrow">הקלטות טובות לילדים ולכל המשפחה</p>
+    <h1 class="offer-hero__title">זֶה קָרָה בֶּאֱמֶת</h1>
+    <p class="offer-hero__sub">סיפורי צדיקים, נפלאות הבריאה, פרשת השבוע, ידע מעניין ומשחקים - הכל במקום אחד, פרק אחר פרק</p>
+  </section>
+
+  <section class="offer-price-card">
+    <div class="offer-price-card__row">
+      <div class="offer-price-card__tier">
+        <span class="offer-price-card__label">חודש ראשון</span>
+        <span class="offer-price-card__amount">1 ₪</span>
+      </div>
+      <div class="offer-price-card__arrow" aria-hidden="true">←</div>
+      <div class="offer-price-card__tier">
+        <span class="offer-price-card__label">מהחודש השני</span>
+        <span class="offer-price-card__amount">18 ₪ <small>/ חודש</small></span>
+      </div>
+    </div>
+    <p class="offer-price-card__fine-print">מנוי חודשי מתחדש אוטומטית. אפשר לבטל בכל עת. חיוב 1 ₪ בהצטרפות, ולאחר מכן 18 ₪ בכל חודש, עד לביטול.</p>
+
+    <form id="offer-form" class="offer-form">
+      <label for="offer-email" class="auth-card__label">אימייל להרשמה</label>
+      <input id="offer-email" name="email" type="email" required placeholder="you@example.com" class="auth-card__input" autocomplete="email">
+      <button type="submit" class="btn btn--primary offer-form__cta">המשך לתשלום 🔒</button>
+      <p id="offer-status" class="auth-card__status" role="status" aria-live="polite"></p>
+    </form>
+  </section>
+
+  <section class="about offer-about">
+    <div class="about__inner">
+      <span class="section-eyebrow">מה מקבלים במנוי?</span>
+      <h2 class="section-title">כל התכנים, בלי הגבלה</h2>
+      <p class="about__text">גישה מלאה לכל הסיפורים וההקלטות באתר - סיפורי צדיקים, נפלאות הבריאה, פרשת השבוע ועוד, בעברית ובאנגלית. תוכן חדש נוסף באופן קבוע.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <img class="brand__mark" src="icons/brand-mark.png" alt="" width="40" height="40">
+      <span>זה קרה באמת</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module">
+  import { isSupabaseConfigured, getSession, fetchEntitlement, isEntitled, revealPage } from "./js/auth.js";
+
+  const INDEX_URL = "index.html";
+  const CHECKOUT_URL = ""; // ⚠️ למלא אחרי אישור אברהם + חיבור ספק סליקה - ראו הפרוטוקול
+
+  (async function init() {
+    if (isSupabaseConfigured()) {
+      const session = await getSession();
+      if (session) {
+        const row = await fetchEntitlement();
+        if (isEntitled(row)) { window.location.replace(INDEX_URL); return; }
+      }
+    }
+    revealPage();
+  })();
+
+  document.getElementById("offer-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const statusEl = document.getElementById("offer-status");
+    if (!CHECKOUT_URL) {
+      statusEl.textContent = "ההרשמה בתהליכי הקמה - נעדכן כאן ברגע שהיא מוכנה. תודה על הסבלנות!";
+      return;
+    }
+    const email = document.getElementById("offer-email").value.trim();
+    window.location.href = CHECKOUT_URL + "?email=" + encodeURIComponent(email);
+  });
+</script>
+</body>
+</html>

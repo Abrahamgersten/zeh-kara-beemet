@@ -19,7 +19,12 @@
 
 <link rel="stylesheet" href="../css/style.css">
 </head>
-<body>
+<body class="auth-pending">
+
+<script type="module">
+  import { guardGatedPage } from "../js/auth.js";
+  guardGatedPage({ loginUrl: "login.html", offerUrl: "offer.html" });
+</script>
 
 <div id="install-banner" class="install-banner" hidden>
   <div class="install-banner__icon">

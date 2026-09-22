@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sign In - It Really Happened</title>
+<meta name="description" content="Sign in to It Really Happened - use the same email you subscribed with.">
+<meta name="theme-color" content="#0f8793">
+<meta name="robots" content="noindex">
+<link rel="icon" href="../icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../icons/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="alternate" hreflang="he" href="../login.html">
+<link rel="alternate" hreflang="en" href="./login.html">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="auth-pending">
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a href="index.html" class="brand">
+      <img class="brand__mark" src="../icons/brand-mark.png" alt="" width="40" height="40">
+      <span class="brand__name">It Really Happened</span>
+    </a>
+    <nav class="site-nav" aria-label="Navigation">
+      <a href="../login.html" class="lang-switch">עברית</a>
+    </nav>
+  </div>
+</header>
+
+<main class="auth-page">
+  <div class="auth-card">
+    <h1 class="auth-card__title" id="auth-title">Sign In</h1>
+    <p class="auth-card__note" id="auth-paid-note" hidden>Payment received! Now just sign in - <strong>with the same email</strong> you paid with.</p>
+    <p class="auth-card__sub">Sign in with the same email you subscribed with.</p>
+
+    <button id="google-btn" class="btn btn--primary auth-card__google" type="button">
+      <span aria-hidden="true">🔑</span> Sign in with Google
+    </button>
+
+    <div class="auth-card__divider"><span>or</span></div>
+
+    <form id="magic-form" class="auth-card__form">
+      <label for="magic-email" class="auth-card__label">Email</label>
+      <input id="magic-email" name="email" type="email" required placeholder="you@example.com" class="auth-card__input" autocomplete="email">
+      <button type="submit" class="btn btn--outline">Send sign-in link</button>
+    </form>
+
+    <p id="auth-status" class="auth-card__status" role="status" aria-live="polite"></p>
+
+    <p class="auth-card__footer">Not subscribed yet? <a href="offer.html">Join now</a></p>
+  </div>
+</main>
+
+<script type="module">
+  import { isSupabaseConfigured, getSession, onAuthStateChange, signInWithGoogle, signInWithMagicLink, fetchEntitlement, isEntitled, revealPage } from "../js/auth.js";
+
+  const INDEX_URL = "index.html";
+  const statusEl = document.getElementById("auth-status");
+  const paidNote = document.getElementById("auth-paid-note");
+
+  if (new URLSearchParams(location.search).get("paid") === "1") paidNote.hidden = false;
+
+  if (!isSupabaseConfigured()) {
+    statusEl.textContent = "The system isn't set up yet - this is a preview page only.";
+    revealPage();
+  } else {
+    async function checkAndMaybeRedirect() {
+      const session = await getSession();
+      if (!session) { revealPage(); return; }
+      statusEl.textContent = "Checking your subscription...";
+      const row = await fetchEntitlement();
+      if (isEntitled(row)) {
+        window.location.replace(INDEX_URL);
+      } else {
+        statusEl.textContent = "We couldn't find an active subscription for " + (row ? row.email : session.user.email) + ". If you paid with a different address, please contact us.";
+        revealPage();
+      }
+    }
+    checkAndMaybeRedirect();
+    onAuthStateChange(() => checkAndMaybeRedirect());
+  }
+
+  // Listeners are always attached (even before the system is configured) so
+  // the form/button never fall through to a native browser submit (a reload
+  // with ?email=... in the URL).
+  document.getElementById("google-btn").addEventListener("click", async () => {
+    if (!isSupabaseConfigured()) return;
+    statusEl.textContent = "Redirecting to Google...";
+    const { error } = await signInWithGoogle(location.href.split("?")[0]);
+    if (error) statusEl.textContent = "Error: " + error.message;
+  });
+
+  document.getElementById("magic-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!isSupabaseConfigured()) return;
+    const email = document.getElementById("magic-email").value.trim();
+    statusEl.textContent = "Sending link...";
+    const { error } = await signInWithMagicLink(email, location.href.split("?")[0]);
+    statusEl.textContent = error ? "Error: " + error.message : "We sent a sign-in link to " + email + " - check your inbox.";
+  });
+</script>
+</body>
+</html>
