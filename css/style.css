@@ -778,6 +778,27 @@ body.auth-pending { visibility: hidden; }
 }
 .offer-hero__sub { color: var(--teal-200); font-size: clamp(1rem, 2.2vw, 1.15rem); max-width: 620px; margin: 0 auto; line-height: 1.6; }
 
+.offer-hero__illustration {
+  display: block;
+  width: 128px;
+  height: 128px;
+  border-radius: 28px;
+  margin: 0 auto 1.3rem;
+  box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.5), 0 0 0 4px rgba(255, 255, 255, 0.15);
+}
+
+.offer-hero__benefits {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6em 1.6em;
+  max-width: 560px;
+  margin: 1.8em auto 0;
+  padding-top: 1.5em;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+.offer-hero__benefits span { color: var(--sand-100); font-size: 0.92rem; font-weight: 600; white-space: nowrap; }
+
 .offer-price-card {
   max-width: 560px;
   margin: -2.5rem auto 0;
@@ -788,19 +809,24 @@ body.auth-pending { visibility: hidden; }
   box-shadow: var(--shadow-card);
   padding: 2.2rem 2rem;
 }
-.offer-price-card__row {
+.offer-price-card__hero {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 1.2rem;
-  flex-wrap: wrap;
-  margin-bottom: 1.2em;
+  gap: 0.1em;
+  margin-bottom: 0.5em;
 }
-.offer-price-card__tier { text-align: center; }
-.offer-price-card__label { display: block; font-size: 0.85rem; color: var(--ink-soft); margin-bottom: 0.3em; }
-.offer-price-card__amount { font-family: var(--font-display); font-size: 2rem; color: var(--teal-heading); }
-.offer-price-card__amount small { font-size: 0.9rem; font-family: var(--font-body); color: var(--ink-soft); }
-.offer-price-card__arrow { font-size: 1.5rem; color: var(--gold-ink); }
+.offer-price-card__hero-label { font-size: 0.95rem; font-weight: 700; color: var(--teal-ink); }
+.offer-price-card__hero-amount {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 11vw, 4.2rem);
+  line-height: 1.1;
+  background: linear-gradient(135deg, var(--gold-400), var(--gold-600));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.offer-price-card__then { text-align: center; font-size: 1.05rem; font-weight: 700; color: var(--ink); margin: 0 0 0.6em; }
 .offer-price-card__fine-print { text-align: center; font-size: 0.85rem; color: var(--ink-soft); margin-bottom: 1.6em; }
 
 .offer-form { display: flex; flex-direction: column; gap: 0.7em; }

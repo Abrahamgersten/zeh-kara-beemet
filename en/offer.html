@@ -46,29 +46,29 @@
 
 <main class="offer-page">
   <section class="offer-hero">
-    <p class="hero__eyebrow">Great recordings for kids and the whole family</p>
+    <img class="offer-hero__illustration" src="../icons/icon-512.png" alt="A boy reading tzaddik stories before bedtime" width="128" height="128">
+    <p class="hero__eyebrow">A magical moment before bed, every evening</p>
     <h1 class="offer-hero__title">It Really Happened</h1>
-    <p class="offer-hero__sub">True stories, wonders of creation, this week's parsha, fun facts, and games - all in one place, one episode at a time</p>
+    <p class="offer-hero__sub">Join families who've already made listening together their favorite part of the day - true tzaddik stories, wonders of creation, this week's parsha, and more, no screens and no ads</p>
+    <div class="offer-hero__benefits">
+      <span>🎧 New content every week</span>
+      <span>👨‍👩‍👧‍👦 Great for the whole family</span>
+      <span>📵 Quality time, screen-free</span>
+    </div>
   </section>
 
   <section class="offer-price-card">
-    <div class="offer-price-card__row">
-      <div class="offer-price-card__tier">
-        <span class="offer-price-card__label">First month</span>
-        <span class="offer-price-card__amount">₪1</span>
-      </div>
-      <div class="offer-price-card__arrow" aria-hidden="true">→</div>
-      <div class="offer-price-card__tier">
-        <span class="offer-price-card__label">From month two</span>
-        <span class="offer-price-card__amount">₪18 <small>/ month</small></span>
-      </div>
+    <div class="offer-price-card__hero">
+      <span class="offer-price-card__hero-label">First month</span>
+      <span class="offer-price-card__hero-amount">₪1</span>
     </div>
-    <p class="offer-price-card__fine-print">A monthly subscription that renews automatically. Cancel anytime. You'll be charged ₪1 at sign-up, then ₪18 every month after, until canceled.</p>
+    <p class="offer-price-card__then">Then just ₪18/month - cancel anytime</p>
+    <p class="offer-price-card__fine-print">A monthly subscription that renews automatically until canceled.</p>
 
     <form id="offer-form" class="offer-form">
       <label for="offer-email" class="auth-card__label">Email to sign up</label>
       <input id="offer-email" name="email" type="email" required placeholder="you@example.com" class="auth-card__input" autocomplete="email">
-      <button type="submit" class="btn btn--primary offer-form__cta">Continue to payment 🔒</button>
+      <button type="submit" class="btn btn--primary offer-form__cta">Join now - ₪1 🔒</button>
       <p id="offer-status" class="auth-card__status" role="status" aria-live="polite"></p>
     </form>
   </section>

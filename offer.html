@@ -46,29 +46,29 @@
 
 <main class="offer-page">
   <section class="offer-hero">
-    <p class="hero__eyebrow">הקלטות טובות לילדים ולכל המשפחה</p>
+    <img class="offer-hero__illustration" src="icons/icon-512.png" alt="ילד קורא סיפורי צדיקים לפני השינה" width="128" height="128">
+    <p class="hero__eyebrow">רגע קסום לפני השינה, כל ערב מחדש</p>
     <h1 class="offer-hero__title">זֶה קָרָה בֶּאֱמֶת</h1>
-    <p class="offer-hero__sub">סיפורי צדיקים, נפלאות הבריאה, פרשת השבוע, ידע מעניין ומשחקים - הכל במקום אחד, פרק אחר פרק</p>
+    <p class="offer-hero__sub">הצטרפו למשפחות שכבר הפכו את ההאזנה המשותפת לרגע האהוב ביום - סיפורי צדיקים, נפלאות הבריאה, פרשת השבוע ועוד, בלי מסכים ובלי פרסומות</p>
+    <div class="offer-hero__benefits">
+      <span>🎧 תוכן חדש כל שבוע</span>
+      <span>👨‍👩‍👧‍👦 מתאים לכל המשפחה</span>
+      <span>📵 זמן איכות בלי מסכים</span>
+    </div>
   </section>
 
   <section class="offer-price-card">
-    <div class="offer-price-card__row">
-      <div class="offer-price-card__tier">
-        <span class="offer-price-card__label">חודש ראשון</span>
-        <span class="offer-price-card__amount">1 ₪</span>
-      </div>
-      <div class="offer-price-card__arrow" aria-hidden="true">←</div>
-      <div class="offer-price-card__tier">
-        <span class="offer-price-card__label">מהחודש השני</span>
-        <span class="offer-price-card__amount">18 ₪ <small>/ חודש</small></span>
-      </div>
+    <div class="offer-price-card__hero">
+      <span class="offer-price-card__hero-label">חודש ראשון</span>
+      <span class="offer-price-card__hero-amount">1 ₪</span>
     </div>
-    <p class="offer-price-card__fine-print">מנוי חודשי מתחדש אוטומטית. אפשר לבטל בכל עת. חיוב 1 ₪ בהצטרפות, ולאחר מכן 18 ₪ בכל חודש, עד לביטול.</p>
+    <p class="offer-price-card__then">ואז רק 18 ₪ לחודש - אפשר לבטל בכל עת</p>
+    <p class="offer-price-card__fine-print">מנוי חודשי מתחדש אוטומטית עד לביטול.</p>
 
     <form id="offer-form" class="offer-form">
       <label for="offer-email" class="auth-card__label">אימייל להרשמה</label>
       <input id="offer-email" name="email" type="email" required placeholder="you@example.com" class="auth-card__input" autocomplete="email">
-      <button type="submit" class="btn btn--primary offer-form__cta">המשך לתשלום 🔒</button>
+      <button type="submit" class="btn btn--primary offer-form__cta">הצטרפו עכשיו - 1 ₪ 🔒</button>
       <p id="offer-status" class="auth-card__status" role="status" aria-live="polite"></p>
     </form>
   </section>
