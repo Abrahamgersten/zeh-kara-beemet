@@ -381,10 +381,14 @@ function floatPointsNear(el, delta) {
   const rect = el.getBoundingClientRect();
   const bx = rect.left + rect.width / 2;
   const by = rect.top + rect.height / 2;
+  // סחיפה כללית לכיוון אמצע המסך (לא רק כלפי מעלה) - הכיוון וההיקף שלה
+  // תלויים באיפה בדיוק סומן, אז מחושבים כאן ולא בקבועי ה-CSS.
+  const drift = window.innerWidth / 2 - bx;
   const wrap = document.createElement("div");
   wrap.className = "balloon-float";
   wrap.style.setProperty("--bx", bx + "px");
   wrap.style.setProperty("--by", by + "px");
+  wrap.style.setProperty("--drift", drift + "px");
   wrap.setAttribute("aria-hidden", "true");
   const numberedSrc = BALLOON_IMAGES[delta];
   const balloonHTML = numberedSrc
