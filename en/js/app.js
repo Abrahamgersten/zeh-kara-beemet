@@ -249,6 +249,18 @@ function safeStorage() {
 }
 const storage = safeStorage();
 
+function safeSessionStorage() {
+  try {
+    const k = "__zkb_test__";
+    sessionStorage.setItem(k, "1");
+    sessionStorage.removeItem(k);
+    return sessionStorage;
+  } catch (e) {
+    return null;
+  }
+}
+const sessionStore = safeSessionStorage();
+
 /* ---------------------------------------------------------------
    Render: category quick-nav grid
 --------------------------------------------------------------- */
@@ -387,7 +399,7 @@ function renderCategorySections() {
       ? `<span class="category-section__note">🧩 The items below are structural examples only - they'll be replaced with real recordings and content</span>`
       : "";
     const showMoreHTML = overflowCount > 0
-      ? `<button class="btn btn--ghost category-section__more" type="button" data-show-more="cat-${cat.id}">Show all ${episodesNewestFirst.length} episodes</button>`
+      ? `<button class="btn btn--ghost category-section__more" type="button" data-show-more="cat-${cat.id}">Show more episodes</button>`
       : "";
 
     return `
@@ -600,10 +612,14 @@ function setupInstallBanner() {
     window.matchMedia("(display-mode: standalone)").matches ||
     window.navigator.standalone === true;
 
+  // 2026-09-23: was localStorage (remembered forever, even after the app was
+  // uninstalled) - changed to sessionStorage per Avraham's request: closing
+  // it only quiets the current visit, not forever - so if the app still
+  // isn't installed, the strip reappears on the next visit.
   const dismissKey = "zkb-install-dismissed-en";
-  const alreadyDismissed = storage && storage.getItem(dismissKey) === "1";
+  const alreadyDismissedThisVisit = sessionStore && sessionStore.getItem(dismissKey) === "1";
 
-  if (!isMobileUA || isStandalone || alreadyDismissed) return;
+  if (!isMobileUA || isStandalone || alreadyDismissedThisVisit) return;
 
   let deferredPrompt = null;
 
@@ -617,7 +633,7 @@ function setupInstallBanner() {
 
   function dismiss() {
     hideBanner();
-    if (storage) storage.setItem(dismissKey, "1");
+    if (sessionStore) sessionStore.setItem(dismissKey, "1");
     closeInstructions();
   }
 

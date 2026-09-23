@@ -248,6 +248,18 @@ function safeStorage() {
 }
 const storage = safeStorage();
 
+function safeSessionStorage() {
+  try {
+    const k = "__zkb_test__";
+    sessionStorage.setItem(k, "1");
+    sessionStorage.removeItem(k);
+    return sessionStorage;
+  } catch (e) {
+    return null;
+  }
+}
+const sessionStore = safeSessionStorage();
+
 /* ---------------------------------------------------------------
    Render: category quick-nav grid
 --------------------------------------------------------------- */
@@ -383,7 +395,7 @@ function renderCategorySections() {
       ? `<span class="category-section__note">🧩 התכנים שלהלן הם דוגמה למבנה בלבד - הם יוחלפו בהקלטות ובתכנים אמיתיים</span>`
       : "";
     const showMoreHTML = overflowCount > 0
-      ? `<button class="btn btn--ghost category-section__more" type="button" data-show-more="cat-${cat.id}">הצג את כל ${episodesNewestFirst.length} הפרקים</button>`
+      ? `<button class="btn btn--ghost category-section__more" type="button" data-show-more="cat-${cat.id}">הצג עוד פרקים</button>`
       : "";
 
     return `
@@ -596,10 +608,14 @@ function setupInstallBanner() {
     window.matchMedia("(display-mode: standalone)").matches ||
     window.navigator.standalone === true;
 
+  // 2026-09-23: היה localStorage (זכירה לצמיתות, גם אם האפליקציה הוסרה
+  // מהמכשיר) - לבקשת אברהם הוחלף ל-sessionStorage: סגירה משתיקה רק את
+  // הביקור הנוכחי, לא לצמיתות - כך שאם האפליקציה עדיין לא מותקנת, הרצועה
+  // תופיע שוב בביקור הבא (ולא רק אם ננקה ידנית את האחסון).
   const dismissKey = "zkb-install-dismissed";
-  const alreadyDismissed = storage && storage.getItem(dismissKey) === "1";
+  const alreadyDismissedThisVisit = sessionStore && sessionStore.getItem(dismissKey) === "1";
 
-  if (!isMobileUA || isStandalone || alreadyDismissed) return;
+  if (!isMobileUA || isStandalone || alreadyDismissedThisVisit) return;
 
   let deferredPrompt = null;
 
@@ -613,7 +629,7 @@ function setupInstallBanner() {
 
   function dismiss() {
     hideBanner();
-    if (storage) storage.setItem(dismissKey, "1");
+    if (sessionStore) sessionStore.setItem(dismissKey, "1");
     closeInstructions();
   }
 
