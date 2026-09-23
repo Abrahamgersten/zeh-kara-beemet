@@ -67,6 +67,14 @@ const T = isEn
       addChildChip: "+ Add a child",
       removeChild: (name) => `🗑️ Remove ${name} from the list`,
       removeConfirm: (name) => `Remove ${name} from the children list? Their history stays saved, but they won't appear in the list anymore.`,
+      changeChecklist: "⚙️ Change checklist items",
+      pickerTitle: "Choose 3 checklist items",
+      pickerExplain: "Pick exactly 3 items to promote at home. You can change this anytime.",
+      pickerCount: (n) => `Selected: ${n} of 3`,
+      pickerAddCustom: "+ Write your own",
+      pickerCustomPlaceholder: "e.g. Fed the fish",
+      pickerSave: "Save",
+      pickerCancel: "Cancel",
       cancel: "Cancel",
       pointsLabel: "Your points",
       of: "of",
@@ -102,6 +110,14 @@ const T = isEn
       addChildChip: "+ הוסיפו ילד/ה",
       removeChild: (name) => `🗑️ הסרת ${name} מהרשימה`,
       removeConfirm: (name) => `להסיר את ${name} מרשימת הילדים? ההיסטוריה שלו/ה תישמר, אבל הוא/היא לא יופיע/תופיע יותר ברשימה.`,
+      changeChecklist: "⚙️ שנו רובריקות",
+      pickerTitle: "בחרו 3 רובריקות",
+      pickerExplain: "בחרו בדיוק 3 רובריקות לקדם בבית. אפשר לשנות את הבחירה בכל שלב.",
+      pickerCount: (n) => `נבחרו: ${n} מתוך 3`,
+      pickerAddCustom: "+ הוסיפו רובריקה משלכם",
+      pickerCustomPlaceholder: "לדוגמה: האכלתי את הדגים",
+      pickerSave: "שמרו",
+      pickerCancel: "ביטול",
       cancel: "ביטול",
       pointsLabel: "הנקודות שלכם",
       of: "מתוך",
@@ -132,6 +148,9 @@ let showInlineAddChild = false;
 let widgetEl = null;
 let celebrateEl = null;
 let encourageTimer = null;
+let pickerEl = null;
+let pickerSelected = null; // Set<string> של item-id-ים, רק כשהבורר פתוח
+let pickerShowAddCustom = false;
 
 function esc(s) {
   return String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -224,8 +243,14 @@ function tabsHTML() {
 
 function removeChildRowHTML() {
   const child = state.children.find((c) => c.id === activeChildId);
-  if (!child) return "";
-  return `<button class="points-remove-child" type="button" data-remove-child="${child.id}">${T.removeChild(esc(child.name))}</button>`;
+  const removeBtn = child
+    ? `<button class="points-remove-child" type="button" data-remove-child="${child.id}">${T.removeChild(esc(child.name))}</button>`
+    : "";
+  return `
+    <div class="points-widget__controls">
+      ${removeBtn}
+      <button class="points-remove-child" type="button" data-open-picker>${T.changeChecklist}</button>
+    </div>`;
 }
 
 function checklistHTML() {
@@ -467,6 +492,132 @@ function checkForNewlyUnlockedRewards(beforeTotal, afterTotal) {
 }
 
 /* ---------------------------------------------------------------
+   בורר רובריקות ("⚙️ שנו רובריקות") - אותו דפוס בדיוק כמו מודל החגיגה
+   (div.lightbox נפרד ב-document.body, לא תלוי ב-#points-widget). בחירה
+   זמנית (pickerSelected) עד לחיצה על "שמרו" - לא נוגעת ב-state האמיתי
+   קודם לכן, כדי שביטול לא ישאיר שינוי חלקי.
+--------------------------------------------------------------- */
+function ensurePickerEl() {
+  if (pickerEl) return pickerEl;
+  pickerEl = document.createElement("div");
+  pickerEl.className = "lightbox points-picker";
+  pickerEl.hidden = true;
+  document.body.appendChild(pickerEl);
+  pickerEl.addEventListener("click", (e) => {
+    if (e.target === pickerEl || e.target.closest("[data-picker-close]")) {
+      closePicker();
+      return;
+    }
+    const chip = e.target.closest("[data-picker-item-id]");
+    if (chip && !chip.disabled) {
+      const id = chip.dataset.pickerItemId;
+      if (pickerSelected.has(id)) pickerSelected.delete(id);
+      else if (pickerSelected.size < 3) pickerSelected.add(id);
+      renderPicker();
+      return;
+    }
+    if (e.target.closest("[data-picker-show-add]")) {
+      pickerShowAddCustom = true;
+      renderPicker();
+      return;
+    }
+    if (e.target.closest("[data-picker-cancel-add]")) {
+      pickerShowAddCustom = false;
+      renderPicker();
+      return;
+    }
+    if (e.target.closest("[data-picker-save]")) {
+      handlePickerSave();
+    }
+  });
+  pickerEl.addEventListener("submit", (e) => {
+    const form = e.target.closest("[data-picker-add-form]");
+    if (!form) return;
+    e.preventDefault();
+    handlePickerAddCustom(form);
+  });
+  return pickerEl;
+}
+
+function pickerChipHTML(item) {
+  const selected = pickerSelected.has(item.id);
+  const disabled = !selected && pickerSelected.size >= 3;
+  return `
+    <button class="points-picker__chip" type="button" data-picker-item-id="${item.id}"
+      data-selected="${selected}" ${disabled ? "disabled" : ""}>
+      <span aria-hidden="true">${item.icon || "⭐"}</span>
+      <span>${esc(isEn ? item.label_en : item.label_he)}</span>
+    </button>`;
+}
+
+function renderPicker() {
+  const el = ensurePickerEl();
+  const addForm = pickerShowAddCustom
+    ? `
+      <form class="points-child-tabs__add-form points-picker__add-form" data-picker-add-form>
+        <input class="auth-card__input points-child-tabs__add-input" type="text" name="customLabel"
+          placeholder="${T.pickerCustomPlaceholder}" required maxlength="60" autofocus>
+        <button class="btn btn--outline points-child-tabs__add-submit" type="submit">${T.add}</button>
+        <button class="points-child-tabs__add-cancel" type="button" data-picker-cancel-add aria-label="${T.cancel}">✕</button>
+      </form>`
+    : `<button class="points-child-tab points-child-tab--add" type="button" data-picker-show-add>${T.pickerAddCustom}</button>`;
+  el.innerHTML = `
+    <div class="points-picker__card">
+      <button class="lightbox__close" type="button" data-picker-close aria-label="${T.pickerCancel}">✕</button>
+      <h2 class="points-picker__title">${T.pickerTitle}</h2>
+      <p class="points-picker__explain">${T.pickerExplain}</p>
+      <p class="points-picker__count">${T.pickerCount(pickerSelected.size)}</p>
+      <div class="points-picker__list">
+        ${state.preset_catalog.map(pickerChipHTML).join("")}
+      </div>
+      ${addForm}
+      <div class="points-picker__actions">
+        <button class="btn btn--outline" type="button" data-picker-close>${T.pickerCancel}</button>
+        <button class="btn btn--primary" type="button" data-picker-save ${pickerSelected.size === 3 ? "" : "disabled"}>${T.pickerSave}</button>
+      </div>
+    </div>`;
+}
+
+function openPicker() {
+  const currentDaily = state.checklist_items.filter((i) => i.category === "daily").map((i) => i.id);
+  pickerSelected = new Set(currentDaily);
+  pickerShowAddCustom = false;
+  renderPicker();
+  ensurePickerEl().hidden = false;
+}
+
+function closePicker() {
+  if (pickerEl) pickerEl.hidden = true;
+  pickerSelected = null;
+  pickerShowAddCustom = false;
+}
+
+async function handlePickerAddCustom(form) {
+  const input = form.querySelector('input[name="customLabel"]');
+  const labelHe = (input.value || "").trim();
+  if (!labelHe) return;
+  input.disabled = true;
+  const item = await createCustomItem(labelHe);
+  input.disabled = false;
+  if (!item) return;
+  state.preset_catalog.push({ id: item.id, item_key: item.item_key, label_he: item.label_he, label_en: item.label_en, icon: item.icon, is_custom: true });
+  if (pickerSelected.size < 3) pickerSelected.add(item.id);
+  pickerShowAddCustom = false;
+  renderPicker();
+}
+
+async function handlePickerSave() {
+  if (pickerSelected.size !== 3) return;
+  const ok = await setChecklistSelectionApi([...pickerSelected]);
+  if (!ok) return;
+  const freshState = await fetchState();
+  if (!freshState) return;
+  state = freshState;
+  closePicker();
+  renderAll();
+}
+
+/* ---------------------------------------------------------------
    Supabase calls
 --------------------------------------------------------------- */
 async function fetchState() {
@@ -497,6 +648,21 @@ async function removeChildApi(childId) {
   const supabase = getSupabaseClient();
   if (!supabase) return false;
   const { error } = await supabase.rpc("remove_child", { p_child_id: childId });
+  return !error;
+}
+
+async function createCustomItem(labelHe) {
+  const supabase = getSupabaseClient();
+  if (!supabase) return null;
+  const { data, error } = await supabase.rpc("create_custom_checklist_item", { p_label_he: labelHe });
+  if (error) return null;
+  return data;
+}
+
+async function setChecklistSelectionApi(itemIds) {
+  const supabase = getSupabaseClient();
+  if (!supabase) return false;
+  const { error } = await supabase.rpc("set_checklist_selection", { p_item_ids: itemIds });
   return !error;
 }
 
@@ -622,6 +788,10 @@ function attachEvents() {
     const removeBtn = e.target.closest("[data-remove-child]");
     if (removeBtn) {
       handleRemoveChild(removeBtn.dataset.removeChild);
+      return;
+    }
+    if (e.target.closest("[data-open-picker]")) {
+      openPicker();
     }
   });
 

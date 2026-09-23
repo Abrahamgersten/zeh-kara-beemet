@@ -63,6 +63,29 @@
   </div>
 
   <div class="admin-card">
+    <h2>🧩 רובריקות לבחירה (מערכת הנקודות)</h2>
+    <p class="admin-page__sub" style="margin-bottom:1em">התבניות שמשפחות בוחרות מתוכן 3 בכל שלב. עריכה/השבתה לא פוגעות בהיסטוריית נקודות שכבר נצברה.</p>
+    <form id="checklist-item-form" class="admin-form-row" style="margin-bottom:0.6em">
+      <input type="hidden" id="ci-item-key" value="">
+      <input type="text" id="ci-icon" placeholder="אייקון" maxlength="4" style="max-width:70px; text-align:center;" required>
+      <input type="text" id="ci-label-he" placeholder="תווית בעברית" required style="flex:2; min-width:180px;">
+      <input type="text" id="ci-label-en" placeholder="תווית באנגלית (אופציונלי)" style="flex:2; min-width:180px;">
+      <input type="number" id="ci-points" placeholder="נקודות" value="5" min="1" max="999" style="max-width:90px;" required>
+      <button type="submit" class="btn btn--primary" id="ci-submit-btn">➕ הוספה</button>
+      <button type="button" class="btn btn--outline" id="ci-cancel-edit" hidden>ביטול עריכה</button>
+    </form>
+    <p id="checklist-item-status" class="admin-status" role="status" aria-live="polite"></p>
+    <div style="overflow-x:auto">
+      <table class="admin-table">
+        <thead>
+          <tr><th>אייקון</th><th>תווית</th><th>נקודות</th><th>סטטוס</th><th></th></tr>
+        </thead>
+        <tbody id="checklist-items-tbody"><tr><td colspan="5">טוען...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="admin-card">
     <h2>📋 כל המנויים</h2>
     <div style="overflow-x:auto">
       <table class="admin-table">
@@ -106,6 +129,31 @@
     document.getElementById("admin-root").hidden = false;
     revealPage();
     await loadSubscribers(supabase);
+    await loadChecklistItems(supabase);
+
+    document.getElementById("checklist-item-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const statusEl = document.getElementById("checklist-item-status");
+      const itemKey = document.getElementById("ci-item-key").value || null;
+      statusEl.textContent = "שומר...";
+      const { error } = await supabase.rpc("admin_upsert_checklist_item", {
+        p_item_key: itemKey,
+        p_category: "daily",
+        p_label_he: document.getElementById("ci-label-he").value.trim(),
+        p_label_en: document.getElementById("ci-label-en").value.trim() || null,
+        p_icon: document.getElementById("ci-icon").value.trim() || "⭐",
+        p_base_points: Number(document.getElementById("ci-points").value) || 5,
+      });
+      if (error) {
+        statusEl.textContent = "שגיאה: " + error.message;
+      } else {
+        statusEl.textContent = itemKey ? "עודכן ✓" : "נוסף ✓";
+        resetChecklistItemForm();
+        await loadChecklistItems(supabase);
+      }
+    });
+
+    document.getElementById("ci-cancel-edit").addEventListener("click", () => resetChecklistItemForm());
 
     document.getElementById("grant-form").addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -120,6 +168,59 @@
         document.getElementById("grant-email").value = "";
         await loadSubscribers(supabase);
       }
+    });
+  }
+
+  function resetChecklistItemForm() {
+    document.getElementById("checklist-item-form").reset();
+    document.getElementById("ci-item-key").value = "";
+    document.getElementById("ci-points").value = "5";
+    document.getElementById("ci-submit-btn").textContent = "➕ הוספה";
+    document.getElementById("ci-cancel-edit").hidden = true;
+  }
+
+  async function loadChecklistItems(supabase) {
+    const tbody = document.getElementById("checklist-items-tbody");
+    const { data, error } = await supabase.rpc("admin_list_checklist_items");
+    if (error) { tbody.innerHTML = `<tr><td colspan="5">שגיאה: ${error.message}</td></tr>`; return; }
+    const daily = (data || []).filter((row) => row.category === "daily");
+    if (daily.length === 0) { tbody.innerHTML = `<tr><td colspan="5">אין רובריקות עדיין.</td></tr>`; return; }
+    tbody.innerHTML = daily.map((row) => {
+      const toggleLabel = row.is_active ? "השבתה" : "הפעלה";
+      const statusClass = row.is_active ? "status-active" : "status-canceled";
+      const statusLabel = row.is_active ? "פעיל" : "מושבת";
+      return `<tr>
+        <td>${row.icon || ""}</td>
+        <td>${row.label_he}</td>
+        <td>${row.base_points}</td>
+        <td><span class="status-pill ${statusClass}">${statusLabel}</span></td>
+        <td class="admin-table__actions">
+          <button type="button" class="btn btn--outline ci-edit-btn" data-item='${JSON.stringify(row).replace(/'/g, "&#39;")}'>עריכה</button>
+          <button type="button" class="btn btn--outline ci-toggle-btn" data-id="${row.id}" data-active="${row.is_active}">${toggleLabel}</button>
+        </td>
+      </tr>`;
+    }).join("");
+
+    tbody.querySelectorAll(".ci-edit-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const row = JSON.parse(btn.dataset.item);
+        document.getElementById("ci-item-key").value = row.item_key;
+        document.getElementById("ci-icon").value = row.icon || "";
+        document.getElementById("ci-label-he").value = row.label_he;
+        document.getElementById("ci-label-en").value = row.label_en || "";
+        document.getElementById("ci-points").value = row.base_points;
+        document.getElementById("ci-submit-btn").textContent = "💾 עדכון";
+        document.getElementById("ci-cancel-edit").hidden = false;
+        document.getElementById("ci-label-he").scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+    });
+
+    tbody.querySelectorAll(".ci-toggle-btn").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const nextActive = btn.dataset.active !== "true";
+        await supabase.rpc("admin_set_checklist_item_active", { p_item_id: btn.dataset.id, p_is_active: nextActive });
+        await loadChecklistItems(supabase);
+      });
     });
   }
 
