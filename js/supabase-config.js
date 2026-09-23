@@ -3,14 +3,16 @@
 // נוצר ע"י רוני המתכנת, 2026-09-22. ראו הפרוטוקול: "רוני המתכנת\Docs\פרוטוקול
 // מערכת הרשמה ותשלום - זה קרה באמת.md".
 //
-// אלה לא סודות - ה-anon key מיועד לחשיפה בדפדפן (ההגנה האמיתית היא ב-RLS
+// אלה לא סודות - המפתח מיועד לחשיפה בדפדפן (ההגנה האמיתית היא ב-RLS
 // בצד השרת, לא בהסתרת המפתח הזה). בטוח לקומיט.
 //
-// ⚠️ ריק כרגע - למלא אחרי יצירת פרויקט Supabase (שלב 1 בסדר הבנייה בפרוטוקול).
-// עד אז, כל דף שטוען את המודול הזה יציג הודעת "המערכת עדיין לא מחוברת".
+// פרויקט: zeh-kara-beemet (Supabase), אזור West EU (Ireland). מולא 2026-09-23.
+// שם המשתנה נשאר SUPABASE_ANON_KEY מסיבות היסטוריות בקוד - הערך עצמו הוא
+// ה-"Publishable key" של Supabase (sb_publishable_...), התחליף הרשמי ל-anon
+// key הישן (Supabase שינו את השם ב-2026) - אותו שימוש בדיוק.
 
-export const SUPABASE_URL = ""; // למשל: "https://xxxxxxxx.supabase.co"
-export const SUPABASE_ANON_KEY = ""; // המפתח הציבורי (anon), לא ה-service_role!
+export const SUPABASE_URL = "https://nuadpewhrhpdgznbbqbs.supabase.co";
+export const SUPABASE_ANON_KEY = "sb_publishable_AcpmlZnxKM4yJxr1OsoSjw_CG6Kt2pz";
 
 export function isSupabaseConfigured() {
   return Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
