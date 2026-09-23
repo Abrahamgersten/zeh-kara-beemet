@@ -92,8 +92,8 @@ create trigger rewards_set_updated_at
 
 insert into rewards (threshold_points, title_he, title_en, description_he, description_en, link_url_he, link_url_en) values
   (100, 'סיפור "אי היהלומים"', 'The "Diamond Island" Story',
-   'פרק בונוס מחכה לכם - סיפור המשך מלא הרפתקאות!',
-   'A bonus episode is waiting - a full adventure sequel story!',
+   'סיפור המשך מלא הרפתקאות מחכה לכם!',
+   'A sequel story full of adventures is waiting for you!',
    'https://abrahamgersten.github.io/diamond-island-story/',
    'https://abrahamgersten.github.io/diamond-island-story/en/')
 on conflict (threshold_points) do nothing;
@@ -123,6 +123,23 @@ begin
   return v_row;
 end; $$;
 grant execute on function add_child(text) to authenticated;
+
+-- מחיקה רכה (is_active=false), לא מחיקה אמיתית - שומרת על היסטוריית checkins
+-- קיימת (הנקודות שכבר נצברו למשפחה לא נגרעות), רק מסירה את הילד מהרשימה
+-- הפעילה (טאבים, ספירת "לכמה ילדים לחלק" בסימונים עתידיים).
+create or replace function remove_child(p_child_id uuid)
+returns boolean language plpgsql security definer set search_path = public as $$
+declare
+  v_family_id uuid;
+begin
+  select id into v_family_id from subscribers where auth_user_id = auth.uid();
+  if v_family_id is null then raise exception 'not authorized'; end if;
+  update children set is_active = false
+    where id = p_child_id and family_id = v_family_id and is_active;
+  if not found then raise exception 'child not found'; end if;
+  return true;
+end; $$;
+grant execute on function remove_child(uuid) to authenticated;
 
 create or replace function toggle_checkin(p_child_id uuid, p_item_key text)
 returns table(checked boolean, points_delta int, family_total int)

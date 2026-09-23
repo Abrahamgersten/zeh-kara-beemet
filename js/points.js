@@ -44,12 +44,17 @@ const sessionStore = safeSessionStorage();
 
 const T = isEn
   ? {
-      onboardingTitle: "Let's get started!",
-      onboardingSub: "Who are the kids earning points together?",
+      onboardingTitle: "Want to turn this into a game?",
+      onboardingExplain:
+        "Checking something off the daily list - like brushing teeth or saying the Shema - earns points, and the whole family collects them together toward a surprise reward. It's a fun, completely optional extra - you can keep using the site without it, and join in whenever you like.",
+      onboardingCta: "Add a child to get started",
+      eyebrowOptional: "🎈 An optional family game",
       namePlaceholder: "Child's name",
       add: "Add ➕",
       done: "All done, let's start! 🎉",
       addChildChip: "+ Add a child",
+      removeChild: (name) => `🗑️ Remove ${name} from the list`,
+      removeConfirm: (name) => `Remove ${name} from the children list? Their history stays saved, but they won't appear in the list anymore.`,
       cancel: "Cancel",
       pointsLabel: "Your points",
       of: "of",
@@ -65,14 +70,26 @@ const T = isEn
       celebrateTitle: "You did it! 🎉",
       celebrateCta: "Open the reward 🎁",
       celebrateClose: "Close",
+      prepTitle: "🗓️ Getting ready for Shabbat?",
+      prepSteps: [
+        `🎧 Listen to "Idea from the Parsha"`,
+        "🖨️ Print the attached page",
+        "📖 Read it together at the Shabbat table",
+      ],
+      prepNote: "On Sunday you'll be able to check it off and earn points! 🎈",
     }
   : {
-      onboardingTitle: "בואו נתחיל!",
-      onboardingSub: "מי אלה הילדים שיצברו נקודות יחד?",
+      onboardingTitle: "רוצים להפוך את זה למשחק?",
+      onboardingExplain:
+        "כל סימון ברשימה היומית - כמו צחצוח שיניים או אמירת קריאת שמע - מזכה בנקודות, וכל המשפחה צוברת אותן יחד לקראת פרס מפתיע. זו תוספת כיפית ולגמרי אופציונלית - אפשר להמשיך להשתמש באתר גם בלעדיה, ולהצטרף למשחק מתי שבא לכם.",
+      onboardingCta: "הוסיפו ילד/ה כדי להתחיל",
+      eyebrowOptional: "🎈 משחק משפחתי אופציונלי",
       namePlaceholder: "שם הילד/ה",
       add: "הוספה ➕",
       done: "סיימנו, בואו נתחיל! 🎉",
       addChildChip: "+ הוסיפו ילד/ה",
+      removeChild: (name) => `🗑️ הסרת ${name} מהרשימה`,
+      removeConfirm: (name) => `להסיר את ${name} מרשימת הילדים? ההיסטוריה שלו/ה תישמר, אבל הוא/היא לא יופיע/תופיע יותר ברשימה.`,
       cancel: "ביטול",
       pointsLabel: "הנקודות שלכם",
       of: "מתוך",
@@ -88,6 +105,13 @@ const T = isEn
       celebrateTitle: "הצלחתם! 🎉",
       celebrateCta: "לצפייה בפרס 🎁",
       celebrateClose: "סגירה",
+      prepTitle: "🗓️ מתכוננים לשבת?",
+      prepSteps: [
+        `🎧 הקשיבו ל"רעיון בפרשה"`,
+        "🖨️ הדפיסו את הדף המצורף",
+        "📖 קראו אותו יחד בשולחן השבת",
+      ],
+      prepNote: "ביום ראשון תוכלו לסמן שעשיתם את זה ולזכות בנקודות! 🎈",
     };
 
 let state = null;
@@ -99,6 +123,16 @@ let encourageTimer = null;
 
 function esc(s) {
   return String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+// יום בשבוע לפי שעון ישראל (0=ראשון..6=שבת), לא לפי שעון הדפדפן - כדי
+// שיישאר עקבי עם family_today() בשרת (Asia/Jerusalem) גם למשפחה שגולשת
+// מחו"ל. משמש רק להצגה (מתי מופיע כפתור/הסבר דיווח "רעיון בפרשה"), לא
+// לחישוב נקודות - שם התאריך תמיד נקבע בשרת.
+const WEEKDAY_MAP = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+function jerusalemDayOfWeek() {
+  const short = new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Jerusalem", weekday: "short" }).format(new Date());
+  return WEEKDAY_MAP[short];
 }
 
 function label(item) {
@@ -142,9 +176,10 @@ function displayReward() {
 function onboardingHTML() {
   return `
     <div class="points-onboarding">
-      <span class="points-onboarding__emoji" aria-hidden="true">🌟</span>
+      <span class="points-onboarding__emoji" aria-hidden="true">🎈</span>
       <h2 class="points-onboarding__title">${T.onboardingTitle}</h2>
-      <p class="points-onboarding__sub">${T.onboardingSub}</p>
+      <p class="points-onboarding__explain">${T.onboardingExplain}</p>
+      <p class="points-onboarding__cta">${T.onboardingCta}</p>
       <form class="points-onboarding__form" data-add-child-form>
         <input class="auth-card__input" type="text" name="childName" placeholder="${T.namePlaceholder}" required maxlength="40">
         <button class="btn btn--primary" type="submit">${T.add}</button>
@@ -173,6 +208,12 @@ function tabsHTML() {
       </form>`
     : `<button class="points-child-tab points-child-tab--add" type="button" data-add-child>${T.addChildChip}</button>`;
   return `<div class="points-child-tabs" role="tablist">${tabs}${addChip}</div>`;
+}
+
+function removeChildRowHTML() {
+  const child = state.children.find((c) => c.id === activeChildId);
+  if (!child) return "";
+  return `<button class="points-remove-child" type="button" data-remove-child="${child.id}">${T.removeChild(esc(child.name))}</button>`;
 }
 
 function checklistHTML() {
@@ -244,24 +285,52 @@ function renderWidget() {
     activeChildId = state.children[0].id;
   }
   widgetEl.innerHTML = `
+    <p class="section-eyebrow points-widget__eyebrow">${T.eyebrowOptional}</p>
     ${tabsHTML()}
+    ${removeChildRowHTML()}
     ${checklistHTML()}
     <div class="points-progress-host">${progressHTML()}</div>
     <div class="points-reward-host">${rewardHTML()}</div>`;
+}
+
+function parashaPrepHTML() {
+  return `
+    <div class="parasha-prep">
+      <p class="parasha-prep__title">${T.prepTitle}</p>
+      <ol class="parasha-prep__steps">
+        ${T.prepSteps.map((s) => `<li>${s}</li>`).join("")}
+      </ol>
+      <p class="parasha-prep__note">${T.prepNote}</p>
+    </div>`;
 }
 
 /* ---------------------------------------------------------------
    "רעיון בפרשה" - שורות דיווח לכל ילד, בכל div[data-report-item-key]
    שקיים בעמוד (מרונדר ע"י js/app.js דרך pdfReportHTML - ריק כברירת
    מחדל, מתמלא רק אם קיים פריט תואם בקטלוג). נשאר ריק כל עוד אין
-   עדיין תוכן "רעיון בפרשה" אמיתי (המצב היום).
+   עדיין תוכן "רעיון בפרשה" אמיתי.
+   מחזור שבועי (לפי יום בשבוע בשעון ישראל, ראו jerusalemDayOfWeek):
+   ראשון - הרובריקה עצמה (מסמנים שקראו על שולחן השבת שעבר). רביעי-שבת -
+   הכנה: מה צריך לעשות כדי שיהיה מה לסמן בראשון. שני-שלישי - כלום (בין
+   מחזור לסיומו לבין הכנת המחזור הבא).
 --------------------------------------------------------------- */
 function renderParashaReports() {
   if (!state) return;
+  const day = jerusalemDayOfWeek();
   document.querySelectorAll("[data-report-item-key]").forEach((host) => {
     const key = host.dataset.reportItemKey;
     const item = state.checklist_items.find((i) => i.item_key === key && i.category === "parasha");
     if (!item || !state.children.length) {
+      host.innerHTML = "";
+      return;
+    }
+    if (day >= 3) {
+      // רביעי(3)-שבת(6): עדיין לא ראשון - מציגים הכנה, לא כפתור סימון.
+      host.innerHTML = parashaPrepHTML();
+      return;
+    }
+    if (day !== 0) {
+      // שני(1)/שלישי(2): לא ראשון ולא עוד בטווח ההכנה - כלום.
       host.innerHTML = "";
       return;
     }
@@ -292,16 +361,22 @@ function renderAll() {
 /* ---------------------------------------------------------------
    מיקרו-אינטראקציה: פיל "+N"/"-N", פרגון עידוד, סימון-פופ, סאונד
 --------------------------------------------------------------- */
+// "בלון הליום" - במקום לרחף מעט ליד התיבה שסומנה, הנקודות "נפרדות" מהרובריקה
+// לגמרי (position:fixed על document.body, לא ילד של הכפתור) וטסות אל מרכז-
+// למעלה של המסך עד שנעלמות מעבר לקצה העליון, כאילו המשיכו לעלות.
 function floatPointsNear(el, delta) {
-  if (!el) return;
-  const span = document.createElement("span");
-  span.className = "points-float";
-  span.textContent = (delta > 0 ? "+" : "") + delta;
-  span.style.position = "absolute";
-  span.setAttribute("aria-hidden", "true");
-  el.style.position = el.style.position || "relative";
-  el.appendChild(span);
-  span.addEventListener("animationend", () => span.remove());
+  if (!el || delta <= 0) return;
+  const rect = el.getBoundingClientRect();
+  const bx = rect.left + rect.width / 2;
+  const by = rect.top + rect.height / 2;
+  const wrap = document.createElement("div");
+  wrap.className = "balloon-float";
+  wrap.style.setProperty("--bx", bx + "px");
+  wrap.style.setProperty("--by", by + "px");
+  wrap.setAttribute("aria-hidden", "true");
+  wrap.innerHTML = `<span class="balloon-float__body">+${delta}</span><span class="balloon-float__string"></span>`;
+  document.body.appendChild(wrap);
+  wrap.addEventListener("animationend", () => wrap.remove());
 }
 
 function showEncourage() {
@@ -395,18 +470,49 @@ async function toggleCheckin(childId, itemKey) {
   return Array.isArray(data) ? data[0] : data;
 }
 
+async function removeChildApi(childId) {
+  const supabase = getSupabaseClient();
+  if (!supabase) return false;
+  const { error } = await supabase.rpc("remove_child", { p_child_id: childId });
+  return !error;
+}
+
 /* ---------------------------------------------------------------
    Event handling
 --------------------------------------------------------------- */
+async function handleRemoveChild(childId) {
+  const child = state.children.find((c) => c.id === childId);
+  if (!child) return;
+  if (!window.confirm(T.removeConfirm(child.name))) return;
+  const ok = await removeChildApi(childId);
+  if (!ok) return;
+  // כמו בהוספת ילד - הערכים המחולקים של points_today לכל פריט תלויים
+  // במספר הילדים הפעילים, אז שולפים מצב מלא מחדש ולא רק מסננים מקומית.
+  const freshState = await fetchState();
+  if (!freshState) return;
+  state = freshState;
+  activeChildId = null; // renderWidget יבחר ילד ראשון מחדש (או onboarding אם אין)
+  renderAll();
+}
+
 async function handleAddChildSubmit(form) {
   const input = form.querySelector('input[name="childName"]');
   const name = (input.value || "").trim();
   if (!name) return;
   input.disabled = true;
   const child = await addChild(name);
+  if (!child) {
+    input.disabled = false;
+    return;
+  }
+  // חייבים לשלוף מחדש את כל המצב (לא רק לדחוף את הילד החדש למערך המקומי):
+  // points_today לכל פריט מגיע מהשרת כבר מחולק לפי מספר הילדים, וה-RPC של
+  // add_child לא מחזיר את הרשימה המעודכנת של הפריטים - בלי הרענון הזה
+  // הרובריקה ממשיכה להציג את הערך הישן (לדוגמה +5 גם אחרי שהיו צריכים +3).
+  const freshState = await fetchState();
   input.disabled = false;
-  if (!child) return;
-  state.children.push({ id: child.id, name: child.name });
+  if (!freshState) return;
+  state = freshState;
   activeChildId = child.id;
   showInlineAddChild = false;
   renderAll();
@@ -488,6 +594,11 @@ function attachEvents() {
     if (checkbox) {
       const li = checkbox.closest(".points-checklist__item");
       if (li) handleChecklistToggle(li, false);
+      return;
+    }
+    const removeBtn = e.target.closest("[data-remove-child]");
+    if (removeBtn) {
+      handleRemoveChild(removeBtn.dataset.removeChild);
     }
   });
 
