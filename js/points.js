@@ -30,6 +30,18 @@ function pickCheerSrc() {
   return CHEER_SOUND_SRCS[idx];
 }
 
+// בלוני מספרים אמיתיים שאברהם סיפק (תמונות עם הספרה כבר "אפויה" בתוך צורת
+// הבלון) - תואמים בדיוק לערכים הנפוצים במערכת (ceil(5/1)=5, ceil(5/2)=3,
+// ceil(5/3)=2). לכל ערך אחר (למשל פריט עתידי עם base_points שונה) - בלון
+// ירוק גנרי בלי מספר מודפס, עם הערך כטקסט מעוצב שמונח מעליו ב-CSS.
+const BALLOON_IMAGES = {
+  2: new URL("../assets/images/balloons/balloon-2.png", import.meta.url).href,
+  3: new URL("../assets/images/balloons/balloon-3.png", import.meta.url).href,
+  5: new URL("../assets/images/balloons/balloon-5.png", import.meta.url).href,
+  20: new URL("../assets/images/balloons/balloon-20.png", import.meta.url).href,
+};
+const GENERIC_BALLOON_SRC = new URL("../assets/images/balloons/balloon-generic.png", import.meta.url).href;
+
 function safeSessionStorage() {
   try {
     const k = "__zkb_test__";
@@ -374,7 +386,14 @@ function floatPointsNear(el, delta) {
   wrap.style.setProperty("--bx", bx + "px");
   wrap.style.setProperty("--by", by + "px");
   wrap.setAttribute("aria-hidden", "true");
-  wrap.innerHTML = `<span class="balloon-float__body">+${delta}</span><span class="balloon-float__string"></span>`;
+  const numberedSrc = BALLOON_IMAGES[delta];
+  const balloonHTML = numberedSrc
+    ? `<img class="balloon-float__img" src="${numberedSrc}" alt="">`
+    : `<div class="balloon-float__generic">
+         <img class="balloon-float__img" src="${GENERIC_BALLOON_SRC}" alt="">
+         <span class="balloon-float__number">+${delta}</span>
+       </div>`;
+  wrap.innerHTML = `${balloonHTML}<span class="balloon-float__string"></span>`;
   document.body.appendChild(wrap);
   wrap.addEventListener("animationend", () => wrap.remove());
 }
