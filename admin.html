@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ניהול מנויים - זה קרה באמת</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0f8793">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Suez+One&family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  .admin-page { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.25rem 4rem; }
+  .admin-page h1 { font-size: 1.8rem; color: var(--teal-heading); margin-bottom: 0.2em; }
+  .admin-page__sub { color: var(--ink-soft); margin-bottom: 2em; }
+  .admin-card {
+    background: var(--sand-50); border-radius: var(--radius-md); box-shadow: var(--shadow-soft);
+    padding: 1.6rem 1.5rem; margin-bottom: 1.8rem;
+  }
+  .admin-card h2 { font-size: 1.15rem; color: var(--teal-heading); margin-bottom: 1em; }
+  .admin-form-row { display: flex; gap: 0.7em; flex-wrap: wrap; }
+  .admin-form-row input[type="email"] {
+    flex: 1; min-width: 220px; padding: 0.7em 1em; border-radius: var(--radius-sm);
+    border: 1.5px solid var(--teal-200); font-family: var(--font-body); font-size: 1rem;
+  }
+  .admin-form-row .btn { padding: 0.7em 1.4em; font-size: 0.95rem; }
+  .admin-status { min-height: 1.4em; font-size: 0.9rem; margin-top: 0.8em; color: var(--teal-ink); }
+  .admin-table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+  .admin-table th, .admin-table td { text-align: start; padding: 0.55em 0.7em; border-bottom: 1px solid var(--teal-200); }
+  .admin-table th { color: var(--ink-soft); font-weight: 600; }
+  .status-pill { display: inline-block; padding: 0.15em 0.7em; border-radius: 999px; font-size: 0.8rem; font-weight: 600; }
+  .status-active { background: var(--teal-200); color: var(--teal-heading); }
+  .status-past_due { background: var(--gold-100); color: var(--gold-ink); }
+  .status-canceled { background: #f1e4e4; color: #8a3a3a; }
+  .admin-table__actions button { font-size: 0.85rem; padding: 0.3em 0.8em; }
+  .admin-denied { text-align: center; padding: 4rem 1.25rem; color: var(--ink-soft); }
+</style>
+</head>
+<body class="auth-pending">
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a href="index.html" class="brand">
+      <img class="brand__mark" src="icons/brand-mark.png" alt="" width="40" height="40">
+      <span class="brand__name">זה קרה באמת · ניהול</span>
+    </a>
+  </div>
+</header>
+
+<main class="admin-page" id="admin-root" hidden>
+  <h1>ניהול מנויים</h1>
+  <p class="admin-page__sub">הענקת/ביטול גישה ידנית, ורשימת כל המנויים הקיימים.</p>
+
+  <div class="admin-card">
+    <h2>➕ הענקת גישה</h2>
+    <form id="grant-form" class="admin-form-row">
+      <input type="email" id="grant-email" placeholder="email@example.com" required autocomplete="off">
+      <button type="submit" class="btn btn--primary">הענק גישה</button>
+    </form>
+    <p id="grant-status" class="admin-status" role="status" aria-live="polite"></p>
+  </div>
+
+  <div class="admin-card">
+    <h2>📋 כל המנויים</h2>
+    <div style="overflow-x:auto">
+      <table class="admin-table">
+        <thead>
+          <tr><th>אימייל</th><th>סטטוס</th><th>מקור</th><th>נוצר</th><th></th></tr>
+        </thead>
+        <tbody id="subscribers-tbody"><tr><td colspan="5">טוען...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+
+<div id="admin-denied" class="admin-denied" hidden>
+  <p>אין לך גישה לעמוד הזה.</p>
+</div>
+
+<script type="module">
+  import { getSupabaseClient, getSession, isSupabaseConfigured, revealPage } from "./js/auth.js";
+
+  const LOGIN_URL = "login.html";
+
+  async function init() {
+    if (!isSupabaseConfigured()) {
+      document.getElementById("admin-denied").hidden = false;
+      document.getElementById("admin-denied").querySelector("p").textContent = "המערכת עדיין לא הוקמה.";
+      document.getElementById("admin-denied").hidden = false;
+      revealPage();
+      return;
+    }
+    const session = await getSession();
+    if (!session) { window.location.replace(LOGIN_URL); return; }
+
+    const supabase = getSupabaseClient();
+    const { data: isAdmin, error: adminErr } = await supabase.rpc("is_admin");
+    if (adminErr || !isAdmin) {
+      document.getElementById("admin-denied").hidden = false;
+      revealPage();
+      return;
+    }
+
+    document.getElementById("admin-root").hidden = false;
+    revealPage();
+    await loadSubscribers(supabase);
+
+    document.getElementById("grant-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("grant-email").value.trim();
+      const statusEl = document.getElementById("grant-status");
+      statusEl.textContent = "מעניק גישה...";
+      const { error } = await supabase.rpc("admin_grant_subscriber", { target_email: email });
+      if (error) {
+        statusEl.textContent = "שגיאה: " + error.message;
+      } else {
+        statusEl.textContent = `גישה הוענקה ל-${email} ✓`;
+        document.getElementById("grant-email").value = "";
+        await loadSubscribers(supabase);
+      }
+    });
+  }
+
+  async function loadSubscribers(supabase) {
+    const tbody = document.getElementById("subscribers-tbody");
+    const { data, error } = await supabase.rpc("admin_list_subscribers");
+    if (error) { tbody.innerHTML = `<tr><td colspan="5">שגיאה: ${error.message}</td></tr>`; return; }
+    if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="5">אין מנויים עדיין.</td></tr>`; return; }
+    tbody.innerHTML = data.map((row) => {
+      const date = row.created_at ? new Date(row.created_at).toLocaleDateString("he-IL") : "";
+      const revokeBtn = row.plan_status !== "canceled"
+        ? `<button type="button" class="btn btn--outline revoke-btn" data-email="${row.email}">ביטול</button>`
+        : "";
+      return `<tr>
+        <td>${row.email}</td>
+        <td><span class="status-pill status-${row.plan_status}">${row.plan_status}</span></td>
+        <td>${row.provider || "-"}</td>
+        <td>${date}</td>
+        <td class="admin-table__actions">${revokeBtn}</td>
+      </tr>`;
+    }).join("");
+
+    tbody.querySelectorAll(".revoke-btn").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        if (!confirm(`לבטל את הגישה של ${btn.dataset.email}?`)) return;
+        await supabase.rpc("admin_revoke_subscriber", { target_email: btn.dataset.email });
+        await loadSubscribers(supabase);
+      });
+    });
+  }
+
+  init();
+</script>
+</body>
+</html>
