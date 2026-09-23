@@ -10,6 +10,10 @@
 
    image: נתיב לתמונת שער, או null להצגת placeholder עם אייקון הקטגוריה.
    audio: נתיב לקובץ mp3, או null להצגת תווית "בקרוב".
+   pdf: (אופציונלי) נתיב לקובץ PDF להורדה/הדפסה, או null אם עוד אין.
+   pointsItemKey: (אופציונלי) מקשר את הפרק לפריט "דיווח" במערכת הנקודות
+     (js/points.js) - כשקיים, מוצגת תחת הפרק תיבת דיווח-קריאה לכל ילד.
+     חייב להיות זהה בדיוק לערך המקביל ב-en/js/app.js לאותו פרק.
 --------------------------------------------------------------- */
 const CATEGORIES = [
   {
@@ -326,6 +330,21 @@ function playerHTML(ep, idx) {
       </div>`;
 }
 
+// כרטיס "דבר תורה" להדפסה + דיווח-קריאה לכל ילד (מערכת הנקודות, js/points.js) -
+// מוצג רק כשלפרק יש pointsItemKey. תיבת הדיווח עצמה נבנית ע"י points.js (לא כאן -
+// app.js לא מודע ל-Supabase), רק ה-div הריק עם data-report-item-key מוזרק כאן.
+function pdfReportHTML(ep) {
+  if (!ep.pointsItemKey) return "";
+  const dl = ep.pdf
+    ? `<a class="btn btn--outline content-card__pdf-btn" href="${ep.pdf}" target="_blank" download>📄 הורידו את דף "דבר תורה" להדפסה</a>`
+    : `<span class="player player--soon"><span class="player__soon-icon" aria-hidden="true">🖨️</span><span class="player__soon-label">דף ה-PDF יעלה בקרוב</span></span>`;
+  return `
+    <div class="content-card__pdf">
+      ${dl}
+      <div class="content-card__report" data-report-item-key="${ep.pointsItemKey}"></div>
+    </div>`;
+}
+
 function audioCardHTML(cat, ep, idx) {
   const reverseClass = idx % 2 === 1 ? " content-card--reverse" : "";
   return `
@@ -336,6 +355,7 @@ function audioCardHTML(cat, ep, idx) {
       <h3 class="content-card__title">${ep.title}</h3>
       <p class="content-card__desc"><strong>על הפרק: </strong>${ep.description}</p>
       ${playerHTML(ep, idx)}
+      ${pdfReportHTML(ep)}
     </div>
   </article>`;
 }

@@ -72,22 +72,25 @@ export function revealPage() {
 }
 
 /** שער לדף מוגן (index.html/en/index.html בלבד): מוודא session + מנוי פעיל,
- * אחרת מפנה. מריצים ראשון בדף, לפני שה-app.js הרגיל בונה את התוכן. */
+ * אחרת מפנה. מריצים ראשון בדף, לפני שה-app.js הרגיל בונה את התוכן.
+ * מחזירה true רק כשהדף נחשף בפועל למשתמש זכאי (וכל שאר המקרים false) - כדי
+ * שקוד תלוי-זכאות (כמו אתחול ווידג'ט הנקודות) ידע מתי מותר לו לרוץ. */
 export async function guardGatedPage({ loginUrl, offerUrl }) {
   if (!isSupabaseConfigured()) {
     // המערכת עוד לא הוקמה (שלב פיתוח/לפני מסירה) - לא חוסמים, רק חושפים.
     revealPage();
-    return;
+    return false;
   }
   const session = await getSession();
   if (!session) {
     window.location.replace(loginUrl);
-    return;
+    return false;
   }
   const row = await fetchEntitlement();
   if (!isEntitled(row)) {
     window.location.replace(offerUrl);
-    return;
+    return false;
   }
   revealPage();
+  return true;
 }

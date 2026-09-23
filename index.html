@@ -23,7 +23,10 @@
 
 <script type="module">
   import { guardGatedPage } from "./js/auth.js";
-  guardGatedPage({ loginUrl: "login.html", offerUrl: "offer.html" });
+  import { initPoints } from "./js/points.js";
+  guardGatedPage({ loginUrl: "login.html", offerUrl: "offer.html" }).then((entitled) => {
+    if (entitled) initPoints();
+  });
 </script>
 
 <div id="install-banner" class="install-banner" hidden>
@@ -80,6 +83,8 @@
       </p>
     </div>
   </section>
+
+  <div id="points-widget" class="points-widget"></div>
 
   <section class="cat-nav" id="categories">
     <div class="cat-nav__inner">

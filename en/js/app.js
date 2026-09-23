@@ -11,6 +11,11 @@
    image: path to a cover image, or null to show a placeholder with
           the category icon.
    audio: path to an mp3 file, or null to show a "coming soon" label.
+   pdf: (optional) path to a downloadable/printable PDF file, or null.
+   pointsItemKey: (optional) links the episode to a "report" item in the
+     points system (js/points.js) - when present, a per-child reading
+     report checklist is shown below the episode. Must match the
+     equivalent value in js/app.js (Hebrew) for the same episode exactly.
 --------------------------------------------------------------- */
 const CATEGORIES = [
   {
@@ -328,6 +333,22 @@ function playerHTML(ep, idx) {
       </div>`;
 }
 
+// Printable "dvar Torah" card + per-child reading report (points system,
+// js/points.js) - shown only when the episode has a pointsItemKey. The
+// report checklist itself is built by points.js (not here - app.js has no
+// Supabase awareness), only the empty div with data-report-item-key is emitted.
+function pdfReportHTML(ep) {
+  if (!ep.pointsItemKey) return "";
+  const dl = ep.pdf
+    ? `<a class="btn btn--outline content-card__pdf-btn" href="${ep.pdf}" target="_blank" download>📄 Download the printable "dvar Torah" page</a>`
+    : `<span class="player player--soon"><span class="player__soon-icon" aria-hidden="true">🖨️</span><span class="player__soon-label">The PDF is coming soon</span></span>`;
+  return `
+    <div class="content-card__pdf">
+      ${dl}
+      <div class="content-card__report" data-report-item-key="${ep.pointsItemKey}"></div>
+    </div>`;
+}
+
 function audioCardHTML(cat, ep, idx) {
   const reverseClass = idx % 2 === 1 ? " content-card--reverse" : "";
   return `
@@ -338,6 +359,7 @@ function audioCardHTML(cat, ep, idx) {
       <h3 class="content-card__title">${ep.title}</h3>
       <p class="content-card__desc"><strong>About this episode: </strong>${ep.description}</p>
       ${playerHTML(ep, idx)}
+      ${pdfReportHTML(ep)}
     </div>
   </article>`;
 }
