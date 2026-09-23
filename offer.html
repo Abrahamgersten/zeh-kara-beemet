@@ -19,6 +19,18 @@
 </head>
 <body class="auth-pending">
 
+<div id="install-banner" class="install-banner" hidden>
+  <div class="install-banner__icon">
+    <img src="icons/icon-192.png" alt="" width="44" height="44">
+  </div>
+  <div class="install-banner__text">
+    <strong id="install-banner-title">התקינו את האפליקציה</strong>
+    <span id="install-banner-sub">גשו לכל התכנים בלחיצה אחת, ישר מהמסך הראשי</span>
+  </div>
+  <button id="install-banner-action" class="install-banner__btn" type="button">התקנה</button>
+  <button id="install-banner-close" class="install-banner__close" type="button" aria-label="סגירה">✕</button>
+</div>
+
 <header class="site-header">
   <div class="site-header__inner">
     <a href="offer.html" class="brand">
@@ -107,5 +119,6 @@
     window.location.href = CHECKOUT_URL + "?email=" + encodeURIComponent(email);
   });
 </script>
+<script src="js/install-banner.js" defer></script>
 </body>
 </html>
