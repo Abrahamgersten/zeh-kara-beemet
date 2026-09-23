@@ -92,8 +92,8 @@ create trigger rewards_set_updated_at
 
 insert into rewards (threshold_points, title_he, title_en, description_he, description_en, link_url_he, link_url_en) values
   (100, 'סיפור "אי היהלומים"', 'The "Diamond Island" Story',
-   'סיפור המשך מלא הרפתקאות מחכה לכם!',
-   'A sequel story full of adventures is waiting for you!',
+   'סיפור בהמשכים מלא הרפתקאות מחכה לכם!',
+   'An action-packed story series is waiting for you!',
    'https://abrahamgersten.github.io/diamond-island-story/',
    'https://abrahamgersten.github.io/diamond-island-story/en/')
 on conflict (threshold_points) do nothing;

@@ -1032,7 +1032,7 @@ body.auth-pending { visibility: hidden; }
   pointer-events: none;
   z-index: 500;
   transform: translate(var(--bx), var(--by)) translate(-50%, -50%) scale(0.5);
-  animation: balloon-rise 2.6s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  animation: balloon-rise 3.3s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
 }
 .balloon-float__img {
   display: block;
