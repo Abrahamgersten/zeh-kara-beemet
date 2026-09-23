@@ -876,16 +876,6 @@ body.auth-pending { visibility: hidden; }
   width: 100%;
   max-width: 260px;
 }
-.points-onboarding__list { list-style: none; display: flex; flex-wrap: wrap; gap: 0.5em; justify-content: center; padding: 0; margin: 0 0 1.4em; }
-.points-onboarding__chip {
-  background: var(--teal-200);
-  color: var(--teal-heading);
-  font-weight: 700;
-  font-size: 0.9rem;
-  padding: 0.4em 1em;
-  border-radius: 999px;
-}
-.points-onboarding__done { width: 100%; }
 
 .points-child-tabs {
   display: flex;
@@ -1210,7 +1200,7 @@ body.auth-pending { visibility: hidden; }
 .points-picker__chip:focus-visible { outline: 3px solid var(--gold-400); outline-offset: 2px; }
 .points-picker__chip[data-selected="true"] { background: var(--teal-200); border-color: var(--teal-700); }
 .points-picker__chip:disabled { opacity: 0.45; cursor: not-allowed; }
-.points-picker__add-form { margin-bottom: 1.2rem; }
+.points-picker__add-row { margin-bottom: 1.4rem; }
 .points-picker__actions { display: flex; justify-content: flex-end; gap: 0.7em; }
 .points-picker__actions .btn { padding: 0.6em 1.3em; font-size: 0.92rem; }
 .points-picker__actions .btn--primary[disabled] { opacity: 0.5; cursor: not-allowed; }

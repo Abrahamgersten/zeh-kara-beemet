@@ -63,7 +63,6 @@ const T = isEn
       eyebrowOptional: "🎈 An optional family game",
       namePlaceholder: "Child's name",
       add: "Add ➕",
-      done: "All done, let's start! 🎉",
       addChildChip: "+ Add a child",
       removeChild: (name) => `🗑️ Remove ${name} from the list`,
       removeConfirm: (name) => `Remove ${name} from the children list? Their history stays saved, but they won't appear in the list anymore.`,
@@ -106,7 +105,6 @@ const T = isEn
       eyebrowOptional: "🎈 משחק משפחתי אופציונלי",
       namePlaceholder: "שם הילד/ה",
       add: "הוספה ➕",
-      done: "סיימנו, בואו נתחיל! 🎉",
       addChildChip: "+ הוסיפו ילד/ה",
       removeChild: (name) => `🗑️ הסרת ${name} מהרשימה`,
       removeConfirm: (name) => `להסיר את ${name} מרשימת הילדים? ההיסטוריה שלו/ה תישמר, אבל הוא/היא לא יופיע/תופיע יותר ברשימה.`,
@@ -204,6 +202,9 @@ function displayReward() {
   return sorted.find((r) => !r.unlocked) || sorted[sorted.length - 1] || null;
 }
 
+// state.children תמיד ריק כשהפונקציה הזו מרונדרת (renderWidget() עובר
+// לתצוגת הצ'קליסט המלאה מיד ברגע שיש ולו ילד אחד - ראו שם) - אין צורך
+// ברשימת-צ'יפים/כפתור-"סיימנו" כאן, הטופס הזה תמיד לילד הראשון בלבד.
 function onboardingHTML() {
   return `
     <div class="points-onboarding">
@@ -215,10 +216,6 @@ function onboardingHTML() {
         <input class="auth-card__input" type="text" name="childName" placeholder="${T.namePlaceholder}" required maxlength="40">
         <button class="btn btn--primary" type="submit">${T.add}</button>
       </form>
-      <ul class="points-onboarding__list">
-        ${state.children.map((c) => `<li class="points-onboarding__chip">${esc(c.name)}</li>`).join("")}
-      </ul>
-      ${state.children.length ? `<button class="btn btn--outline points-onboarding__done" type="button" data-onboarding-done>${T.done}</button>` : ""}
     </div>`;
 }
 
@@ -570,7 +567,7 @@ function renderPicker() {
       <div class="points-picker__list">
         ${state.preset_catalog.map(pickerChipHTML).join("")}
       </div>
-      ${addForm}
+      <div class="points-picker__add-row">${addForm}</div>
       <div class="points-picker__actions">
         <button class="btn btn--outline" type="button" data-picker-close>${T.pickerCancel}</button>
         <button class="btn btn--primary" type="button" data-picker-save ${pickerSelected.size === 3 ? "" : "disabled"}>${T.pickerSave}</button>
@@ -705,6 +702,13 @@ async function handleAddChildSubmit(form) {
   activeChildId = child.id;
   showInlineAddChild = false;
   renderAll();
+
+  // אין יותר ברירת-מחדל אוטומטית לרובריקות (בוטלה ב-0006, לפי בקשת אברהם -
+  // ההורה בוחר בעצמו) - אם למשפחה עדיין אין אף פריט daily נבחר, זה תמיד
+  // אומר שזו ההצטרפות הראשונה שלה, אז פותחים את הבורר מיד, לא משאירים
+  // רשימה ריקה עד שמישהו ילחץ "שנו רובריקות" בעצמו.
+  const hasDaily = state.checklist_items.some((i) => i.category === "daily");
+  if (!hasDaily) openPicker();
 }
 
 async function handleChecklistToggle(li, isReport) {
@@ -765,11 +769,6 @@ function attachEvents() {
     const cancelBtn = e.target.closest("[data-cancel-add-child]");
     if (cancelBtn) {
       showInlineAddChild = false;
-      renderAll();
-      return;
-    }
-    const doneBtn = e.target.closest("[data-onboarding-done]");
-    if (doneBtn) {
       renderAll();
       return;
     }
