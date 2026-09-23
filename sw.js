@@ -1,4 +1,4 @@
-const SHELL_CACHE = "zkb-shell-v3";
+const SHELL_CACHE = "zkb-shell-v4";
 const MEDIA_CACHE = "zkb-media-v10";
 
 const SHELL_ASSETS = [
@@ -57,8 +57,11 @@ self.addEventListener("fetch", (event) => {
   }
 
   // Network-first for the app shell, falling back to cache when offline.
+  // {cache:"reload"} forces the browser's own HTTP cache to be bypassed too
+  // (not just the SW's Cache Storage) - otherwise "network-first" can still
+  // silently resolve from a stale disk-cached response on some deploys.
   event.respondWith(
-    fetch(event.request)
+    fetch(event.request, { cache: "reload" })
       .then((response) => {
         const copy = response.clone();
         caches.open(SHELL_CACHE).then((cache) => cache.put(event.request, copy));

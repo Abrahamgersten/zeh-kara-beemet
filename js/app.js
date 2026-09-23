@@ -143,6 +143,8 @@ const CATEGORIES = [
         description: "כאן יבוא תיאור אמיתי של הרעיון המרכזי בפרק - מה השאלה ומה התובנה. זהו טקסט לדוגמה בלבד.",
         image: null,
         audio: null,
+        pdf: null,
+        pointsItemKey: "parasha-report-weekly",
         sample: true,
       },
       {

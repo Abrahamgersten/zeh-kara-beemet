@@ -145,6 +145,8 @@ const CATEGORIES = [
         description: "Here a real description of the episode's central idea will go - what's the question, and what's the insight. This is sample text only.",
         image: null,
         audio: null,
+        pdf: null,
+        pointsItemKey: "parasha-report-weekly",
         sample: true,
       },
       {
