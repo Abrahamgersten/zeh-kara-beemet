@@ -42,18 +42,6 @@ const BALLOON_IMAGES = {
 };
 const GENERIC_BALLOON_SRC = new URL("../assets/images/balloons/balloon-generic.png", import.meta.url).href;
 
-function safeSessionStorage() {
-  try {
-    const k = "__zkb_test__";
-    sessionStorage.setItem(k, "1");
-    sessionStorage.removeItem(k);
-    return sessionStorage;
-  } catch (e) {
-    return null;
-  }
-}
-const sessionStore = safeSessionStorage();
-
 const T = isEn
   ? {
       onboardingTitle: "Want to turn this into a game?",
@@ -79,9 +67,11 @@ const T = isEn
       of: "of",
       nextReward: "Next reward",
       hintLocked: (n) => `${n} points to go and the new story unlocks!`,
-      hintAllUnlocked: "Amazing, you've unlocked everything!",
+      noRewardHint: "Your points are waiting for the next surprise 🤫",
       ctaLocked: (n) => `${n} points to go 🔒`,
-      ctaUnlocked: "Open the reward 🎁",
+      noRewardTitle: "A new surprise, coming soon 🤫",
+      noRewardText:
+        "There's no new story queued up as a surprise just yet - but we hope there will be soon! In the meantime, keep collecting points, and the moment a new surprise is ready, it'll be waiting for you.",
       cheers: [
         "Amazing!", "You're a champion!", "Way to go!", "Fantastic!", "Awesome job!",
         "So proud of you!", "You're a star!", "Keep it up!", "Wonderful!", "Nailed it!",
@@ -121,9 +111,11 @@ const T = isEn
       of: "מתוך",
       nextReward: "הפרס הבא",
       hintLocked: (n) => `עוד ${n} נקודות והסיפור החדש נפתח!`,
-      hintAllUnlocked: "כל הכבוד, פתחתם הכל!",
+      noRewardHint: "הנקודות ממתינות להפתעה הבאה 🤫",
       ctaLocked: (n) => `עוד ${n} נקודות 🔒`,
-      ctaUnlocked: "לצפייה בפרס 🎁",
+      noRewardTitle: "בקרוב, הפתעה חדשה 🤫",
+      noRewardText:
+        "טרם עלה סיפור בהמשכים חדש שיוכל לשמש הפתעה - אך אנחנו מקווים שזה יקרה בקרוב! בינתיים אפשר להמשיך לצבור נקודות, וברגע שתהיה הפתעה חדשה, היא תחכה לכם.",
       cheers: [
         "כל הכבוד!", "אליפות!", "אין עליך בעולם!", "מדהים!", "איזה יופי!",
         "וואו, ישר כוח!", "פשוט מושלם!", "איזה כיף!", "כל הכבוד לך!", "מעולה!",
@@ -149,6 +141,7 @@ let encourageTimer = null;
 let pickerEl = null;
 let pickerSelected = null; // Set<string> של item-id-ים, רק כשהבורר פתוח
 let pickerShowAddCustom = false;
+let lastKnownDateStr = null; // ראו jerusalemDateString()/refreshIfDateRolledOver()
 
 function esc(s) {
   return String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -162,6 +155,13 @@ const WEEKDAY_MAP = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
 function jerusalemDayOfWeek() {
   const short = new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Jerusalem", weekday: "short" }).format(new Date());
   return WEEKDAY_MAP[short];
+}
+
+// "YYYY-MM-DD" לפי שעון ישראל - להשוואה זולה (מחרוזת) בלי לבנות Date חדש בכל
+// פעם. en-CA הוא טריק תקין: זו הלוקאל היחידה שפורמט ברירת המחדל שלה הוא
+// כבר ISO (YYYY-MM-DD), בלי צורך ב-formatToParts.
+function jerusalemDateString() {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Jerusalem" }).format(new Date());
 }
 
 function label(item) {
@@ -193,15 +193,6 @@ function playCheerSound() {
 /* ---------------------------------------------------------------
    Rendering
 --------------------------------------------------------------- */
-function rewardsSorted() {
-  return [...state.rewards].sort((a, b) => a.threshold_points - b.threshold_points);
-}
-
-function displayReward() {
-  const sorted = rewardsSorted();
-  return sorted.find((r) => !r.unlocked) || sorted[sorted.length - 1] || null;
-}
-
 // state.children תמיד ריק כשהפונקציה הזו מרונדרת (renderWidget() עובר
 // לתצוגת הצ'קליסט המלאה מיד ברגע שיש ולו ילד אחד - ראו שם) - אין צורך
 // ברשימת-צ'יפים/כפתור-"סיימנו" כאן, הטופס הזה תמיד לילד הראשון בלבד.
@@ -270,15 +261,24 @@ function checklistHTML() {
 }
 
 function progressHTML() {
-  const reward = displayReward();
-  if (!reward) return "";
-  const pct = Math.min(100, Math.round((state.family_total / reward.threshold_points) * 100));
-  const hint = reward.unlocked ? T.hintAllUnlocked : T.hintLocked(Math.max(0, reward.threshold_points - state.family_total));
+  const reward = state.next_reward;
+  if (!reward) {
+    return `
+      <div class="points-progress">
+        <div class="points-progress__head">
+          <span class="points-progress__label">${T.pointsLabel}</span>
+          <span class="points-progress__count"><strong>${state.cycle_points}</strong></span>
+        </div>
+        <p class="points-progress__hint" data-encourage-slot>${T.noRewardHint}</p>
+      </div>`;
+  }
+  const pct = Math.min(100, Math.round((state.cycle_points / reward.threshold_points) * 100));
+  const hint = T.hintLocked(Math.max(0, reward.threshold_points - state.cycle_points));
   return `
     <div class="points-progress">
       <div class="points-progress__head">
         <span class="points-progress__label">${T.pointsLabel}</span>
-        <span class="points-progress__count"><strong>${state.family_total}</strong> ${T.of} <strong>${reward.threshold_points}</strong></span>
+        <span class="points-progress__count"><strong>${state.cycle_points}</strong> ${T.of} <strong>${reward.threshold_points}</strong></span>
       </div>
       <div class="points-progress__track" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100">
         <div class="points-progress__fill" style="width:${pct}%"></div>
@@ -287,24 +287,35 @@ function progressHTML() {
     </div>`;
 }
 
+// כאן reward (כשקיים) תמיד "בתהליך" - ברגע שהמשפחה חוצה את הסף, ה-RPC של
+// toggle_checkin עצמו מממש את הפרס וממחזר מיד לקראת הבא (ראו handleChecklistToggle) -
+// אין יותר מצב "פתוח, ממתין ללחיצה" מתמשך כמו במודל הישן; הרגע הזה מטופל
+// כולו ע"י חגיגת celebrate().
 function rewardHTML() {
-  const reward = displayReward();
-  if (!reward) return "";
+  const reward = state.next_reward;
+  if (!reward) {
+    return `
+      <div class="points-reward points-reward--pending">
+        <div class="points-reward__art"><div class="cover-placeholder">🔭</div></div>
+        <div class="points-reward__body">
+          <span class="points-reward__eyebrow">${T.nextReward}</span>
+          <h3 class="points-reward__title">${T.noRewardTitle}</h3>
+          <p class="points-reward__desc">${T.noRewardText}</p>
+        </div>
+      </div>`;
+  }
   const cover = reward.image_url
     ? `<img src="${reward.image_url}" alt="">`
     : `<div class="cover-placeholder">🎁</div>`;
-  const lock = reward.unlocked ? "" : `<span class="points-reward__lock" aria-hidden="true">🔒</span>`;
-  const cta = reward.unlocked
-    ? `<a class="btn btn--outline points-reward__cta" href="${linkUrl(reward)}" target="_blank" rel="noopener">${T.ctaUnlocked}</a>`
-    : `<button class="btn btn--outline points-reward__cta" type="button" disabled>${T.ctaLocked(Math.max(0, reward.threshold_points - state.family_total))}</button>`;
+  const remaining = Math.max(0, reward.threshold_points - state.cycle_points);
   return `
-    <div class="points-reward${reward.unlocked ? " points-reward--unlocked" : " points-reward--locked"}">
-      <div class="points-reward__art">${cover}${lock}</div>
+    <div class="points-reward points-reward--locked">
+      <div class="points-reward__art">${cover}<span class="points-reward__lock" aria-hidden="true">🔒</span></div>
       <div class="points-reward__body">
         <span class="points-reward__eyebrow">${T.nextReward}</span>
         <h3 class="points-reward__title">${esc(title(reward))}</h3>
         <p class="points-reward__desc">${esc(desc(reward) || "")}</p>
-        ${cta}
+        <button class="btn btn--outline points-reward__cta" type="button" disabled>${T.ctaLocked(remaining)}</button>
       </div>
     </div>`;
 }
@@ -462,30 +473,26 @@ function ensureCelebrateEl() {
   return celebrateEl;
 }
 
+// reward מגיע ישירות מ-newly_claimed_reward שמחזיר toggle_checkin - השרת הוא
+// המקור-האמיתי היחיד לרגע המימוש (לא ניחוש/דידופ בצד הלקוח כמו במודל הישן;
+// הפונקציה נקראת אך ורק כשה-RPC עצמו מדווח על מימוש בפועל, פעם אחת בלבד).
 function celebrate(reward) {
   const el = ensureCelebrateEl();
+  // התמונה עצמה לחיצה לקישור הפרס - לא רק כפתור ה-CTA שמתחתיה.
+  const art = reward.image_url
+    ? `<a class="points-celebrate__art" href="${linkUrl(reward)}" target="_blank" rel="noopener"><img src="${reward.image_url}" alt=""></a>`
+    : "";
   el.innerHTML = `
     <div class="points-celebrate__card">
       <button class="lightbox__close" type="button" data-celebrate-close aria-label="${T.celebrateClose}">✕</button>
       <span class="points-celebrate__emoji" aria-hidden="true">🎉</span>
       <h2 class="points-celebrate__title">${T.celebrateTitle}</h2>
+      ${art}
       <p class="points-celebrate__reward-title">${esc(title(reward))}</p>
       <a class="btn btn--primary" href="${linkUrl(reward)}" target="_blank" rel="noopener">${T.celebrateCta}</a>
     </div>`;
   el.hidden = false;
   playCheerSound();
-}
-
-function checkForNewlyUnlockedRewards(beforeTotal, afterTotal) {
-  if (afterTotal <= beforeTotal) return;
-  const sorted = rewardsSorted();
-  const crossed = sorted.find((r) => beforeTotal < r.threshold_points && r.threshold_points <= afterTotal);
-  if (!crossed) return;
-  const key = `zkb-reward-celebrated-${crossed.id}`;
-  if (sessionStore && sessionStore.getItem(key) === "1") return;
-  if (sessionStore) sessionStore.setItem(key, "1");
-  crossed.unlocked = true;
-  celebrate(crossed);
 }
 
 /* ---------------------------------------------------------------
@@ -731,7 +738,6 @@ async function handleChecklistToggle(li, isReport) {
     circle && circle.classList.add("is-checked");
   }
 
-  const beforeTotal = state.family_total;
   const result = await toggleCheckin(childId, itemKey);
   btn.disabled = false;
 
@@ -748,8 +754,16 @@ async function handleChecklistToggle(li, isReport) {
   }
   state.family_total = result.family_total;
 
-  checkForNewlyUnlockedRewards(beforeTotal, result.family_total);
+  if (result.newly_claimed_reward) {
+    // מימוש פרס מאפס את המחזור ומחליף את הפרס הבא - שולפים מצב מלא מחדש
+    // במקום לנחש מקומית (זה נדיר, קורה לכל היותר פעם בחודש, לא בכל קליק).
+    const freshState = await fetchState();
+    if (freshState) state = freshState;
+  } else {
+    state.cycle_points = Math.max(0, (state.cycle_points || 0) + result.points_delta);
+  }
   renderAll();
+  if (result.newly_claimed_reward) celebrate(result.newly_claimed_reward);
   // חייב לרוץ אחרי renderAll(): הפרגון נכתב לתוך [data-encourage-slot], ואם
   // renderAll() היה רץ אחריו הוא היה מוחק אותו מיד (מחליף את כל ה-innerHTML).
   if (result.checked) {
@@ -758,7 +772,25 @@ async function handleChecklistToggle(li, isReport) {
   }
 }
 
+// עוגן חצות: checked_today מתאפס בשרת (family_today()) בכל יום, אבל טאב
+// שנשאר פתוח מהיום הקודם לא יודע את זה עד שמישהו יגע בו - בודקים בכל חזרה
+// לטאב אם התאריך בישראל התקדם, ואם כן שולפים מצב טרי (מוחק סימוני-"היום"
+// ישנים) במקום להשאיר תצוגה מדומה שלא תואמת את השרת.
+async function refreshIfDateRolledOver() {
+  const today = jerusalemDateString();
+  if (today === lastKnownDateStr) return;
+  lastKnownDateStr = today;
+  const freshState = await fetchState();
+  if (!freshState) return;
+  state = freshState;
+  renderAll();
+}
+
 function attachEvents() {
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") refreshIfDateRolledOver();
+  });
+
   widgetEl.addEventListener("click", (e) => {
     const addBtn = e.target.closest("[data-add-child]");
     if (addBtn) {
@@ -822,6 +854,7 @@ export async function initPoints() {
 
   state = await fetchState();
   if (!state) return;
+  lastKnownDateStr = jerusalemDateString();
 
   attachEvents();
   renderAll();
