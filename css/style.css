@@ -262,7 +262,7 @@ h1, h2, h3 {
   color: var(--ink-soft);
 }
 
-/* ---------- Hero (no sparkles - warm gradient glow only) ---------- */
+/* ---------- Hero (warm gradient glow + twinkling stars + an occasional moon) ---------- */
 .hero {
   position: relative;
   min-height: min(78vh, 640px);
@@ -281,6 +281,34 @@ h1, h2, h3 {
     radial-gradient(55% 55% at 22% 20%, rgba(255, 183, 104, 0.28), transparent 60%),
     radial-gradient(65% 60% at 82% 85%, rgba(168, 233, 238, 0.24), transparent 60%),
     linear-gradient(160deg, #063d46 0%, #0a5c66 45%, #0f7f8c 100%);
+}
+/* כוכבים מנצנצים - אותו אפקט כמו ב"אי היהלומים" (נוצרים ב-js/app.js, setupSparkles) */
+.hero__sparkles { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+.sparkle {
+  position: absolute;
+  color: var(--gold-300);
+  opacity: 0;
+  animation: sparkle-twinkle 3.6s ease-in-out infinite;
+  filter: drop-shadow(0 0 4px rgba(255, 210, 143, 0.75));
+}
+@keyframes sparkle-twinkle {
+  0%, 100% { opacity: 0; transform: scale(0.5) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.1) rotate(20deg); }
+}
+/* ירח חדש מדי פעם: מופיע לאט, מרחף מעט, ונעלם (setupMoon ב-js/app.js). הסהר נבנה ב-CSS בלבד
+   (צל פנימי על עיגול) כדי שייראה זהה בכל מכשיר - אימוג'י 🌙 נראה שונה בכל פלטפורמה. */
+.hero__moon {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0;
+  filter: drop-shadow(0 0 10px rgba(255, 238, 178, 0.65));
+  animation: moon-pass 16s ease-in-out forwards;
+}
+@keyframes moon-pass {
+  0%   { opacity: 0; transform: translateY(14px) rotate(-18deg) scale(0.92); }
+  18%  { opacity: 0.95; }
+  78%  { opacity: 0.95; }
+  100% { opacity: 0; transform: translateY(-18px) rotate(-6deg) scale(1); }
 }
 .hero__content { position: relative; z-index: 2; width: 100%; max-width: 760px; }
 .hero__eyebrow {
@@ -1291,4 +1319,7 @@ body.auth-pending { visibility: hidden; }
 
 @media (prefers-reduced-motion: reduce) {
   * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  /* מי שביקש פחות תנועה: כוכבים דוממים ועמומים במקום ניצנוץ, בלי ירח נע */
+  .sparkle { animation: none !important; opacity: 0.45; }
+  .hero__moon { display: none; }
 }

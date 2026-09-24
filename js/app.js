@@ -210,7 +210,7 @@ const CATEGORIES = [
   },
   {
     id: "what-to-do",
-    name: "מה לעשו״ת?",
+    name: "יש לי מושג",
     icon: "❓",
     color: "#22bcc7",
     type: "audio",
@@ -226,6 +226,23 @@ const CATEGORIES = [
       {
         title: "לדוגמה: ספר קודש על הרצפה - מה עושים?",
         description: "כאן תישמע שאלה הלכתית לילדים ותשובה עליה, מוקראות יחד בהקלטה אחת. זהו טקסט לדוגמה בלבד - לפני העלאת פרק אמיתי יש לוודא שהתשובה נבדקה ואושרה על ידי רב מוסמך.",
+        image: null,
+        audio: null,
+        sample: true,
+      },
+    ],
+  },
+  {
+    id: "healthy-to-know",
+    name: "בריא לדעת",
+    icon: "🍎",
+    color: "#7cb342",
+    type: "audio",
+    tagline: "כל מה שכדאי לדעת על הגוף, על התזונה ועל הבריאות - בשפה פשוטה וברורה, כדי לגדול בריאים וחזקים.",
+    episodes: [
+      {
+        title: "לדוגמה: למה חשוב לשתות מים?",
+        description: "כאן יבוא תיאור אמיתי של נושא הפרק ומה מעניין בו. זהו טקסט לדוגמה בלבד, להמחשת מבנה הכרטיס.",
         image: null,
         audio: null,
         sample: true,
@@ -620,6 +637,51 @@ function setupPlayers() {
 }
 
 /* ---------------------------------------------------------------
+   Hero: כוכבים מנצנצים (כמו ב"אי היהלומים") + ירח שמופיע מדי פעם
+--------------------------------------------------------------- */
+function setupSparkles() {
+  const wrap = document.querySelector(".hero__sparkles");
+  if (!wrap) return;
+  const count = 18;
+  for (let i = 0; i < count; i++) {
+    const s = document.createElement("span");
+    s.className = "sparkle";
+    s.textContent = Math.random() > 0.5 ? "✦" : "✧";
+    s.style.left = `${Math.random() * 100}%`;
+    s.style.top = `${Math.random() * 100}%`;
+    s.style.fontSize = `${8 + Math.random() * 16}px`;
+    s.style.animationDelay = `${Math.random() * 3.6}s`;
+    s.style.animationDuration = `${3 + Math.random() * 2.5}s`;
+    wrap.appendChild(s);
+  }
+}
+
+function setupMoon() {
+  const wrap = document.querySelector(".hero__sparkles");
+  if (!wrap) return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  function showMoon() {
+    // לא יוצרים ירח בטאב מוסתר (האנימציה לא רצה שם והצומת היה נשאר תלוי)
+    if (!document.hidden) {
+      const size = 34 + Math.random() * 22;
+      const moon = document.createElement("span");
+      moon.className = "hero__moon";
+      moon.style.width = moon.style.height = `${size}px`;
+      // שוליים בלבד (שליש שמאלי/ימני) ורצועה עליונה - כדי שהירח לא יסתיר את הכותרת והטקסט במרכז
+      moon.style.left = `${Math.random() < 0.5 ? 4 + Math.random() * 20 : 74 + Math.random() * 18}%`;
+      moon.style.top = `${3 + Math.random() * 9}%`;
+      // סהר = צל פנימי מוסט על עיגול שקוף; העובי יחסי לגודל כדי שכל הירחים ייראו אותו דבר
+      moon.style.boxShadow = `inset -${(size * 0.3).toFixed(1)}px -${(size * 0.07).toFixed(1)}px 0 0 #fff1c2`;
+      moon.addEventListener("animationend", () => moon.remove());
+      wrap.appendChild(moon);
+    }
+    setTimeout(showMoon, 22000 + Math.random() * 26000);
+  }
+  setTimeout(showMoon, 4000 + Math.random() * 4000);
+}
+
+/* ---------------------------------------------------------------
    Scroll reveal
 --------------------------------------------------------------- */
 function setupScrollReveal() {
@@ -773,6 +835,8 @@ document.addEventListener("DOMContentLoaded", () => {
   setupShowMore();
   setupPlayers();
   setupCatNavTracking();
+  setupSparkles();
+  setupMoon();
   setupScrollReveal();
   setupInstallBanner();
   setupServiceWorker();

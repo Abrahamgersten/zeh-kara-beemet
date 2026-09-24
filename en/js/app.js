@@ -210,7 +210,7 @@ const CATEGORIES = [
   },
   {
     id: "what-to-do",
-    name: "What Would You Do?",
+    name: "I've Got a Clue!",
     icon: "❓",
     color: "#22bcc7",
     type: "audio",
@@ -226,6 +226,23 @@ const CATEGORIES = [
       {
         title: "Example: A Holy Book on the Floor - What Should I Do?",
         description: "Here you'll hear a halachic question for kids and its answer, read together in one recording. This is sample text only - before uploading a real episode, make sure the answer has been checked and approved by a qualified rabbi.",
+        image: null,
+        audio: null,
+        sample: true,
+      },
+    ],
+  },
+  {
+    id: "healthy-to-know",
+    name: "Healthy to Know",
+    icon: "🍎",
+    color: "#7cb342",
+    type: "audio",
+    tagline: "Everything worth knowing about our bodies, nutrition, and health - in simple, clear language, so we can grow up healthy and strong.",
+    episodes: [
+      {
+        title: "Example: Why Is It Important to Drink Water?",
+        description: "Here a real description of the episode's topic and what's interesting about it will go. This is sample text only, to demonstrate the card layout.",
         image: null,
         audio: null,
         sample: true,
@@ -625,6 +642,51 @@ function setupPlayers() {
 }
 
 /* ---------------------------------------------------------------
+   Hero: twinkling stars (same effect as "Diamond Island") + an occasional moon
+--------------------------------------------------------------- */
+function setupSparkles() {
+  const wrap = document.querySelector(".hero__sparkles");
+  if (!wrap) return;
+  const count = 18;
+  for (let i = 0; i < count; i++) {
+    const s = document.createElement("span");
+    s.className = "sparkle";
+    s.textContent = Math.random() > 0.5 ? "✦" : "✧";
+    s.style.left = `${Math.random() * 100}%`;
+    s.style.top = `${Math.random() * 100}%`;
+    s.style.fontSize = `${8 + Math.random() * 16}px`;
+    s.style.animationDelay = `${Math.random() * 3.6}s`;
+    s.style.animationDuration = `${3 + Math.random() * 2.5}s`;
+    wrap.appendChild(s);
+  }
+}
+
+function setupMoon() {
+  const wrap = document.querySelector(".hero__sparkles");
+  if (!wrap) return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  function showMoon() {
+    // No moon in a hidden tab (its animation doesn't run there, so the node would linger)
+    if (!document.hidden) {
+      const size = 34 + Math.random() * 22;
+      const moon = document.createElement("span");
+      moon.className = "hero__moon";
+      moon.style.width = moon.style.height = `${size}px`;
+      // Side margins only (left/right thirds) and the top band, so the moon never covers the centered title/text
+      moon.style.left = `${Math.random() < 0.5 ? 4 + Math.random() * 20 : 74 + Math.random() * 18}%`;
+      moon.style.top = `${3 + Math.random() * 9}%`;
+      // Crescent = offset inner shadow on a transparent circle; thickness scales with size so every moon looks alike
+      moon.style.boxShadow = `inset -${(size * 0.3).toFixed(1)}px -${(size * 0.07).toFixed(1)}px 0 0 #fff1c2`;
+      moon.addEventListener("animationend", () => moon.remove());
+      wrap.appendChild(moon);
+    }
+    setTimeout(showMoon, 22000 + Math.random() * 26000);
+  }
+  setTimeout(showMoon, 4000 + Math.random() * 4000);
+}
+
+/* ---------------------------------------------------------------
    Scroll reveal
 --------------------------------------------------------------- */
 function setupScrollReveal() {
@@ -778,6 +840,8 @@ document.addEventListener("DOMContentLoaded", () => {
   setupShowMore();
   setupPlayers();
   setupCatNavTracking();
+  setupSparkles();
+  setupMoon();
   setupScrollReveal();
   setupInstallBanner();
   setupServiceWorker();
