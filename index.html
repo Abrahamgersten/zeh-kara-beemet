@@ -24,6 +24,7 @@
 <script type="module">
   import { guardGatedPage } from "./js/auth.js";
   import { initPoints } from "./js/points.js";
+  import "./js/analytics.js";
   guardGatedPage({ loginUrl: "login.html", offerUrl: "offer.html" }).then((entitled) => {
     if (entitled) initPoints();
   });

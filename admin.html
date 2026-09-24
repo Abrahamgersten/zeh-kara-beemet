@@ -74,13 +74,23 @@
   <p class="admin-page__sub">הענקת/ביטול גישה ידנית, ורשימת כל המנויים הקיימים.</p>
 
   <div class="admin-card">
-    <h2>📊 תובנות ושימוש</h2>
-    <p class="admin-page__sub" style="margin-bottom:1em">תמונת מצב על בסיס הנתונים שכבר נאספים היום (הרשמות, סימוני-רובריקה, פרסים) - עדיין בלי מעקב-צפיות בתוכן האתר עצמו.</p>
+    <h2>📊 תובנות ושימוש - מערכת הנקודות</h2>
+    <p class="admin-page__sub" style="margin-bottom:1em">תמונת מצב על בסיס הרשמות, סימוני-רובריקה ופרסים.</p>
     <div class="stats-grid" id="engagement-stats"><div class="stat-box">טוען...</div></div>
     <p class="insights-subhead">פופולריות רובריקות (בחירה מול סימון בפועל)</p>
     <div id="item-popularity"></div>
     <p class="insights-subhead">סימונים לפי יום בשבוע</p>
     <div class="weekday-chart" id="weekday-chart"></div>
+  </div>
+
+  <div class="admin-card">
+    <h2>🎧 תובנות ושימוש - תוכן האתר</h2>
+    <p class="admin-page__sub" style="margin-bottom:1em">אילו סיפורים/קטגוריות נצפים בפועל - מעקב-רקע קליל שלא משנה שום דבר בחוויית המשתמש. תבניות מצטברות בלבד, לא יומן-קליקים לכל משפחה.</p>
+    <div class="stats-grid" id="content-stats"><div class="stat-box">טוען...</div></div>
+    <p class="insights-subhead">הפרקים הכי מושמעים</p>
+    <div id="top-episodes"></div>
+    <p class="insights-subhead">קליקים על קטגוריות בניווט המהיר</p>
+    <div id="category-clicks"></div>
   </div>
 
   <div class="admin-card">
@@ -161,6 +171,7 @@
     revealPage();
     await loadEngagementOverview(supabase);
     await loadFamilyEngagement(supabase);
+    await loadContentEngagement(supabase);
     await loadChecklistItems(supabase);
 
     document.getElementById("checklist-item-form").addEventListener("submit", async (e) => {
@@ -347,6 +358,47 @@
         <div class="weekday-chart__bar" style="height:${Math.max(4, Math.round((n / max) * 100))}%" title="${n}"></div>
         <span class="weekday-chart__label">${labels[i]}</span>
       </div>`).join("");
+  }
+
+  async function loadContentEngagement(supabase) {
+    const { data, error } = await supabase.rpc("admin_content_engagement");
+    if (error) {
+      document.getElementById("content-stats").innerHTML = `<p>שגיאה: ${error.message}</p>`;
+      return;
+    }
+    document.getElementById("content-stats").innerHTML = [
+      [data.total_events || 0, `סה"כ אירועי-שימוש`],
+      [data.events_7d || 0, "אירועים ב-7 ימים"],
+      [data.families_engaged_7d || 0, "משפחות פעילות ב-7 ימים"],
+    ].map(([v, l]) => `<div class="stat-box"><span class="stat-box__value">${v}</span><span class="stat-box__label">${l}</span></div>`).join("");
+
+    const episodesHost = document.getElementById("top-episodes");
+    const episodes = data.top_episodes || [];
+    episodesHost.innerHTML = episodes.length
+      ? (() => {
+          const maxPlays = Math.max(1, ...episodes.map((e) => e.plays));
+          return episodes.map((e) => `
+            <div class="pop-row">
+              <span class="pop-row__label">${e.episode_label || ""}<br><small style="color:var(--ink-soft)">${e.category_label || ""}</small></span>
+              <span class="pop-row__bar-track"><span class="pop-row__bar-fill" style="width:${Math.round((e.plays / maxPlays) * 100)}%"></span></span>
+              <span class="pop-row__count">${e.plays} השמעות</span>
+            </div>`).join("");
+        })()
+      : `<p class="admin-page__sub">אין נתונים עדיין.</p>`;
+
+    const clicksHost = document.getElementById("category-clicks");
+    const clicks = data.category_clicks || [];
+    clicksHost.innerHTML = clicks.length
+      ? (() => {
+          const maxClicks = Math.max(1, ...clicks.map((c) => c.clicks));
+          return clicks.map((c) => `
+            <div class="pop-row">
+              <span class="pop-row__label">${c.category_label || ""}</span>
+              <span class="pop-row__bar-track"><span class="pop-row__bar-fill" style="width:${Math.round((c.clicks / maxClicks) * 100)}%"></span></span>
+              <span class="pop-row__count">${c.clicks} קליקים</span>
+            </div>`).join("");
+        })()
+      : `<p class="admin-page__sub">אין נתונים עדיין.</p>`;
   }
 
   init();

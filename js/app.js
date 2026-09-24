@@ -511,6 +511,26 @@ function setupSpotDiff() {
     btn.textContent = solved
       ? "הסתר פתרון"
       : `הצג פתרון (${card.querySelectorAll(".spot-card__frame:first-child .spot-card__marker").length} הבדלים)`;
+    if (solved) {
+      const catEl = card.querySelector(".content-card__eyebrow");
+      const titleEl = card.querySelector(".content-card__title");
+      window.zkbLogEvent && window.zkbLogEvent("spot_diff_solved", catEl ? catEl.textContent : null, titleEl ? titleEl.textContent : null);
+    }
+  });
+}
+
+/* ---------------------------------------------------------------
+   מעקב-שימוש קליל (ראו js/analytics.js) - קליק על צ'יפ קטגוריה בניווט
+   המהיר. לא-חוסם, לא נוגע בניווט (href="#cat-..." ממשיך לעבוד רגיל).
+--------------------------------------------------------------- */
+function setupCatNavTracking() {
+  const grid = document.getElementById("cat-nav-grid");
+  if (!grid) return;
+  grid.addEventListener("click", (e) => {
+    const pill = e.target.closest(".cat-pill");
+    if (!pill) return;
+    const titleEl = pill.querySelector(".cat-pill__title");
+    window.zkbLogEvent && window.zkbLogEvent("category_nav_click", titleEl ? titleEl.textContent : null, null);
   });
 }
 
@@ -528,6 +548,7 @@ function setupPlayers() {
     const duration = el.querySelector(".player__duration");
     let audio = null;
     let seeking = false;
+    let loggedPlay = false;
 
     function ensureAudio() {
       if (audio) return audio;
@@ -550,6 +571,15 @@ function setupPlayers() {
         btn.textContent = "⏸";
         btn.classList.add("is-playing");
         btn.setAttribute("aria-label", "השהה");
+        // מעקב-שימוש (לא-חוסם, ראו js/analytics.js) - רק ב"נגן ראשון" של
+        // ההקלטה בטעינת העמוד, לא בכל חזרה-מפאוזה של אותה האזנה.
+        if (!loggedPlay) {
+          loggedPlay = true;
+          const card = el.closest(".content-card");
+          const catEl = card && card.querySelector(".content-card__eyebrow");
+          const titleEl = card && card.querySelector(".content-card__title");
+          window.zkbLogEvent && window.zkbLogEvent("audio_play", catEl ? catEl.textContent : null, titleEl ? titleEl.textContent : null);
+        }
       });
       audio.addEventListener("pause", () => {
         btn.textContent = "▶";
@@ -740,6 +770,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupSpotDiff();
   setupShowMore();
   setupPlayers();
+  setupCatNavTracking();
   setupScrollReveal();
   setupInstallBanner();
   setupServiceWorker();
