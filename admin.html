@@ -36,6 +36,26 @@
   .status-canceled { background: #f1e4e4; color: #8a3a3a; }
   .admin-table__actions button { font-size: 0.85rem; padding: 0.3em 0.8em; }
   .admin-denied { text-align: center; padding: 4rem 1.25rem; color: var(--ink-soft); }
+
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); gap: 0.7em; margin-bottom: 1.4em; }
+  .stat-box { background: #fff; border-radius: var(--radius-sm); padding: 0.85em 0.9em; text-align: center; box-shadow: 0 4px 14px -8px rgba(7, 34, 41, 0.25); }
+  .stat-box__value { display: block; font-family: var(--font-display); font-size: 1.45rem; color: var(--teal-heading); line-height: 1.1; }
+  .stat-box__label { font-size: 0.72rem; color: var(--ink-soft); margin-top: 0.3em; }
+  .insights-subhead { font-size: 0.95rem; color: var(--teal-heading); margin: 1.5em 0 0.6em; }
+  .pop-row { display: flex; align-items: center; gap: 0.6em; margin-bottom: 0.5em; font-size: 0.86rem; }
+  .pop-row__label { min-width: 150px; flex-shrink: 0; }
+  .pop-row__bar-track { flex: 1; height: 9px; background: var(--sand-200); border-radius: 999px; overflow: hidden; }
+  .pop-row__bar-fill { height: 100%; background: linear-gradient(90deg, var(--teal-700), var(--teal-900)); border-radius: 999px; }
+  .pop-row__count { min-width: 68px; text-align: end; color: var(--ink-soft); font-size: 0.78rem; }
+  .weekday-chart { display: flex; align-items: flex-end; gap: 0.5em; height: 84px; }
+  .weekday-chart__col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+  .weekday-chart__bar { width: 100%; max-width: 30px; background: linear-gradient(180deg, var(--teal-600), var(--teal-900)); border-radius: 6px 6px 0 0; min-height: 3px; }
+  .weekday-chart__label { font-size: 0.72rem; color: var(--ink-soft); margin-top: 0.35em; }
+  .engagement-dot { display: inline-block; width: 0.6em; height: 0.6em; border-radius: 50%; margin-inline-end: 0.4em; vertical-align: middle; }
+  .engagement-active .engagement-dot { background: #2f9e5e; }
+  .engagement-at_risk .engagement-dot { background: var(--gold-600); }
+  .engagement-dormant .engagement-dot { background: #c0453f; }
+  .engagement-never_checked_in .engagement-dot, .engagement-no_children .engagement-dot { background: #9aa5a8; }
 </style>
 </head>
 <body class="auth-pending">
@@ -52,6 +72,16 @@
 <main class="admin-page" id="admin-root" hidden>
   <h1>ניהול מנויים</h1>
   <p class="admin-page__sub">הענקת/ביטול גישה ידנית, ורשימת כל המנויים הקיימים.</p>
+
+  <div class="admin-card">
+    <h2>📊 תובנות ושימוש</h2>
+    <p class="admin-page__sub" style="margin-bottom:1em">תמונת מצב על בסיס הנתונים שכבר נאספים היום (הרשמות, סימוני-רובריקה, פרסים) - עדיין בלי מעקב-צפיות בתוכן האתר עצמו.</p>
+    <div class="stats-grid" id="engagement-stats"><div class="stat-box">טוען...</div></div>
+    <p class="insights-subhead">פופולריות רובריקות (בחירה מול סימון בפועל)</p>
+    <div id="item-popularity"></div>
+    <p class="insights-subhead">סימונים לפי יום בשבוע</p>
+    <div class="weekday-chart" id="weekday-chart"></div>
+  </div>
 
   <div class="admin-card">
     <h2>➕ הענקת גישה</h2>
@@ -87,12 +117,13 @@
 
   <div class="admin-card">
     <h2>📋 כל המנויים</h2>
+    <p class="admin-page__sub" style="margin-bottom:1em">עמודת "מעורבות" נגזרת מסימון אחרון בפועל: פעיל/ה = ב-3 ימים האחרונים, בסיכון = 4-14 יום, רדום/ה = מעל 14 יום.</p>
     <div style="overflow-x:auto">
       <table class="admin-table">
         <thead>
-          <tr><th>אימייל</th><th>סטטוס</th><th>מקור</th><th>נוצר</th><th></th></tr>
+          <tr><th>אימייל</th><th>סטטוס</th><th>נרשם/ה</th><th>ילדים</th><th>נק' מצטברות</th><th>סימון אחרון</th><th>מעורבות</th><th></th></tr>
         </thead>
-        <tbody id="subscribers-tbody"><tr><td colspan="5">טוען...</td></tr></tbody>
+        <tbody id="subscribers-tbody"><tr><td colspan="8">טוען...</td></tr></tbody>
       </table>
     </div>
   </div>
@@ -128,7 +159,8 @@
 
     document.getElementById("admin-root").hidden = false;
     revealPage();
-    await loadSubscribers(supabase);
+    await loadEngagementOverview(supabase);
+    await loadFamilyEngagement(supabase);
     await loadChecklistItems(supabase);
 
     document.getElementById("checklist-item-form").addEventListener("submit", async (e) => {
@@ -166,7 +198,7 @@
       } else {
         statusEl.textContent = `גישה הוענקה ל-${email} ✓`;
         document.getElementById("grant-email").value = "";
-        await loadSubscribers(supabase);
+        await loadFamilyEngagement(supabase);
       }
     });
   }
@@ -224,21 +256,33 @@
     });
   }
 
-  async function loadSubscribers(supabase) {
+  const ENGAGEMENT_LABEL = {
+    active: "פעיל/ה",
+    at_risk: "בסיכון",
+    dormant: "רדום/ה",
+    never_checked_in: "לא סימן/ה",
+    no_children: "בלי ילדים",
+  };
+
+  async function loadFamilyEngagement(supabase) {
     const tbody = document.getElementById("subscribers-tbody");
-    const { data, error } = await supabase.rpc("admin_list_subscribers");
-    if (error) { tbody.innerHTML = `<tr><td colspan="5">שגיאה: ${error.message}</td></tr>`; return; }
-    if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="5">אין מנויים עדיין.</td></tr>`; return; }
+    const { data, error } = await supabase.rpc("admin_list_family_engagement");
+    if (error) { tbody.innerHTML = `<tr><td colspan="8">שגיאה: ${error.message}</td></tr>`; return; }
+    if (!data || data.length === 0) { tbody.innerHTML = `<tr><td colspan="8">אין מנויים עדיין.</td></tr>`; return; }
     tbody.innerHTML = data.map((row) => {
-      const date = row.created_at ? new Date(row.created_at).toLocaleDateString("he-IL") : "";
+      const joined = row.created_at ? new Date(row.created_at).toLocaleDateString("he-IL") : "";
+      const lastCheckin = row.last_checkin_date ? new Date(row.last_checkin_date).toLocaleDateString("he-IL") : "-";
       const revokeBtn = row.plan_status !== "canceled"
         ? `<button type="button" class="btn btn--outline revoke-btn" data-email="${row.email}">ביטול</button>`
         : "";
       return `<tr>
         <td>${row.email}</td>
         <td><span class="status-pill status-${row.plan_status}">${row.plan_status}</span></td>
-        <td>${row.provider || "-"}</td>
-        <td>${date}</td>
+        <td>${joined}</td>
+        <td>${row.active_children_count}</td>
+        <td>${row.lifetime_points}</td>
+        <td>${lastCheckin}</td>
+        <td class="engagement-${row.engagement_status}"><span class="engagement-dot"></span>${ENGAGEMENT_LABEL[row.engagement_status] || row.engagement_status}</td>
         <td class="admin-table__actions">${revokeBtn}</td>
       </tr>`;
     }).join("");
@@ -247,9 +291,62 @@
       btn.addEventListener("click", async () => {
         if (!confirm(`לבטל את הגישה של ${btn.dataset.email}?`)) return;
         await supabase.rpc("admin_revoke_subscriber", { target_email: btn.dataset.email });
-        await loadSubscribers(supabase);
+        await loadFamilyEngagement(supabase);
       });
     });
+  }
+
+  async function loadEngagementOverview(supabase) {
+    const { data, error } = await supabase.rpc("admin_engagement_overview");
+    if (error) {
+      document.getElementById("engagement-stats").innerHTML = `<p>שגיאה: ${error.message}</p>`;
+      return;
+    }
+    renderStats(data);
+    renderItemPopularity(data.item_popularity || [], data.families_with_children || 0);
+    renderWeekdayChart(data.weekday_distribution || [0, 0, 0, 0, 0, 0, 0]);
+  }
+
+  function renderStats(o) {
+    const items = [
+      [`${o.active_subscribers}/${o.total_subscribers}`, "מנויים פעילים"],
+      [o.signups_7d, "הרשמות ב-7 ימים"],
+      [o.families_with_children, "משפחות עם ילדים"],
+      [o.families_active_7d, "פעילות ב-7 ימים"],
+      [o.families_ever_checked_in, "סימנו אי-פעם"],
+      [o.total_checkins, `סה"כ סימונים`],
+      [o.avg_children_per_active_family, "ממוצע ילדים למשפחה"],
+      [o.custom_items_created, "רובריקות מותאמות-אישית"],
+      [o.rewards_claimed_total, "פרסים שמומשו"],
+    ];
+    document.getElementById("engagement-stats").innerHTML = items
+      .map(([v, l]) => `<div class="stat-box"><span class="stat-box__value">${v}</span><span class="stat-box__label">${l}</span></div>`)
+      .join("");
+  }
+
+  function renderItemPopularity(items, totalFamilies) {
+    const host = document.getElementById("item-popularity");
+    if (!items.length) { host.innerHTML = `<p class="admin-page__sub">אין נתונים עדיין.</p>`; return; }
+    const denom = Math.max(1, totalFamilies);
+    host.innerHTML = items.map((i) => {
+      const pct = Math.min(100, Math.round((i.families_selected / denom) * 100));
+      return `<div class="pop-row">
+        <span class="pop-row__label">${i.icon || ""} ${i.label_he}</span>
+        <span class="pop-row__bar-track"><span class="pop-row__bar-fill" style="width:${pct}%"></span></span>
+        <span class="pop-row__count">${i.families_selected} משפ'</span>
+        <span class="pop-row__count">${i.checkins_count} סימונים</span>
+      </div>`;
+    }).join("");
+  }
+
+  function renderWeekdayChart(dist) {
+    const labels = ["א", "ב", "ג", "ד", "ה", "ו", "ש"];
+    const max = Math.max(1, ...dist);
+    document.getElementById("weekday-chart").innerHTML = dist.map((n, i) => `
+      <div class="weekday-chart__col">
+        <div class="weekday-chart__bar" style="height:${Math.max(4, Math.round((n / max) * 100))}%" title="${n}"></div>
+        <span class="weekday-chart__label">${labels[i]}</span>
+      </div>`).join("");
   }
 
   init();
