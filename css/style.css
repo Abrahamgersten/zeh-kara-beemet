@@ -289,11 +289,11 @@ h1, h2, h3 {
   color: var(--gold-300);
   opacity: 0;
   animation: sparkle-twinkle 3.6s ease-in-out infinite;
-  filter: drop-shadow(0 0 4px rgba(255, 210, 143, 0.75));
+  filter: drop-shadow(0 0 3px rgba(255, 210, 143, 0.6));
 }
 @keyframes sparkle-twinkle {
   0%, 100% { opacity: 0; transform: scale(0.5) rotate(0deg); }
-  50% { opacity: 1; transform: scale(1.1) rotate(20deg); }
+  50% { opacity: 0.8; transform: scale(1.05) rotate(20deg); }
 }
 /* ירח חדש מדי פעם: מופיע לאט, מרחף מעט, ונעלם (setupMoon ב-js/app.js). הסהר נבנה ב-CSS בלבד
    (צל פנימי על עיגול) כדי שייראה זהה בכל מכשיר - אימוג'י 🌙 נראה שונה בכל פלטפורמה. */

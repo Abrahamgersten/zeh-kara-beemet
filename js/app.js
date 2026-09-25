@@ -642,14 +642,17 @@ function setupPlayers() {
 function setupSparkles() {
   const wrap = document.querySelector(".hero__sparkles");
   if (!wrap) return;
-  const count = 18;
+  // הכמות לפי שטח ההירו, לא מספר קבוע: ב"אי היהלומים" יש 16 כוכבים על ~830,000 פיקסלים רבועים
+  // (כוכב לכל ~52,000). ההירו כאן נמוך יותר, אז מספר קבוע נראה צפוף יותר - כאן כוכב לכל ~55,000, בין 8 ל-14.
+  const box = wrap.getBoundingClientRect();
+  const count = Math.max(8, Math.min(14, Math.round((box.width * box.height) / 55000)));
   for (let i = 0; i < count; i++) {
     const s = document.createElement("span");
     s.className = "sparkle";
     s.textContent = Math.random() > 0.5 ? "✦" : "✧";
     s.style.left = `${Math.random() * 100}%`;
     s.style.top = `${Math.random() * 100}%`;
-    s.style.fontSize = `${8 + Math.random() * 16}px`;
+    s.style.fontSize = `${7 + Math.random() * 12}px`;
     s.style.animationDelay = `${Math.random() * 3.6}s`;
     s.style.animationDuration = `${3 + Math.random() * 2.5}s`;
     wrap.appendChild(s);

@@ -647,14 +647,17 @@ function setupPlayers() {
 function setupSparkles() {
   const wrap = document.querySelector(".hero__sparkles");
   if (!wrap) return;
-  const count = 18;
+  // Count scales with the hero's area instead of being fixed: "Diamond Island" has 16 stars over ~830,000 px²
+  // (one per ~52,000). This hero is shorter, so a fixed count looked denser - here one per ~55,000, clamped to 8-14.
+  const box = wrap.getBoundingClientRect();
+  const count = Math.max(8, Math.min(14, Math.round((box.width * box.height) / 55000)));
   for (let i = 0; i < count; i++) {
     const s = document.createElement("span");
     s.className = "sparkle";
     s.textContent = Math.random() > 0.5 ? "✦" : "✧";
     s.style.left = `${Math.random() * 100}%`;
     s.style.top = `${Math.random() * 100}%`;
-    s.style.fontSize = `${8 + Math.random() * 16}px`;
+    s.style.fontSize = `${7 + Math.random() * 12}px`;
     s.style.animationDelay = `${Math.random() * 3.6}s`;
     s.style.animationDuration = `${3 + Math.random() * 2.5}s`;
     wrap.appendChild(s);
