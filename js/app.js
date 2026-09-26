@@ -147,7 +147,7 @@ const CATEGORIES = [
       {
         title: "רעיון לפרשת בראשית",
         description: "מה זה אומר שהאדם נברא \"בצלם אלוקים\"? ולמה לכל יהודי, גם הפשוט ביותר, יש כוח עצום להשפיע לטובה על כל העולם - כי כולנו בני מלך.",
-        image: "assets/images/parasha-idea-bereishit-wheel.jpg",
+        image: "assets/images/parasha-idea-bereishit.jpeg",
         audio: "assets/audio/parasha-idea-bereishit-sfx4.mp3",
         pdf: "assets/pdf/parasha-idea-bereishit.pdf",
         pointsItemKey: "parasha-report-weekly",

@@ -149,7 +149,7 @@ const CATEGORIES = [
       {
         title: "A Thought on Parashat Bereishit",
         description: "What does it mean that man was created \"in the image of G-d\"? An idea about the tremendous power that every single Jew holds - and why we should never take it for granted.",
-        image: "../assets/images/parasha-idea-bereishit-wheel.jpg",
+        image: "../assets/images/en/parasha-idea-bereishit.jpeg",
         audio: "../assets/audio/en/parasha-idea-bereishit-sfx3.mp3",
         pdf: "../assets/pdf/parasha-idea-bereishit-en.pdf",
         pointsItemKey: "parasha-report-weekly",
