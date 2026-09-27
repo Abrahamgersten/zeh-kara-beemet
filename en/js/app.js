@@ -916,6 +916,35 @@ function setupHeaderOffsetTracking() {
 }
 
 /* ---------------------------------------------------------------
+   Post-font-load re-snap (added 2026-09-28) - the real remaining cause of
+   "clicking a category lands a bit above the target", still happening after
+   the sticky-header fixes: the fonts (Suez One/Heebo, loaded with
+   display=swap) swap from the fallback font to the real one *after* the
+   page is already built - measured this in practice as ~250px of total page
+   height change (many headings set in Suez One, each a little taller/
+   shorter than the fallback). If the user clicks a category link *before*
+   that swap finishes (likely on a first visit / slow connection - on a
+   repeat visit the fonts are already cached and this never happens at all),
+   the browser computes the scroll target using the shorter fallback layout;
+   the moment the font actually swaps, everything above the target "grows"
+   and the target moves down without the scroll position following it -
+   exactly "lands on the category above". Fix: once the fonts have actually
+   settled (document.fonts.ready), if the URL still has a #hash pointing at
+   an existing element, re-align to it (scrollIntoView honors scroll-margin-
+   top just like normal anchor navigation). Also on window load (after every
+   image) as a second, cheap, general-purpose safety net.
+--------------------------------------------------------------- */
+function setupHashCorrection() {
+  const resnap = () => {
+    if (!location.hash) return;
+    const el = document.getElementById(location.hash.slice(1));
+    if (el) el.scrollIntoView({ block: "start" });
+  };
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(resnap);
+  window.addEventListener("load", resnap, { once: true });
+}
+
+/* ---------------------------------------------------------------
    Init
 --------------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
@@ -931,5 +960,6 @@ document.addEventListener("DOMContentLoaded", () => {
   setupScrollReveal();
   setupInstallBanner();
   setupHeaderOffsetTracking();
+  setupHashCorrection();
   setupServiceWorker();
 });

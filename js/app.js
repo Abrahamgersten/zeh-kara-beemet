@@ -907,6 +907,31 @@ function setupHeaderOffsetTracking() {
 }
 
 /* ---------------------------------------------------------------
+   תיקון-נחיתה אחרי טעינת גופנים (נוסף 2026-09-28) - הסיבה האמיתית ל"קליק על
+   קטגוריה נוחת קצת מעל היעד" שנשארה גם אחרי תיקוני ה-sticky: הגופנים
+   (Suez One/Heebo, נטענים עם display=swap) מוחלפים מגופן-גיבוי לגופן האמיתי
+   *אחרי* שהדף כבר נבנה - ומדדתי בפועל שזה משנה את הגובה הכולל של הדף בכ-250
+   פיקסל (המון כותרות עם Suez One, כל אחת קצת שונה בגובה מהגיבוי). אם
+   המשתמש לוחץ על קטגוריה **לפני** שההחלפה הזאת הושלמה (סביר בביקור ראשון/
+   רשת איטית - בביקור חוזר הגופנים כבר בקאש והבעיה לא קיימת בכלל), הדפדפן
+   מחשב את מיקום הגלילה לפי הפריסה הקצרה-יותר של גופן-הגיבוי; ברגע שהגופן
+   מוחלף בפועל כל מה שמעל היעד "תופח", והיעד זז מטה בלי שהגלילה עוקבת אחריו -
+   בדיוק "נוחת על הקטגוריה שמעל". התיקון: ברגע שהגופנים באמת התייצבו
+   (document.fonts.ready) - אם עדיין יש #hash בכתובת שמצביע על אלמנט קיים,
+   מיישרים אליו מחדש (scrollIntoView מכבד scroll-margin-top כמו ניווט-עוגן
+   רגיל). גם ב-window load (אחרי כל התמונות) כרשת-ביטחון נוספת, זולה וכללית.
+--------------------------------------------------------------- */
+function setupHashCorrection() {
+  const resnap = () => {
+    if (!location.hash) return;
+    const el = document.getElementById(location.hash.slice(1));
+    if (el) el.scrollIntoView({ block: "start" });
+  };
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(resnap);
+  window.addEventListener("load", resnap, { once: true });
+}
+
+/* ---------------------------------------------------------------
    Init
 --------------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
@@ -922,5 +947,6 @@ document.addEventListener("DOMContentLoaded", () => {
   setupScrollReveal();
   setupInstallBanner();
   setupHeaderOffsetTracking();
+  setupHashCorrection();
   setupServiceWorker();
 });
