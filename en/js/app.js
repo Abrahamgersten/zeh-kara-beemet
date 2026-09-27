@@ -940,8 +940,25 @@ function setupHashCorrection() {
     const el = document.getElementById(location.hash.slice(1));
     if (el) el.scrollIntoView({ block: "start" });
   };
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(resnap);
-  window.addEventListener("load", resnap, { once: true });
+  // 2026-09-28, round two: a single document.fonts.ready-based correction wasn't
+  // enough in practice (confirmed: Android Chrome, "only on the first click after
+  // a refresh") - fonts can settle *before* the user even clicks a category, at
+  // which point the one-shot promise already fired as a no-op (empty hash) and
+  // nothing is left to correct the click that comes after. More robust fix: every
+  // click on an anchor link (or a direct hashchange) schedules several staggered
+  // follow-up corrections, so no matter exactly when the font/image/anything-else
+  // that shifts content settles relative to the click, one of them will catch the
+  // final state.
+  let timers = [];
+  const scheduleCorrections = () => {
+    timers.forEach(clearTimeout);
+    timers = [100, 400, 900, 1600].map((ms) => setTimeout(resnap, ms));
+  };
+  document.addEventListener("click", (e) => {
+    if (e.target.closest('a[href^="#"]')) scheduleCorrections();
+  });
+  window.addEventListener("hashchange", scheduleCorrections);
+  if (location.hash) scheduleCorrections(); // a direct link with a #hash already in the URL (not via a click)
 }
 
 /* ---------------------------------------------------------------

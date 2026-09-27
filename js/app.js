@@ -927,8 +927,24 @@ function setupHashCorrection() {
     const el = document.getElementById(location.hash.slice(1));
     if (el) el.scrollIntoView({ block: "start" });
   };
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(resnap);
-  window.addEventListener("load", resnap, { once: true });
+  // 2026-09-28, סבב שני: תיקון-יישור בודד שתלוי ב-document.fonts.ready לא הספיק
+  // בפועל (אושש: אנדרואיד כרום, "רק בלחיצה הראשונה אחרי רענון") - הפונטים
+  // יכולים להתייצב *לפני* שהמשתמש בכלל הספיק ללחוץ על קטגוריה, ואז ה-promise
+  // החד-פעמי כבר "נשרף" בלי טעם (מצא hash ריק) ואין יותר מי שיתקן את הלחיצה
+  // שבאה אחר כך. הפתרון החזק יותר: **כל** לחיצה על קישור-עוגן (או hashchange
+  // ישיר) מפעילה כמה תיקונים עוקבים ומדורגים בזמן (לא רק אחד), כך שלא משנה
+  // מתי בדיוק הפונט/תמונה/כל דבר אחר שמזיז תוכן מתייצב ביחס ללחיצה - אחד
+  // מהתיקונים המדורגים תמיד יתפוס את המצב הסופי.
+  let timers = [];
+  const scheduleCorrections = () => {
+    timers.forEach(clearTimeout);
+    timers = [100, 400, 900, 1600].map((ms) => setTimeout(resnap, ms));
+  };
+  document.addEventListener("click", (e) => {
+    if (e.target.closest('a[href^="#"]')) scheduleCorrections();
+  });
+  window.addEventListener("hashchange", scheduleCorrections);
+  if (location.hash) scheduleCorrections(); // קישור ישיר עם #hash כבר בכתובת (לא דרך לחיצה)
 }
 
 /* ---------------------------------------------------------------
