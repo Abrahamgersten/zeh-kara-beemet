@@ -258,7 +258,7 @@ const CATEGORIES = [
         title: "פרשת השבוע",
         description: "למה קוראים בכל שבת פרשה אחרת בתורה, מה זה קשור אלינו אחרי אלפי שנים, ואיך אפשר להקשיב לקריאה ולשאול: מה הפרשה הזאת רוצה ללמד אותי?",
         image: "assets/images/parasha-of-the-week.jpeg",
-        audio: "assets/audio/parasha-of-the-week-sfx4.mp3",
+        audio: "assets/audio/parasha-of-the-week-sfx5.mp3",
       },
     ],
   },

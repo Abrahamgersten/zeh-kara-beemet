@@ -260,7 +260,7 @@ const CATEGORIES = [
         title: "The Weekly Torah Portion",
         description: "Why do we read a different portion of the Torah every Shabbat, and what does it have to do with us thousands of years later? How to listen to the Torah reading and ask: what does this portion want to teach me?",
         image: "../assets/images/en/parasha-of-the-week.jpeg",
-        audio: "../assets/audio/en/parasha-of-the-week-sfx3.mp3",
+        audio: "../assets/audio/en/parasha-of-the-week-sfx4.mp3",
       },
     ],
   },
