@@ -879,20 +879,39 @@ function setupServiceWorker() {
 }
 
 /* ---------------------------------------------------------------
-   Actual header height (--header-h) - kept in sync so anchor links (landing
-   on a category, "About"/"All categories") end right below the sticky header
-   instead of being partly hidden under it or leaving a gap above it. The
-   height changes (one line on desktop vs. two lines once the nav wraps on
-   narrow screens, and the install banner appearing/disappearing above the
-   header) - ResizeObserver keeps this updated automatically.
+   Real sticky offset at the top of the page (--banner-h, --header-h).
+   .install-banner and .site-header are both position:sticky/top:0; when the
+   banner is shown, both would stack at the same top:0 and cover each other,
+   since neither "knows" how much room the other takes. --banner-h (0 when
+   the banner is hidden) is the top offset the header actually gets (in CSS:
+   .site-header{top:var(--banner-h)}) so it sits below the banner instead of
+   on top of it; --header-h is the sum of both - the total space occupied at
+   the top, which anchor links (landing on a category, "About"/"All
+   categories") account for (CSS: scroll-margin-top: calc(var(--header-h) +
+   10px)). The header's own height also changes (one line on desktop vs. two
+   once the nav wraps on narrow screens) - ResizeObserver on both elements
+   keeps this updated automatically (including the banner appearing/
+   disappearing - see also the MutationObserver on [hidden] as a fallback,
+   for cross-browser safety).
 --------------------------------------------------------------- */
 function setupHeaderOffsetTracking() {
+  const banner = document.getElementById("install-banner");
   const header = document.querySelector(".site-header");
-  if (!header || typeof ResizeObserver === "undefined") return;
+  if (!header) return;
   const update = () => {
-    document.documentElement.style.setProperty("--header-h", `${Math.ceil(header.getBoundingClientRect().height)}px`);
+    const bannerH = banner && !banner.hidden ? Math.ceil(banner.getBoundingClientRect().height) : 0;
+    const headerH = Math.ceil(header.getBoundingClientRect().height);
+    document.documentElement.style.setProperty("--banner-h", `${bannerH}px`);
+    document.documentElement.style.setProperty("--header-h", `${bannerH + headerH}px`);
   };
-  new ResizeObserver(update).observe(header);
+  if (typeof ResizeObserver !== "undefined") {
+    const ro = new ResizeObserver(update);
+    ro.observe(header);
+    if (banner) ro.observe(banner);
+  }
+  if (banner && typeof MutationObserver !== "undefined") {
+    new MutationObserver(update).observe(banner, { attributes: true, attributeFilter: ["hidden"] });
+  }
   update();
 }
 

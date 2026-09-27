@@ -872,19 +872,37 @@ function setupServiceWorker() {
 }
 
 /* ---------------------------------------------------------------
-   גובה ה-header בפועל (--header-h) - עוקב אחריו כדי שקישורי-העוגן (נחיתה על
-   מדור, "על הפרויקט", "כל הקטגוריות") ייחתו מיד מתחת לו ולא יישארו חלקית
-   מוסתרים תחתיו/עם רווח ריק מעליו. הגובה משתנה (שורה אחת בדסקטופ מול שתי
-   שורות כשה-nav עובר לשורה נוספת במסכים צרים, ורצועת-ההתקנה שמופיעה/נעלמת
-   מעל ה-header) - ResizeObserver מתעדכן אוטומטית בכל שינוי כזה.
+   מרווח דביק אמיתי בראש הדף (--banner-h, --header-h) - .install-banner
+   ו-.site-header שתיהן position:sticky/top:0; כששתיהן קיימות (הרצועה
+   מוצגת) הן היו נערמות זו על זו באותו top:0 ומכסות זו את זו, כי אף אחת לא
+   "יודעת" כמה מקום השנייה תופסת. --banner-h (0 כשהרצועה מוסתרת) הוא ה-top
+   שה-header מקבל בפועל (ב-css: .site-header{top:var(--banner-h)}) כדי לשבת
+   מתחתיה ולא עליה; --header-h הוא סכום שתיהן - המרווח הכולל התפוס למעלה,
+   שקישורי-העוגן (נחיתה על מדור, "על הפרויקט", "כל הקטגוריות") מתחשבים בו
+   (css: scroll-margin-top: calc(var(--header-h) + 10px)). גם גובה ה-header
+   עצמו משתנה (שורה אחת בדסקטופ מול שתיים כשה-nav עובר לשורה נוספת במסכים
+   צרים) - ResizeObserver על שני האלמנטים מתעדכן אוטומטית בכל שינוי כזה
+   (כולל הופעה/היעלמות של הרצועה - ראו גם ה-MutationObserver על [hidden]
+   כגיבוי, ליתר ביטחון בין דפדפנים).
 --------------------------------------------------------------- */
 function setupHeaderOffsetTracking() {
+  const banner = document.getElementById("install-banner");
   const header = document.querySelector(".site-header");
-  if (!header || typeof ResizeObserver === "undefined") return;
+  if (!header) return;
   const update = () => {
-    document.documentElement.style.setProperty("--header-h", `${Math.ceil(header.getBoundingClientRect().height)}px`);
+    const bannerH = banner && !banner.hidden ? Math.ceil(banner.getBoundingClientRect().height) : 0;
+    const headerH = Math.ceil(header.getBoundingClientRect().height);
+    document.documentElement.style.setProperty("--banner-h", `${bannerH}px`);
+    document.documentElement.style.setProperty("--header-h", `${bannerH + headerH}px`);
   };
-  new ResizeObserver(update).observe(header);
+  if (typeof ResizeObserver !== "undefined") {
+    const ro = new ResizeObserver(update);
+    ro.observe(header);
+    if (banner) ro.observe(banner);
+  }
+  if (banner && typeof MutationObserver !== "undefined") {
+    new MutationObserver(update).observe(banner, { attributes: true, attributeFilter: ["hidden"] });
+  }
   update();
 }
 

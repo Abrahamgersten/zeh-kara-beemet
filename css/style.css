@@ -1,7 +1,11 @@
 :root {
-  /* גובה ה-header הנוכחי, נמדד ומעודכן ב-js/app.js (updateHeaderOffset) - כי הוא
-     משתנה (68px בשורה אחת בדסקטופ, עד כ-118px כשה-nav עובר לשתי שורות במסכים
-     צרים) ולא ניתן לקבע במספר אחד; ה-fallback הוא רק לרגע שלפני שה-JS רץ. */
+  /* --banner-h + --header-h: נמדדים ומעודכנים ב-js/app.js (updateStickyOffsets) -
+     --banner-h הוא גובה רצועת-ההתקנה בפועל (0 כשהיא מוסתרת), --header-h הוא
+     סכום הרצועה+ה-header (המרווח הכולל שתפוס בפועל למעלה, בין אם יש רצועה
+     ובין אם לא). גובה ה-header עצמו משתנה (68px בשורה אחת בדסקטופ, עד כ-118px
+     כשה-nav עובר לשתי שורות במסכים צרים) ולא ניתן לקבע במספר אחד; ה-fallback
+     הוא רק לרגע שלפני שה-JS רץ. */
+  --banner-h: 0px;
   --header-h: 80px;
 
   --ink: #23343a;
@@ -150,7 +154,11 @@ h1, h2, h3 {
 /* ---------- Header ---------- */
 .site-header {
   position: sticky;
-  top: 0;
+  /* לא 0 קבוע: כש-.install-banner מוצגת (גם היא sticky, top:0, ולפניה ב-DOM)
+     שתי sticky ב-top:0 היו נערמות זו על זו ומכסות זו את זו - --banner-h
+     (js/app.js, updateStickyOffsets) הוא 0 כשהרצועה מוסתרת ואז ההתנהגות
+     זהה לגמרי למה שהיה. */
+  top: var(--banner-h, 0px);
   z-index: 40;
   background: rgba(15, 135, 147, 0.92);
   backdrop-filter: blur(8px);
