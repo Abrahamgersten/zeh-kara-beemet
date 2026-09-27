@@ -1,4 +1,9 @@
 :root {
+  /* גובה ה-header הנוכחי, נמדד ומעודכן ב-js/app.js (updateHeaderOffset) - כי הוא
+     משתנה (68px בשורה אחת בדסקטופ, עד כ-118px כשה-nav עובר לשתי שורות במסכים
+     צרים) ולא ניתן לקבע במספר אחד; ה-fallback הוא רק לרגע שלפני שה-JS רץ. */
+  --header-h: 80px;
+
   --ink: #23343a;
   --ink-soft: #4c6067;
 
@@ -65,7 +70,11 @@ body {
   background: var(--sand-100);
   -webkit-font-smoothing: antialiased;
   max-width: 100%;
-  overflow-x: hidden;
+  /* לא overflow-x: hidden כאן: כש-html וגם body מקבלים overflow לא-visible, שניהם
+     נהפכים לקונטיינר-גלילה משלהם (overflow-y מחושב auto באילוץ), וה-sticky של
+     .site-header/.install-banner מתייחס לגלילה הפנימית (שאף אחד לא באמת מגלגל)
+     במקום לגלילת הדף האמיתית - ולכן נשאר "דבוק" בכלל. hidden על html בלבד מספיק
+     כדי למנוע פס-גלילה אופקי, ולא שובר sticky (אומת 2026-09-28). */
 }
 
 img { max-width: 100%; display: block; }
@@ -411,7 +420,16 @@ h1, h2, h3 {
 /* ---------- Category sections ---------- */
 .category-section {
   padding: 4rem 1.25rem;
-  scroll-margin-top: 80px;
+  scroll-margin-top: calc(var(--header-h) + 10px);
+}
+/* #about/#categories הם יעדי-עוגן בדיוק כמו .category-section (קישורי ה-nav
+   הראשיים "על הפרויקט"/"כל הקטגוריות" וכפתורי ה-CTA בהירו מצביעים אליהם) -
+   בלעדי scroll-margin-top כאן, ה-header הדביק (עכשיו שהוא באמת דביק - ראו התיקון
+   ל-body { overflow-x } למעלה) היה מסתיר את תחילתם. רק scroll-margin, לא padding -
+   כדי לא לדרוס את ה-padding הייחודי של .about/.cat-nav. */
+#about,
+#categories {
+  scroll-margin-top: calc(var(--header-h) + 10px);
 }
 .category-section:nth-of-type(even) {
   background: var(--sand-200);

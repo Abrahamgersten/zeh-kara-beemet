@@ -872,6 +872,23 @@ function setupServiceWorker() {
 }
 
 /* ---------------------------------------------------------------
+   גובה ה-header בפועל (--header-h) - עוקב אחריו כדי שקישורי-העוגן (נחיתה על
+   מדור, "על הפרויקט", "כל הקטגוריות") ייחתו מיד מתחת לו ולא יישארו חלקית
+   מוסתרים תחתיו/עם רווח ריק מעליו. הגובה משתנה (שורה אחת בדסקטופ מול שתי
+   שורות כשה-nav עובר לשורה נוספת במסכים צרים, ורצועת-ההתקנה שמופיעה/נעלמת
+   מעל ה-header) - ResizeObserver מתעדכן אוטומטית בכל שינוי כזה.
+--------------------------------------------------------------- */
+function setupHeaderOffsetTracking() {
+  const header = document.querySelector(".site-header");
+  if (!header || typeof ResizeObserver === "undefined") return;
+  const update = () => {
+    document.documentElement.style.setProperty("--header-h", `${Math.ceil(header.getBoundingClientRect().height)}px`);
+  };
+  new ResizeObserver(update).observe(header);
+  update();
+}
+
+/* ---------------------------------------------------------------
    Init
 --------------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
@@ -886,5 +903,6 @@ document.addEventListener("DOMContentLoaded", () => {
   setupMoon();
   setupScrollReveal();
   setupInstallBanner();
+  setupHeaderOffsetTracking();
   setupServiceWorker();
 });

@@ -34,6 +34,11 @@
   .status-active { background: var(--teal-200); color: var(--teal-heading); }
   .status-past_due { background: var(--gold-100); color: var(--gold-ink); }
   .status-canceled { background: #f1e4e4; color: #8a3a3a; }
+  .status-permanent { background: var(--teal-200); color: var(--teal-heading); }
+  .status-paid { background: var(--teal-200); color: var(--teal-heading); }
+  .status-trial_active { background: var(--gold-100); color: var(--gold-ink); }
+  .status-trial_expired { background: #f1e4e4; color: #8a3a3a; }
+  .access-type-sub { display: block; font-size: 0.76rem; color: var(--ink-soft); margin-top: 0.2em; }
   .admin-table__actions button { font-size: 0.85rem; padding: 0.3em 0.8em; }
   .admin-denied { text-align: center; padding: 4rem 1.25rem; color: var(--ink-soft); }
 
@@ -97,8 +102,10 @@
     <h2>➕ הענקת גישה</h2>
     <form id="grant-form" class="admin-form-row">
       <input type="email" id="grant-email" placeholder="email@example.com" required autocomplete="off">
-      <button type="submit" class="btn btn--primary">הענק גישה</button>
+      <button type="submit" class="btn btn--primary" data-grant-type="permanent">הענק גישה לצמיתות</button>
+      <button type="submit" class="btn btn--outline" data-grant-type="trial">הענק גישת נסיון לחודש</button>
     </form>
+    <p class="admin-page__sub" style="margin:0.4em 0 0">גישת נסיון פגה אוטומטית אחרי חודש - בהתחברות הבאה שלהם הם יופנו לדף ההצטרפות הרגיל (1 ₪ ואז 18 ₪ לחודש). ניתן להעניק "לצמיתות" בכל שלב כדי להפוך נסיון לקבוע.</p>
     <p id="grant-status" class="admin-status" role="status" aria-live="polite"></p>
   </div>
 
@@ -131,7 +138,7 @@
     <div style="overflow-x:auto">
       <table class="admin-table">
         <thead>
-          <tr><th>אימייל</th><th>סטטוס</th><th>נרשם/ה</th><th>ילדים</th><th>נק' מצטברות</th><th>סימון אחרון</th><th>מעורבות</th><th></th></tr>
+          <tr><th>אימייל</th><th>סוג גישה</th><th>נרשם/ה</th><th>ילדים</th><th>נק' מצטברות</th><th>סימון אחרון</th><th>מעורבות</th><th></th></tr>
         </thead>
         <tbody id="subscribers-tbody"><tr><td colspan="8">טוען...</td></tr></tbody>
       </table>
@@ -200,14 +207,23 @@
 
     document.getElementById("grant-form").addEventListener("submit", async (e) => {
       e.preventDefault();
+      // e.submitter הוא הכפתור שבפועל הפעיל את השליחה (תמיכה רחבה בדפדפנים
+      // מודרניים) - כך יודעים אם ביקשו "לצמיתות" או "נסיון לחודש" מאותו טופס,
+      // בלי שני טפסים נפרדים. Enter (ללא לחיצה על כפתור) נופל לברירת המחדל
+      // "לצמיתות", כמו שהיה עד היום.
+      const grantType = e.submitter && e.submitter.dataset.grantType === "trial" ? "trial" : "permanent";
       const email = document.getElementById("grant-email").value.trim();
       const statusEl = document.getElementById("grant-status");
       statusEl.textContent = "מעניק גישה...";
-      const { error } = await supabase.rpc("admin_grant_subscriber", { target_email: email });
+      const { error } = grantType === "trial"
+        ? await supabase.rpc("admin_grant_trial_subscriber", { target_email: email, months: 1 })
+        : await supabase.rpc("admin_grant_subscriber", { target_email: email });
       if (error) {
         statusEl.textContent = "שגיאה: " + error.message;
       } else {
-        statusEl.textContent = `גישה הוענקה ל-${email} ✓`;
+        statusEl.textContent = grantType === "trial"
+          ? `גישת נסיון לחודש הוענקה ל-${email} ✓`
+          : `גישה לצמיתות הוענקה ל-${email} ✓`;
         document.getElementById("grant-email").value = "";
         await loadFamilyEngagement(supabase);
       }
@@ -275,6 +291,14 @@
     no_children: "בלי ילדים",
   };
 
+  const ACCESS_TYPE_LABEL = {
+    permanent: "לצמיתות",
+    paid: "מנוי משלם",
+    trial_active: "נסיון",
+    trial_expired: "נסיון פג",
+    canceled: "בוטל",
+  };
+
   async function loadFamilyEngagement(supabase) {
     const tbody = document.getElementById("subscribers-tbody");
     const { data, error } = await supabase.rpc("admin_list_family_engagement");
@@ -286,9 +310,16 @@
       const revokeBtn = row.plan_status !== "canceled"
         ? `<button type="button" class="btn btn--outline revoke-btn" data-email="${row.email}">ביטול</button>`
         : "";
+      const accessLabel = ACCESS_TYPE_LABEL[row.access_type] || row.access_type;
+      // בגישת-נסיון (בין אם עדיין פעילה ובין אם כבר פגה) מציגים גם את תאריך
+      // הפקיעה מתחת לתגית - כדי שאברהם יראה בבירור מתי הגישה נגמרת/נגמרה,
+      // בלי לפתוח כל שורה בנפרד.
+      const expirySub = (row.access_type === "trial_active" || row.access_type === "trial_expired") && row.current_period_end
+        ? `<span class="access-type-sub">${row.access_type === "trial_expired" ? "פג ב-" : "עד "}${new Date(row.current_period_end).toLocaleDateString("he-IL")}</span>`
+        : "";
       return `<tr>
         <td>${row.email}</td>
-        <td><span class="status-pill status-${row.plan_status}">${row.plan_status}</span></td>
+        <td><span class="status-pill status-${row.access_type}">${accessLabel}</span>${expirySub}</td>
         <td>${joined}</td>
         <td>${row.active_children_count}</td>
         <td>${row.lifetime_points}</td>

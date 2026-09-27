@@ -57,12 +57,18 @@ export async function fetchEntitlement() {
   const supabase = getSupabaseClient();
   if (!supabase) return null;
   await supabase.rpc("claim_subscriber");
-  const { data } = await supabase.from("subscribers").select("plan_status, email").maybeSingle();
+  const { data } = await supabase.from("subscribers").select("plan_status, email, current_period_end").maybeSingle();
   return data || null;
 }
 
+/** פעיל, וגם - אם יש current_period_end (מנוי משלם עם תאריך-חידוש, או גישת-
+ * נסיון שהוענקה ע"י אברהם ל-admin.html) - שהתאריך הזה עוד לא עבר. גישה
+ * שהוענקה "לצמיתות" (admin_grant_subscriber) לא מקבלת current_period_end
+ * בכלל, ולכן לעולם לא פוקעת מהבדיקה הזאת. */
 export function isEntitled(row) {
-  return Boolean(row && row.plan_status === "active");
+  if (!row || row.plan_status !== "active") return false;
+  if (!row.current_period_end) return true;
+  return new Date(row.current_period_end).getTime() > Date.now();
 }
 
 /** מסירה את מסך-ה"טוען" (ראו class="auth-pending" ב-body של כל דף מוגן/ציבורי -

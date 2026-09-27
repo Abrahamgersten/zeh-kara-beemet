@@ -879,6 +879,24 @@ function setupServiceWorker() {
 }
 
 /* ---------------------------------------------------------------
+   Actual header height (--header-h) - kept in sync so anchor links (landing
+   on a category, "About"/"All categories") end right below the sticky header
+   instead of being partly hidden under it or leaving a gap above it. The
+   height changes (one line on desktop vs. two lines once the nav wraps on
+   narrow screens, and the install banner appearing/disappearing above the
+   header) - ResizeObserver keeps this updated automatically.
+--------------------------------------------------------------- */
+function setupHeaderOffsetTracking() {
+  const header = document.querySelector(".site-header");
+  if (!header || typeof ResizeObserver === "undefined") return;
+  const update = () => {
+    document.documentElement.style.setProperty("--header-h", `${Math.ceil(header.getBoundingClientRect().height)}px`);
+  };
+  new ResizeObserver(update).observe(header);
+  update();
+}
+
+/* ---------------------------------------------------------------
    Init
 --------------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
@@ -893,5 +911,6 @@ document.addEventListener("DOMContentLoaded", () => {
   setupMoon();
   setupScrollReveal();
   setupInstallBanner();
+  setupHeaderOffsetTracking();
   setupServiceWorker();
 });
