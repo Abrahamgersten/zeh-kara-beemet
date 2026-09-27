@@ -124,12 +124,14 @@ const CATEGORIES = [
     episodes: [
       {
         title: "פרשת בראשית",
+        parasha: "בראשית",
         description: "ששת ימי הבריאה, אדם וחווה בגן עדן וסיפור קין והבל - והמסר הגדול של הפרשה על היכולת לבחור בכל יום מחדש.",
         image: "assets/images/parasha-bereishit.jpeg",
         audio: "assets/audio/parasha-bereishit-sfx4.mp3",
       },
       {
         title: "פרשת נח",
+        parasha: "נח",
         description: "המבול שכיסה את העולם, תיבת נח ובעלי החיים שנכנסו זוג-זוג, ועד מגדל בבל - ומסר חשוב: גם כשכולם סביבנו הולכים בכיוון מסוים, אנחנו יכולים לבחור בדרך שלנו.",
         image: "assets/images/parasha-noach.jpeg",
         audio: "assets/audio/parasha-noach-sfx4.mp3",
@@ -146,6 +148,7 @@ const CATEGORIES = [
     episodes: [
       {
         title: "רעיון לפרשת בראשית",
+        parasha: "בראשית",
         description: "מה זה אומר שהאדם נברא \"בצלם אלוקים\"? ולמה לכל יהודי, גם הפשוט ביותר, יש כוח עצום להשפיע לטובה על כל העולם - כי כולנו בני מלך.",
         image: "assets/images/parasha-idea-bereishit.jpeg",
         audio: "assets/audio/parasha-idea-bereishit-sfx4.mp3",
@@ -154,6 +157,7 @@ const CATEGORIES = [
       },
       {
         title: "רעיון לפרשת נח",
+        parasha: "נח",
         description: "למה גם בעלי החיים נשטפו במבול, הרי אין להם בחירה בין טוב לרע? רעיון עמוק על הכוח העצום שיש לבחירות שלנו להשפיע - לטובה ולרעה - על כל מה שסביבנו.",
         image: "assets/images/parasha-idea-noach.jpeg",
         audio: "assets/audio/parasha-idea-noach-sfx4.mp3",
@@ -425,12 +429,17 @@ function spotDiffCardHTML(cat, ep, idx) {
 }
 
 const INITIAL_VISIBLE_EPISODES = 4;
+const PARASHA_CATEGORY_IDS = ["parasha-what", "parasha-idea"];
 
 function renderCategorySections() {
   const host = document.getElementById("category-sections");
   host.innerHTML = CATEGORIES.map((cat) => {
     // הפרק שנוסף אחרון מוצג ראשון, בלי קשר לסדר בו הוא נוסף למערך הנתונים.
-    const episodesNewestFirst = [...cat.episodes].reverse();
+    let episodesNewestFirst = [...cat.episodes].reverse();
+    // מדורי הפרשה: הפרשה של השבת הקרובה בראש, ואחריה הבאות בתור (js/parasha-order.js).
+    if (PARASHA_CATEGORY_IDS.includes(cat.id) && typeof orderEpisodesByParasha === "function") {
+      episodesNewestFirst = orderEpisodesByParasha(episodesNewestFirst);
+    }
     const hasSample = cat.episodes.some((ep) => ep.sample);
     const overflowCount = Math.max(0, episodesNewestFirst.length - INITIAL_VISIBLE_EPISODES);
 

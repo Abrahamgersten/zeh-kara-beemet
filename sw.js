@@ -1,4 +1,4 @@
-const SHELL_CACHE = "zkb-shell-v4";
+const SHELL_CACHE = "zkb-shell-v5";
 const MEDIA_CACHE = "zkb-media-v15";
 
 const SHELL_ASSETS = [
@@ -6,6 +6,7 @@ const SHELL_ASSETS = [
   "./index.html",
   "./css/style.css",
   "./js/app.js",
+  "./js/parasha-order.js",
   "./manifest.json",
   "./icons/icon-192.png",
   "./icons/icon-512.png",

@@ -126,12 +126,14 @@ const CATEGORIES = [
     episodes: [
       {
         title: "Parashat Bereishit",
+        parasha: "בראשית",
         description: "The six days of creation, Adam and Eve in the Garden of Eden, and the story of Cain and Abel - and the big lesson of the parsha about the power to choose, every single day.",
         image: "../assets/images/en/parasha-bereishit.jpeg",
         audio: "../assets/audio/en/parasha-bereishit-sfx3.mp3",
       },
       {
         title: "Parashat Noach",
+        parasha: "נח",
         description: "The flood, Noah's ark and the animals that entered two by two, all the way to the Tower of Babel - and an important message: even when everyone around us is heading in one direction, we can still choose our own path.",
         image: "../assets/images/en/parasha-noach.jpeg",
         audio: "../assets/audio/en/parasha-noach-sfx3.mp3",
@@ -148,6 +150,7 @@ const CATEGORIES = [
     episodes: [
       {
         title: "A Thought on Parashat Bereishit",
+        parasha: "בראשית",
         description: "What does it mean that man was created \"in the image of G-d\"? An idea about the tremendous power that every single Jew holds - and why we should never take it for granted.",
         image: "../assets/images/en/parasha-idea-bereishit.jpeg",
         audio: "../assets/audio/en/parasha-idea-bereishit-sfx3.mp3",
@@ -156,6 +159,7 @@ const CATEGORIES = [
       },
       {
         title: "A Thought on Parashat Noach",
+        parasha: "נח",
         description: "Why were the animals swept away in the flood too, when they can't choose between good and evil? A deep idea about how much power our choices have to influence everything around us - for good, and for bad.",
         image: "../assets/images/en/parasha-idea-noach.jpeg",
         audio: "../assets/audio/en/parasha-idea-noach-sfx3.mp3",
@@ -429,6 +433,7 @@ function spotDiffCardHTML(cat, ep, idx) {
 }
 
 const INITIAL_VISIBLE_EPISODES = 4;
+const PARASHA_CATEGORY_IDS = ["parasha-what", "parasha-idea"];
 
 function renderCategorySections() {
   const host = document.getElementById("category-sections");
@@ -436,7 +441,11 @@ function renderCategorySections() {
     // Newest-added episode first, regardless of the order it was pushed into
     // the data array - keeps the freshest content most discoverable without
     // needing to remember to unshift instead of push when adding one.
-    const episodesNewestFirst = [...cat.episodes].reverse();
+    let episodesNewestFirst = [...cat.episodes].reverse();
+    // מדורי הפרשה: הפרשה של השבת הקרובה בראש, ואחריה הבאות בתור (js/parasha-order.js).
+    if (PARASHA_CATEGORY_IDS.includes(cat.id) && typeof orderEpisodesByParasha === "function") {
+      episodesNewestFirst = orderEpisodesByParasha(episodesNewestFirst);
+    }
     const hasSample = cat.episodes.some((ep) => ep.sample);
     const overflowCount = Math.max(0, episodesNewestFirst.length - INITIAL_VISIBLE_EPISODES);
 
