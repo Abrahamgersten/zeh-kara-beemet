@@ -435,15 +435,19 @@ function spotDiffCardHTML(cat, ep, idx) {
       <h3 class="content-card__title">${ep.title}</h3>
       <p class="content-card__desc">${ep.description}</p>
       <div class="spot-card__images">
-        <div class="spot-card__frame">
+        <div class="spot-card__item">
           <span class="spot-card__label">Image A</span>
+          <div class="spot-card__frame">
           <img src="${ep.imageA}" alt="Image A for comparison">
           ${markers}
+          </div>
         </div>
-        <div class="spot-card__frame">
+        <div class="spot-card__item">
           <span class="spot-card__label">Image B</span>
+          <div class="spot-card__frame">
           <img src="${ep.imageB}" alt="Image B for comparison">
           ${markers}
+          </div>
         </div>
       </div>
       <div class="spot-card__actions">
@@ -575,7 +579,7 @@ function setupSpotDiff() {
     const solved = card.classList.toggle("is-solved");
     btn.textContent = solved
       ? "Hide Solution"
-      : `Show Solution (${card.querySelectorAll(".spot-card__frame:first-child .spot-card__marker").length} differences)`;
+      : `Show Solution (${card.querySelectorAll(".spot-card__item:first-child .spot-card__marker").length} differences)`;
     if (solved) {
       const catEl = card.querySelector(".content-card__eyebrow");
       const titleEl = card.querySelector(".content-card__title");
