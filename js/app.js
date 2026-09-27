@@ -198,6 +198,7 @@ const CATEGORIES = [
     episodes: [
       {
         title: "גלגל ימי הבריאה",
+        parasha: "בראשית",
         description: "השוו בין שני ציורי ימי הבריאה ושבת ומצאו את כל ההבדלים ביניהם. לחצו על \"הצג פתרון\" כדי לראות איפה הם מסתתרים.",
         imageA: "assets/images/spot-diff-bereishit-a.jpg",
         imageB: "assets/images/spot-diff-bereishit-b.jpg",
@@ -215,6 +216,26 @@ const CATEGORIES = [
           { x: 87.1, y: 64.8 },
           { x: 61.1, y: 76.8 },
           { x: 81.3, y: 76.1 },
+        ],
+      },
+      {
+        title: "תיבת נח והקשת",
+        parasha: "נח",
+        description: "דף צביעה של פרשת נח: החיות יורדות מהתיבה אל היבשה, וקשת בשמיים. השוו בין שתי התמונות ומצאו את 10 ההבדלים. לחצו על \"הצג פתרון\" כדי לראות איפה הם מסתתרים.",
+        imageA: "assets/images/spot-diff-noach-a.jpg",
+        imageB: "assets/images/spot-diff-noach-b.jpg",
+        diffCount: 10,
+        spots: [
+          { x: 70.9, y: 13.6 },
+          { x: 89.3, y: 14.7 },
+          { x: 59.0, y: 29.5 },
+          { x: 39.8, y: 56.6 },
+          { x: 18.1, y: 58.0 },
+          { x: 59.7, y: 53.7 },
+          { x: 63.4, y: 76.5 },
+          { x: 36.8, y: 78.9 },
+          { x: 15.4, y: 87.6 },
+          { x: 73.7, y: 90.5 },
         ],
       },
     ],
@@ -429,7 +450,7 @@ function spotDiffCardHTML(cat, ep, idx) {
 }
 
 const INITIAL_VISIBLE_EPISODES = 4;
-const PARASHA_CATEGORY_IDS = ["parasha-what", "parasha-idea"];
+const PARASHA_CATEGORY_IDS = ["parasha-what", "parasha-idea", "spot-diff"];
 
 function renderCategorySections() {
   const host = document.getElementById("category-sections");

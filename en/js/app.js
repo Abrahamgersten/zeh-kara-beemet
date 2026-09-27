@@ -200,6 +200,7 @@ const CATEGORIES = [
     episodes: [
       {
         title: "The Days of Creation Wheel",
+        parasha: "בראשית",
         description: "Compare the two pictures of the days of creation and Shabbat, and find all the differences between them. Click \"Show Solution\" to see where they are hiding.",
         imageA: "../assets/images/spot-diff-bereishit-a.jpg",
         imageB: "../assets/images/spot-diff-bereishit-b.jpg",
@@ -217,6 +218,26 @@ const CATEGORIES = [
           { x: 87.1, y: 64.8 },
           { x: 61.1, y: 76.8 },
           { x: 81.3, y: 76.1 },
+        ],
+      },
+      {
+        title: "Noah's Ark and the Rainbow",
+        parasha: "נח",
+        description: "A Parashat Noach coloring picture: the animals walk down from the ark onto dry land, with a rainbow in the sky. Compare the two pictures and find the 10 differences. Click \"Show Solution\" to see where they are hiding.",
+        imageA: "../assets/images/spot-diff-noach-a.jpg",
+        imageB: "../assets/images/spot-diff-noach-b.jpg",
+        diffCount: 10,
+        spots: [
+          { x: 70.9, y: 13.6 },
+          { x: 89.3, y: 14.7 },
+          { x: 59.0, y: 29.5 },
+          { x: 39.8, y: 56.6 },
+          { x: 18.1, y: 58.0 },
+          { x: 59.7, y: 53.7 },
+          { x: 63.4, y: 76.5 },
+          { x: 36.8, y: 78.9 },
+          { x: 15.4, y: 87.6 },
+          { x: 73.7, y: 90.5 },
         ],
       },
     ],
@@ -433,7 +454,7 @@ function spotDiffCardHTML(cat, ep, idx) {
 }
 
 const INITIAL_VISIBLE_EPISODES = 4;
-const PARASHA_CATEGORY_IDS = ["parasha-what", "parasha-idea"];
+const PARASHA_CATEGORY_IDS = ["parasha-what", "parasha-idea", "spot-diff"];
 
 function renderCategorySections() {
   const host = document.getElementById("category-sections");
