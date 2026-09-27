@@ -161,7 +161,7 @@ const CATEGORIES = [
         description: "למה גם בעלי החיים נשטפו במבול, הרי אין להם בחירה בין טוב לרע? רעיון עמוק על הכוח העצום שיש לבחירות שלנו להשפיע - לטובה ולרעה - על כל מה שסביבנו.",
         image: "assets/images/parasha-idea-noach.jpeg",
         audio: "assets/audio/parasha-idea-noach-sfx4.mp3",
-        pdf: null,
+        pdf: "assets/pdf/parasha-idea-noach.pdf",
         pointsItemKey: "parasha-report-weekly",
       },
     ],

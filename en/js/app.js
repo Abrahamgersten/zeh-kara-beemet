@@ -163,7 +163,7 @@ const CATEGORIES = [
         description: "Why were the animals swept away in the flood too, when they can't choose between good and evil? A deep idea about how much power our choices have to influence everything around us - for good, and for bad.",
         image: "../assets/images/en/parasha-idea-noach.jpeg",
         audio: "../assets/audio/en/parasha-idea-noach-sfx3.mp3",
-        pdf: null,
+        pdf: "../assets/pdf/parasha-idea-noach-en.pdf",
         pointsItemKey: "parasha-report-weekly",
       },
     ],
