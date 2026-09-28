@@ -357,7 +357,6 @@ h1, h2, h3 {
   line-height: 1.6;
   margin: 0 auto 2.2em;
   max-width: 580px;
-  text-wrap: balance;
 }
 .hero__cta-row {
   display: flex;
@@ -1196,7 +1195,7 @@ body.auth-pending { visibility: hidden; }
   height: 100%;
   border-radius: 999px;
   background: linear-gradient(90deg, var(--gold-400), var(--gold-600));
-  transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1); /* ease-out-quint: בלי "קפיצה" מעבר ליעד בפס התקדמות */
+  transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .points-progress__hint {
   margin: 0.6em 0 0;
@@ -1350,8 +1349,3 @@ body.auth-pending { visibility: hidden; }
   .sparkle { animation: none !important; opacity: 0.45; }
   .hero__moon { display: none; }
 }
-
-/* ריווח אותיות מפרק את צירופי האותיות בעברית ומקשה על קריאה - בעברית בלי ריווח; באנגלית נשאר (סבב עיצוב 2026-09-28) */
-html[lang="he"] .section-eyebrow,
-html[lang="he"] .hero__eyebrow,
-html[lang="he"] .content-card__eyebrow { letter-spacing: 0; }
