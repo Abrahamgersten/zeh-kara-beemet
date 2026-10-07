@@ -82,9 +82,18 @@
     statusEl.textContent = "המערכת עדיין לא הוקמה - זה דף תצוגה מקדימה בלבד.";
     revealPage();
   } else {
+    // קישור התחברות שפג תוקפו/נפתח פעמיים/נפתח במכשיר אחר מגיע לכאן עם
+    // #error=...&error_description=... בכתובת (Supabase), בלי session - בלי
+    // הבדיקה הזו, המשתמש פשוט חוזר לטופס הריק בלי שום הסבר ("לא קורה כלום").
+    const linkError = new URLSearchParams(location.hash.slice(1)).get("error_description");
+    if (linkError) {
+      history.replaceState(null, "", location.pathname + location.search);
+      statusEl.textContent = "הקישור לא תקף יותר (" + decodeURIComponent(linkError.replace(/\+/g, " ")) + "). קישור התחברות תקף לשימוש חד-פעמי בלבד ולזמן קצר - לחצו \"שליחת קישור התחברות\" כדי לקבל קישור חדש, ופתחו אותו רק פעם אחת, ישירות בדפדפן (לא בתוך אפליקציית המייל).";
+      revealPage();
+    }
     async function checkAndMaybeRedirect() {
       const session = await getSession();
-      if (!session) { revealPage(); return; }
+      if (!session) { if (!linkError) revealPage(); return; }
       statusEl.textContent = "בודקים את המנוי שלכם...";
       const row = await fetchEntitlement();
       if (isEntitled(row)) {

@@ -81,9 +81,18 @@
     statusEl.textContent = "The system isn't set up yet - this is a preview page only.";
     revealPage();
   } else {
+    // An expired/already-used/other-device sign-in link comes back here as
+    // #error=...&error_description=... (Supabase), with no session - without
+    // this check the user just sees the empty form again with no explanation.
+    const linkError = new URLSearchParams(location.hash.slice(1)).get("error_description");
+    if (linkError) {
+      history.replaceState(null, "", location.pathname + location.search);
+      statusEl.textContent = "That link no longer works (" + decodeURIComponent(linkError.replace(/\+/g, " ")) + "). Sign-in links are one-time use and expire quickly - click \"Send sign-in link\" for a new one, and open it only once, directly in your browser (not inside your mail app).";
+      revealPage();
+    }
     async function checkAndMaybeRedirect() {
       const session = await getSession();
-      if (!session) { revealPage(); return; }
+      if (!session) { if (!linkError) revealPage(); return; }
       statusEl.textContent = "Checking your subscription...";
       const row = await fetchEntitlement();
       if (isEntitled(row)) {
