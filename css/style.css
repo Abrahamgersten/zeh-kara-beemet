@@ -691,6 +691,74 @@ h1, h2, h3 {
 }
 .player--soon .player__soon-icon { font-size: 1.15rem; }
 
+/* ---------- "נגן ברצף" (play in a row) ---------- */
+.player-wrap { margin-top: 0.4rem; }
+.player-wrap .player { margin-top: 0; }
+.player-continuous {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.74rem;
+  color: var(--ink-soft);
+  padding: 0.75rem 0.7rem 0 0.7rem;
+}
+
+/* תפריט נפתח מותאם-אישית - לא <select>: הרשימה הפתוחה של select היא
+   chrome של מערכת ההפעלה שאי-אפשר לעצב. כפתור + רשימה-צפה (position:fixed,
+   ממוקמת ב-JS לפי מיקום הכפתור בפועל - .content-card הוא overflow:hidden
+   כדי לחתוך את התמונה לפי הפינות המעוגלות, וזה היה חותך גם רשימה שנפתחת
+   קרוב לתחתית הכרטיס אילו הייתה position:absolute רגילה). */
+.continuous-dd { position: relative; }
+.continuous-dd__btn {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  border: 1.5px solid var(--teal-200);
+  border-radius: 999px;
+  background: var(--white);
+  color: var(--teal-900);
+  font-family: var(--font-body);
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 0.32rem 0.85rem;
+  cursor: pointer;
+  box-shadow: 0 2px 6px -3px rgba(7, 34, 41, 0.3);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.continuous-dd__btn:hover { border-color: var(--teal-600); }
+.continuous-dd__btn:focus-visible,
+.continuous-dd__option:focus-visible {
+  outline: 2px solid var(--gold-500);
+  outline-offset: 1px;
+  border-color: var(--teal-600);
+}
+.continuous-dd__btn[aria-expanded="true"] { border-color: var(--teal-700); box-shadow: 0 4px 12px -4px rgba(7, 34, 41, 0.35); }
+.continuous-dd__chevron { flex-shrink: 0; transition: transform 0.15s ease; }
+.continuous-dd__btn[aria-expanded="true"] .continuous-dd__chevron { transform: rotate(180deg); }
+
+.continuous-dd__list {
+  position: fixed; /* top/left (or right) set from JS on open - see setupContinuousDropdowns() */
+  z-index: 90;
+  margin: 0;
+  padding: 0.35rem;
+  list-style: none;
+  background: var(--white);
+  border: 1.5px solid var(--teal-200);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-card);
+  white-space: nowrap;
+}
+.continuous-dd__option {
+  padding: 0.5rem 0.8rem;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+}
+.continuous-dd__option:hover { background: var(--sand-100); }
+.continuous-dd__option.is-selected { background: var(--teal-200); color: var(--teal-heading); }
+
 /* ---------- Spot-the-difference card ---------- */
 .spot-card__images {
   display: grid;

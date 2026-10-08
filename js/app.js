@@ -365,18 +365,54 @@ function mediaHTML(cat, ep, idx) {
       </div>`;
 }
 
-function playerHTML(ep, idx) {
+// "נגן ברצף" (רוני, 2026-10-08 - בדוי קודם ואושר ב"אי היהלומים", מועבר לכאן):
+// בדיוק כמו שם, אבל כל שרשרת מוגבלת למדור שבו היא התחילה (אברהם: "לא יהיה
+// רצף של האזנות בין מדור למדור אלא לאפשר רצף של האזנה באותו המדור") - audioIdx/
+// audioTotal הם המיקום/הכמות של הפרק בתוך *פרקי האודיו של המדור הזה בלבד*
+// (לא כל פרקי המדור - חלקם עשויים להיות "תעלה בקרוב" בלי אודיו כלל).
+const CONTINUOUS_CHEVRON_SVG = `<svg class="continuous-dd__chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>`;
+
+function continuousSelectHTML(ep, audioIdx, audioTotal) {
+  const remaining = audioTotal - audioIdx; // פרקי-אודיו מכאן ועד סוף המדור, כולל זה
+  if (remaining <= 1) return ""; // הפרק האחרון במדור - אין לאן להמשיך
+  const fixedOptions = [2, 3, 5].filter((n) => n < remaining);
+  const choices = [{ value: "1", label: "פרק זה בלבד" }]
+    .concat(fixedOptions.map((n) => ({ value: String(n), label: `${n} פרקים` })))
+    .concat([{ value: "all", label: `כל ${remaining} הפרקים מכאן` }]);
+  const items = choices
+    .map(
+      (c, i) =>
+        `<li class="continuous-dd__option${i === 0 ? " is-selected" : ""}" role="option" data-value="${c.value}" aria-selected="${i === 0}" tabindex="-1">${c.label}</li>`
+    )
+    .join("");
+  return `
+      <div class="player-continuous">
+        <span class="player-continuous__text">נגן ברצף:</span>
+        <div class="continuous-dd" data-value="1">
+          <button type="button" class="continuous-dd__btn" aria-haspopup="listbox" aria-expanded="false">
+            <span class="continuous-dd__value">פרק זה בלבד</span>
+            ${CONTINUOUS_CHEVRON_SVG}
+          </button>
+          <ul class="continuous-dd__list" role="listbox" aria-label="כמה פרקים לנגן ברצף במדור, מתחילים מ${ep.title}" hidden>${items}</ul>
+        </div>
+      </div>`;
+}
+
+function playerHTML(ep, audioIdx, audioTotal) {
   if (ep.audio) {
     return `
-      <div class="player" data-src="${ep.audio}">
-        <button class="player__btn" type="button" aria-label="הפעל הקראה">▶</button>
-        <div class="player__body">
-          <input class="player__seek" type="range" min="0" max="100" value="0" step="0.1" aria-label="התקדמות ההקראה">
-          <div class="player__times">
-            <span class="player__current">0:00</span>
-            <span class="player__duration">--:--</span>
+      <div class="player-wrap">
+        <div class="player" data-src="${ep.audio}">
+          <button class="player__btn" type="button" aria-label="הפעל הקראה">▶</button>
+          <div class="player__body">
+            <input class="player__seek" type="range" min="0" max="100" value="0" step="0.1" aria-label="התקדמות ההקראה">
+            <div class="player__times">
+              <span class="player__current">0:00</span>
+              <span class="player__duration">--:--</span>
+            </div>
           </div>
         </div>
+        ${continuousSelectHTML(ep, audioIdx, audioTotal)}
       </div>`;
   }
   return `
@@ -401,7 +437,7 @@ function pdfReportHTML(ep) {
     </div>`;
 }
 
-function audioCardHTML(cat, ep, idx) {
+function audioCardHTML(cat, ep, idx, audioIdx, audioTotal) {
   const reverseClass = idx % 2 === 1 ? " content-card--reverse" : "";
   return `
   <article class="content-card${reverseClass}">
@@ -410,7 +446,7 @@ function audioCardHTML(cat, ep, idx) {
       <span class="content-card__eyebrow">${cat.name}</span>
       <h3 class="content-card__title">${ep.title}</h3>
       <p class="content-card__desc"><strong>על הפרק: </strong>${ep.description}</p>
-      ${playerHTML(ep, idx)}
+      ${playerHTML(ep, audioIdx, audioTotal)}
       ${pdfReportHTML(ep)}
     </div>
   </article>`;
@@ -467,11 +503,14 @@ function renderCategorySections() {
     }
     const hasSample = cat.episodes.some((ep) => ep.sample);
     const overflowCount = Math.max(0, episodesNewestFirst.length - INITIAL_VISIBLE_EPISODES);
+    // רק פרקים עם אודיו בפועל נספרים לצורך "נגן ברצף" - פרק "תעלה בקרוב" לא בר-המשך.
+    const audioEpisodes = episodesNewestFirst.filter((ep) => ep.audio);
 
     const cardsHTML = episodesNewestFirst
       .map((ep, idx) => {
         const hiddenAttr = idx >= INITIAL_VISIBLE_EPISODES ? ' hidden data-overflow-card="true"' : "";
-        const card = cat.type === "spot-diff" ? spotDiffCardHTML(cat, ep, idx) : audioCardHTML(cat, ep, idx);
+        const audioIdx = ep.audio ? audioEpisodes.indexOf(ep) : -1;
+        const card = cat.type === "spot-diff" ? spotDiffCardHTML(cat, ep, idx) : audioCardHTML(cat, ep, idx, audioIdx, audioEpisodes.length);
         return card.replace("<article ", `<article${hiddenAttr} `);
       })
       .join("");
@@ -600,18 +639,131 @@ function setupCatNavTracking() {
 /* ---------------------------------------------------------------
    Audio players
 --------------------------------------------------------------- */
+// תפריט נפתח מותאם-אישית ל"נגן ברצף" - זהה במלואו לגרסה שאושרה ונבדקה
+// ב"אי היהלומים" (כולל שני תיקונים שאברהם ביקש שם): רשימת ה-<select> הפתוחה
+// היא chrome של מערכת ההפעלה שאי-אפשר לעצב, אז זה כפתור+רשימה-צפה שנבנו
+// מאפס; וכל כרטיס (.content-card) הוא overflow:hidden (כדי לחתוך את התמונה
+// לפי הפינות המעוגלות), שהיה חותך גם רשימה שנפתחת קרוב לתחתית הכרטיס - לכן
+// כל רשימה עוברת ל-<body> וממוקמת לפי מיקום הכפתור בפועל על המסך (fixed).
+function setupContinuousDropdowns() {
+  const entries = Array.from(document.querySelectorAll(".continuous-dd")).map((dd) => {
+    const btn = dd.querySelector(".continuous-dd__btn");
+    const list = dd.querySelector(".continuous-dd__list");
+    document.body.appendChild(list);
+    return { dd, btn, list, options: Array.from(list.querySelectorAll(".continuous-dd__option")) };
+  });
+  const isRtl = document.documentElement.dir === "rtl";
+
+  function positionList(entry) {
+    const r = entry.btn.getBoundingClientRect();
+    entry.list.style.top = `${r.bottom + 6}px`;
+    entry.list.style.minWidth = `${r.width}px`;
+    if (isRtl) {
+      entry.list.style.right = `${window.innerWidth - r.right}px`;
+      entry.list.style.left = "auto";
+    } else {
+      entry.list.style.left = `${r.left}px`;
+      entry.list.style.right = "auto";
+    }
+  }
+  function closeDropdown(entry) {
+    entry.list.hidden = true;
+    entry.btn.setAttribute("aria-expanded", "false");
+  }
+  function closeAll(except) {
+    entries.forEach((entry) => { if (entry !== except) closeDropdown(entry); });
+  }
+  function openDropdown(entry) {
+    closeAll(entry);
+    positionList(entry);
+    entry.list.hidden = false;
+    entry.btn.setAttribute("aria-expanded", "true");
+  }
+  function selectOption(entry, li) {
+    const valueEl = entry.btn.querySelector(".continuous-dd__value");
+    entry.options.forEach((o) => {
+      o.classList.toggle("is-selected", o === li);
+      o.setAttribute("aria-selected", o === li ? "true" : "false");
+    });
+    entry.dd.dataset.value = li.dataset.value;
+    valueEl.textContent = li.textContent;
+  }
+
+  entries.forEach((entry) => {
+    const { btn, options } = entry;
+
+    btn.addEventListener("click", () => {
+      if (entry.list.hidden) {
+        openDropdown(entry);
+        (options.find((o) => o.classList.contains("is-selected")) || options[0]).focus();
+      } else {
+        closeDropdown(entry);
+      }
+    });
+    btn.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        openDropdown(entry);
+        (options.find((o) => o.classList.contains("is-selected")) || options[0]).focus();
+      }
+    });
+
+    options.forEach((li, i) => {
+      li.addEventListener("click", () => { selectOption(entry, li); closeDropdown(entry); btn.focus(); });
+      li.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          selectOption(entry, li);
+          closeDropdown(entry);
+          btn.focus();
+        } else if (e.key === "ArrowDown") {
+          e.preventDefault();
+          (options[i + 1] || options[0]).focus();
+        } else if (e.key === "ArrowUp") {
+          e.preventDefault();
+          (options[i - 1] || options[options.length - 1]).focus();
+        } else if (e.key === "Escape") {
+          e.preventDefault();
+          closeDropdown(entry);
+          btn.focus();
+        } else if (e.key === "Tab") {
+          closeDropdown(entry);
+        }
+      });
+    });
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".continuous-dd") && !e.target.closest(".continuous-dd__list")) closeAll();
+  });
+  window.addEventListener("scroll", () => closeAll(), { passive: true, capture: true });
+  window.addEventListener("resize", () => closeAll());
+}
+
 function setupPlayers() {
   const players = Array.from(document.querySelectorAll(".player:not(.player--soon)"));
+  // "נגן ברצף" (אברהם, 2026-10-08): רצף מוגבל למדור שבו הוא התחיל - לכן
+  // מקבצים את הנגנים לפי .category-section, ומריצים את השרשרת רק בתוך הרשימה
+  // של אותו מדור (categoryControllers[nextIdx] פשוט לא קיים בקצה המדור).
+  const controllersBySection = new Map();
+  let continuousPlan = null; // { remaining } - רק נגן אחד מתנגן בכל רגע נתון באתר, אז זה גלובלי
 
   players.forEach((el) => {
+    const section = el.closest(".category-section");
+    if (!controllersBySection.has(section)) controllersBySection.set(section, []);
+    const categoryControllers = controllersBySection.get(section);
+    const catIdx = categoryControllers.length; // המיקום שישויך לפרק הזה ברשימת-המדור, לפני שהוא נוסף אליה
+
     const src = el.dataset.src;
     const btn = el.querySelector(".player__btn");
     const seek = el.querySelector(".player__seek");
     const current = el.querySelector(".player__current");
     const duration = el.querySelector(".player__duration");
+    const continuousDd = el.closest(".player-wrap")?.querySelector(".continuous-dd");
     let audio = null;
     let seeking = false;
     let loggedPlay = false;
+    let pausedByOther = false; // true רק כש-zkb-pause-request השהה אותנו (פרק אחר התחיל) - לא השהיה ידנית
 
     function ensureAudio() {
       if (audio) return audio;
@@ -648,24 +800,37 @@ function setupPlayers() {
         btn.textContent = "▶";
         btn.classList.remove("is-playing");
         btn.setAttribute("aria-label", "המשך הקראה");
+        // השהיה ידנית (לא פרק הבא בשרשרת שמתחיל, שמשהה את כל השאר דרך
+        // zkb-pause-request) מבטלת את התוכנית.
+        if (!pausedByOther) continuousPlan = null;
+        pausedByOther = false;
       });
       audio.addEventListener("ended", () => {
         btn.textContent = "▶";
         btn.classList.remove("is-playing");
         seek.value = 0;
         current.textContent = "0:00";
+        continueChainFrom(categoryControllers, catIdx);
       });
       return audio;
     }
 
     btn.addEventListener("click", () => {
       const a = ensureAudio();
-      if (a.paused) a.play().catch(() => {});
-      else a.pause();
+      if (a.paused) {
+        const choice = continuousDd ? continuousDd.dataset.value : "1";
+        continuousPlan = choice === "1" ? null : { remaining: choice === "all" ? Infinity : Number(choice) - 1 };
+        a.play().catch(() => {});
+      } else {
+        a.pause();
+      }
     });
 
     el.addEventListener("zkb-pause-request", () => {
-      if (audio && !audio.paused) audio.pause();
+      if (audio && !audio.paused) {
+        pausedByOther = true;
+        audio.pause();
+      }
     });
 
     seek.addEventListener("input", () => {
@@ -677,7 +842,28 @@ function setupPlayers() {
       a.currentTime = Number(seek.value);
       seeking = false;
     });
+
+    categoryControllers.push({
+      playFromStart() {
+        // אם הפרק הבא עדיין מתחת ל"הצג עוד פרקים" - לחשוף אותו, אחרת הקול
+        // מתנגן בלי כרטיס נראה על המסך.
+        const hiddenCard = el.closest('.content-card[hidden]');
+        if (hiddenCard) { hiddenCard.hidden = false; hiddenCard.removeAttribute("data-overflow-card"); }
+        const a = ensureAudio();
+        a.currentTime = 0;
+        a.play().catch(() => {});
+        (el.closest(".content-card") || el).scrollIntoView({ behavior: "smooth", block: "center" });
+      },
+    });
   });
+
+  function continueChainFrom(categoryControllers, idx) {
+    if (!continuousPlan || continuousPlan.remaining <= 0) { continuousPlan = null; return; }
+    const nextIdx = idx + 1;
+    if (!categoryControllers[nextIdx]) { continuousPlan = null; return; }
+    continuousPlan.remaining -= 1;
+    categoryControllers[nextIdx].playFromStart();
+  }
 }
 
 /* ---------------------------------------------------------------
@@ -956,6 +1142,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupMediaInteractions();
   setupSpotDiff();
   setupShowMore();
+  setupContinuousDropdowns();
   setupPlayers();
   setupCatNavTracking();
   setupSparkles();

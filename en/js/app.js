@@ -368,18 +368,54 @@ function mediaHTML(cat, ep, idx) {
       </div>`;
 }
 
-function playerHTML(ep, idx) {
+// "Play in a row" - built and approved first on the Diamond Island site, ported
+// here per Avraham's request (2026-10-08): the chain must stay inside the
+// category it started in, never spill into the next one. audioIdx/audioTotal
+// are this episode's position/count among *this category's audio episodes
+// only* (some episodes may be "coming soon" with no audio at all).
+const CONTINUOUS_CHEVRON_SVG = `<svg class="continuous-dd__chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>`;
+
+function continuousSelectHTML(ep, audioIdx, audioTotal) {
+  const remaining = audioTotal - audioIdx; // audio episodes from here to the end of this category, including this one
+  if (remaining <= 1) return ""; // last episode in the category - nothing to chain to
+  const fixedOptions = [2, 3, 5].filter((n) => n < remaining);
+  const choices = [{ value: "1", label: "This episode only" }]
+    .concat(fixedOptions.map((n) => ({ value: String(n), label: `${n} episodes` })))
+    .concat([{ value: "all", label: `All ${remaining} episodes from here` }]);
+  const items = choices
+    .map(
+      (c, i) =>
+        `<li class="continuous-dd__option${i === 0 ? " is-selected" : ""}" role="option" data-value="${c.value}" aria-selected="${i === 0}" tabindex="-1">${c.label}</li>`
+    )
+    .join("");
+  return `
+      <div class="player-continuous">
+        <span class="player-continuous__text">Play in a row:</span>
+        <div class="continuous-dd" data-value="1">
+          <button type="button" class="continuous-dd__btn" aria-haspopup="listbox" aria-expanded="false">
+            <span class="continuous-dd__value">This episode only</span>
+            ${CONTINUOUS_CHEVRON_SVG}
+          </button>
+          <ul class="continuous-dd__list" role="listbox" aria-label="How many episodes to play in a row, starting from ${ep.title}" hidden>${items}</ul>
+        </div>
+      </div>`;
+}
+
+function playerHTML(ep, audioIdx, audioTotal) {
   if (ep.audio) {
     return `
-      <div class="player" data-src="${ep.audio}">
-        <button class="player__btn" type="button" aria-label="Play narration">▶</button>
-        <div class="player__body">
-          <input class="player__seek" type="range" min="0" max="100" value="0" step="0.1" aria-label="Playback progress">
-          <div class="player__times">
-            <span class="player__current">0:00</span>
-            <span class="player__duration">--:--</span>
+      <div class="player-wrap">
+        <div class="player" data-src="${ep.audio}">
+          <button class="player__btn" type="button" aria-label="Play narration">▶</button>
+          <div class="player__body">
+            <input class="player__seek" type="range" min="0" max="100" value="0" step="0.1" aria-label="Playback progress">
+            <div class="player__times">
+              <span class="player__current">0:00</span>
+              <span class="player__duration">--:--</span>
+            </div>
           </div>
         </div>
+        ${continuousSelectHTML(ep, audioIdx, audioTotal)}
       </div>`;
   }
   return `
@@ -405,7 +441,7 @@ function pdfReportHTML(ep) {
     </div>`;
 }
 
-function audioCardHTML(cat, ep, idx) {
+function audioCardHTML(cat, ep, idx, audioIdx, audioTotal) {
   const reverseClass = idx % 2 === 1 ? " content-card--reverse" : "";
   return `
   <article class="content-card${reverseClass}">
@@ -414,7 +450,7 @@ function audioCardHTML(cat, ep, idx) {
       <span class="content-card__eyebrow">${cat.name}</span>
       <h3 class="content-card__title">${ep.title}</h3>
       <p class="content-card__desc"><strong>About this episode: </strong>${ep.description}</p>
-      ${playerHTML(ep, idx)}
+      ${playerHTML(ep, audioIdx, audioTotal)}
       ${pdfReportHTML(ep)}
     </div>
   </article>`;
@@ -473,11 +509,14 @@ function renderCategorySections() {
     }
     const hasSample = cat.episodes.some((ep) => ep.sample);
     const overflowCount = Math.max(0, episodesNewestFirst.length - INITIAL_VISIBLE_EPISODES);
+    // Only episodes with real audio count for "play in a row" - a "coming soon" episode can't be chained to.
+    const audioEpisodes = episodesNewestFirst.filter((ep) => ep.audio);
 
     const cardsHTML = episodesNewestFirst
       .map((ep, idx) => {
         const hiddenAttr = idx >= INITIAL_VISIBLE_EPISODES ? ' hidden data-overflow-card="true"' : "";
-        const card = cat.type === "spot-diff" ? spotDiffCardHTML(cat, ep, idx) : audioCardHTML(cat, ep, idx);
+        const audioIdx = ep.audio ? audioEpisodes.indexOf(ep) : -1;
+        const card = cat.type === "spot-diff" ? spotDiffCardHTML(cat, ep, idx) : audioCardHTML(cat, ep, idx, audioIdx, audioEpisodes.length);
         return card.replace("<article ", `<article${hiddenAttr} `);
       })
       .join("");
@@ -607,18 +646,134 @@ function setupCatNavTracking() {
 /* ---------------------------------------------------------------
    Audio players
 --------------------------------------------------------------- */
+// Custom "play in a row" dropdown - identical to the version approved and
+// tested on Diamond Island (including two fixes Avraham asked for there): a
+// native <select>'s open option list is OS chrome that can't be restyled, so
+// this is a button + floating listbox built from scratch; and every card
+// (.content-card) is overflow:hidden (to clip its image to the rounded
+// corners), which was silently clipping a list that opened near the card's
+// bottom edge - so every list is moved to <body> and positioned from the
+// trigger button's own on-screen position (fixed).
+function setupContinuousDropdowns() {
+  const entries = Array.from(document.querySelectorAll(".continuous-dd")).map((dd) => {
+    const btn = dd.querySelector(".continuous-dd__btn");
+    const list = dd.querySelector(".continuous-dd__list");
+    document.body.appendChild(list);
+    return { dd, btn, list, options: Array.from(list.querySelectorAll(".continuous-dd__option")) };
+  });
+  const isRtl = document.documentElement.dir === "rtl";
+
+  function positionList(entry) {
+    const r = entry.btn.getBoundingClientRect();
+    entry.list.style.top = `${r.bottom + 6}px`;
+    entry.list.style.minWidth = `${r.width}px`;
+    if (isRtl) {
+      entry.list.style.right = `${window.innerWidth - r.right}px`;
+      entry.list.style.left = "auto";
+    } else {
+      entry.list.style.left = `${r.left}px`;
+      entry.list.style.right = "auto";
+    }
+  }
+  function closeDropdown(entry) {
+    entry.list.hidden = true;
+    entry.btn.setAttribute("aria-expanded", "false");
+  }
+  function closeAll(except) {
+    entries.forEach((entry) => { if (entry !== except) closeDropdown(entry); });
+  }
+  function openDropdown(entry) {
+    closeAll(entry);
+    positionList(entry);
+    entry.list.hidden = false;
+    entry.btn.setAttribute("aria-expanded", "true");
+  }
+  function selectOption(entry, li) {
+    const valueEl = entry.btn.querySelector(".continuous-dd__value");
+    entry.options.forEach((o) => {
+      o.classList.toggle("is-selected", o === li);
+      o.setAttribute("aria-selected", o === li ? "true" : "false");
+    });
+    entry.dd.dataset.value = li.dataset.value;
+    valueEl.textContent = li.textContent;
+  }
+
+  entries.forEach((entry) => {
+    const { btn, options } = entry;
+
+    btn.addEventListener("click", () => {
+      if (entry.list.hidden) {
+        openDropdown(entry);
+        (options.find((o) => o.classList.contains("is-selected")) || options[0]).focus();
+      } else {
+        closeDropdown(entry);
+      }
+    });
+    btn.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        openDropdown(entry);
+        (options.find((o) => o.classList.contains("is-selected")) || options[0]).focus();
+      }
+    });
+
+    options.forEach((li, i) => {
+      li.addEventListener("click", () => { selectOption(entry, li); closeDropdown(entry); btn.focus(); });
+      li.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          selectOption(entry, li);
+          closeDropdown(entry);
+          btn.focus();
+        } else if (e.key === "ArrowDown") {
+          e.preventDefault();
+          (options[i + 1] || options[0]).focus();
+        } else if (e.key === "ArrowUp") {
+          e.preventDefault();
+          (options[i - 1] || options[options.length - 1]).focus();
+        } else if (e.key === "Escape") {
+          e.preventDefault();
+          closeDropdown(entry);
+          btn.focus();
+        } else if (e.key === "Tab") {
+          closeDropdown(entry);
+        }
+      });
+    });
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".continuous-dd") && !e.target.closest(".continuous-dd__list")) closeAll();
+  });
+  window.addEventListener("scroll", () => closeAll(), { passive: true, capture: true });
+  window.addEventListener("resize", () => closeAll());
+}
+
 function setupPlayers() {
   const players = Array.from(document.querySelectorAll(".player:not(.player--soon)"));
+  // "Play in a row" (Avraham, 2026-10-08): the chain must stay inside the
+  // category it started in - so players are grouped by .category-section,
+  // and the chain only ever runs through that category's own list
+  // (categoryControllers[nextIdx] simply doesn't exist past its last episode).
+  const controllersBySection = new Map();
+  let continuousPlan = null; // { remaining } - only one player is ever active site-wide, so this is global
 
   players.forEach((el) => {
+    const section = el.closest(".category-section");
+    if (!controllersBySection.has(section)) controllersBySection.set(section, []);
+    const categoryControllers = controllersBySection.get(section);
+    const catIdx = categoryControllers.length; // the position this episode will get in the category list, before it's pushed
+
     const src = el.dataset.src;
     const btn = el.querySelector(".player__btn");
     const seek = el.querySelector(".player__seek");
     const current = el.querySelector(".player__current");
     const duration = el.querySelector(".player__duration");
+    const continuousDd = el.closest(".player-wrap")?.querySelector(".continuous-dd");
     let audio = null;
     let seeking = false;
     let loggedPlay = false;
+    let pausedByOther = false; // true only when zkb-pause-request paused us (another episode starting) - not a manual pause
 
     function ensureAudio() {
       if (audio) return audio;
@@ -655,24 +810,37 @@ function setupPlayers() {
         btn.textContent = "▶";
         btn.classList.remove("is-playing");
         btn.setAttribute("aria-label", "Resume narration");
+        // A manual pause (not another episode in the chain starting, which
+        // pauses every other player via zkb-pause-request) cancels the plan.
+        if (!pausedByOther) continuousPlan = null;
+        pausedByOther = false;
       });
       audio.addEventListener("ended", () => {
         btn.textContent = "▶";
         btn.classList.remove("is-playing");
         seek.value = 0;
         current.textContent = "0:00";
+        continueChainFrom(categoryControllers, catIdx);
       });
       return audio;
     }
 
     btn.addEventListener("click", () => {
       const a = ensureAudio();
-      if (a.paused) a.play().catch(() => {});
-      else a.pause();
+      if (a.paused) {
+        const choice = continuousDd ? continuousDd.dataset.value : "1";
+        continuousPlan = choice === "1" ? null : { remaining: choice === "all" ? Infinity : Number(choice) - 1 };
+        a.play().catch(() => {});
+      } else {
+        a.pause();
+      }
     });
 
     el.addEventListener("zkb-pause-request", () => {
-      if (audio && !audio.paused) audio.pause();
+      if (audio && !audio.paused) {
+        pausedByOther = true;
+        audio.pause();
+      }
     });
 
     seek.addEventListener("input", () => {
@@ -684,7 +852,28 @@ function setupPlayers() {
       a.currentTime = Number(seek.value);
       seeking = false;
     });
+
+    categoryControllers.push({
+      playFromStart() {
+        // If the next episode is still under "show more", reveal it - otherwise
+        // the audio would start with no visible card on screen.
+        const hiddenCard = el.closest('.content-card[hidden]');
+        if (hiddenCard) { hiddenCard.hidden = false; hiddenCard.removeAttribute("data-overflow-card"); }
+        const a = ensureAudio();
+        a.currentTime = 0;
+        a.play().catch(() => {});
+        (el.closest(".content-card") || el).scrollIntoView({ behavior: "smooth", block: "center" });
+      },
+    });
   });
+
+  function continueChainFrom(categoryControllers, idx) {
+    if (!continuousPlan || continuousPlan.remaining <= 0) { continuousPlan = null; return; }
+    const nextIdx = idx + 1;
+    if (!categoryControllers[nextIdx]) { continuousPlan = null; return; }
+    continuousPlan.remaining -= 1;
+    categoryControllers[nextIdx].playFromStart();
+  }
 }
 
 /* ---------------------------------------------------------------
@@ -970,6 +1159,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupMediaInteractions();
   setupSpotDiff();
   setupShowMore();
+  setupContinuousDropdowns();
   setupPlayers();
   setupCatNavTracking();
   setupSparkles();
