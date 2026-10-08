@@ -811,8 +811,9 @@ function setupPlayers() {
         btn.classList.remove("is-playing");
         btn.setAttribute("aria-label", "Resume narration");
         // A manual pause (not another episode in the chain starting, which
-        // pauses every other player via zkb-pause-request) cancels the plan.
-        if (!pausedByOther) continuousPlan = null;
+        // pauses every other player via zkb-pause-request, and not a natural
+        // end-of-track - the browser fires pause right before ended) cancels the plan.
+        if (!pausedByOther && !audio.ended) continuousPlan = null;
         pausedByOther = false;
       });
       audio.addEventListener("ended", () => {

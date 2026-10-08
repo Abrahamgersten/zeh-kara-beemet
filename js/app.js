@@ -801,8 +801,9 @@ function setupPlayers() {
         btn.classList.remove("is-playing");
         btn.setAttribute("aria-label", "המשך הקראה");
         // השהיה ידנית (לא פרק הבא בשרשרת שמתחיל, שמשהה את כל השאר דרך
-        // zkb-pause-request) מבטלת את התוכנית.
-        if (!pausedByOther) continuousPlan = null;
+        // zkb-pause-request, ולא סיום טבעי - הדפדפן מריץ pause לפני ended
+        // כשההקראה מגיעה לסופה) מבטלת את התוכנית.
+        if (!pausedByOther && !audio.ended) continuousPlan = null;
         pausedByOther = false;
       });
       audio.addEventListener("ended", () => {
