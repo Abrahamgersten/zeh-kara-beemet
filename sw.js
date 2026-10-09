@@ -1,5 +1,5 @@
 const SHELL_CACHE = "zkb-shell-v7";
-const MEDIA_CACHE = "zkb-media-v34";
+const MEDIA_CACHE = "zkb-media-v35";
 
 const SHELL_ASSETS = [
   "./",
