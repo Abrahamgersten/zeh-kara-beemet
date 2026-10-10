@@ -12,54 +12,56 @@
 <meta property="og:description" content="לחצו כדי להצטרף לקבוצת הוואטסאפ">
 <meta property="og:image" content="https://abrahamgersten.github.io/zeh-kara-beemet/whatsapp/og.jpg">
 <meta property="og:url" content="https://abrahamgersten.github.io/zeh-kara-beemet/whatsapp/">
+<link rel="preconnect" href="https://nuadpewhrhpdgznbbqbs.supabase.co" crossorigin>
 <style>
-  :root { --bg:#0f8793; --ink:#ffffff; --btn:#25d366; --btn-ink:#06351a; }
-  * { box-sizing: border-box; }
-  body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
-         background:var(--bg); color:var(--ink); font-family:"Heebo",system-ui,sans-serif; text-align:center; padding:24px; }
-  main { max-width:420px; }
-  img { width:160px; height:160px; border-radius:24px; object-fit:cover; }
-  h1 { font-size:1.4rem; margin:20px 0 8px; }
-  p { margin:0 0 20px; opacity:.9; }
-  a.btn { display:inline-block; background:var(--btn); color:var(--btn-ink); font-weight:700; font-size:1.1rem;
-          padding:14px 28px; border-radius:999px; text-decoration:none; }
+  html, body { margin:0; height:100%; background:#0f8793; color:#fff; font-family:system-ui,"Heebo",sans-serif; }
+  body { display:flex; align-items:center; justify-content:center; text-align:center; padding:24px; box-sizing:border-box; }
+  h1 { font-size:1.25rem; margin:0 0 6px; }
+  p { margin:0 0 18px; opacity:.9; }
+  a.btn { display:inline-block; background:#25d366; color:#06351a; font-weight:700; font-size:1.05rem;
+          padding:12px 26px; border-radius:999px; text-decoration:none; }
   a.btn:focus-visible { outline:3px solid #fff; outline-offset:3px; }
 </style>
-</head>
-<body>
-<main>
-  <img src="og.jpg" alt="סיפור לפני השינה - זה קרה באמת" width="160" height="160">
-  <h1>סיפור לפני השינה - זה קרה באמת</h1>
-  <p id="msg">מעבירים אתכם לקבוצת הוואטסאפ...</p>
-  <a class="btn" id="go" href="https://chat.whatsapp.com/GIoja07vZquHA8DWlDt6M1">הצטרפות לקבוצה</a>
-</main>
 <script>
+// הקריאה לשרת יוצאת כבר מה-head, לפני שהגוף נבנה - כדי שההפניה תהיה מהירה ככל האפשר.
 (function () {
   // קישור גיבוי: אם השרת לא עונה, מפנים לקבוצה הראשונה במקום להיתקע.
   var FALLBACK = "https://chat.whatsapp.com/GIoja07vZquHA8DWlDt6M1";
-  var SUPABASE = "https://nuadpewhrhpdgznbbqbs.supabase.co";
-  var KEY = "sb_publishable_AcpmlZnxKM4yJxr1OsoSjw_CG6Kt2pz";
-  var go = document.getElementById("go");
+  var URL_RE = /^https:\/\/chat\.whatsapp\.com\/[A-Za-z0-9]+$/;
   var done = false;
   function finish(url) {
     if (done) return;
     done = true;
-    if (!/^https:\/\/chat\.whatsapp\.com\/[A-Za-z0-9]+$/.test(url)) url = FALLBACK;
-    go.href = url;
+    if (typeof url !== "string" || !URL_RE.test(url)) url = FALLBACK;
+    window.__joinUrl = url;
+    var go = document.getElementById("go");
+    if (go) go.href = url;
     location.replace(url);
   }
+  window.__joinFinish = finish;
   var ctl = typeof AbortController === "function" ? new AbortController() : null;
-  var timer = setTimeout(function () { if (ctl) ctl.abort(); finish(FALLBACK); }, 3000);
-  fetch(SUPABASE + "/rest/v1/rpc/get_join_target", {
+  var timer = setTimeout(function () { if (ctl) ctl.abort(); finish(FALLBACK); }, 2500);
+  fetch("https://nuadpewhrhpdgznbbqbs.supabase.co/rest/v1/rpc/get_join_target", {
     method: "POST",
-    headers: { apikey: KEY, Authorization: "Bearer " + KEY, "Content-Type": "application/json" },
+    headers: {
+      apikey: "sb_publishable_AcpmlZnxKM4yJxr1OsoSjw_CG6Kt2pz",
+      Authorization: "Bearer sb_publishable_AcpmlZnxKM4yJxr1OsoSjw_CG6Kt2pz",
+      "Content-Type": "application/json"
+    },
     body: "{}",
     cache: "no-store",
     signal: ctl ? ctl.signal : undefined
   }).then(function (r) { return r.ok ? r.json() : FALLBACK; })
-    .then(function (u) { clearTimeout(timer); finish(typeof u === "string" ? u : FALLBACK); })
+    .then(function (u) { clearTimeout(timer); finish(u); })
     .catch(function () { clearTimeout(timer); finish(FALLBACK); });
 })();
 </script>
+</head>
+<body>
+<main>
+  <h1>סיפור לפני השינה - זה קרה באמת</h1>
+  <p>מעבירים אתכם לקבוצת הוואטסאפ...</p>
+  <a class="btn" id="go" href="https://chat.whatsapp.com/GIoja07vZquHA8DWlDt6M1">הצטרפות לקבוצה</a>
+</main>
 </body>
 </html>
