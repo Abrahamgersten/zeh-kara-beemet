@@ -336,12 +336,6 @@ const CATEGORIES = [
         image: "../assets/images/en/benefits-of-reading.jpeg",
         audio: "../assets/audio/en/benefits-of-reading-sfx3.mp3",
       },
-      {
-        title: "The Secret of the Colors on Your Plate",
-        description: "Why are there red vegetables, orange carrots, and green leaves? Every color on your plate has an important job for your health - discover the secret, and try the colorful challenge at the end of the episode.",
-        image: "../assets/images/en/plate-colors.jpeg",
-        audio: "../assets/audio/en/plate-colors-sfx3.mp3",
-      },
     ],
   },
 ];

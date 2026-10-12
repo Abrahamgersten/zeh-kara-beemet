@@ -334,12 +334,6 @@ const CATEGORIES = [
         image: "assets/images/benefits-of-reading.jpeg",
         audio: "assets/audio/benefits-of-reading-sfx4.mp3",
       },
-      {
-        title: "סוד הצבעים בצלחת",
-        description: "למה יש ירקות אדומים, גזרים כתומים ועלים ירוקים? לכל צבע בצלחת יש תפקיד חשוב לבריאות שלנו - גלו את הסוד, ונסו את האתגר הצבעוני בסוף הפרק.",
-        image: "assets/images/plate-colors.jpeg",
-        audio: "assets/audio/plate-colors-sfx4.mp3",
-      },
     ],
   },
 ];
