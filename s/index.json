@@ -1,0 +1,173 @@
+{
+  "lang": "he",
+  "stories": [
+    {
+      "slug": "kol-nidrei-drunkard",
+      "title": "השיכור של כל נדרי",
+      "category": "tzadikim",
+      "url": "https://abrahamgersten.github.io/zeh-kara-beemet/s/kol-nidrei-drunkard/"
+    },
+    {
+      "slug": "isser-zalman-gratitude",
+      "title": "חוב של הכרת הטוב",
+      "category": "tzadikim",
+      "url": "https://abrahamgersten.github.io/zeh-kara-beemet/s/isser-zalman-gratitude/"
+    },
+    {
+      "slug": "ben-ish-chai",
+      "title": "הבן איש חי",
+      "category": "tzadikim",
+      "url": "https://abrahamgersten.github.io/zeh-kara-beemet/s/ben-ish-chai/"
+    },
+    {
+      "slug": "chazon-ish-calculation",
+      "title": "טעות בחישוב",
+      "category": "tzadikim",
+      "url": "https://abrahamgersten.github.io/zeh-kara-beemet/s/chazon-ish-calculation/"
+    },
+    {
+      "slug": "something-to-give",
+      "title": "לכל אחד יש מה לתת",
+      "category": "tzadikim",
+      "url": "https://abrahamgersten.github.io/zeh-kara-beemet/s/something-to-give/"
+    },
+    {
+      "slug": "baal-shem-tov-water",
+      "title": "מים במדבר",
+      "category": "tzadikim",
+      "url": "https://abrahamgersten.github.io/zeh-kara-beemet/s/baal-shem-tov-water/"
+    },
+    {
+      "slug": "share-in-heaven",
+      "title": "חלק בגן עדן",
+      "category": "tzadikim",
+      "url": "https://abrahamgersten.github.io/zeh-kara-beemet/s/share-in-heaven/"
+    },
+    {
+      "slug": "believing-officer",
+      "title": "הקצין המאמין",
+      "category": "tzadikim",
+      "url": "https://abrahamgersten.github.io/zeh-kara-beemet/s/believing-officer/"
+    },
+    {
+      "slug": "baba-sali-respect",
+      "title": "הבבא סלי מלמד על כבוד חכמים",
+      "category": "tzadikim",
+      "url": "https://abrahamgersten.github.io/zeh-kara-beemet/s/baba-sali-respect/"
+    },
+    {
+      "slug": "ari-kindness-to-animals",
+      "title": "ורחמיו על כל מעשיו",
+      "category": "tzadikim",
+      "url": "https://abrahamgersten.github.io/zeh-kara-beemet/s/ari-kindness-to-animals/"
+    },
+    {
+      "slug": "besht-flute-boy",
+      "title": "הבעל שם טוב והנער המאמין",
+      "category": "tzadikim",
+      "url": "https://abrahamgersten.github.io/zeh-kara-beemet/s/besht-flute-boy/"
+    },
+    {
+      "slug": "mordechai-eliyahu-cat",
+      "title": "הרב מרדכי אליהו והחתול",
+      "category": "tzadikim",
+      "url": "https://abrahamgersten.github.io/zeh-kara-beemet/s/mordechai-eliyahu-cat/"
+    },
+    {
+      "slug": "hashem-not-obligated",
+      "title": "השם לא חייב לנו כלום",
+      "category": "tzadikim",
+      "url": "https://abrahamgersten.github.io/zeh-kara-beemet/s/hashem-not-obligated/"
+    },
+    {
+      "slug": "amazing-bat",
+      "title": "העטלף המופלא",
+      "category": "wonders",
+      "url": "https://abrahamgersten.github.io/zeh-kara-beemet/s/amazing-bat/"
+    },
+    {
+      "slug": "platypus",
+      "title": "הברווזן",
+      "category": "wonders",
+      "url": "https://abrahamgersten.github.io/zeh-kara-beemet/s/platypus/"
+    },
+    {
+      "slug": "wise-builder",
+      "title": "הבונה החכם",
+      "category": "wonders",
+      "url": "https://abrahamgersten.github.io/zeh-kara-beemet/s/wise-builder/"
+    },
+    {
+      "slug": "parasha-bereishit",
+      "title": "פרשת בראשית",
+      "category": "parasha-what",
+      "url": "https://abrahamgersten.github.io/zeh-kara-beemet/s/parasha-bereishit/"
+    },
+    {
+      "slug": "parasha-noach",
+      "title": "פרשת נח",
+      "category": "parasha-what",
+      "url": "https://abrahamgersten.github.io/zeh-kara-beemet/s/parasha-noach/"
+    },
+    {
+      "slug": "parasha-lechlecha",
+      "title": "פרשת לך לך",
+      "category": "parasha-what",
+      "url": "https://abrahamgersten.github.io/zeh-kara-beemet/s/parasha-lechlecha/"
+    },
+    {
+      "slug": "parasha-idea-bereishit",
+      "title": "רעיון לפרשת בראשית",
+      "category": "parasha-idea",
+      "url": "https://abrahamgersten.github.io/zeh-kara-beemet/s/parasha-idea-bereishit/"
+    },
+    {
+      "slug": "parasha-idea-noach",
+      "title": "רעיון לפרשת נח",
+      "category": "parasha-idea",
+      "url": "https://abrahamgersten.github.io/zeh-kara-beemet/s/parasha-idea-noach/"
+    },
+    {
+      "slug": "parasha-idea-lechlecha",
+      "title": "רעיון לפרשת לך לך",
+      "category": "parasha-idea",
+      "url": "https://abrahamgersten.github.io/zeh-kara-beemet/s/parasha-idea-lechlecha/"
+    },
+    {
+      "slug": "invention-of-writing",
+      "title": "המצאת הכתב",
+      "category": "enlightenment",
+      "url": "https://abrahamgersten.github.io/zeh-kara-beemet/s/invention-of-writing/"
+    },
+    {
+      "slug": "ocean-depths-journey",
+      "title": "מסע אל מעמקי האוקינוס",
+      "category": "enlightenment",
+      "url": "https://abrahamgersten.github.io/zeh-kara-beemet/s/ocean-depths-journey/"
+    },
+    {
+      "slug": "birkat-hamazon",
+      "title": "ברכת המזון",
+      "category": "what-to-do",
+      "url": "https://abrahamgersten.github.io/zeh-kara-beemet/s/birkat-hamazon/"
+    },
+    {
+      "slug": "parasha-of-the-week",
+      "title": "פרשת השבוע",
+      "category": "what-to-do",
+      "url": "https://abrahamgersten.github.io/zeh-kara-beemet/s/parasha-of-the-week/"
+    },
+    {
+      "slug": "healthy-breakfast",
+      "title": "חשיבות ארוחת הבוקר",
+      "category": "healthy-to-know",
+      "url": "https://abrahamgersten.github.io/zeh-kara-beemet/s/healthy-breakfast/"
+    },
+    {
+      "slug": "benefits-of-reading",
+      "title": "יתרונות הקריאה",
+      "category": "healthy-to-know",
+      "url": "https://abrahamgersten.github.io/zeh-kara-beemet/s/benefits-of-reading/"
+    }
+  ]
+}

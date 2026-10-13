@@ -821,7 +821,7 @@ h1, h2, h3 {
   font-size: 1.3rem;
   margin-bottom: 0.6em;
 }
-.site-footer__note { color: var(--sand-200); font-size: 0.95rem; max-width: 480px; margin: 0 auto; }
+.site-footer__note { color: var(--sand-200); font-size: 0.95rem; max-width: 480px; margin: 0 auto; text-wrap: balance; }
 
 /* ---------- Auth gate (login.html/offer.html, and the guard on index.html) ----------
    מונע הבזק תוכן/דף לפני שבדיקת ה-session/הזכאות ב-js/auth.js מסתיימת - ראו
@@ -1410,6 +1410,42 @@ body.auth-pending { visibility: hidden; }
   font-size: 0.94rem;
 }
 .parasha-prep__note { margin: 0; font-size: 0.86rem; color: var(--teal-ink); font-weight: 600; }
+
+/* ---------- דף סיפור בודד לשיתוף (s/<slug>/, en/s/<slug>/ - נוצר ע"י tools/build_story_pages.mjs) ----------
+   הכרטיס והנגן הם אותם .content-card/.player של האתר, בלי שינוי. כאן רק מה שמיוחד
+   לדף שכולו סיפור אחד: פחות רווח מעל הכרטיס, ושורת השיתוף וההצטרפות שמתחתיו. */
+.story-page { padding-top: 1.25rem; }
+@media (min-width: 820px) {
+  .story-page { padding-top: 3rem; }
+}
+/* בטלפון התמונה הריבועית דחפה את כפתור הניגון אל מתחת לקצה המסך (נמדד: 375x667).
+   בדף שכל מטרתו האזנה היא נחתכת לרצועה רחבה; לחיצה עליה עדיין פותחת אותה במלואה. */
+@media (max-width: 819px) {
+  .story-page .content-card__main-img { aspect-ratio: 16 / 10; height: auto; }
+}
+.story-share {
+  display: grid;
+  gap: 1.75rem;
+  margin-top: 2.5rem;
+  text-align: center;
+}
+@media (min-width: 720px) {
+  .story-share--two { grid-template-columns: 1fr 1fr; align-items: start; }
+}
+.story-share__text {
+  margin: 0 0 0.85rem;
+  text-wrap: balance;
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+.story-player-error {
+  margin: 0.6rem 0 0;
+  color: var(--gold-ink);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
 
 @media (prefers-reduced-motion: reduce) {
   * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
