@@ -1418,11 +1418,11 @@ body.auth-pending { visibility: hidden; }
 @media (min-width: 820px) {
   .story-page { padding-top: 3rem; }
 }
-/* בטלפון התמונה הריבועית דחפה את כפתור הניגון אל מתחת לקצה המסך (נמדד: 375x667).
-   בדף שכל מטרתו האזנה היא נחתכת לרצועה רחבה; לחיצה עליה עדיין פותחת אותה במלואה. */
-@media (max-width: 819px) {
-  .story-page .content-card__main-img { aspect-ratio: 16 / 10; height: auto; }
-}
+/* אברהם (2026-10-14): "התמונה חתוכה ולא מרובעת - צריך לתקן". בדף הזה התמונה תמיד שלמה
+   וריבועית, בכל רוחב: בטלפון ברוחב מלא, ובשתי עמודות היא לא נמתחת לגובה הכרטיס (שם
+   object-fit: cover היה חותך אותה מהצדדים כשהטקסט ארוך ממנה) אלא נשארת ריבוע ממורכז. */
+.story-page .content-card__media { align-self: center; }
+.story-page .content-card__main-img { aspect-ratio: 1 / 1; height: auto; }
 .story-share {
   display: grid;
   gap: 1.75rem;

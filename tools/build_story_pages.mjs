@@ -10,6 +10,12 @@
 //
 // <slug> = the audio file name up to "-sfx" (the same rule as ברלה's weekly_package.py slug_of()).
 //
+// The page's share button sends the same message ברלה's weekly package sends for that story (Avraham, 2026-10-14:
+// "the full message ברלה sends ... so that it also lets people join the WhatsApp group"). The teaser, the share line
+// and the group invitation are read from ברלה's own files (../ברלה המספר/Registry/), so there is one source for
+// them; without those files the site's description and the defaults below are used. After ברלה changes a teaser
+// or the footer, run this script again (--check will say the pages are out of date).
+//
 // Usage (from the site folder), after adding/renaming/removing an episode in js/app.js or en/js/app.js:
 //   node tools/build_story_pages.mjs            write the pages, remove pages of episodes that no longer exist
 //   node tools/build_story_pages.mjs --check    write nothing; exit 1 if the pages on disk are not up to date
@@ -48,6 +54,10 @@ const LANGS = {
     // קישור ההצטרפות החכם (whatsapp/index.html) - מפנה לקבוצה שיש בה מקום.
     join: { text: "רוצים לקבל סיפור כזה פעמיים בשבוע, בחינם?", button: "להצטרפות לקבוצה", href: "whatsapp/" },
     footerNote: "תוכן מקורי לכל המשפחה - נהניתם? שתפו עם עוד משפחות שיאהבו להקשיב 🎧",
+    // the parts of the shared message, as in ברלה's weekly_package.py (used when his files do not say otherwise)
+    listenPrefix: "להאזנה:",
+    teaserClosing: "סיפור לפני השינה, להקשיב יחד 🎧",
+    groupInvite: "רוצים לקבל סיפור כזה פעמיים בשבוע, בחינם? להצטרפות לקבוצה:\nhttps://abrahamgersten.github.io/zeh-kara-beemet/whatsapp/",
   },
   en: {
     appJs: "en/js/app.js",
@@ -71,6 +81,9 @@ const LANGS = {
         : { text: "Enjoyed it? Share it with family and friends ❤️", button: "Share this recording" },
     join: null,                      // there is no English group link yet
     footerNote: "Original content for the whole family - enjoyed it? Share it with more families who'd love to listen 🎧",
+    listenPrefix: "Listen:",
+    teaserClosing: "Listen together before bedtime 🎧",
+    groupInvite: "",
   },
 };
 
@@ -106,13 +119,39 @@ function imageSize(file) {
   return null;
 }
 
-function pageHTML(L, cat, ep, slug) {
+const BERELE_REGISTRY = path.resolve(REPO, "..", "ברלה המספר", "Registry");
+function readJson(file) {
+  try {
+    return JSON.parse(fs.readFileSync(file, "utf8"));
+  } catch {
+    return null;
+  }
+}
+const TEASERS = readJson(path.join(BERELE_REGISTRY, "whatsapp_teasers.json"));
+const PACKAGE = readJson(path.join(BERELE_REGISTRY, "whatsapp_package_config.json")) || {};
+if (!TEASERS) console.log("note: ברלה's teasers were not found - the shared messages use the site's descriptions");
+
+// The same order as his caption: teaser -> listening link -> share line -> (cta) -> group invitation.
+function shareMessage(L, lang, cat, ep, slug, pageUrl) {
+  const kind = cat.id === (PACKAGE.story_category || "tzadikim") ? "story" : cat.id === (PACKAGE.parasha_category || "parasha-what") ? "parasha" : null;
+  const parts = [
+    (((TEASERS || {})[slug] || {})[lang] || `*${ep.title}*\n\n${ep.description}\n\n${L.teaserClosing}`) + `\n${L.listenPrefix} ${pageUrl}`,
+    (kind && ((PACKAGE.share_line || {})[lang] || {})[kind]) || L.share(cat.id).text,
+    PACKAGE.cta_enabled ? (PACKAGE.cta || {})[lang] : "",
+    (PACKAGE.footer || {})[lang] ?? L.groupInvite,
+  ];
+  return parts.filter(Boolean).join("\n\n");
+}
+
+function pageHTML(L, lang, cat, ep, slug) {
   const up = "../../";                                   // s/<slug>/ -> the language's root (where the catalog paths start)
   const root = L.langRoot ? up + "../" : up;             // -> the repo root (css, js, icons)
   const pageUrl = new URL(`${L.langRoot ? L.langRoot + "/" : ""}s/${slug}/`, SITE_URL).href;
   const langUrl = new URL(L.langRoot ? L.langRoot + "/" : "", SITE_URL);
   const [main, thumb] = ep.images || (ep.image ? [ep.image] : []);
   const share = L.share(cat.id);
+  // read by js/story.js: what the share button sends, and what the listen counter reports
+  const storyData = JSON.stringify({ slug, lang, shareText: shareMessage(L, lang, cat, ep, slug, pageUrl) }).replace(/</g, "\\u003c");
 
   let mediaHTML;
   if (main) {
@@ -139,7 +178,7 @@ function pageHTML(L, cat, ep, slug) {
     ? `
         <div class="story-share__item">
           <p class="story-share__text">${esc(L.join.text)}</p>
-          <a class="btn btn--primary" href="${root}${L.join.href}">${esc(L.join.button)}</a>
+          <a class="btn btn--primary" href="${root}${L.join.href}" data-join>${esc(L.join.button)}</a>
         </div>`
     : "";
 
@@ -213,7 +252,7 @@ ${MARKER}
       <div class="story-share${L.join ? " story-share--two" : ""}">${joinHTML}
         <div class="story-share__item">
           <p class="story-share__text">${esc(share.text)}</p>
-          <button class="btn btn--outline" type="button" data-share data-share-text="${esc(`${ep.title} - ${L.brand}`)}">${esc(share.button)}</button>
+          <button class="btn btn--outline" type="button" data-share>${esc(share.button)}</button>
         </div>
       </div>
     </div>
@@ -235,6 +274,7 @@ ${MARKER}
   <img id="lightbox-img" alt="">
 </div>
 
+<script type="application/json" id="story-data">${storyData}</script>
 <script src="${root}js/story.js" defer></script>
 </body>
 </html>
@@ -273,7 +313,7 @@ for (const [lang, L] of Object.entries(LANGS)) {
       for (const rel of [ep.audio, ...(ep.images || (ep.image ? [ep.image] : []))]) {
         if (!fs.existsSync(path.join(REPO, L.langRoot, rel))) throw new Error(`[${lang}] ${slug}: missing file ${rel}`);
       }
-      emit(path.join(outDir, slug, "index.html"), pageHTML(L, cat, ep, slug));
+      emit(path.join(outDir, slug, "index.html"), pageHTML(L, lang, cat, ep, slug));
       stories.push({
         slug,
         title: ep.title,

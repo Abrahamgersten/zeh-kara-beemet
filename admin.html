@@ -99,6 +99,14 @@
   </div>
 
   <div class="admin-card">
+    <h2>🔗 קישורי הסיפורים (דפי השיתוף)</h2>
+    <p class="admin-page__sub" style="margin-bottom:1em">כמה פעמים נפתח כל קישור שיצא לקבוצות, וכמה האזינו בפועל. הדפים ציבוריים, והספירה בלי שום פרט מזהה.</p>
+    <div class="stats-grid" id="story-link-stats"><div class="stat-box">טוען...</div></div>
+    <p class="insights-subhead">לפי סיפור, מהנפתח ביותר</p>
+    <div id="story-link-table" style="overflow-x:auto"></div>
+  </div>
+
+  <div class="admin-card">
     <h2>➕ הענקת גישה</h2>
     <form id="grant-form" class="admin-form-row">
       <input type="email" id="grant-email" placeholder="email@example.com" required autocomplete="off">
@@ -179,6 +187,7 @@
     await loadEngagementOverview(supabase);
     await loadFamilyEngagement(supabase);
     await loadContentEngagement(supabase);
+    await loadStoryLinkStats(supabase);
     await loadChecklistItems(supabase);
 
     document.getElementById("checklist-item-form").addEventListener("submit", async (e) => {
@@ -389,6 +398,57 @@
         <div class="weekday-chart__bar" style="height:${Math.max(4, Math.round((n / max) * 100))}%" title="${n}"></div>
         <span class="weekday-chart__label">${labels[i]}</span>
       </div>`).join("");
+  }
+
+  // מונה דפי השיתוף (s/<slug>/, en/s/<slug>/) - supabase/migrations/0012_story_link_events.sql.
+  // שמות הסיפורים מגיעים מ-s/index.json ו-en/s/index.json שיוצר tools/build_story_pages.mjs.
+  async function loadStoryLinkStats(supabase) {
+    const statsHost = document.getElementById("story-link-stats");
+    const tableHost = document.getElementById("story-link-table");
+    const { data, error } = await supabase.rpc("admin_story_link_stats");
+    if (error) {
+      statsHost.innerHTML = `<p>שגיאה: ${error.message}</p>`;
+      return;
+    }
+    const titles = {};
+    await Promise.all([["he", "s/index.json"], ["en", "en/s/index.json"]].map(async ([lang, url]) => {
+      try {
+        const res = await fetch(url, { cache: "no-store" });
+        if (!res.ok) return;
+        for (const s of (await res.json()).stories || []) titles[`${lang}/${s.slug}`] = s.title;
+      } catch (e) {
+        // בלי הרשימה מוצג שם הקובץ במקום שם הסיפור
+      }
+    }));
+    const escapeHtml = (v) => String(v).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+    const t = data.totals || {};
+    statsHost.innerHTML = [
+      [t.opens || 0, "פתיחות של קישורים"],
+      [t.opens_7d || 0, "פתיחות ב-7 ימים"],
+      [t.visitors || 0, "אנשים שונים"],
+      [t.plays || 0, "התחילו להאזין"],
+      [t.finishes || 0, "הקשיבו עד הסוף"],
+      [t.shares || 0, `לחצו "שיתוף"`],
+      [t.joins || 0, `לחצו "הצטרפות לקבוצה"`],
+    ].map(([v, l]) => `<div class="stat-box"><span class="stat-box__value">${v}</span><span class="stat-box__label">${l}</span></div>`).join("");
+
+    const stories = data.stories || [];
+    if (!stories.length) {
+      tableHost.innerHTML = `<p class="admin-page__sub">עוד אין נתונים. הספירה מתחילה כשהקישורים נפתחים.</p>`;
+      return;
+    }
+    tableHost.innerHTML = `
+      <table class="admin-table">
+        <thead><tr><th scope="col">סיפור</th><th scope="col">פתיחות</th><th scope="col">אנשים</th><th scope="col">האזינו</th><th scope="col">עד הסוף</th><th scope="col">שיתפו</th><th scope="col">הצטרפות</th></tr></thead>
+        <tbody>${stories.map((s) => {
+          const title = titles[`${s.lang}/${s.slug}`];
+          const name = title
+            ? escapeHtml(title) + (s.lang === "en" ? ` <small style="color:var(--ink-soft)">(אנגלית)</small>` : "")
+            : `<small dir="ltr" style="color:var(--ink-soft)">${escapeHtml(s.slug)} (${escapeHtml(s.lang)})</small>`;
+          return `<tr><td>${name}</td><td>${s.opens}</td><td>${s.visitors}</td><td>${s.plays}</td><td>${s.finishes}</td><td>${s.shares}</td><td>${s.joins}</td></tr>`;
+        }).join("")}</tbody>
+      </table>`;
   }
 
   async function loadContentEngagement(supabase) {

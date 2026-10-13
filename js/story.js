@@ -9,6 +9,54 @@
    מ-data-* שבדף, כדי שהקובץ הזה ישרת את העברית ואת האנגלית.
 --------------------------------------------------------------- */
 (function () {
+  // נתוני הדף: slug, שפה, וההודעה שכפתור השיתוף שולח. tools/build_story_pages.mjs כותב אותם לדף.
+  let STORY = {};
+  try {
+    STORY = JSON.parse(document.getElementById("story-data").textContent) || {};
+  } catch (e) {
+    STORY = {};
+  }
+
+  /* מונה לכל קישור (אברהם, 2026-10-14: "לראות איזה סיפור נפתח הכי הרבה") - מוצג ב-admin.html.
+     נספר: open (הדף נפתח), play (התחילו להאזין), finish (הקשיבו עד הסוף), share, join.
+     נשלחים רק שם הסיפור, השפה, סוג האירוע ומספר אקראי שהדפדפן שומר אצלו (כדי להבחין בין
+     פתיחות לאנשים, ושרענון לא ייספר שוב) - שום פרט מזהה. ערוץ רקע: נכשל בשקט תמיד.
+     הכתובת והמפתח הם אלה שב-js/supabase-config.js (מפתח ציבורי; הקובץ הזה אינו מודול ולא יכול לייבא). */
+  const COUNTER_URL = "https://nuadpewhrhpdgznbbqbs.supabase.co/rest/v1/rpc/log_story_event";
+  const COUNTER_KEY = "sb_publishable_AcpmlZnxKM4yJxr1OsoSjw_CG6Kt2pz";
+  const counted = new Set();
+
+  function visitorId() {
+    try {
+      let v = localStorage.getItem("zkb_story_visitor");
+      if (!v) {
+        v = typeof crypto.randomUUID === "function"
+          ? crypto.randomUUID()
+          : Array.from(crypto.getRandomValues(new Uint8Array(16)), (b) => b.toString(16).padStart(2, "0")).join("");
+        localStorage.setItem("zkb_story_visitor", v);
+      }
+      return v;
+    } catch (e) {
+      return null; // גלישה פרטית / אחסון חסום: האירוע נספר בלי מספר
+    }
+  }
+
+  function track(event) {
+    // פעם אחת לכל סוג אירוע בטעינת דף, ורק באתר החי (לא בתצוגה מקומית בזמן פיתוח).
+    if (!STORY.slug || counted.has(event) || location.hostname !== "abrahamgersten.github.io") return;
+    counted.add(event);
+    try {
+      fetch(COUNTER_URL, {
+        method: "POST",
+        keepalive: true, // "join" נשלח רגע לפני שהדף מתחלף
+        headers: { apikey: COUNTER_KEY, Authorization: "Bearer " + COUNTER_KEY, "Content-Type": "application/json" },
+        body: JSON.stringify({ p_slug: STORY.slug, p_lang: STORY.lang, p_event: event, p_visitor: visitorId() }),
+      }).catch(() => {});
+    } catch (e) {
+      // לעולם לא משפיע על הדף
+    }
+  }
+
   function formatTime(sec) {
     if (!isFinite(sec) || sec < 0) return "0:00";
     const m = Math.floor(sec / 60);
@@ -46,6 +94,7 @@
       btn.setAttribute("aria-label", el.dataset.labelPause);
       if (errorEl) errorEl.hidden = true;
       setMediaSession();
+      track("play");
     });
     audio.addEventListener("pause", () => {
       btn.textContent = "▶";
@@ -58,6 +107,7 @@
       btn.setAttribute("aria-label", el.dataset.labelPlay);
       seek.value = 0;
       current.textContent = "0:00";
+      track("finish");
     });
     audio.addEventListener("error", showError);
 
@@ -156,29 +206,62 @@
     });
   }
 
-  // "שתפו": תפריט השיתוף של המכשיר, ובלעדיו וואטסאפ עם שם הסיפור והקישור לדף הזה.
+  /* "שתפו" (אברהם, 2026-10-14): נשלחת אותה הודעה שברלה שולח לקבוצות - המלל המסקרן, קישור
+     ההאזנה וההזמנה לקבוצה - ואם אפשר, יחד עם תמונת הסיפור. ההודעה עצמה מגיעה מ-STORY.shareText.
+     - תפריט השיתוף של המכשיר עם התמונה כקובץ וההודעה ככיתוב (אנדרואיד).
+     - באייפון וואטסאפ משמיט את המלל כשמצורף קובץ, ואז ההזמנה לקבוצה הייתה הולכת לאיבוד.
+       לכן שם נשלחת ההודעה לבדה; וואטסאפ מציג לה תצוגה מקדימה עם התמונה מתוך הקישור.
+     - בלי תפריט שיתוף (מחשב): וואטסאפ עם ההודעה מוכנה. */
   function setupShare() {
     const btn = document.querySelector("[data-share]");
     if (!btn) return;
+    const text = STORY.shareText || document.title;
+    const img = document.querySelector(".content-card__main-img");
+    const isApple = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    let imageFile = null;
+
+    // התמונה מוכנה מראש: navigator.share חייב לרוץ מיד עם הלחיצה, ואי אפשר להוריד אותה רק אז.
+    if (img && !isApple && typeof navigator.canShare === "function" && typeof File === "function") {
+      const prepare = () => {
+        fetch(img.currentSrc || img.src)
+          .then((r) => (r.ok ? r.blob() : null))
+          .then((blob) => {
+            if (!blob) return;
+            const type = blob.type || "image/jpeg";
+            const file = new File([blob], (STORY.slug || "story") + (type === "image/png" ? ".png" : ".jpg"), { type });
+            if (navigator.canShare({ files: [file] })) imageFile = file;
+          })
+          .catch(() => {});
+      };
+      if (img.complete && img.naturalWidth) prepare();
+      else img.addEventListener("load", prepare, { once: true });
+    }
+
+    const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent(text);
     btn.addEventListener("click", async () => {
-      const canonical = document.querySelector('link[rel="canonical"]');
-      const url = canonical ? canonical.href : location.href.split(/[?#]/)[0];
-      const text = btn.dataset.shareText || document.title;
-      if (navigator.share) {
+      track("share");
+      if (typeof navigator.share !== "function") {
+        window.open(whatsappUrl, "_blank", "noopener");
+        return;
+      }
+      for (const data of imageFile ? [{ files: [imageFile], text }, { text }] : [{ text }]) {
         try {
-          await navigator.share({ title: document.title, text, url });
+          await navigator.share(data);
           return;
         } catch (e) {
           if (e && e.name === "AbortError") return; // המשתמש סגר את התפריט
         }
       }
-      window.open("https://wa.me/?text=" + encodeURIComponent(text + "\n" + url), "_blank", "noopener");
+      location.href = whatsappUrl; // תפריט השיתוף נכשל; חלון חדש כבר ייחסם אחרי ההמתנה
     });
   }
 
   document.addEventListener("DOMContentLoaded", () => {
+    track("open");
     setupPlayer();
     setupMedia();
     setupShare();
+    const join = document.querySelector("[data-join]");
+    if (join) join.addEventListener("click", () => track("join"));
   });
 })();
