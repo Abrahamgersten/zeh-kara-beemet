@@ -245,7 +245,8 @@ let stale = 0;
 let written = 0;
 
 function emit(file, content) {
-  const current = fs.existsSync(file) ? fs.readFileSync(file, "utf8") : null;
+  // git on Windows (autocrlf) may hand the files back with CRLF - that is not a content change
+  const current = fs.existsSync(file) ? fs.readFileSync(file, "utf8").replace(/\r\n/g, "\n") : null;
   if (current === content) return;
   if (CHECK) {
     stale += 1;
