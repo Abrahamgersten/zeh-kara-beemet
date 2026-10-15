@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>קמפיינים לקבוצה - זה קרה באמת</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0f8793">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Suez+One&family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  /* מסך ניהול פנימי - באותה שפה של admin.html (כרטיסים, תיבות מספרים). */
+  .cp-page { max-width: 820px; margin: 0 auto; padding: 2.2rem 1rem 4rem; }
+  .cp-page h1 { font-size: 1.75rem; color: var(--teal-heading); margin-bottom: 0.25em; }
+  .cp-sub { color: var(--ink-soft); margin: 0 0 1.6em; line-height: 1.6; }
+  .cp-card { background: var(--sand-50); border-radius: var(--radius-md); box-shadow: var(--shadow-soft); padding: 1.4rem 1.25rem; margin-bottom: 1.6rem; }
+  .cp-card h2 { font-size: 1.15rem; color: var(--teal-heading); margin-bottom: 0.9em; }
+
+  .cp-field { display: block; margin-bottom: 0.9em; }
+  .cp-field span { display: block; font-weight: 600; font-size: 0.92rem; margin-bottom: 0.35em; }
+  .cp-field small { display: block; color: var(--ink-soft); font-size: 0.8rem; margin-top: 0.3em; }
+  .cp-input { width: 100%; box-sizing: border-box; padding: 0.7em 0.9em; border-radius: var(--radius-sm); border: 1.5px solid var(--teal-200); font-family: var(--font-body); font-size: 1rem; background: #fff; color: var(--ink); }
+  .cp-input:focus-visible { outline: 3px solid var(--gold-300); outline-offset: 1px; border-color: var(--teal-800); }
+  textarea.cp-input { min-height: 4.5em; resize: vertical; line-height: 1.5; }
+  .cp-status { min-height: 1.4em; font-size: 0.9rem; margin: 0.7em 0 0; color: var(--teal-ink); }
+  .cp-status.is-error { color: #a33a3a; }
+  .btn--sm { padding: 0.45em 1em; font-size: 0.86rem; }
+
+  .stats-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.6em; margin-bottom: 0.6em; }
+  .stat-box { background: #fff; border-radius: var(--radius-sm); padding: 0.85em 0.8em; text-align: center; box-shadow: 0 4px 14px -8px rgba(7, 34, 41, 0.25); }
+  .stat-box__value { display: block; font-family: var(--font-display); font-size: 1.45rem; color: var(--teal-heading); line-height: 1.1; }
+  .stat-box__label { font-size: 0.74rem; color: var(--ink-soft); margin-top: 0.3em; display: block; }
+  .cp-note { font-size: 0.8rem; color: var(--ink-soft); margin: 0.4em 0 1.2em; line-height: 1.55; }
+
+  .cp-list { display: grid; gap: 0.9em; }
+  .cp-item { background: #fff; border-radius: var(--radius-sm); padding: 1em 1em 0.85em; box-shadow: 0 4px 14px -8px rgba(7, 34, 41, 0.25); }
+  .cp-item.is-new { box-shadow: 0 0 0 3px var(--gold-300), 0 4px 14px -8px rgba(7, 34, 41, 0.25); }
+  .cp-item.is-baseline { background: var(--teal-200); box-shadow: none; }
+  .cp-item__head { display: flex; align-items: baseline; gap: 0.55em; }
+  .cp-rank { flex-shrink: 0; min-width: 1.9em; height: 1.9em; border-radius: 999px; display: inline-grid; place-items: center; background: var(--teal-200); color: var(--teal-heading); font-weight: 700; font-size: 0.8rem; }
+  .cp-item__name { font-weight: 700; font-size: 1.05rem; margin: 0; overflow-wrap: anywhere; }
+  .cp-item__desc { color: var(--ink-soft); font-size: 0.88rem; margin: 0.45em 0 0; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.5; }
+  .cp-nums { display: flex; flex-wrap: wrap; gap: 0.4em 1.2em; margin: 0.8em 0 0.3em; font-size: 0.86rem; color: var(--ink-soft); }
+  .cp-nums b { color: var(--ink); font-size: 1.05rem; }
+  .cp-nums .cp-main b { font-family: var(--font-display); font-weight: 400; font-size: 1.5rem; color: var(--teal-heading); }
+  .cp-share { display: flex; align-items: center; gap: 0.6em; font-size: 0.78rem; color: var(--ink-soft); margin-bottom: 0.7em; }
+  .cp-share__track { flex: 1; height: 7px; background: var(--sand-200); border-radius: 999px; overflow: hidden; }
+  .cp-share__fill { display: block; height: 100%; background: linear-gradient(90deg, var(--teal-700), var(--teal-900)); border-radius: 999px; }
+  .cp-link { display: flex; gap: 0.5em; align-items: center; flex-wrap: wrap; }
+  .cp-link input { flex: 1 1 200px; min-width: 0; font-size: 0.85rem; padding: 0.5em 0.7em; background: var(--sand-50); }
+  .cp-link .btn { flex-shrink: 0; }
+  .cp-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5em; margin-top: 0.75em; font-size: 0.76rem; color: var(--ink-soft); }
+  .cp-foot__actions { display: flex; gap: 0.4em; }
+  .cp-qr { margin-top: 0.8em; text-align: center; }
+  .cp-qr img { width: 200px; height: 200px; image-rendering: pixelated; background: #fff; border-radius: 8px; }
+  .cp-qr p { font-size: 0.78rem; color: var(--ink-soft); margin: 0.3em 0 0.5em; }
+  .cp-edit { margin-top: 0.8em; }
+  .cp-empty { color: var(--ink-soft); font-size: 0.92rem; margin: 0; }
+  .cp-archive { margin-top: 1.4em; }
+  .cp-archive summary { cursor: pointer; font-weight: 600; color: var(--teal-ink); padding: 0.3em 0; }
+  .cp-archive .cp-list { margin-top: 0.8em; }
+  .cp-archive .cp-item { opacity: 0.85; }
+  .cp-unknown { margin-top: 1.2em; font-size: 0.85rem; color: var(--ink-soft); }
+  .cp-denied { text-align: center; padding: 4rem 1.25rem; color: var(--ink-soft); }
+  .cp-back { font-size: 0.9rem; color: var(--teal-ink); }
+  @media (prefers-reduced-motion: reduce) { .btn { transition: none; } .btn:hover { transform: none; } }
+</style>
+</head>
+<body class="auth-pending">
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a href="index.html" class="brand">
+      <img class="brand__mark" src="icons/brand-mark.png" alt="" width="40" height="40">
+      <span class="brand__name">זה קרה באמת · קמפיינים</span>
+    </a>
+  </div>
+</header>
+
+<main class="cp-page" id="cp-root" hidden>
+  <h1>קמפיינים לקבוצת הוואטסאפ</h1>
+  <p class="cp-sub">לכל אפיק פרסום קישור משלו. כולם מובילים לאותו מקום כמו הקישור הרגיל (הקבוצה הפנויה כרגע), וכאן רואים כמה אנשים הגיעו מכל אחד. <a class="cp-back" href="admin.html">לניהול המנויים</a></p>
+
+  <section class="cp-card" aria-labelledby="new-h">
+    <h2 id="new-h">➕ קישור חדש</h2>
+    <form id="new-form" novalidate>
+      <label class="cp-field">
+        <span>שם הקמפיין</span>
+        <input class="cp-input" id="new-name" maxlength="120" required autocomplete="off" placeholder="למשל: פלייר בבית הכנסת הגדול">
+      </label>
+      <label class="cp-field">
+        <span>אופן הפעולה</span>
+        <textarea class="cp-input" id="new-desc" maxlength="2000" placeholder="איפה ואיך הקישור מופץ, למשל: דף A5 עם QR על לוח המודעות, מ-15.10"></textarea>
+        <small>לא חובה. עוזר להבין בעוד חודש מה בדיוק עבד.</small>
+      </label>
+      <button type="submit" class="btn btn--primary" id="new-submit">יצירת קישור</button>
+      <p id="new-status" class="cp-status" role="status" aria-live="polite"></p>
+    </form>
+  </section>
+
+  <section class="cp-card" aria-labelledby="stats-h">
+    <h2 id="stats-h">📊 מי הגיע מאיפה</h2>
+    <div class="stats-grid" id="totals"><div class="stat-box">טוען...</div></div>
+    <p class="cp-note" id="totals-note">נספרים אנשים שלחצו על הקישור והועברו לקבוצה. וואטסאפ לא מדווחת מי מהם לחץ אחר כך "הצטרפות", ולכן זה מדד ההגעה, לא מספר המצטרפים המדויק. אותו אדם שלוחץ שוב תוך חצי שעה לא נספר פעמיים.</p>
+    <div class="cp-list" id="list"></div>
+    <div id="unknown"></div>
+    <details class="cp-archive" id="archive" hidden>
+      <summary id="archive-summary">בארכיון</summary>
+      <div class="cp-list" id="archive-list"></div>
+    </details>
+  </section>
+</main>
+
+<div id="cp-denied" class="cp-denied" hidden>
+  <p>אין לך גישה לעמוד הזה.</p>
+</div>
+
+<script type="module">
+  import { getSupabaseClient, getSession, isSupabaseConfigured, revealPage } from "./js/auth.js";
+
+  // הקישור הרגיל (whatsapp/index.html). קישור קמפיין = אותו קישור עם ?c=<קוד>.
+  const JOIN_URL = "https://abrahamgersten.github.io/zeh-kara-beemet/whatsapp/";
+  const QR_LIB = "https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js";
+
+  let supabase;
+  let newCode = null;
+
+  const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const linkFor = (code) => code ? `${JOIN_URL}?c=${code}` : JOIN_URL;
+  const dateHe = (d) => d ? new Date(d).toLocaleDateString("he-IL", { day: "numeric", month: "numeric", year: "numeric" }) : "";
+  const rtf = new Intl.RelativeTimeFormat("he", { numeric: "auto" });
+  function ago(d) {
+    if (!d) return "עוד לא";
+    const mins = Math.round((Date.now() - new Date(d).getTime()) / 60000);
+    if (mins < 60) return rtf.format(-Math.max(mins, 0), "minute");
+    if (mins < 60 * 24) return rtf.format(-Math.round(mins / 60), "hour");
+    return rtf.format(-Math.round(mins / 1440), "day");
+  }
+
+  async function init() {
+    if (!isSupabaseConfigured()) { showDenied("המערכת עדיין לא הוקמה."); return; }
+    const session = await getSession();
+    if (!session) {
+      try { sessionStorage.setItem("zkb_after_login", "campaigns.html"); } catch (e) {}
+      window.location.replace("login.html");
+      return;
+    }
+    supabase = getSupabaseClient();
+    const { data: isAdmin, error } = await supabase.rpc("is_admin");
+    if (error || !isAdmin) { showDenied(); return; }
+
+    document.getElementById("cp-root").hidden = false;
+    revealPage();
+    document.getElementById("new-form").addEventListener("submit", onCreate);
+    await load();
+  }
+
+  function showDenied(text) {
+    const el = document.getElementById("cp-denied");
+    if (text) el.querySelector("p").textContent = text;
+    el.hidden = false;
+    revealPage();
+  }
+
+  async function onCreate(e) {
+    e.preventDefault();
+    const nameEl = document.getElementById("new-name");
+    const descEl = document.getElementById("new-desc");
+    const status = document.getElementById("new-status");
+    const btn = document.getElementById("new-submit");
+    status.classList.remove("is-error");
+    if (!nameEl.value.trim()) {
+      status.textContent = "צריך לתת לקמפיין שם.";
+      status.classList.add("is-error");
+      nameEl.focus();
+      return;
+    }
+    btn.disabled = true;
+    status.textContent = "יוצר קישור...";
+    const { data, error } = await supabase.rpc("admin_create_join_campaign", { p_name: nameEl.value.trim(), p_description: descEl.value.trim() || null });
+    btn.disabled = false;
+    if (error) {
+      status.textContent = "שגיאה: " + error.message;
+      status.classList.add("is-error");
+      return;
+    }
+    newCode = data.code;
+    const copied = await copy(linkFor(data.code));
+    status.textContent = copied ? "הקישור נוצר והועתק ✓ אפשר להדביק אותו איפה שרוצים." : "הקישור נוצר ✓ הוא מופיע למטה עם כפתור העתקה.";
+    nameEl.value = "";
+    descEl.value = "";
+    await load();
+    const el = document.querySelector(`[data-code="${data.code}"]`);
+    if (el) el.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center" });
+  }
+
+  async function copy(text) {
+    try { await navigator.clipboard.writeText(text); return true; } catch (e) {}
+    try {
+      const ta = document.createElement("textarea");
+      ta.value = text; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      const ok = document.execCommand("copy");
+      ta.remove();
+      return ok;
+    } catch (e) { return false; }
+  }
+
+  async function load() {
+    const { data, error } = await supabase.rpc("admin_join_campaign_stats");
+    const listEl = document.getElementById("list");
+    if (error) {
+      document.getElementById("totals").innerHTML = "";
+      listEl.innerHTML = `<p class="cp-status is-error">שגיאה בטעינת הנתונים: ${esc(error.message)}</p>`;
+      return;
+    }
+    const all = data.campaigns || [];
+    const active = all.filter((c) => !c.archived);
+    const archived = all.filter((c) => c.archived);
+    const direct = data.direct || { clicks: 0, people: 0, people_7d: 0, people_today: 0 };
+    const t = data.totals || {};
+    const peopleSum = all.reduce((s, c) => s + c.people, 0) + direct.people + (data.unknown || []).reduce((s, u) => s + u.people, 0);
+
+    document.getElementById("totals").innerHTML = [
+      [t.people || 0, "אנשים הגיעו בסך הכול"],
+      [t.people_7d || 0, "ב-7 הימים האחרונים"],
+      [active.length, "קמפיינים פעילים"],
+    ].map(([v, l]) => `<div class="stat-box"><span class="stat-box__value">${v}</span><span class="stat-box__label">${l}</span></div>`).join("");
+    const note = document.getElementById("totals-note");
+    note.dataset.base ??= note.textContent;
+    note.textContent = note.dataset.base + (t.tracked_since ? ` הספירה פועלת מ-${dateHe(t.tracked_since)}.` : "");
+
+    listEl.innerHTML = active.length
+      ? active.map((c, i) => itemHtml(c, i + 1, peopleSum)).join("") + baselineHtml(direct, peopleSum)
+      : `<p class="cp-empty">עוד אין קמפיינים. צרו את הראשון למעלה, וכל אחד יקבל קישור משלו.</p>` + baselineHtml(direct, peopleSum);
+
+    const unknown = data.unknown || [];
+    document.getElementById("unknown").innerHTML = unknown.length
+      ? `<p class="cp-unknown">קודים שלא נוצרו כאן (כנראה טעות הקלדה בקישור): ${unknown.map((u) => `<span dir="ltr">${esc(u.code)}</span> (${u.people})`).join(", ")}</p>`
+      : "";
+
+    const archiveEl = document.getElementById("archive");
+    archiveEl.hidden = archived.length === 0;
+    document.getElementById("archive-summary").textContent = `בארכיון (${archived.length})`;
+    document.getElementById("archive-list").innerHTML = archived.map((c) => itemHtml(c, null, peopleSum)).join("");
+    bind();
+  }
+
+  function shareHtml(people, peopleSum) {
+    const pct = peopleSum ? Math.round((people / peopleSum) * 100) : 0;
+    return `<div class="cp-share"><span class="cp-share__track"><span class="cp-share__fill" style="width:${pct}%"></span></span><span>${pct}% מכל מי שהגיע</span></div>`;
+  }
+
+  function numsHtml(r) {
+    return `<div class="cp-nums">
+      <span class="cp-main"><b>${r.people}</b> אנשים</span>
+      <span>היום <b>${r.people_today}</b></span>
+      <span>7 ימים <b>${r.people_7d}</b></span>
+      <span>לחיצות <b>${r.clicks}</b></span>
+    </div>`;
+  }
+
+  function linkHtml(code, name) {
+    const url = linkFor(code);
+    return `<div class="cp-link">
+      <input class="cp-input" type="text" readonly dir="ltr" value="${esc(url)}" aria-label="הקישור של ${esc(name)}">
+      <button type="button" class="btn btn--outline btn--sm" data-copy="${esc(url)}">העתקה</button>
+      <button type="button" class="btn btn--outline btn--sm" data-qr="${esc(url)}" data-qr-name="${esc(name)}">QR</button>
+    </div>
+    <div class="cp-qr" hidden></div>`;
+  }
+
+  function itemHtml(c, rank, peopleSum) {
+    return `<article class="cp-item${c.code === newCode ? " is-new" : ""}" data-code="${esc(c.code)}">
+      <div class="cp-item__head">
+        ${rank ? `<span class="cp-rank" aria-label="מקום ${rank}">${rank}</span>` : ""}
+        <h3 class="cp-item__name">${esc(c.name)}</h3>
+      </div>
+      ${c.description ? `<p class="cp-item__desc">${esc(c.description)}</p>` : ""}
+      ${numsHtml(c)}
+      ${shareHtml(c.people, peopleSum)}
+      ${linkHtml(c.code, c.name)}
+      <div class="cp-foot">
+        <span>נוצר ${dateHe(c.created_at)} · לחיצה אחרונה: ${ago(c.last_click)}</span>
+        <span class="cp-foot__actions">
+          <button type="button" class="btn btn--outline btn--sm" data-edit>עריכה</button>
+          <button type="button" class="btn btn--outline btn--sm" data-archive="${c.archived ? "0" : "1"}">${c.archived ? "החזרה מהארכיון" : "לארכיון"}</button>
+        </span>
+      </div>
+      <form class="cp-edit" hidden>
+        <label class="cp-field"><span>שם הקמפיין</span><input class="cp-input" name="name" maxlength="120" value="${esc(c.name)}"></label>
+        <label class="cp-field"><span>אופן הפעולה</span><textarea class="cp-input" name="desc" maxlength="2000">${esc(c.description || "")}</textarea></label>
+        <button type="submit" class="btn btn--primary btn--sm">שמירה</button>
+        <button type="button" class="btn btn--outline btn--sm" data-cancel>ביטול</button>
+        <p class="cp-status" role="status" aria-live="polite"></p>
+      </form>
+    </article>`;
+  }
+
+  function baselineHtml(d, peopleSum) {
+    return `<article class="cp-item is-baseline">
+      <div class="cp-item__head"><h3 class="cp-item__name">הקישור הרגיל, בלי קמפיין</h3></div>
+      <p class="cp-item__desc">כל מי שהגיע מהקישור הכללי (הודעות בקבוצות, דפי הסיפורים, העברות). זה קנה המידה להשוואה.</p>
+      ${numsHtml(d)}
+      ${shareHtml(d.people, peopleSum)}
+      ${linkHtml(null, "הקישור הרגיל")}
+    </article>`;
+  }
+
+  function bind() {
+    document.querySelectorAll("[data-copy]").forEach((btn) => btn.addEventListener("click", async () => {
+      const ok = await copy(btn.dataset.copy);
+      btn.textContent = ok ? "הועתק ✓" : "סמנו והעתיקו";
+      if (!ok) btn.previousElementSibling.select();
+      setTimeout(() => { btn.textContent = "העתקה"; }, 2000);
+    }));
+    document.querySelectorAll("[data-qr]").forEach((btn) => btn.addEventListener("click", () => toggleQr(btn)));
+    document.querySelectorAll(".cp-item[data-code]").forEach((item) => {
+      const form = item.querySelector(".cp-edit");
+      item.querySelector("[data-edit]").addEventListener("click", () => {
+        form.hidden = !form.hidden;
+        if (!form.hidden) form.elements.name.focus();
+      });
+      form.querySelector("[data-cancel]").addEventListener("click", () => { form.hidden = true; });
+      form.addEventListener("submit", (e) => { e.preventDefault(); save(item, { name: form.elements.name.value, desc: form.elements.desc.value }); });
+      item.querySelector("[data-archive]").addEventListener("click", (e) => {
+        const name = item.querySelector(".cp-item__name").textContent;
+        const desc = item.querySelector(".cp-item__desc")?.textContent || "";
+        save(item, { name, desc, archived: e.currentTarget.dataset.archive === "1" });
+      });
+    });
+  }
+
+  async function save(item, { name, desc, archived }) {
+    const status = item.querySelector(".cp-edit .cp-status");
+    if (!name.trim()) { item.querySelector(".cp-edit").hidden = false; status.textContent = "צריך שם."; return; }
+    const isArchived = archived ?? item.closest("#archive-list") !== null;
+    const { error } = await supabase.rpc("admin_update_join_campaign", {
+      p_code: item.dataset.code, p_name: name.trim(), p_description: desc.trim() || null, p_archived: isArchived,
+    });
+    if (error) {
+      item.querySelector(".cp-edit").hidden = false;
+      status.textContent = "שגיאה: " + error.message;
+      status.classList.add("is-error");
+      return;
+    }
+    await load();
+  }
+
+  let qrLoading = null;
+  function loadQrLib() {
+    if (window.qrcode) return Promise.resolve();
+    if (!qrLoading) qrLoading = new Promise((resolve, reject) => {
+      const s = document.createElement("script");
+      s.src = QR_LIB; s.onload = resolve; s.onerror = () => { qrLoading = null; reject(); };
+      document.head.appendChild(s);
+    });
+    return qrLoading;
+  }
+
+  async function toggleQr(btn) {
+    const box = btn.closest(".cp-link").nextElementSibling;
+    if (!box.hidden) { box.hidden = true; return; }
+    box.hidden = false;
+    box.innerHTML = `<p>טוען...</p>`;
+    try {
+      await loadQrLib();
+      const qr = window.qrcode(0, "M");
+      qr.addData(btn.dataset.qr);
+      qr.make();
+      // ריבוע גדול וחד להדפסה (PNG), גם אם בדף הוא מוצג קטן
+      const size = qr.getModuleCount(), cell = 16, margin = 4 * cell, px = size * cell + margin * 2;
+      const canvas = document.createElement("canvas");
+      canvas.width = canvas.height = px;
+      const ctx = canvas.getContext("2d");
+      ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, px, px);
+      ctx.fillStyle = "#000";
+      for (let r = 0; r < size; r++) for (let c = 0; c < size; c++) if (qr.isDark(r, c)) ctx.fillRect(margin + c * cell, margin + r * cell, cell, cell);
+      const png = canvas.toDataURL("image/png");
+      const fileName = `QR - ${btn.dataset.qrName.replace(/[\\/:*?"<>|]/g, "")}.png`;
+      box.innerHTML = `<img src="${png}" alt="קוד QR לקישור של ${esc(btn.dataset.qrName)}">
+        <p>לסריקה במצלמה של הטלפון. מוביל לאותו קישור ונספר באותו קמפיין.</p>
+        <a class="btn btn--outline btn--sm" href="${png}" download="${esc(fileName)}">הורדה להדפסה</a>`;
+    } catch (e) {
+      box.innerHTML = `<p>לא הצלחתי ליצור QR כרגע. נסו שוב בעוד רגע.</p>`;
+    }
+  }
+
+  init();
+</script>
+</body>
+</html>

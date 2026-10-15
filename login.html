@@ -97,7 +97,10 @@
       statusEl.textContent = "בודקים את המנוי שלכם...";
       const row = await fetchEntitlement();
       if (isEntitled(row)) {
-        window.location.replace(INDEX_URL);
+        // דפי הניהול (campaigns.html) שולחים לכאן כשאין התחברות, ומבקשים לחזור אליהם אחריה.
+        let back = null;
+        try { back = sessionStorage.getItem("zkb_after_login"); sessionStorage.removeItem("zkb_after_login"); } catch (e) {}
+        window.location.replace(back === "campaigns.html" || back === "admin.html" ? back : INDEX_URL);
       } else {
         statusEl.textContent = "לא מצאנו מנוי פעיל עבור " + (row ? row.email : session.user.email) + ". אם שילמת עם כתובת אחרת, כתבו לנו ונתקן.";
         revealPage();
