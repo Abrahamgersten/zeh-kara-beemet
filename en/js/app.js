@@ -803,129 +803,160 @@ function setupContinuousDropdowns() {
 
 function setupPlayers() {
   const players = Array.from(document.querySelectorAll(".player:not(.player--soon)"));
-  // "Play in a row" (Avraham, 2026-10-08): the chain must stay inside the
-  // category it started in - so players are grouped by .category-section,
-  // and the chain only ever runs through that category's own list
-  // (categoryControllers[nextIdx] simply doesn't exist past its last episode).
-  const controllersBySection = new Map();
-  let continuousPlan = null; // { remaining } - only one player is ever active site-wide, so this is global
+  // "Play in a row" stays inside the section it started in (Avraham, 2026-10-08) - each episode knows its section's
+  // list. Since 2026-10-15 (Avraham: "it plays 2 or 3 in a row and then stops, even if I asked for more" - on this
+  // site and on "אי היהלומים"):
+  // 1. Only the page's own pause button cancels the chain. Before, any pause cancelled it - a WhatsApp notification
+  //    sound, a phone call or the lock screen pauses the media for a moment, the episode carries on, and at its end
+  //    the chain was already gone (reproduced: one such pause stopped a 4-episode chain after the first).
+  // 2. One media element plays every episode (like a podcast app). With a separate element per episode, a phone
+  //    with the screen locked may refuse to start the next one without a tap; switching the file on the element
+  //    that is already playing is allowed.
+  const audio = new Audio();
+  audio.preload = "none";
+  let active = null; // the episode whose file is loaded in the shared element
+  let pendingSeek = 0; // where to start an episode that was resumed or scrubbed before its file loaded
+  let continuousPlan = null; // { remaining } while a chain is in progress
 
-  players.forEach((el) => {
+  const sectionLists = new Map();
+  const episodes = players.map((el) => {
     const section = el.closest(".category-section");
-    if (!controllersBySection.has(section)) controllersBySection.set(section, []);
-    const categoryControllers = controllersBySection.get(section);
-    const catIdx = categoryControllers.length; // the position this episode will get in the category list, before it's pushed
+    if (!sectionLists.has(section)) sectionLists.set(section, []);
+    const list = sectionLists.get(section);
+    const ep = {
+      el,
+      list,
+      pos: 0,
+      posInList: list.length,
+      src: el.dataset.src,
+      btn: el.querySelector(".player__btn"),
+      seek: el.querySelector(".player__seek"),
+      current: el.querySelector(".player__current"),
+      duration: el.querySelector(".player__duration"),
+      dd: el.closest(".player-wrap")?.querySelector(".continuous-dd"),
+      playLabel: el.querySelector(".player__btn").getAttribute("aria-label"),
+      seeking: false,
+      loggedPlay: false,
+    };
+    list.push(ep);
+    return ep;
+  });
 
-    const src = el.dataset.src;
-    const btn = el.querySelector(".player__btn");
-    const seek = el.querySelector(".player__seek");
-    const current = el.querySelector(".player__current");
-    const duration = el.querySelector(".player__duration");
-    const continuousDd = el.closest(".player-wrap")?.querySelector(".continuous-dd");
-    let audio = null;
-    let seeking = false;
-    let loggedPlay = false;
-    let pausedByOther = false; // true only when zkb-pause-request paused us (another episode starting) - not a manual pause
+  function showPlaying(ep, playing) {
+    ep.btn.textContent = playing ? "⏸" : "▶";
+    ep.btn.classList.toggle("is-playing", playing);
+    ep.btn.setAttribute("aria-label", playing ? "Pause" : ep.pos > 0 ? "Resume narration" : ep.playLabel);
+  }
 
-    function ensureAudio() {
-      if (audio) return audio;
-      audio = new Audio(src);
-      audio.preload = "none";
-
-      audio.addEventListener("loadedmetadata", () => {
-        seek.max = audio.duration || 0;
-        duration.textContent = formatTime(audio.duration);
-      });
-      audio.addEventListener("timeupdate", () => {
-        if (seeking) return;
-        seek.value = audio.currentTime;
-        current.textContent = formatTime(audio.currentTime);
-      });
-      audio.addEventListener("play", () => {
-        players.forEach((other) => {
-          if (other !== el) other.dispatchEvent(new CustomEvent("zkb-pause-request"));
-        });
-        btn.textContent = "⏸";
-        btn.classList.add("is-playing");
-        btn.setAttribute("aria-label", "Pause");
-        // Lightweight, non-blocking usage tracking (see js/analytics.js) -
-        // only on the first play of a page load, not on every pause/resume.
-        if (!loggedPlay) {
-          loggedPlay = true;
-          const card = el.closest(".content-card");
-          const catEl = card && card.querySelector(".content-card__eyebrow");
-          const titleEl = card && card.querySelector(".content-card__title");
-          window.zkbLogEvent && window.zkbLogEvent("audio_play", catEl ? catEl.textContent : null, titleEl ? titleEl.textContent : null);
-        }
-      });
-      audio.addEventListener("pause", () => {
-        btn.textContent = "▶";
-        btn.classList.remove("is-playing");
-        btn.setAttribute("aria-label", "Resume narration");
-        // A manual pause (not another episode in the chain starting, which
-        // pauses every other player via zkb-pause-request, and not a natural
-        // end-of-track - the browser fires pause right before ended) cancels the plan.
-        if (!pausedByOther && !audio.ended) continuousPlan = null;
-        pausedByOther = false;
-      });
-      audio.addEventListener("ended", () => {
-        btn.textContent = "▶";
-        btn.classList.remove("is-playing");
-        seek.value = 0;
-        current.textContent = "0:00";
-        continueChainFrom(categoryControllers, catIdx);
-      });
-      return audio;
+  function load(ep) {
+    if (active === ep) return;
+    if (active) {
+      active.pos = audio.currentTime || active.pos;
+      showPlaying(active, false);
     }
+    active = ep;
+    pendingSeek = ep.pos;
+    audio.src = ep.src;
+  }
 
-    btn.addEventListener("click", () => {
-      const a = ensureAudio();
-      if (a.paused) {
-        const choice = continuousDd ? continuousDd.dataset.value : "1";
-        continuousPlan = choice === "1" ? null : { remaining: choice === "all" ? Infinity : Number(choice) - 1 };
-        a.play().catch(() => {});
-      } else {
-        a.pause();
-      }
-    });
+  function start(ep) {
+    load(ep);
+    audio.play().catch(() => showPlaying(ep, false));
+  }
 
-    el.addEventListener("zkb-pause-request", () => {
-      if (audio && !audio.paused) {
-        pausedByOther = true;
+  function setMediaSession(ep) {
+    if (!("mediaSession" in navigator) || typeof MediaMetadata !== "function") return;
+    const card = ep.el.closest(".content-card");
+    const img = card?.querySelector(".content-card__main-img");
+    try {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: card?.querySelector(".content-card__title")?.textContent || document.title,
+        artist: card?.querySelector(".content-card__eyebrow")?.textContent || "It Really Happened",
+        artwork: img ? [{ src: img.currentSrc || img.src }] : [],
+      });
+    } catch (e) {
+      // lock-screen details are a nicety only
+    }
+  }
+
+  audio.addEventListener("loadedmetadata", () => {
+    if (!active) return;
+    active.seek.max = audio.duration || 0;
+    active.duration.textContent = formatTime(audio.duration);
+    if (pendingSeek > 0 && pendingSeek < audio.duration) audio.currentTime = pendingSeek;
+    pendingSeek = 0;
+  });
+  audio.addEventListener("timeupdate", () => {
+    if (!active || active.seeking) return;
+    active.seek.value = audio.currentTime;
+    active.current.textContent = formatTime(audio.currentTime);
+  });
+  audio.addEventListener("play", () => {
+    if (!active) return;
+    showPlaying(active, true);
+    setMediaSession(active);
+    // usage tracking (non-blocking, see js/analytics.js) - only on the first play of an episode in a page load
+    if (!active.loggedPlay) {
+      active.loggedPlay = true;
+      const card = active.el.closest(".content-card");
+      const catEl = card && card.querySelector(".content-card__eyebrow");
+      const titleEl = card && card.querySelector(".content-card__title");
+      window.zkbLogEvent && window.zkbLogEvent("audio_play", catEl ? catEl.textContent : null, titleEl ? titleEl.textContent : null);
+    }
+  });
+  audio.addEventListener("pause", () => {
+    // no plan change here: this also fires for pauses the user did not make (notifications, calls, lock screen)
+    if (active && !audio.ended) {
+      active.pos = audio.currentTime;
+      showPlaying(active, false);
+    }
+  });
+  audio.addEventListener("ended", () => {
+    if (!active) return;
+    const ep = active;
+    ep.pos = 0;
+    showPlaying(ep, false);
+    ep.seek.value = 0;
+    ep.current.textContent = "0:00";
+    continueChainFrom(ep);
+  });
+
+  episodes.forEach((ep) => {
+    ep.btn.addEventListener("click", () => {
+      if (active === ep && !audio.paused) {
+        continuousPlan = null; // the user's own pause: the chain stops here
         audio.pause();
+        return;
       }
+      const choice = ep.dd ? ep.dd.dataset.value : "1";
+      continuousPlan = choice === "1" ? null : { remaining: choice === "all" ? Infinity : Number(choice) - 1 };
+      start(ep);
     });
 
-    seek.addEventListener("input", () => {
-      seeking = true;
-      current.textContent = formatTime(Number(seek.value));
+    ep.seek.addEventListener("input", () => {
+      ep.seeking = true;
+      ep.current.textContent = formatTime(Number(ep.seek.value));
     });
-    seek.addEventListener("change", () => {
-      const a = ensureAudio();
-      a.currentTime = Number(seek.value);
-      seeking = false;
-    });
-
-    categoryControllers.push({
-      playFromStart() {
-        // If the next episode is still under "show more", reveal it - otherwise
-        // the audio would start with no visible card on screen.
-        const hiddenCard = el.closest('.content-card[hidden]');
-        if (hiddenCard) { hiddenCard.hidden = false; hiddenCard.removeAttribute("data-overflow-card"); }
-        const a = ensureAudio();
-        a.currentTime = 0;
-        a.play().catch(() => {});
-        (el.closest(".content-card") || el).scrollIntoView({ behavior: "smooth", block: "center" });
-      },
+    ep.seek.addEventListener("change", () => {
+      const t = Number(ep.seek.value);
+      if (active === ep && audio.readyState > 0) audio.currentTime = t;
+      else if (active === ep) pendingSeek = t;
+      else ep.pos = t;
+      ep.seeking = false;
     });
   });
 
-  function continueChainFrom(categoryControllers, idx) {
+  function continueChainFrom(ep) {
     if (!continuousPlan || continuousPlan.remaining <= 0) { continuousPlan = null; return; }
-    const nextIdx = idx + 1;
-    if (!categoryControllers[nextIdx]) { continuousPlan = null; return; }
+    const next = ep.list[ep.posInList + 1];
+    if (!next) { continuousPlan = null; return; }
     continuousPlan.remaining -= 1;
-    categoryControllers[nextIdx].playFromStart();
+    // if the next episode is still under "show more", reveal it - otherwise the audio plays with no card on screen
+    const hiddenCard = next.el.closest(".content-card[hidden]");
+    if (hiddenCard) { hiddenCard.hidden = false; hiddenCard.removeAttribute("data-overflow-card"); }
+    next.pos = 0;
+    start(next);
+    (next.el.closest(".content-card") || next.el).scrollIntoView({ behavior: "smooth", block: "center" });
   }
 }
 
