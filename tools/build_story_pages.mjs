@@ -314,12 +314,9 @@ for (const [lang, L] of Object.entries(LANGS)) {
         if (!fs.existsSync(path.join(REPO, L.langRoot, rel))) throw new Error(`[${lang}] ${slug}: missing file ${rel}`);
       }
       emit(path.join(outDir, slug, "index.html"), pageHTML(L, lang, cat, ep, slug));
-      stories.push({
-        slug,
-        title: ep.title,
-        category: cat.id,
-        url: new URL(`${L.langRoot ? L.langRoot + "/" : ""}s/${slug}/`, SITE_URL).href,
-      });
+      const url = new URL(`${L.langRoot ? L.langRoot + "/" : ""}s/${slug}/`, SITE_URL).href;
+      // shareText: what "share" sends - on the story page and on the episode's card on the site (js/app.js)
+      stories.push({ slug, title: ep.title, category: cat.id, url, shareText: shareMessage(L, lang, cat, ep, slug, url) });
     }
   }
   emit(path.join(outDir, "index.json"), JSON.stringify({ lang, stories }, null, 2) + "\n");

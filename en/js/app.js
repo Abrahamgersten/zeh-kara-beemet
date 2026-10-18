@@ -571,6 +571,7 @@ function audioCardHTML(cat, ep, idx, audioIdx, audioTotal) {
       <h3 class="content-card__title">${ep.title}</h3>
       <p class="content-card__desc"><strong>About this episode: </strong>${ep.description}</p>
       ${playerHTML(ep, audioIdx, audioTotal)}
+      ${shareButtonHTML(cat, ep)}
       ${pdfReportHTML(ep)}
     </div>
   </article>`;
@@ -611,6 +612,80 @@ function spotDiffCardHTML(cat, ep, idx) {
       </div>
     </div>
   </article>`;
+}
+
+/* ---------------------------------------------------------------
+   "שיתוף" on every recording card (Avraham, 2026-10-18): shares this one recording the way the weekly WhatsApp
+   message does - the teaser, a listening link to its own page (s/<slug>/) and the group invitation. The text is
+   the story page's own (s/index.json -> shareText, written by tools/build_story_pages.mjs from ברלה's files).
+   Android: with the episode's picture as a file. iPhone: text only (WhatsApp there drops the text of a shared
+   file, and the invitation would be lost). Computer: WhatsApp with the message ready.
+--------------------------------------------------------------- */
+const STORY_PAGE_BASE = "https://abrahamgersten.github.io/zeh-kara-beemet/en/s/";
+
+function storySlug(audioPath) {
+  const name = audioPath.split("/").pop();
+  return name.includes("-sfx") ? name.slice(0, name.lastIndexOf("-sfx")) : name.replace(/\.[^.]+$/, "");
+}
+
+function shareButtonHTML(cat, ep) {
+  if (!ep.audio) return "";
+  const label = cat.id === "tzadikim" ? "Share the story" : "Share this recording";
+  return `
+      <div class="content-card__share">
+        <button class="btn btn--outline content-card__share-btn" type="button" data-share-slug="${storySlug(ep.audio)}" aria-label="Share on WhatsApp: ${ep.title}">📤 ${label}</button>
+      </div>`;
+}
+
+function setupStoryShare() {
+  const host = document.getElementById("category-sections");
+  if (!host) return;
+  let texts = null;
+  fetch("s/index.json")
+    .then((r) => (r.ok ? r.json() : null))
+    .then((j) => { texts = j ? Object.fromEntries((j.stories || []).map((s) => [s.slug, s.shareText])) : null; })
+    .catch(() => {});
+  const isApple = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+  function pictureFile(card, slug) {
+    const img = card && card.querySelector(".content-card__main-img");
+    if (!img || isApple || typeof navigator.canShare !== "function" || typeof File !== "function") return Promise.resolve(null);
+    const load = fetch(img.currentSrc || img.src)
+      .then((r) => (r.ok ? r.blob() : null))
+      .then((blob) => {
+        if (!blob) return null;
+        const type = blob.type || "image/jpeg";
+        const file = new File([blob], slug + (type === "image/png" ? ".png" : ".jpg"), { type });
+        return navigator.canShare({ files: [file] }) ? file : null;
+      })
+      .catch(() => null);
+    // the picture is already on screen (and cached); if it is slow, share the text without it
+    return Promise.race([load, new Promise((res) => setTimeout(() => res(null), 1500))]);
+  }
+
+  host.addEventListener("click", async (e) => {
+    const btn = e.target.closest("[data-share-slug]");
+    if (!btn) return;
+    const slug = btn.dataset.shareSlug;
+    const card = btn.closest(".content-card");
+    const title = card && card.querySelector(".content-card__title") ? card.querySelector(".content-card__title").textContent : "";
+    const text = (texts && texts[slug]) || `${title} - It Really Happened\n${STORY_PAGE_BASE}${slug}/`;
+    const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent(text);
+    if (typeof navigator.share !== "function") {
+      window.open(whatsappUrl, "_blank", "noopener");
+      return;
+    }
+    const file = await pictureFile(card, slug);
+    for (const data of file ? [{ files: [file], text }, { text }] : [{ text }]) {
+      try {
+        await navigator.share(data);
+        return;
+      } catch (err) {
+        if (err && err.name === "AbortError") return; // closed the share menu
+      }
+    }
+    location.href = whatsappUrl;
+  });
 }
 
 const INITIAL_VISIBLE_EPISODES = 4;
@@ -1313,6 +1388,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupShowMore();
   setupContinuousDropdowns();
   setupPlayers();
+  setupStoryShare();
   setupCatNavTracking();
   setupSparkles();
   setupMoon();

@@ -1390,6 +1390,10 @@ body.auth-pending { visibility: hidden; }
   border-top: 1px dashed var(--sand-200);
 }
 .content-card__pdf-btn { width: 100%; }
+
+/* "שיתוף" on every recording card (2026-10-18) - shares this one recording to WhatsApp (js/app.js setupStoryShare) */
+.content-card__share { margin-top: 0.7rem; }
+.content-card__share-btn { padding: 0.55em 1.3em; font-size: 0.95rem; }
 .content-card__report:empty { display: none; }
 
 .parasha-prep {
