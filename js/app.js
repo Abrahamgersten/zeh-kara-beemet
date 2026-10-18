@@ -240,7 +240,7 @@ const CATEGORIES = [
         title: "איך הטלפון מעביר קולות?",
         description: "מדברים עם חבר בצד השני של העולם, והוא שומע אותנו תוך רגע. המסע המופלא של הקול שלנו: גלי קול, מיקרופון, אותות חשמליים, גלי רדיו ורמקול.",
         image: "assets/images/how-phone-carries-voices.jpeg",
-        audio: "assets/audio/how-phone-carries-voices-sfx4.mp3",
+        audio: "assets/audio/how-phone-carries-voices-sfx5.mp3",
       },
       {
         title: "סיפורו של הפלסטיק",

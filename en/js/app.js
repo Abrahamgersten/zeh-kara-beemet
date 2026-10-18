@@ -242,7 +242,7 @@ const CATEGORIES = [
         title: "How Does a Phone Carry Our Voice?",
         description: "We talk to a friend on the other side of the world, and they hear us in an instant. The amazing journey of our voice: sound waves, a microphone, electrical signals, radio waves and a speaker.",
         image: "../assets/images/en/how-phone-carries-voices.jpeg",
-        audio: "../assets/audio/en/how-phone-carries-voices-sfx3.mp3",
+        audio: "../assets/audio/en/how-phone-carries-voices-sfx4.mp3",
       },
       {
         title: "The Story of Plastic",
