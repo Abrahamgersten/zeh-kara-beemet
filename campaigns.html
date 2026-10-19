@@ -49,6 +49,8 @@
   .cp-share { display: flex; align-items: center; gap: 0.6em; font-size: 0.78rem; color: var(--ink-soft); margin-bottom: 0.7em; }
   .cp-share__track { flex: 1; height: 7px; background: var(--sand-200); border-radius: 999px; overflow: hidden; }
   .cp-share__fill { display: block; height: 100%; background: linear-gradient(90deg, var(--teal-700), var(--teal-900)); border-radius: 999px; }
+  .cp-sharebtns { display: flex; flex-wrap: wrap; gap: 0.5em; margin-bottom: 0.6em; }
+  .cp-sharebtns .btn { flex: 1 1 auto; }
   .cp-link { display: flex; gap: 0.5em; align-items: center; flex-wrap: wrap; }
   .cp-link input { flex: 1 1 200px; min-width: 0; font-size: 0.85rem; padding: 0.5em 0.7em; background: var(--sand-50); }
   .cp-link .btn { flex-shrink: 0; }
@@ -124,6 +126,28 @@
   // הקישור הרגיל (whatsapp/index.html). קישור קמפיין = אותו קישור עם ?c=<קוד>.
   const JOIN_URL = "https://abrahamgersten.github.io/zeh-kara-beemet/whatsapp/";
   const QR_LIB = "https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js";
+
+  // שתי ההודעות לשיתוף מכל כרטיס (אברהם, 2026-10-19), עם התמונה whatsapp/invite.jpg.
+  // הנוסח של אברהם מילה במילה; {link} = הקישור של אותו קמפיין.
+  const INVITE_IMG = "whatsapp/invite.jpg";
+  const SHARE_TEXTS = {
+    full: `זה קרה באמת! 🎧
+
+קבוצת ווצאפ עם סיפורי צדיקים לילדים לפני השינה - בהקלטות קצרות ונעימות 🌙
+
+פעם בשבוע נשלח בקבוצה סיפור חדש לילדים ולמשפחה 📖
+
+הקבוצת ווצאפ שקטה וחינמית 🔕
+
+המיזם יוצא מבית תלמוד תורה מעוז חיים בירושלים, ומסייע בחיזוק והחזקת התלמוד תורה 🏫
+
+להצטרפות לקבוצה 📲
+{link}
+
+מוזמנים להעביר גם למשפחות נוספות 🌿`,
+    short: `להצטרפות לקבוצת הווצאפ של הסיפורים 📲
+{link}`,
+  };
 
   let supabase;
   let newCode = null;
@@ -265,7 +289,11 @@
 
   function linkHtml(code, name) {
     const url = linkFor(code);
-    return `<div class="cp-link">
+    return `<div class="cp-sharebtns">
+      <button type="button" class="btn btn--primary btn--sm" data-share="full" data-url="${esc(url)}">📤 שיתוף הודעת הזמנה</button>
+      <button type="button" class="btn btn--outline btn--sm" data-share="short" data-url="${esc(url)}">📲 שיתוף קישור קצר</button>
+    </div>
+    <div class="cp-link">
       <input class="cp-input" type="text" readonly dir="ltr" value="${esc(url)}" aria-label="הקישור של ${esc(name)}">
       <button type="button" class="btn btn--outline btn--sm" data-copy="${esc(url)}">העתקה</button>
       <button type="button" class="btn btn--outline btn--sm" data-qr="${esc(url)}" data-qr-name="${esc(name)}">QR</button>
@@ -318,6 +346,7 @@
       setTimeout(() => { btn.textContent = "העתקה"; }, 2000);
     }));
     document.querySelectorAll("[data-qr]").forEach((btn) => btn.addEventListener("click", () => toggleQr(btn)));
+    document.querySelectorAll("[data-share]").forEach((btn) => btn.addEventListener("click", () => shareInvite(btn.dataset.share, btn.dataset.url)));
     document.querySelectorAll(".cp-item[data-code]").forEach((item) => {
       const form = item.querySelector(".cp-edit");
       item.querySelector("[data-edit]").addEventListener("click", () => {
@@ -348,6 +377,42 @@
       return;
     }
     await load();
+  }
+
+  /* שיתוף מהכרטיס, כמו "שתפו" בדפי הסיפורים (js/story.js):
+     - אנדרואיד: תפריט השיתוף של המכשיר, התמונה כקובץ וההודעה ככיתוב.
+     - אייפון: וואטסאפ משמיט את המלל כשמצורף קובץ, והקישור היה הולך לאיבוד; לכן ההודעה לבדה.
+     - בלי תפריט שיתוף (מחשב): וואטסאפ עם ההודעה מוכנה, בלי תמונה.
+     התמונה מוכנה מראש כי navigator.share חייב לרוץ מיד עם הלחיצה. */
+  const isApple = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  let inviteFile = null;
+  if (!isApple && typeof navigator.canShare === "function" && typeof File === "function") {
+    fetch(INVITE_IMG)
+      .then((r) => (r.ok ? r.blob() : null))
+      .then((blob) => {
+        if (!blob) return;
+        const file = new File([blob], "zeh-kara-beemet.jpg", { type: blob.type || "image/jpeg" });
+        if (navigator.canShare({ files: [file] })) inviteFile = file;
+      })
+      .catch(() => {});
+  }
+
+  async function shareInvite(kind, url) {
+    const text = SHARE_TEXTS[kind].replace("{link}", url);
+    const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent(text);
+    if (typeof navigator.share !== "function") {
+      window.open(whatsappUrl, "_blank", "noopener");
+      return;
+    }
+    for (const data of inviteFile ? [{ files: [inviteFile], text }, { text }] : [{ text }]) {
+      try {
+        await navigator.share(data);
+        return;
+      } catch (e) {
+        if (e && e.name === "AbortError") return; // סגרו את התפריט
+      }
+    }
+    location.href = whatsappUrl; // תפריט השיתוף נכשל; חלון חדש כבר ייחסם אחרי ההמתנה
   }
 
   let qrLoading = null;
