@@ -54,6 +54,8 @@
   .cp-link { display: flex; gap: 0.5em; align-items: center; flex-wrap: wrap; }
   .cp-link input { flex: 1 1 200px; min-width: 0; font-size: 0.85rem; padding: 0.5em 0.7em; background: var(--sand-50); }
   .cp-link .btn { flex-shrink: 0; }
+  .cp-statslink { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4em 0.5em; margin-top: 0.7em; padding-top: 0.7em; border-top: 1px dashed var(--teal-200); font-size: 0.86rem; color: var(--ink-soft); }
+  .cp-statslink span { flex: 1 0 100%; }
   .cp-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5em; margin-top: 0.75em; font-size: 0.76rem; color: var(--ink-soft); }
   .cp-foot__actions { display: flex; gap: 0.4em; }
   .cp-qr { margin-top: 0.8em; text-align: center; }
@@ -125,6 +127,7 @@
 
   // הקישור הרגיל (whatsapp/index.html). קישור קמפיין = אותו קישור עם ?c=<קוד>.
   const JOIN_URL = "https://abrahamgersten.github.io/zeh-kara-beemet/whatsapp/";
+  const STATS_URL = "https://abrahamgersten.github.io/zeh-kara-beemet/campaign/";
   const QR_LIB = "https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js";
 
   // שתי ההודעות לשיתוף מכל כרטיס (אברהם, 2026-10-19), עם התמונה whatsapp/invite.jpg.
@@ -155,13 +158,15 @@
   const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const linkFor = (code) => code ? `${JOIN_URL}?c=${code}` : JOIN_URL;
   const dateHe = (d) => d ? new Date(d).toLocaleDateString("he-IL", { day: "numeric", month: "numeric", year: "numeric" }) : "";
-  const rtf = new Intl.RelativeTimeFormat("he", { numeric: "auto" });
+  // בעברית ידנית: Intl.RelativeTimeFormat של Chrome כותב "לפני שעתיים (2)".
   function ago(d) {
     if (!d) return "עוד לא";
-    const mins = Math.round((Date.now() - new Date(d).getTime()) / 60000);
-    if (mins < 60) return rtf.format(-Math.max(mins, 0), "minute");
-    if (mins < 60 * 24) return rtf.format(-Math.round(mins / 60), "hour");
-    return rtf.format(-Math.round(mins / 1440), "day");
+    const mins = Math.max(0, Math.round((Date.now() - new Date(d).getTime()) / 60000));
+    const hours = Math.round(mins / 60), days = Math.round(mins / 1440);
+    if (mins < 1) return "עכשיו";
+    if (mins < 60) return mins === 1 ? "לפני דקה" : `לפני ${mins} דקות`;
+    if (mins < 1440) return hours === 1 ? "לפני שעה" : hours === 2 ? "לפני שעתיים" : `לפני ${hours} שעות`;
+    return days === 1 ? "אתמול" : days === 2 ? "לפני יומיים" : `לפני ${days} ימים`;
   }
 
   async function init() {
@@ -301,6 +306,16 @@
     <div class="cp-qr" hidden></div>`;
   }
 
+  // קישור צפייה ציבורי במספרים של קמפיין אחד (campaign/?k=<מפתח>, מיגרציה 0014), למשל למי שמפיץ אותו.
+  function statsLinkHtml(key, name) {
+    const url = `${STATS_URL}?k=${key}`;
+    return `<div class="cp-statslink">
+      <span>📊 קישור למספרים של הקמפיין:</span>
+      <button type="button" class="btn btn--outline btn--sm" data-copy="${esc(url)}">העתקה</button>
+      <a class="btn btn--outline btn--sm" href="${esc(url)}" target="_blank" rel="noopener" aria-label="פתיחת המספרים של ${esc(name)}">פתיחה</a>
+    </div>`;
+  }
+
   function itemHtml(c, rank, peopleSum) {
     return `<article class="cp-item${c.code === newCode ? " is-new" : ""}" data-code="${esc(c.code)}">
       <div class="cp-item__head">
@@ -311,6 +326,7 @@
       ${numsHtml(c)}
       ${shareHtml(c.people, peopleSum)}
       ${linkHtml(c.code, c.name)}
+      ${c.stats_key ? statsLinkHtml(c.stats_key, c.name) : ""}
       <div class="cp-foot">
         <span>נוצר ${dateHe(c.created_at)} · לחיצה אחרונה: ${ago(c.last_click)}</span>
         <span class="cp-foot__actions">
@@ -342,7 +358,7 @@
     document.querySelectorAll("[data-copy]").forEach((btn) => btn.addEventListener("click", async () => {
       const ok = await copy(btn.dataset.copy);
       btn.textContent = ok ? "הועתק ✓" : "סמנו והעתיקו";
-      if (!ok) btn.previousElementSibling.select();
+      if (!ok) btn.previousElementSibling?.select?.();
       setTimeout(() => { btn.textContent = "העתקה"; }, 2000);
     }));
     document.querySelectorAll("[data-qr]").forEach((btn) => btn.addEventListener("click", () => toggleQr(btn)));

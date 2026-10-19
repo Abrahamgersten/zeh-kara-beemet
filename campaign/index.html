@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>מספרי הקמפיין - זה קרה באמת</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0f8793">
+<meta property="og:title" content="מספרי הקמפיין - זה קרה באמת">
+<meta property="og:description" content="כמה אנשים הגיעו לקבוצת הסיפורים דרך הקמפיין הזה">
+<link rel="icon" href="../icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Suez+One&family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<style>
+  /* דף צפייה ציבורי לקמפיין אחד (campaign/?k=<מפתח>), נוצר מ-campaigns.html.
+     המספרים מגיעים מ-join_campaign_public_stats (supabase/migrations/0014). */
+  .cs-page { max-width: 560px; margin: 0 auto; padding: 2rem 1rem 3.5rem; }
+  .cs-eyebrow { color: var(--ink-soft); font-size: 0.9rem; margin: 0 0 0.3em; }
+  .cs-page h1 { font-size: 1.7rem; color: var(--teal-heading); margin: 0 0 1.1em; overflow-wrap: anywhere; line-height: 1.25; }
+  .cs-hero { background: var(--sand-50); border-radius: var(--radius-md); box-shadow: var(--shadow-soft); padding: 1.6rem 1.25rem; text-align: center; margin-bottom: 1rem; }
+  .cs-hero__num { display: block; font-family: var(--font-display); font-size: 3.4rem; line-height: 1; color: var(--teal-heading); }
+  .cs-hero__label { display: block; margin-top: 0.4em; font-weight: 600; }
+  .cs-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.6em; margin-bottom: 1rem; }
+  .cs-box { background: #fff; border-radius: var(--radius-sm); padding: 0.85em 0.6em; text-align: center; box-shadow: 0 4px 14px -8px rgba(7, 34, 41, 0.25); }
+  .cs-box b { display: block; font-family: var(--font-display); font-weight: 400; font-size: 1.5rem; color: var(--teal-heading); line-height: 1.1; }
+  .cs-box span { display: block; font-size: 0.78rem; color: var(--ink-soft); margin-top: 0.3em; }
+  .cs-card { background: var(--sand-50); border-radius: var(--radius-md); box-shadow: var(--shadow-soft); padding: 1.2rem 1.25rem; margin-bottom: 1rem; }
+  .cs-card h2 { font-size: 1.05rem; color: var(--teal-heading); margin: 0 0 0.7em; }
+  .cs-days { list-style: none; margin: 0; padding: 0; }
+  .cs-days li { display: flex; justify-content: space-between; padding: 0.45em 0; border-bottom: 1px solid var(--teal-200); font-size: 0.95rem; }
+  .cs-days li:last-child { border-bottom: 0; }
+  .cs-meta, .cs-note { color: var(--ink-soft); font-size: 0.84rem; line-height: 1.6; margin: 0 0 0.6em; }
+  .cs-empty { text-align: center; padding: 3rem 1rem; color: var(--ink-soft); }
+  .cs-actions { text-align: center; margin-top: 1.4rem; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <span class="brand">
+      <img class="brand__mark" src="../icons/brand-mark.png" alt="" width="40" height="40">
+      <span class="brand__name">זה קרה באמת</span>
+    </span>
+  </div>
+</header>
+
+<main class="cs-page" id="root" aria-live="polite">
+  <p class="cs-empty">טוען את המספרים...</p>
+</main>
+
+<script>
+(function () {
+  var URL_RPC = "https://nuadpewhrhpdgznbbqbs.supabase.co/rest/v1/rpc/join_campaign_public_stats";
+  var KEY = "sb_publishable_AcpmlZnxKM4yJxr1OsoSjw_CG6Kt2pz";
+  var root = document.getElementById("root");
+  var k = null;
+  try { k = new URLSearchParams(location.search).get("k"); } catch (e) {}
+
+  function esc(v) {
+    return String(v == null ? "" : v).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  function dateHe(d) {
+    return new Date(d).toLocaleDateString("he-IL", { day: "numeric", month: "numeric", year: "numeric" });
+  }
+  function dayHe(iso) {
+    // iso = "YYYY-MM-DD" (תאריך בשעון ישראל, מהשרת)
+    var p = iso.split("-");
+    var d = new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
+    return d.toLocaleDateString("he-IL", { weekday: "long", day: "numeric", month: "numeric" });
+  }
+  function ago(d) {
+    // בעברית ידנית: Intl.RelativeTimeFormat של Chrome כותב "לפני שעתיים (2)".
+    if (!d) return "עוד לא נכנס אף אחד";
+    var mins = Math.max(0, Math.round((Date.now() - new Date(d).getTime()) / 60000));
+    var hours = Math.round(mins / 60), days = Math.round(mins / 1440);
+    if (mins < 1) return "עכשיו";
+    if (mins < 60) return mins === 1 ? "לפני דקה" : "לפני " + mins + " דקות";
+    if (mins < 1440) return hours === 1 ? "לפני שעה" : hours === 2 ? "לפני שעתיים" : "לפני " + hours + " שעות";
+    return days === 1 ? "אתמול" : days === 2 ? "לפני יומיים" : "לפני " + days + " ימים";
+  }
+  function fail(text) {
+    root.innerHTML = '<p class="cs-empty">' + esc(text) + "</p>";
+  }
+
+  if (!k || !/^[a-f0-9]{16}$/.test(k)) { fail("הקישור לא שלם. בקשו את הקישור המלא ממי ששלח אותו."); return; }
+
+  fetch(URL_RPC, {
+    method: "POST",
+    headers: { apikey: KEY, Authorization: "Bearer " + KEY, "Content-Type": "application/json" },
+    body: JSON.stringify({ p_key: k }),
+    cache: "no-store"
+  }).then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+    .then(function (s) {
+      if (!s) { fail("לא מצאנו קמפיין לקישור הזה. בקשו את הקישור המלא ממי ששלח אותו."); return; }
+      document.title = s.name + " - מספרי הקמפיין";
+      var days = (s.days || []).map(function (d) {
+        return "<li><span>" + esc(dayHe(d.day)) + "</span><b>" + d.people + "</b></li>";
+      }).join("");
+      root.innerHTML =
+        '<p class="cs-eyebrow">קמפיין לקבוצת הסיפורים' + (s.archived ? " (הסתיים)" : "") + "</p>" +
+        "<h1>" + esc(s.name) + "</h1>" +
+        '<div class="cs-hero"><span class="cs-hero__num">' + s.people + '</span><span class="cs-hero__label">' +
+          (s.people === 1 ? "אדם הגיע לקבוצה דרך הקמפיין" : "אנשים הגיעו לקבוצה דרך הקמפיין") + "</span></div>" +
+        '<div class="cs-grid">' +
+          '<div class="cs-box"><b>' + s.people_today + "</b><span>היום</span></div>" +
+          '<div class="cs-box"><b>' + s.people_7d + "</b><span>ב-7 ימים</span></div>" +
+          '<div class="cs-box"><b>' + s.clicks + "</b><span>לחיצות</span></div>" +
+        "</div>" +
+        '<section class="cs-card" aria-labelledby="days-h"><h2 id="days-h">לפי ימים (30 הימים האחרונים)</h2>' +
+          (days ? '<ul class="cs-days">' + days + "</ul>" : '<p class="cs-meta">עוד אין כניסות.</p>') +
+        "</section>" +
+        '<p class="cs-meta">הקמפיין נפתח ב-' + esc(dateHe(s.created_at)) + ". כניסה אחרונה: " + esc(ago(s.last_click)) + ".</p>" +
+        '<p class="cs-note">נספרים אנשים שלחצו על הקישור של הקמפיין והגיעו לקבוצה. וואטסאפ לא מדווחת מי מהם לחץ אחר כך "הצטרפות". מי שלוחץ שוב תוך חצי שעה לא נספר פעמיים.</p>' +
+        '<div class="cs-actions"><button type="button" class="btn btn--outline" id="refresh">רענון המספרים</button></div>';
+      document.getElementById("refresh").addEventListener("click", function () { location.reload(); });
+    })
+    .catch(function () { fail("לא הצלחנו לטעון את המספרים כרגע. נסו שוב בעוד רגע."); });
+})();
+</script>
+</body>
+</html>
