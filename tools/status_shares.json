@@ -1,16 +1,158 @@
 {
-  "_readme": "Sharing a story to WhatsApp status (Avraham, 2026-10-19). For each story listed here, its 'share' button (on the site's card and on the story page s/<slug>/) asks: as a message (as before) or to status. 'hook' is printed on the status picture (assets/images/status/<slug>.jpg, made by tools/build_status_images.py), 'caption' is the text that goes with it ({url} = the story's listening page). 'popup': true = when the story ends on its page, a popup invites the listener to share it to status. After a change: python tools/build_status_images.py, then node tools/build_story_pages.mjs.",
+  "_readme": "Sharing a story to WhatsApp status (Avraham, 2026-10-19). For each story listed here, its 'share' button (on the site's card and on the story page s/<slug>/, en/s/<slug>/) asks: as a message (as before) or to status. 'hook' is printed on the status picture (line 1 dark, line 2 teal), made by tools/build_status_images.py into assets/images/status/<slug>.jpg (Hebrew) and assets/images/status/en/<slug>.jpg (English). 'caption' is the text that goes with it ({url} = the story's listening page). 'popup': true = when the story ends on its page, a popup invites the listener to share it to status. Avraham, 2026-10-19: the text must not say the listening is free. After a change: python tools/build_status_images.py, then node tools/build_story_pages.mjs.",
+  "kol-nidrei-drunkard": {
+    "he": {
+      "hook": "ערב יום כיפור. ארון הקודש נפתח לכל נדרי, ושיכור עולה לבימה ומכריז על הקפות.\nלמה האדמו״ר הזקן אמר: ״הניחו לו״?",
+      "caption": "סיפור אמיתי ומפתיע ✨\nהשיכור של כל נדרי: בערב יום כיפור עלה שיכור לבימה והכריז על הקפות, והאדמו״ר הזקן אמר ״הניחו לו״.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "popup": true
+    },
+    "en": {
+      "hook": "Erev Yom Kippur. The Aron Kodesh opens for Kol Nidrei, and a drunk man climbs the bimah to announce hakafot.\nWhy did the Alter Rebbe say, \"Leave him be\"?",
+      "caption": "A true story with a surprising ending ✨\nThe Drunkard of Kol Nidrei: on Erev Yom Kippur a drunk man announced hakafot from the bimah, and the Alter Rebbe said, \"Leave him be.\"\n🎧 Listen with the kids:\n{url}",
+      "popup": true
+    }
+  },
+  "isser-zalman-gratitude": {
+    "he": {
+      "hook": "רבי איסר זלמן מלצר, זקן וחלש, טיפס מדרגה אחרי מדרגה לבר מצווה של משפחה פשוטה.\n״מה כבר עשיתי בשביל הרב?״ שאל האבא.",
+      "caption": "סיפור אמיתי על תודה ✨\nחוב של הכרת הטוב: רבי איסר זלמן מלצר, זקן וחלש, טיפס במאמץ רב לבר מצווה של משפחה פשוטה. למה?\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "popup": true
+    },
+    "en": {
+      "hook": "Old and weak, Rav Isser Zalman Meltzer climbed the stairs, step after step, to a simple family's bar mitzvah.\n\"What did I ever do for the Rav?\" asked the father.",
+      "caption": "A true story about saying thank you ✨\nA Debt of Gratitude: old and weak, Rav Isser Zalman Meltzer climbed the stairs to a simple family's bar mitzvah. Why?\n🎧 Listen with the kids:\n{url}",
+      "popup": true
+    }
+  },
+  "ben-ish-chai": {
+    "he": {
+      "hook": "בכל מוצאי שבת נשמעו מעליית הגג של הבן איש חי שני קולות, אבל הוא היה שם לבד.\nמה קרה כשהתלמיד הגיע לדלת?",
+      "caption": "סיפור אמיתי ומסקרן ✨\nהבן איש חי: בכל מוצאי שבת נשמעו מעליית הגג שלו שני קולות, אבל לא היה שם אף אחד חוץ ממנו.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "popup": true
+    },
+    "en": {
+      "hook": "Every Motzaei Shabbat, two voices came from the Ben Ish Chai's attic. But he was alone in there.\nWhat happened when a student reached the door?",
+      "caption": "A true story full of mystery ✨\nStep by Step: every Motzaei Shabbat, two voices came from the Ben Ish Chai's attic, but no one was there except him.\n🎧 Listen with the kids:\n{url}",
+      "popup": true
+    }
+  },
+  "chazon-ish-calculation": {
+    "he": {
+      "hook": "תלמיד שמע חבטה, רץ פנימה ומצא את החזון איש שוכב על הרצפה בלי כוחות.\n״טעיתי בחישוב,״ אמר. איזה חישוב?",
+      "caption": "סיפור אמיתי ומדהים ✨\nטעות בחישוב: החזון איש נמצא שוכב על הרצפה בלי כוחות, ואמר רק: ״טעיתי בחישוב״.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "popup": true
+    },
+    "en": {
+      "hook": "A student heard a thud, ran inside and found the Chazon Ish lying on the floor, without any strength.\n\"I made a mistake in my calculation.\" What calculation?",
+      "caption": "An amazing true story ✨\nA Mistake in the Math: the Chazon Ish was found lying on the floor, and all he said was, \"I made a mistake in my calculation.\"\n🎧 Listen with the kids:\n{url}",
+      "popup": true
+    }
+  },
+  "something-to-give": {
+    "he": {
+      "hook": "חולה מרותק למיטה שאל: ״איך אברך ׳שעשה לי כל צרכי׳, כשאני לא מסוגל לעשות כלום?״\nהרב ווזנר עלה לחדר שלו וסיפר לו סיפור.",
+      "caption": "סיפור אמיתי שמחמם את הלב ✨\nלכל אחד יש מה לתת: חולה שלא יכול היה לקום מהמיטה שאל שאלה שוברת לב, והרב ווזנר ענה לו בסיפור מימי נעוריו.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "popup": true
+    },
+    "en": {
+      "hook": "A patient who couldn't leave his bed asked a heartbreaking question about a bracha we say every morning.\nRav Wosner answered with a story from his youth.",
+      "caption": "A heartwarming true story ✨\nEveryone Has Something to Give: a patient who couldn't leave his bed asked a heartbreaking question, and Rav Wosner answered with a story from his youth.\n🎧 Listen with the kids:\n{url}",
+      "popup": true
+    }
+  },
+  "baal-shem-tov-water": {
+    "he": {
+      "hook": "באמצע המדבר, בלי טיפת מים, שאל הבעל שם טוב את תלמידו הצמא שאלה מוזרה.\nומה סיפר האיש שהופיע עם שני דליים?",
+      "caption": "סיפור אמיתי על השגחה פרטית ✨\nמים במדבר: באמצע המדבר, בלי טיפת מים, הופיע פתאום איש עם שני דליים מלאים. מה הוא סיפר?\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "popup": true
+    },
+    "en": {
+      "hook": "In the middle of the desert, without a drop of water, the Baal Shem Tov asked his thirsty student a strange question.\nAnd what did the man with two buckets tell them?",
+      "caption": "A true story about Hashem's care ✨\nWater in the Desert: with no water in sight, a man suddenly appeared carrying two full buckets. What did he tell them?\n🎧 Listen with the kids:\n{url}",
+      "popup": true
+    }
+  },
   "share-in-heaven": {
     "he": {
       "hook": "יהודי חולה אמר לרבי לוי יצחק מברדיטשוב: ״בזבזתי את כל החיים שלי״.\nוהרבי הציע לו מתנה שאף אחד לא האמין שאפשר לתת.",
-      "caption": "סיפור אמיתי שכדאי לשמוע ✨\nחלק בגן עדן: רבי לוי יצחק מברדיטשוב הציע לחולה מתנה שאף אחד לא האמין שאפשר לתת.\n🎧 להאזנה בחינם, גם עם הילדים:\n{url}",
-      "popup": false
+      "caption": "סיפור אמיתי שכדאי לשמוע ✨\nחלק בגן עדן: רבי לוי יצחק מברדיטשוב הציע לחולה מתנה שאף אחד לא האמין שאפשר לתת.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "popup": true
+    },
+    "en": {
+      "hook": "A very sick man told Rabbi Levi Yitzchak of Berditchev: \"I wasted my whole life.\"\nAnd the Rebbe offered him a gift no one believed could be given.",
+      "caption": "A true story worth hearing ✨\nA Share in Heaven: Rabbi Levi Yitzchak of Berditchev offered a sick man a gift no one believed could be given.\n🎧 Listen with the kids:\n{url}",
+      "popup": true
+    }
+  },
+  "believing-officer": {
+    "he": {
+      "hook": "במלחמת יום הכיפורים נלחם קצין שלא האמין בכלום לצד קצין שצעק ״שמע ישראל״ כל הזמן.\nבוקר אחד הצעקות נפסקו.",
+      "caption": "סיפור אמיתי ומרגש ✨\nהקצין המאמין: קצין שלא האמין בכלום, חבר פצוע, ובקשה אחרונה ששינתה לו את החיים. סיפור שרבי שלמה קרליבך שמע מהקצין עצמו.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "popup": true
+    },
+    "en": {
+      "hook": "In the Yom Kippur War, an officer who believed in nothing fought beside one who shouted \"Shema Yisrael\" all the time.\nThen one morning, the shouting stopped.",
+      "caption": "A moving true story ✨\nThe Believing Officer: an officer who believed in nothing, a wounded friend, and a last request that changed his life. Rabbi Shlomo Carlebach heard it from the officer himself.\n🎧 Listen with the kids:\n{url}",
+      "popup": true
+    }
+  },
+  "baba-sali-respect": {
+    "he": {
+      "hook": "אדם כתב ספר וטען בו שהאור החיים הקדוש טעה. הבבא סלי צעק עליו: ״צא מביתי!״\nמה הוא שמע בלילה על הר הזיתים?",
+      "caption": "סיפור אמיתי על כבוד חכמים ✨\nהבבא סלי מלמד על כבוד חכמים: אדם שכתב שהאור החיים טעה גורש מביתו של הבבא סלי. מה הוא היה צריך לעשות כדי שיסלחו לו?\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "popup": true
+    },
+    "en": {
+      "hook": "A man wrote that the holy Ohr HaChaim had made a mistake. The Baba Sali shouted: \"Leave my house!\"\nWhat did he hear at night on the Mount of Olives?",
+      "caption": "A true story about respecting our sages ✨\nRespect for the Sages: a man who wrote that the Ohr HaChaim was wrong was sent out of the Baba Sali's home. What did he have to do to be forgiven?\n🎧 Listen with the kids:\n{url}",
+      "popup": true
+    }
+  },
+  "ari-kindness-to-animals": {
+    "he": {
+      "hook": "זוג מכניסי אורחים חיכה שנים לילדים. האר״י הקדוש אמר שהסיבה קשורה לאפרוחים קטנים בעליית הגג.\nאיך זה יכול להיות?",
+      "caption": "סיפור אמיתי על רחמים ✨\nורחמיו על כל מעשיו: האר״י הקדוש גילה לזוג שחיכה שנים לילדים סוד על אפרוחים קטנים שגרו בעליית הגג שלהם.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "popup": true
+    },
+    "en": {
+      "hook": "A kind couple had waited years for children. The holy Arizal said the reason had to do with little chicks in their attic.\nHow could that be?",
+      "caption": "A true story about kindness ✨\nKindness to Every Creature: the holy Arizal told a couple who had waited years for children a secret about little chicks that once lived in their attic.\n🎧 Listen with the kids:\n{url}",
+      "popup": true
+    }
+  },
+  "besht-flute-boy": {
+    "he": {
+      "hook": "מן השמיים גילו לבעל שם טוב: יש יהודי שעובד את ה׳ יותר ממך.\nומי הגיע ליער? נער רועה צאן שלא ידע להתפלל.",
+      "caption": "סיפור אמיתי ומרגש ✨\nהבעל שם טוב והנער המאמין: נער רועה צאן שלא ידע להתפלל, ומה שהוא עשה ביער הרעיד את הבעל שם טוב.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "popup": true
+    },
+    "en": {
+      "hook": "Heaven told the Baal Shem Tov: there is a Jew who serves Hashem even more than you.\nAnd who came to the forest? A shepherd boy who couldn't pray.",
+      "caption": "A moving true story ✨\nThe Boy and the Flute: a simple shepherd boy who couldn't pray, and what he did in the forest made the Baal Shem Tov tremble.\n🎧 Listen with the kids:\n{url}",
+      "popup": true
     }
   },
   "mordechai-eliyahu-cat": {
     "he": {
       "hook": "יום עמוס בבית הרב הראשי לישראל, ושאלה אחת מחכה לו: חתול שלא אוכל.\nאיך רואים גדלות אמיתית בדברים הקטנים?",
-      "caption": "סיפור אמיתי ומחמם לב 🐈\nהרב מרדכי אליהו והחתול: יום עמוס בבית הרב הראשי לישראל, ושאלה אחת מחכה לו. חתול שלא אוכל.\n🎧 להאזנה בחינם, גם עם הילדים:\n{url}",
+      "caption": "סיפור אמיתי ומחמם לב 🐈\nהרב מרדכי אליהו והחתול: יום עמוס בבית הרב הראשי לישראל, ושאלה אחת מחכה לו. חתול שלא אוכל.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "popup": true
+    },
+    "en": {
+      "hook": "A busy day at the home of the Chief Rabbi of Israel, and one question is waiting for him: a cat that won't eat.\nHow do we see real greatness in the small things?",
+      "caption": "A heartwarming true story 🐈\nRabbi Mordechai Eliyahu and the Cat: a busy day at the Chief Rabbi's home, and one question waiting for him. A cat that won't eat.\n🎧 Listen with the kids:\n{url}",
+      "popup": true
+    }
+  },
+  "hashem-not-obligated": {
+    "he": {
+      "hook": "אישה שחיכתה שנים רבות לילדים קיבלה ברכה מרבי שלמה זלמן אויערבך.\nמה הוא אמר לה, שמלווה אותה מאז בכל יום?",
+      "caption": "סיפור אמיתי שנוגע ללב ✨\nהשם לא חייב לנו כלום: אישה שחיכתה שנים לילדים, ומה שאמר לה רבי שלמה זלמן אויערבך ליווה אותה מאז בכל יום.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "popup": true
+    },
+    "en": {
+      "hook": "A woman who waited many years for children received a blessing from Rabbi Shlomo Zalman Auerbach.\nWhat did he tell her that stayed with her every day since?",
+      "caption": "A true story that touches the heart ✨\nHashem Doesn't Owe Us Anything: a woman who waited years for children, and the words of Rabbi Shlomo Zalman Auerbach that stayed with her every day since.\n🎧 Listen with the kids:\n{url}",
       "popup": true
     }
   }

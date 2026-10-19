@@ -20,6 +20,7 @@
 //   node tools/build_story_pages.mjs            write the pages, remove pages of episodes that no longer exist
 //   node tools/build_story_pages.mjs --check    write nothing; exit 1 if the pages on disk are not up to date
 
+import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import vm from "node:vm";
@@ -138,9 +139,11 @@ const STATUS = readJson(path.join(REPO, "tools", "status_shares.json")) || {};
 function statusOf(lang, slug, pageUrl, prefix) {
   const s = (STATUS[slug] || {})[lang];
   if (!s) return null;
-  const image = `assets/images/status/${slug}.jpg`;
+  const image = `assets/images/status/${lang === "he" ? "" : lang + "/"}${slug}.jpg`;
   if (!fs.existsSync(path.join(REPO, image))) throw new Error(`[${lang}] ${slug}: missing ${image} - run: python tools/build_status_images.py`);
-  return Object.assign({ image: prefix + image, text: s.caption.replace("{url}", pageUrl) }, s.popup ? { popup: true } : {});
+  // ?v=<hash>: the service worker keeps images cache-first, so a regenerated picture gets a new address
+  const v = crypto.createHash("md5").update(fs.readFileSync(path.join(REPO, image))).digest("hex").slice(0, 8);
+  return Object.assign({ image: `${prefix}${image}?v=${v}`, text: s.caption.replace("{url}", pageUrl) }, s.popup ? { popup: true } : {});
 }
 
 // The same order as his caption: teaser -> listening link -> share line -> (cta) -> group invitation.

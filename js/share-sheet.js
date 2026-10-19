@@ -21,7 +21,7 @@
   const isPhone = isApple || /Android/i.test(navigator.userAgent);
   const canShareFiles = isPhone && typeof navigator.share === "function" && typeof navigator.canShare === "function" && typeof File === "function";
 
-  const T = {
+  const HE = {
     chooseTitle: "איך לשתף את הסיפור?",
     message: "בהודעה",
     messageSub: "לחבר, למשפחה או לקבוצה, עם קישור להאזנה",
@@ -55,6 +55,41 @@
     copyFailed: "לא הצלחנו להעתיק. זה המלל:",
     preview: (t) => `תמונת הסטטוס של ${t}`,
   };
+  const EN = {
+    chooseTitle: "How would you like to share?",
+    message: "As a message",
+    messageSub: "To a friend, family or a group, with a link to listen",
+    status: "To your status",
+    statusSub: "The story's picture with a short text and a link to listen",
+    statusTitle: "Share to your status",
+    inviteTitle: "Enjoyed the story?",
+    inviteText: "Share it to your status so more families can listen ❤️",
+    stepsPhone: [
+      "Tap \"Share to status\" and choose WhatsApp.",
+      "Pick \"My status\" at the top of the list.",
+      isApple
+        ? "Paste the text with the link into the caption. It's already copied."
+        : "The text with the link is added for you. If it's missing, paste it (it's copied).",
+    ],
+    stepsDesktop: [
+      "Download the picture.",
+      "Send it to your phone and post it to your WhatsApp status.",
+      "Paste the text with the link into the caption. It's already copied.",
+    ],
+    shareStatus: "Share to status",
+    preparing: "One moment, preparing the picture…",
+    download: "Download the picture",
+    copy: "Copy the text",
+    copied: "Text copied ✓",
+    back: "Back",
+    close: "Close",
+    later: "Maybe later",
+    thanks: "Thanks for sharing! ❤️",
+    failed: "The share menu didn't open. Please tap again.",
+    copyFailed: "Couldn't copy. Here's the text:",
+    preview: (t) => `Status picture: ${t}`,
+  };
+  const T = document.documentElement.lang === "en" ? EN : HE;
 
   let root = null;
   let card = null;
