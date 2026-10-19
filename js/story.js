@@ -96,6 +96,7 @@
       if (errorEl) errorEl.hidden = true;
       setMediaSession();
       track("play");
+      warmStatusPicture();
     });
     audio.addEventListener("pause", () => {
       btn.textContent = "▶";
@@ -276,6 +277,15 @@
      שמסומן "popup" ב-tools/status_shares.json. בסוף ולא בפתיחת הדף - כדי לא לעצור את ההאזנה, וזה
      הרגע שבו הסיפור עוד בלב. פעם אחת בכל טעינה, ולא למי שכבר שיתף את הסיפור הזה בסטטוס. */
   let invited = false;
+  // תמונת הסטטוס יורדת כבר כשההאזנה מתחילה: כשהסיפור נגמר היא מוכנה, ותפריט השיתוף נפתח
+  // מיד בלחיצה (באייפון, המתנה להורדה אחרי הלחיצה מבטלת את ההרשאה לפתוח אותו).
+  let warmed = false;
+  function warmStatusPicture() {
+    if (warmed || !STORY.status || !STORY.status.popup) return;
+    warmed = true;
+    fetch(STORY.status.image).catch(() => {});
+  }
+
   function inviteToStatus() {
     if (invited || !STORY.status || !STORY.status.popup || !window.ZkbShareSheet) return;
     if (window.ZkbShareSheet.alreadyShared(STORY.slug)) return;
