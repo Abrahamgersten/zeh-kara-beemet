@@ -641,9 +641,14 @@ function setupStoryShare() {
   const host = document.getElementById("category-sections");
   if (!host) return;
   let texts = null;
+  let statuses = {}; // stories that can also be shared to WhatsApp status (tools/status_shares.json, js/share-sheet.js)
   fetch("s/index.json")
     .then((r) => (r.ok ? r.json() : null))
-    .then((j) => { texts = j ? Object.fromEntries((j.stories || []).map((s) => [s.slug, s.shareText])) : null; })
+    .then((j) => {
+      const stories = (j && j.stories) || [];
+      texts = j ? Object.fromEntries(stories.map((s) => [s.slug, s.shareText])) : null;
+      statuses = Object.fromEntries(stories.filter((s) => s.status).map((s) => [s.slug, s.status]));
+    })
     .catch(() => {});
   const isApple = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 
@@ -663,11 +668,21 @@ function setupStoryShare() {
     return Promise.race([load, new Promise((res) => setTimeout(() => res(null), 1500))]);
   }
 
-  host.addEventListener("click", async (e) => {
+  // with a status picture: ask first - as a message (below) or to status (js/share-sheet.js)
+  host.addEventListener("click", (e) => {
     const btn = e.target.closest("[data-share-slug]");
     if (!btn) return;
     const slug = btn.dataset.shareSlug;
     const card = btn.closest(".content-card");
+    if (statuses[slug] && window.ZkbShareSheet) {
+      const titleEl = card && card.querySelector(".content-card__title");
+      window.ZkbShareSheet.choose({ title: titleEl ? titleEl.textContent : "", slug, status: statuses[slug], onMessage: () => shareAsMessage(card, slug) });
+      return;
+    }
+    shareAsMessage(card, slug);
+  });
+
+  async function shareAsMessage(card, slug) {
     const title = card && card.querySelector(".content-card__title") ? card.querySelector(".content-card__title").textContent : "";
     const text = (texts && texts[slug]) || `${title} - It Really Happened\n${STORY_PAGE_BASE}${slug}/`;
     const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent(text);
@@ -685,7 +700,7 @@ function setupStoryShare() {
       }
     }
     location.href = whatsappUrl;
-  });
+  }
 }
 
 const INITIAL_VISIBLE_EPISODES = 4;

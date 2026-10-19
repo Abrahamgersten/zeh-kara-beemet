@@ -18,7 +18,8 @@
   }
 
   /* מונה לכל קישור (אברהם, 2026-10-14: "לראות איזה סיפור נפתח הכי הרבה") - מוצג ב-admin.html.
-     נספר: open (הדף נפתח), play (התחילו להאזין), finish (הקשיבו עד הסוף), share, join.
+     נספר: open (הדף נפתח), play (התחילו להאזין), finish (הקשיבו עד הסוף), share (בהודעה), join,
+     status (שיתוף בסטטוס) ו-popup (ההזמנה לסטטוס בסוף ההקלטה הוצגה).
      נשלחים רק שם הסיפור, השפה, סוג האירוע ומספר אקראי שהדפדפן שומר אצלו (כדי להבחין בין
      פתיחות לאנשים, ושרענון לא ייספר שוב) - שום פרט מזהה. ערוץ רקע: נכשל בשקט תמיד.
      הכתובת והמפתח הם אלה שב-js/supabase-config.js (מפתח ציבורי; הקובץ הזה אינו מודול ולא יכול לייבא). */
@@ -108,6 +109,7 @@
       seek.value = 0;
       current.textContent = "0:00";
       track("finish");
+      inviteToStatus();
     });
     audio.addEventListener("error", showError);
 
@@ -238,7 +240,16 @@
     }
 
     const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent(text);
-    btn.addEventListener("click", async () => {
+    // סיפור עם תמונת סטטוס: קודם שואלים - בהודעה (כאן) או בסטטוס (js/share-sheet.js)
+    btn.addEventListener("click", () => {
+      if (STORY.status && window.ZkbShareSheet) {
+        window.ZkbShareSheet.choose(statusOptions({ onMessage: shareAsMessage }));
+        return;
+      }
+      shareAsMessage();
+    });
+
+    async function shareAsMessage() {
       track("share");
       if (typeof navigator.share !== "function") {
         window.open(whatsappUrl, "_blank", "noopener");
@@ -253,7 +264,24 @@
         }
       }
       location.href = whatsappUrl; // תפריט השיתוף נכשל; חלון חדש כבר ייחסם אחרי ההמתנה
-    });
+    }
+  }
+
+  function statusOptions(extra) {
+    const title = document.querySelector(".content-card__title");
+    return Object.assign({ title: title ? title.textContent : "", slug: STORY.slug, status: STORY.status, track }, extra);
+  }
+
+  /* הזמנה לשתף בסטטוס בסוף ההקלטה (אברהם, 2026-10-19, על "הרב מרדכי אליהו והחתול"): רק לסיפור
+     שמסומן "popup" ב-tools/status_shares.json. בסוף ולא בפתיחת הדף - כדי לא לעצור את ההאזנה, וזה
+     הרגע שבו הסיפור עוד בלב. פעם אחת בכל טעינה, ולא למי שכבר שיתף את הסיפור הזה בסטטוס. */
+  let invited = false;
+  function inviteToStatus() {
+    if (invited || !STORY.status || !STORY.status.popup || !window.ZkbShareSheet) return;
+    if (window.ZkbShareSheet.alreadyShared(STORY.slug)) return;
+    invited = true;
+    track("popup");
+    window.ZkbShareSheet.invite(statusOptions({}));
   }
 
   document.addEventListener("DOMContentLoaded", () => {

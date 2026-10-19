@@ -1444,6 +1444,100 @@ body.auth-pending { visibility: hidden; }
   font-size: 1.05rem;
   line-height: 1.6;
 }
+/* ---------- "בהודעה או בסטטוס" (js/share-sheet.js; uses the .lightbox overlay) - אברהם, 2026-10-19 ---------- */
+.share-sheet { padding: 1rem; }
+.share-sheet__card {
+  position: relative;
+  width: min(100%, 440px);
+  max-height: calc(100dvh - 2rem);
+  overflow-y: auto;
+  background: var(--sand-50);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 1.6rem 1.4rem 1.3rem;
+  color: var(--ink);
+  animation: share-sheet-in 0.2s ease-out;
+}
+@keyframes share-sheet-in { from { opacity: 0; transform: translateY(12px); } }
+.share-sheet__close {
+  position: absolute;
+  top: 0.7rem;
+  inset-inline-end: 0.7rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+.share-sheet__close:hover { background: var(--sand-200); }
+.share-sheet__close:focus-visible,
+.share-sheet__option:focus-visible,
+.share-sheet__link:focus-visible { outline: 3px solid var(--gold-300); outline-offset: 2px; }
+.share-sheet__title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.45rem;
+  color: var(--teal-heading);
+  margin: 0 0 1rem;
+  padding-inline-end: 2.6rem;
+}
+.share-sheet__lead { margin: -0.4rem 0 1rem; font-weight: 600; line-height: 1.55; }
+.share-sheet__options { display: grid; gap: 0.75rem; }
+.share-sheet__option {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  width: 100%;
+  padding: 0.95rem 1rem;
+  text-align: start;
+  font: inherit;
+  color: inherit;
+  background: var(--white);
+  border: 2px solid var(--teal-200);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+.share-sheet__option:hover { border-color: var(--teal-700); }
+.share-sheet__option:active { transform: scale(0.98); }
+.share-sheet__icon { width: 34px; font-size: 1.7rem; line-height: 1; text-align: center; flex: none; }
+/* the status option shows the status picture itself, small */
+.share-sheet .share-sheet__thumb { width: 34px; height: auto; aspect-ratio: 9 / 16; object-fit: cover; flex: none; border-radius: 6px; box-shadow: 0 4px 10px -4px rgba(7, 34, 41, 0.45); }
+.share-sheet__option-text { display: grid; gap: 0.15rem; }
+.share-sheet__option-text strong { font-size: 1.08rem; color: var(--teal-ink); }
+.share-sheet__option-text small { font-size: 0.9rem; color: var(--ink-soft); line-height: 1.45; }
+.share-sheet__status { display: grid; grid-template-columns: 88px 1fr; gap: 0.9rem; align-items: start; }
+.share-sheet .share-sheet__preview {
+  width: 88px;
+  height: auto;
+  aspect-ratio: 9 / 16;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-soft);
+}
+.share-sheet__steps { margin: 0; padding-inline-start: 1.2rem; display: grid; gap: 0.55rem; font-size: 0.95rem; line-height: 1.5; }
+.share-sheet__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 1.1rem; margin-top: 1.25rem; }
+.share-sheet__primary { flex: 1 1 100%; }
+.share-sheet__link {
+  background: none;
+  border: none;
+  padding: 0.45rem 0.2rem;
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--teal-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.share-sheet__note { margin: 0.5rem 0 0; min-height: 1.5em; font-weight: 700; color: var(--teal-ink); white-space: pre-line; }
+@media (max-width: 360px) {
+  .share-sheet__status { grid-template-columns: 72px 1fr; }
+  .share-sheet .share-sheet__preview { width: 72px; }
+}
 .story-player-error {
   margin: 0.6rem 0 0;
   color: var(--gold-ink);

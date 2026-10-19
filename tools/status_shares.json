@@ -1,0 +1,17 @@
+{
+  "_readme": "Sharing a story to WhatsApp status (Avraham, 2026-10-19). For each story listed here, its 'share' button (on the site's card and on the story page s/<slug>/) asks: as a message (as before) or to status. 'hook' is printed on the status picture (assets/images/status/<slug>.jpg, made by tools/build_status_images.py), 'caption' is the text that goes with it ({url} = the story's listening page). 'popup': true = when the story ends on its page, a popup invites the listener to share it to status. After a change: python tools/build_status_images.py, then node tools/build_story_pages.mjs.",
+  "share-in-heaven": {
+    "he": {
+      "hook": "יהודי חולה אמר לרבי לוי יצחק מברדיטשוב: ״בזבזתי את כל החיים שלי״.\nוהרבי הציע לו מתנה שאף אחד לא האמין שאפשר לתת.",
+      "caption": "סיפור אמיתי שכדאי לשמוע ✨\nחלק בגן עדן: רבי לוי יצחק מברדיטשוב הציע לחולה מתנה שאף אחד לא האמין שאפשר לתת.\n🎧 להאזנה בחינם, גם עם הילדים:\n{url}",
+      "popup": false
+    }
+  },
+  "mordechai-eliyahu-cat": {
+    "he": {
+      "hook": "יום עמוס בבית הרב הראשי לישראל, ושאלה אחת מחכה לו: חתול שלא אוכל.\nאיך רואים גדלות אמיתית בדברים הקטנים?",
+      "caption": "סיפור אמיתי ומחמם לב 🐈\nהרב מרדכי אליהו והחתול: יום עמוס בבית הרב הראשי לישראל, ושאלה אחת מחכה לו. חתול שלא אוכל.\n🎧 להאזנה בחינם, גם עם הילדים:\n{url}",
+      "popup": true
+    }
+  }
+}

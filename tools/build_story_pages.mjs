@@ -131,6 +131,18 @@ const TEASERS = readJson(path.join(BERELE_REGISTRY, "whatsapp_teasers.json"));
 const PACKAGE = readJson(path.join(BERELE_REGISTRY, "whatsapp_package_config.json")) || {};
 if (!TEASERS) console.log("note: ברלה's teasers were not found - the shared messages use the site's descriptions");
 
+// Stories that can also be shared to WhatsApp status (Avraham, 2026-10-19): their share button asks "as a message or
+// to status" (js/share-sheet.js). tools/status_shares.json holds the caption (and "popup": invite to status when the
+// story ends); the picture is assets/images/status/<slug>.jpg, made by tools/build_status_images.py.
+const STATUS = readJson(path.join(REPO, "tools", "status_shares.json")) || {};
+function statusOf(lang, slug, pageUrl, prefix) {
+  const s = (STATUS[slug] || {})[lang];
+  if (!s) return null;
+  const image = `assets/images/status/${slug}.jpg`;
+  if (!fs.existsSync(path.join(REPO, image))) throw new Error(`[${lang}] ${slug}: missing ${image} - run: python tools/build_status_images.py`);
+  return Object.assign({ image: prefix + image, text: s.caption.replace("{url}", pageUrl) }, s.popup ? { popup: true } : {});
+}
+
 // The same order as his caption: teaser -> listening link -> share line -> (cta) -> group invitation.
 function shareMessage(L, lang, cat, ep, slug, pageUrl) {
   const kind = cat.id === (PACKAGE.story_category || "tzadikim") ? "story" : cat.id === (PACKAGE.parasha_category || "parasha-what") ? "parasha" : null;
@@ -151,7 +163,8 @@ function pageHTML(L, lang, cat, ep, slug) {
   const [main, thumb] = ep.images || (ep.image ? [ep.image] : []);
   const share = L.share(cat.id);
   // read by js/story.js: what the share button sends, and what the listen counter reports
-  const storyData = JSON.stringify({ slug, lang, shareText: shareMessage(L, lang, cat, ep, slug, pageUrl) }).replace(/</g, "\\u003c");
+  const status = statusOf(lang, slug, pageUrl, root);
+  const storyData = JSON.stringify(Object.assign({ slug, lang, shareText: shareMessage(L, lang, cat, ep, slug, pageUrl) }, status ? { status } : {})).replace(/</g, "\\u003c");
 
   let mediaHTML;
   if (main) {
@@ -274,7 +287,8 @@ ${MARKER}
   <img id="lightbox-img" alt="">
 </div>
 
-<script type="application/json" id="story-data">${storyData}</script>
+<script type="application/json" id="story-data">${storyData}</script>${status ? `
+<script src="${root}js/share-sheet.js" defer></script>` : ""}
 <script src="${root}js/story.js" defer></script>
 </body>
 </html>
@@ -316,7 +330,8 @@ for (const [lang, L] of Object.entries(LANGS)) {
       emit(path.join(outDir, slug, "index.html"), pageHTML(L, lang, cat, ep, slug));
       const url = new URL(`${L.langRoot ? L.langRoot + "/" : ""}s/${slug}/`, SITE_URL).href;
       // shareText: what "share" sends - on the story page and on the episode's card on the site (js/app.js)
-      stories.push({ slug, title: ep.title, category: cat.id, url, shareText: shareMessage(L, lang, cat, ep, slug, url) });
+      const status = statusOf(lang, slug, url, L.langRoot ? "../" : "");
+      stories.push(Object.assign({ slug, title: ep.title, category: cat.id, url, shareText: shareMessage(L, lang, cat, ep, slug, url) }, status ? { status } : {}));
     }
   }
   emit(path.join(outDir, "index.json"), JSON.stringify({ lang, stories }, null, 2) + "\n");
