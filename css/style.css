@@ -1505,7 +1505,7 @@ body.auth-pending { visibility: hidden; }
 .share-sheet__option:active { transform: scale(0.98); }
 .share-sheet__icon { width: 34px; font-size: 1.7rem; line-height: 1; text-align: center; flex: none; }
 /* the status option shows the status picture itself, small */
-.share-sheet .share-sheet__thumb { width: 34px; height: auto; aspect-ratio: 9 / 16; object-fit: cover; flex: none; border-radius: 6px; box-shadow: 0 4px 10px -4px rgba(7, 34, 41, 0.45); }
+.share-sheet .share-sheet__thumb { width: 34px; height: auto; aspect-ratio: 9 / 16; object-fit: cover; flex: none; border-radius: 6px; box-shadow: 0 4px 10px -4px rgba(7, 34, 41, 0.45); background: var(--sand-200); }
 .share-sheet__option-text { display: grid; gap: 0.15rem; }
 .share-sheet__option-text strong { font-size: 1.08rem; color: var(--teal-ink); }
 .share-sheet__option-text small { font-size: 0.9rem; color: var(--ink-soft); line-height: 1.45; }
@@ -1517,10 +1517,12 @@ body.auth-pending { visibility: hidden; }
   object-fit: cover;
   border-radius: var(--radius-sm);
   box-shadow: var(--shadow-soft);
+  background: var(--sand-200); /* while the picture loads */
 }
 .share-sheet__steps { margin: 0; padding-inline-start: 1.2rem; display: grid; gap: 0.55rem; font-size: 0.95rem; line-height: 1.5; }
 .share-sheet__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 1.1rem; margin-top: 1.25rem; }
 .share-sheet__primary { flex: 1 1 100%; }
+.share-sheet__primary:disabled { opacity: 0.7; cursor: progress; transform: none; }
 .share-sheet__link {
   background: none;
   border: none;

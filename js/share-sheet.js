@@ -43,6 +43,7 @@
       "מדביקים בכיתוב את המלל עם הקישור. הוא כבר הועתק.",
     ],
     shareStatus: "לשיתוף בסטטוס",
+    preparing: "רגע, מכינים את התמונה…",
     download: "הורדת התמונה",
     copy: "העתקת המלל",
     copied: "המלל הועתק ✓",
@@ -168,7 +169,25 @@
                  : `<button class="share-sheet__link" type="button" data-act="back">${esc(T.back)}</button>`}
       </div>
       <p class="share-sheet__note" role="status" aria-live="polite"></p>`;
-    card.querySelector(".share-sheet__primary").focus();
+    const btn = card.querySelector(".share-sheet__primary");
+    btn.focus();
+    // בטלפון: הכפתור נפתח רק כשהתמונה כבר ירדה. כך הלחיצה פותחת את תפריט השיתוף מיד; באייפון
+    // המתנה להורדה אחרי הלחיצה מבטלת את ההרשאה לפתוח אותו.
+    if (canShareFiles && !current.ready) {
+      btn.disabled = true;
+      btn.textContent = T.preparing;
+      current.file.then((f) => {
+        if (!current || current.o !== o || !btn.isConnected) return;
+        if (f) {
+          btn.disabled = false;
+          btn.textContent = T.shareStatus;
+          if (document.activeElement === document.body || document.activeElement === btn) btn.focus();
+        } else {
+          // התמונה לא ירדה או שהמכשיר לא משתף קבצים: הורדה במקום שיתוף
+          btn.outerHTML = `<a class="btn btn--primary share-sheet__primary" href="${esc(o.status.image)}" download="${esc((o.slug || "story") + "-status.jpg")}" data-act="download">${esc(T.download)}</a>`;
+        }
+      });
+    }
   }
 
   function note(text) {
