@@ -76,9 +76,12 @@
     let seeking = false;
 
     // metadata בלבד: אורך ההקלטה מוצג מיד, וההקלטה עצמה יורדת רק בלחיצה על "נגן".
+    // סיומות (אברהם, 2026-10-20): מי שהגיע מהקישור שבסטטוס (?from=status) שומע את ההזמנה לקבוצה;
+    // כל השאר - את ההזמנה להפיץ (data-src). באתר המלא אין סיומות.
+    const fromStatus = new URLSearchParams(location.search).get("from") === "status";
     const audio = new Audio();
     audio.preload = "metadata";
-    audio.src = el.dataset.src;
+    audio.src = (fromStatus && el.dataset.srcStatus) || el.dataset.src;
 
     audio.addEventListener("loadedmetadata", () => {
       seek.max = audio.duration || 0;

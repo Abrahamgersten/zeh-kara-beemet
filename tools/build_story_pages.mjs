@@ -136,14 +136,32 @@ if (!TEASERS) console.log("note: ברלה's teasers were not found - the shared 
 // to status" (js/share-sheet.js). tools/status_shares.json holds the caption (and "popup": invite to status when the
 // story ends); the picture is assets/images/status/<slug>.jpg, made by tools/build_status_images.py.
 const STATUS = readJson(path.join(REPO, "tools", "status_shares.json")) || {};
+const fileHash = (file) => crypto.createHash("md5").update(fs.readFileSync(file)).digest("hex").slice(0, 8);
+
+// Endings (Avraham, 2026-10-20): ONLY the single-story pages play the recording with an ending - the full site keeps it
+// as it is. Opened from the status caption (?from=status): story + "הזמנה לקבוצת הווצאפ" (<slug>-status.mp3); any other
+// link: story + "הזמנה להפצת הקבוצה" (<slug>-link.mp3). Made by רוני המתכנת/Tools/outros-2026-10-20/build_outros.py;
+// Hebrew only (the endings are his Hebrew recordings). Without the file the page plays the site's recording.
+function endingAudio(L, slug, kind) {
+  if (L.langRoot) return null;
+  const rel = `assets/audio/links/${slug}-${kind}.mp3`;
+  const file = path.join(REPO, rel);
+  return fs.existsSync(file) ? `${rel}?v=${fileHash(file)}` : null;
+}
+const STATUS_JOIN = "להצטרפות לקבוצת הסיפורים:\nhttps://abrahamgersten.github.io/zeh-kara-beemet/whatsapp/";
+
 function statusOf(lang, slug, pageUrl, prefix) {
   const s = (STATUS[slug] || {})[lang];
   if (!s) return null;
   const image = `assets/images/status/${lang === "he" ? "" : lang + "/"}${slug}.jpg`;
   if (!fs.existsSync(path.join(REPO, image))) throw new Error(`[${lang}] ${slug}: missing ${image} - run: python tools/build_status_images.py`);
+  // With a status ending, the caption's link opens the page in "status" mode, and - since that ending says "click the
+  // link in the message and join us" - the caption also carries the group link.
+  const text = endingAudio(LANGS[lang], slug, "status")
+    ? `${s.caption.replace("{url}", `${pageUrl}?from=status`)}\n\n${STATUS_JOIN}`
+    : s.caption.replace("{url}", pageUrl);
   // ?v=<hash>: the service worker keeps images cache-first, so a regenerated picture gets a new address
-  const v = crypto.createHash("md5").update(fs.readFileSync(path.join(REPO, image))).digest("hex").slice(0, 8);
-  return Object.assign({ image: `${prefix}${image}?v=${v}`, text: s.caption.replace("{url}", pageUrl) }, s.popup ? { popup: true } : {});
+  return Object.assign({ image: `${prefix}${image}?v=${fileHash(path.join(REPO, image))}`, text }, s.popup ? { popup: true } : {});
 }
 
 // The same order as his caption: teaser -> listening link -> share line -> (cta) -> group invitation.
@@ -167,6 +185,8 @@ function pageHTML(L, lang, cat, ep, slug) {
   const share = L.share(cat.id);
   // read by js/story.js: what the share button sends, and what the listen counter reports
   const status = statusOf(lang, slug, pageUrl, root);
+  const linkAudio = endingAudio(L, slug, "link");
+  const statusAudio = endingAudio(L, slug, "status");
   const storyData = JSON.stringify(Object.assign({ slug, lang, shareText: shareMessage(L, lang, cat, ep, slug, pageUrl) }, status ? { status } : {})).replace(/</g, "\\u003c");
 
   let mediaHTML;
@@ -250,7 +270,7 @@ ${MARKER}
           <h1 class="content-card__title">${esc(ep.title)}</h1>
           <p class="content-card__desc"><strong>${esc(L.about)}</strong>${esc(ep.description)}</p>
           <div class="player-wrap">
-            <div class="player" data-src="${up}${esc(ep.audio)}" data-title="${esc(ep.title)}" data-brand="${esc(L.brand)}" data-label-play="${esc(L.play)}" data-label-pause="${esc(L.pause)}" data-label-resume="${esc(L.resume)}">
+            <div class="player" data-src="${up}${esc(linkAudio || ep.audio)}"${statusAudio ? ` data-src-status="${up}${esc(statusAudio)}"` : ""} data-title="${esc(ep.title)}" data-brand="${esc(L.brand)}" data-label-play="${esc(L.play)}" data-label-pause="${esc(L.pause)}" data-label-resume="${esc(L.resume)}">
               <button class="player__btn" type="button" aria-label="${esc(L.play)}">▶</button>
               <div class="player__body">
                 <input class="player__seek" type="range" min="0" max="100" value="0" step="0.1" aria-label="${esc(L.seek)}">
