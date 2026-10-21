@@ -264,6 +264,7 @@ const CATEGORIES = [
         description: "ציור של פרשת בראשית: גן העדן עם עץ התפוחים, הנהר והדגים, החיות, השמש, הירח והכוכבים. השוו בין שתי התמונות ומצאו את 10 ההבדלים. לחצו על \"הצג פתרון\" כדי לראות איפה הם מסתתרים.",
         imageA: "assets/images/spot-diff-bereishit-color-a.jpg",
         imageB: "assets/images/spot-diff-bereishit-color-b.jpg",
+        coloringPage: "assets/images/coloring/bereishit.jpg",
         diffCount: 10,
         spots: [
           { x: 91.8, y: 24.9 },
@@ -284,6 +285,7 @@ const CATEGORIES = [
         description: "ציור של פרשת נח: החיות יורדות מהתיבה אל היבשה, וקשת בשמיים. השוו בין שתי התמונות ומצאו את 10 ההבדלים. לחצו על \"הצג פתרון\" כדי לראות איפה הם מסתתרים.",
         imageA: "assets/images/spot-diff-noach-color-a.jpg",
         imageB: "assets/images/spot-diff-noach-color-b.jpg",
+        coloringPage: "assets/images/coloring/noach.jpg",
         diffCount: 10,
         spots: [
           { x: 14.4, y: 32.1 },
@@ -304,6 +306,7 @@ const CATEGORIES = [
         description: "ציור של פרשת לך לך: שיירת גמלים בדרך לארץ כנען, אוהלים, באר ומזבח, וכוכבים בשמיים. השוו בין שתי התמונות ומצאו את 10 ההבדלים. לחצו על \"הצג פתרון\" כדי לראות איפה הם מסתתרים.",
         imageA: "assets/images/spot-diff-lechlecha-color-a.jpg",
         imageB: "assets/images/spot-diff-lechlecha-color-b.jpg",
+        coloringPage: "assets/images/coloring/lechlecha.jpg",
         diffCount: 10,
         spots: [
           { x: 79.1, y: 18.9 },
@@ -324,6 +327,7 @@ const CATEGORIES = [
         description: "ציור של פרשת וירא: האוהל של אברהם אבינו, הפתוח לכל הצדדים, מתחת לעץ האשל, שולחן ערוך לאורחים, באר, חמור עם עצים והאיל שנאחז בסבך. השוו בין שתי התמונות ומצאו את 10 ההבדלים. לחצו על \"הצג פתרון\" כדי לראות איפה הם מסתתרים.",
         imageA: "assets/images/spot-diff-vayera-color-a.jpg",
         imageB: "assets/images/spot-diff-vayera-color-b.jpg",
+        coloringPage: "assets/images/coloring/vayera.jpg",
         diffCount: 10,
         spots: [
           { x: 4.7, y: 83.0 },
@@ -603,6 +607,7 @@ function spotDiffCardHTML(cat, ep, idx) {
       </div>
       <div class="spot-card__actions">
         <button class="btn btn--primary" type="button" data-spot-toggle>הצג פתרון (${ep.diffCount} הבדלים)</button>
+        ${ep.coloringPage ? `<a class="btn btn--outline spot-card__coloring" href="${ep.coloringPage}" download="דף צביעה - ${ep.parasha ? `פרשת ${ep.parasha}` : ep.title}.jpg">🖍️ הורדת דף צביעה</a>` : ""}
       </div>
     </div>
   </article>`;

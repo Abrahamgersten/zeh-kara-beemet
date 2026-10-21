@@ -267,6 +267,7 @@ const CATEGORIES = [
         description: "A Parashat Bereishit picture: the Garden of Eden with the apple tree, the river and its fish, the animals, the sun, the moon and the stars. Compare the two pictures and find the 10 differences. Click \"Show Solution\" to see where they are hiding.",
         imageA: "../assets/images/spot-diff-bereishit-color-a.jpg",
         imageB: "../assets/images/spot-diff-bereishit-color-b.jpg",
+        coloringPage: "../assets/images/coloring/bereishit.jpg",
         diffCount: 10,
         spots: [
           { x: 91.8, y: 24.9 },
@@ -288,6 +289,7 @@ const CATEGORIES = [
         description: "A Parashat Noach picture: the animals walk down from the ark onto dry land, with a rainbow in the sky. Compare the two pictures and find the 10 differences. Click \"Show Solution\" to see where they are hiding.",
         imageA: "../assets/images/spot-diff-noach-color-a.jpg",
         imageB: "../assets/images/spot-diff-noach-color-b.jpg",
+        coloringPage: "../assets/images/coloring/noach.jpg",
         diffCount: 10,
         spots: [
           { x: 14.4, y: 32.1 },
@@ -309,6 +311,7 @@ const CATEGORIES = [
         description: "A Parashat Lech Lecha picture: a caravan of camels on the journey to the Land of Canaan, tents, a well and an altar, with stars in the sky. Compare the two pictures and find the 10 differences. Click \"Show Solution\" to see where they are hiding.",
         imageA: "../assets/images/spot-diff-lechlecha-color-a.jpg",
         imageB: "../assets/images/spot-diff-lechlecha-color-b.jpg",
+        coloringPage: "../assets/images/coloring/lechlecha.jpg",
         diffCount: 10,
         spots: [
           { x: 79.1, y: 18.9 },
@@ -330,6 +333,7 @@ const CATEGORIES = [
         description: "A Parashat Vayera picture: Avraham's tent, open on all sides under the tamarisk tree, a table set for guests, a well, a donkey carrying wood, and the ram caught in the thicket. Compare the two pictures and find the 10 differences. Click \"Show Solution\" to see where they are hiding.",
         imageA: "../assets/images/spot-diff-vayera-color-a.jpg",
         imageB: "../assets/images/spot-diff-vayera-color-b.jpg",
+        coloringPage: "../assets/images/coloring/vayera.jpg",
         diffCount: 10,
         spots: [
           { x: 4.7, y: 83.0 },
@@ -611,6 +615,7 @@ function spotDiffCardHTML(cat, ep, idx) {
       </div>
       <div class="spot-card__actions">
         <button class="btn btn--primary" type="button" data-spot-toggle>Show Solution (${ep.diffCount} differences)</button>
+        ${ep.coloringPage ? `<a class="btn btn--outline spot-card__coloring" href="${ep.coloringPage}" download="Coloring page - ${ep.parashaEn || ep.title}.jpg">🖍️ Download a coloring page</a>` : ""}
       </div>
     </div>
   </article>`;
