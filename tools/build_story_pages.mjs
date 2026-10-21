@@ -142,11 +142,15 @@ const fileHash = (file) => crypto.createHash("md5").update(fs.readFileSync(file)
 // as it is. Opened from the status caption (?from=status): story + "הזמנה לקבוצת הווצאפ" (<slug>-status.mp3); any other
 // link: story + "הזמנה להפצת הקבוצה" (<slug>-link.mp3). Made by רוני המתכנת/Tools/outros-2026-10-20/build_outros.py;
 // Hebrew only (the endings are his Hebrew recordings). Without the file the page plays the site's recording.
+// Since 2026-10-22 these files are on their own GitHub Pages site (a Pages site may be at most 1 GB; Avraham approved):
+// the local clone of zeh-kara-beemet-audio sits next to this site's folder, and the pages link the files there.
+const AUDIO_REPO = path.resolve(REPO, "..", "zeh-kara-beemet-audio");
+const AUDIO_SITE = "https://abrahamgersten.github.io/zeh-kara-beemet-audio/";
 function endingAudio(L, slug, kind) {
   if (L.langRoot) return null;
-  const rel = `assets/audio/links/${slug}-${kind}.mp3`;
-  const file = path.join(REPO, rel);
-  return fs.existsSync(file) ? `${rel}?v=${fileHash(file)}` : null;
+  const rel = `links/${slug}-${kind}.mp3`;
+  const file = path.join(AUDIO_REPO, rel);
+  return fs.existsSync(file) ? `${AUDIO_SITE}${rel}?v=${fileHash(file)}` : null;
 }
 const STATUS_JOIN = "להצטרפות לקבוצת הסיפורים:\nhttps://abrahamgersten.github.io/zeh-kara-beemet/whatsapp/";
 
@@ -272,7 +276,7 @@ ${MARKER}
           <h1 class="content-card__title">${esc(ep.title)}</h1>
           <p class="content-card__desc"><strong>${esc(L.about)}</strong>${esc(ep.description)}</p>
           <div class="player-wrap">
-            <div class="player" data-src="${up}${esc(linkAudio || ep.audio)}"${statusAudio ? ` data-src-status="${up}${esc(statusAudio)}"` : ""} data-title="${esc(ep.title)}" data-brand="${esc(L.brand)}" data-label-play="${esc(L.play)}" data-label-pause="${esc(L.pause)}" data-label-resume="${esc(L.resume)}">
+            <div class="player" data-src="${esc(linkAudio || up + ep.audio)}"${statusAudio ? ` data-src-status="${esc(statusAudio)}"` : ""} data-title="${esc(ep.title)}" data-brand="${esc(L.brand)}" data-label-play="${esc(L.play)}" data-label-pause="${esc(L.pause)}" data-label-resume="${esc(L.resume)}">
               <button class="player__btn" type="button" aria-label="${esc(L.play)}">▶</button>
               <div class="player__body">
                 <input class="player__seek" type="range" min="0" max="100" value="0" step="0.1" aria-label="${esc(L.seek)}">
