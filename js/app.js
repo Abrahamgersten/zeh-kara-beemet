@@ -259,85 +259,83 @@ const CATEGORIES = [
     tagline: "משחק תמונות - השוו בין שתי התמונות ומצאו את כל ההבדלים ביניהן.",
     episodes: [
       {
-        title: "גלגל ימי הבריאה",
+        title: "גן העדן",
         parasha: "בראשית",
-        description: "השוו בין שני ציורי ימי הבריאה ושבת ומצאו את כל ההבדלים ביניהם. לחצו על \"הצג פתרון\" כדי לראות איפה הם מסתתרים.",
-        imageA: "assets/images/spot-diff-bereishit-a.jpg",
-        imageB: "assets/images/spot-diff-bereishit-b.jpg",
-        diffCount: 12,
+        description: "ציור של פרשת בראשית: גן העדן עם עץ התפוחים, הנהר והדגים, החיות, השמש, הירח והכוכבים. השוו בין שתי התמונות ומצאו את 10 ההבדלים. לחצו על \"הצג פתרון\" כדי לראות איפה הם מסתתרים.",
+        imageA: "assets/images/spot-diff-bereishit-color-a.jpg",
+        imageB: "assets/images/spot-diff-bereishit-color-b.jpg",
+        diffCount: 10,
         spots: [
-          { x: 41.3, y: 15.2 },
-          { x: 34.2, y: 7.8 },
-          { x: 47.9, y: 9.3 },
-          { x: 38.6, y: 25.2 },
-          { x: 45.3, y: 32.8 },
-          { x: 74.0, y: 31.4 },
-          { x: 19.6, y: 47.8 },
-          { x: 50.0, y: 47.8 },
-          { x: 91.0, y: 53.1 },
-          { x: 87.1, y: 64.8 },
-          { x: 61.1, y: 76.8 },
-          { x: 81.3, y: 76.1 },
+          { x: 91.8, y: 24.9 },
+          { x: 54.2, y: 86.1 },
+          { x: 6.8, y: 32.6 },
+          { x: 50.8, y: 12.8 },
+          { x: 63.5, y: 63.3 },
+          { x: 91.5, y: 65.3 },
+          { x: 33.6, y: 8.2 },
+          { x: 61.6, y: 54.7 },
+          { x: 43.8, y: 78.4 },
+          { x: 24.4, y: 23.3 },
         ],
       },
       {
         title: "תיבת נח והקשת",
         parasha: "נח",
-        description: "דף צביעה של פרשת נח: החיות יורדות מהתיבה אל היבשה, וקשת בשמיים. השוו בין שתי התמונות ומצאו את 10 ההבדלים. לחצו על \"הצג פתרון\" כדי לראות איפה הם מסתתרים.",
-        imageA: "assets/images/spot-diff-noach-a.jpg",
-        imageB: "assets/images/spot-diff-noach-b.jpg",
+        description: "ציור של פרשת נח: החיות יורדות מהתיבה אל היבשה, וקשת בשמיים. השוו בין שתי התמונות ומצאו את 10 ההבדלים. לחצו על \"הצג פתרון\" כדי לראות איפה הם מסתתרים.",
+        imageA: "assets/images/spot-diff-noach-color-a.jpg",
+        imageB: "assets/images/spot-diff-noach-color-b.jpg",
         diffCount: 10,
         spots: [
-          { x: 70.9, y: 13.6 },
-          { x: 89.3, y: 14.7 },
-          { x: 59.0, y: 29.5 },
-          { x: 39.8, y: 56.6 },
-          { x: 18.1, y: 58.0 },
-          { x: 59.7, y: 53.7 },
-          { x: 63.4, y: 76.5 },
-          { x: 36.8, y: 78.9 },
-          { x: 15.4, y: 87.6 },
-          { x: 73.7, y: 90.5 },
+          { x: 14.4, y: 32.1 },
+          { x: 57.5, y: 57.3 },
+          { x: 18.2, y: 57.1 },
+          { x: 61.7, y: 78.7 },
+          { x: 71.0, y: 13.6 },
+          { x: 74.0, y: 90.3 },
+          { x: 39.8, y: 54.6 },
+          { x: 67.2, y: 28.8 },
+          { x: 15.5, y: 87.6 },
+          { x: 37.0, y: 79.0 },
         ],
       },
       {
         title: "שיירת לך לך",
         parasha: "לך לך",
-        description: "דף צביעה של פרשת לך לך: שיירת גמלים בדרך לארץ כנען, אוהלים, באר ומזבח, וכוכבים בשמיים. השוו בין שתי התמונות ומצאו את 10 ההבדלים. לחצו על \"הצג פתרון\" כדי לראות איפה הם מסתתרים.",
-        imageA: "assets/images/spot-diff-lechlecha-a.jpg",
-        imageB: "assets/images/spot-diff-lechlecha-b.jpg",
+        description: "ציור של פרשת לך לך: שיירת גמלים בדרך לארץ כנען, אוהלים, באר ומזבח, וכוכבים בשמיים. השוו בין שתי התמונות ומצאו את 10 ההבדלים. לחצו על \"הצג פתרון\" כדי לראות איפה הם מסתתרים.",
+        imageA: "assets/images/spot-diff-lechlecha-color-a.jpg",
+        imageB: "assets/images/spot-diff-lechlecha-color-b.jpg",
         diffCount: 10,
         spots: [
+          { x: 79.1, y: 18.9 },
+          { x: 50.8, y: 67.3 },
+          { x: 32.6, y: 62.1 },
+          { x: 87.1, y: 55.3 },
+          { x: 11.1, y: 72.3 },
+          { x: 74.6, y: 76.5 },
+          { x: 42.0, y: 17.9 },
           { x: 94.5, y: 6.1 },
-          { x: 79.8, y: 17.7 },
-          { x: 8.3, y: 20.9 },
-          { x: 40.8, y: 19.8 },
-          { x: 54.6, y: 51.2 },
-          { x: 87.1, y: 55.2 },
-          { x: 32.6, y: 61.9 },
-          { x: 11.8, y: 68.9 },
-          { x: 21.5, y: 81.9 },
-          { x: 88.8, y: 83.1 },
+          { x: 33.6, y: 93.8 },
+          { x: 54.6, y: 51.5 },
         ],
       },
       {
         title: "האוהל של אברהם אבינו",
         parasha: "וירא",
-        description: "דף צביעה של פרשת וירא: האוהל של אברהם אבינו, הפתוח לכל הצדדים, מתחת לעץ האשל, שולחן ערוך לאורחים, באר, חמור עם עצים והאיל שנאחז בסבך. השוו בין שתי התמונות ומצאו את 10 ההבדלים. לחצו על \"הצג פתרון\" כדי לראות איפה הם מסתתרים.",
-        imageA: "assets/images/spot-diff-vayera-a.jpg",
-        imageB: "assets/images/spot-diff-vayera-b.jpg",
+        description: "ציור של פרשת וירא: האוהל של אברהם אבינו, הפתוח לכל הצדדים, מתחת לעץ האשל, שולחן ערוך לאורחים, באר, חמור עם עצים והאיל שנאחז בסבך. השוו בין שתי התמונות ומצאו את 10 ההבדלים. לחצו על \"הצג פתרון\" כדי לראות איפה הם מסתתרים.",
+        imageA: "assets/images/spot-diff-vayera-color-a.jpg",
+        imageB: "assets/images/spot-diff-vayera-color-b.jpg",
         diffCount: 10,
         spots: [
-          { x: 79.5, y: 78.7 },
-          { x: 4.7, y: 82.9 },
+          { x: 4.7, y: 83.0 },
+          { x: 83.3, y: 79.1 },
           { x: 93.1, y: 20.4 },
-          { x: 94.3, y: 50.6 },
-          { x: 91.5, y: 10.6 },
           { x: 62.6, y: 54.7 },
-          { x: 24.2, y: 64.7 },
-          { x: 70.5, y: 71.3 },
-          { x: 21.4, y: 90.8 },
-          { x: 58.4, y: 40.7 },
+          { x: 79.2, y: 42.2 },
+          { x: 91.5, y: 10.6 },
+          { x: 68.3, y: 31.0 },
+          { x: 55.5, y: 85.5 },
+          { x: 75.4, y: 78.6 },
+          { x: 66.1, y: 8.5 },
         ],
       },
     ],
@@ -579,10 +577,10 @@ function spotDiffCardHTML(cat, ep, idx) {
     .map((p) => `<span class="spot-card__marker" style="left:${p.x}%; top:${p.y}%"></span>`)
     .join("");
   return `
-  <article class="content-card content-card--full spot-card">
+  <article class="content-card content-card--full spot-card" data-cat-name="${cat.name}">
     <div class="content-card__body">
       <div class="content-card__head-row">
-        <span class="content-card__eyebrow">${cat.name}</span>
+        <span class="content-card__eyebrow">${ep.parasha ? `פרשת ${ep.parasha}` : cat.name}</span>
         ${badge}
       </div>
       <h3 class="content-card__title">${ep.title}</h3>
@@ -824,9 +822,10 @@ function setupSpotDiff() {
       ? "הסתר פתרון"
       : `הצג פתרון (${card.querySelectorAll(".spot-card__item:first-child .spot-card__marker").length} הבדלים)`;
     if (solved) {
+      // the eyebrow shows the parasha (2026-10-21); the usage log keeps the category's own name
       const catEl = card.querySelector(".content-card__eyebrow");
       const titleEl = card.querySelector(".content-card__title");
-      window.zkbLogEvent && window.zkbLogEvent("spot_diff_solved", catEl ? catEl.textContent : null, titleEl ? titleEl.textContent : null);
+      window.zkbLogEvent && window.zkbLogEvent("spot_diff_solved", card.dataset.catName || (catEl ? catEl.textContent : null), titleEl ? titleEl.textContent : null);
     }
   });
 }
