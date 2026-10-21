@@ -681,16 +681,13 @@ function setupStoryShare() {
     shareAsMessage(card, slug);
   });
 
-  // the popup at the end of an episode (called by the player): the same two choices, once per episode and page load,
-  // and not for an episode already shared from this device
-  const invited = new Set();
+  // the popup at the end of an episode (called by the player): the same two choices, after EVERY playback - Avraham,
+  // 2026-10-21: "I want it to pop up after every listen" (no once-per-load, no skipping what was already shared)
   window.zkbInviteShare = (playerEl) => {
     const card = playerEl && playerEl.closest(".content-card");
     const btn = card && card.querySelector("[data-share-slug]");
     if (!btn || !window.ZkbShareSheet) return;
     const slug = btn.dataset.shareSlug;
-    if (invited.has(slug) || window.ZkbShareSheet.alreadyShared(slug)) return;
-    invited.add(slug);
     const titleEl = card.querySelector(".content-card__title");
     window.ZkbShareSheet.invite({ title: titleEl ? titleEl.textContent : "", slug, status: statuses[slug] || null,
       isStory: btn.dataset.shareKind !== "recording", onMessage: () => shareAsMessage(card, slug) });

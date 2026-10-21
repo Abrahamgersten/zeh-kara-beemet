@@ -279,8 +279,7 @@
 
   /* הזמנה לשתף בסוף ההקלטה (אברהם, 2026-10-19 על "הרב מרדכי אליהו והחתול"; מ-2026-10-21 בכל הקלטה:
      "בסוף כל השמעה של פרק ... חלון שמציע לשתף את הסיפור בהודעה או בסטטוס"). בסוף ולא בפתיחת הדף,
-     כדי לא לעצור את ההאזנה. פעם אחת בכל טעינה, ולא למי שכבר שיתף את ההקלטה הזו (בהודעה או בסטטוס). */
-  let invited = false;
+     כדי לא לעצור את ההאזנה. אחרי כל השמעה, בכל פעם (אברהם, 2026-10-21: "אני רוצה שזה יקפוץ אחרי כל השמעה"). */
   let shareMessageFn = null; // setupShare() שם כאן את השיתוף בהודעה
   // תמונת הסטטוס יורדת כבר כשההאזנה מתחילה: כשהסיפור נגמר היא מוכנה, ותפריט השיתוף נפתח
   // מיד בלחיצה (באייפון, המתנה להורדה אחרי הלחיצה מבטלת את ההרשאה לפתוח אותו).
@@ -292,9 +291,7 @@
   }
 
   function inviteToStatus() {
-    if (invited || !window.ZkbShareSheet) return;
-    if (window.ZkbShareSheet.alreadyShared(STORY.slug)) return;
-    invited = true;
+    if (!window.ZkbShareSheet) return;
     track("popup");
     window.ZkbShareSheet.invite(statusOptions({ isStory: STORY.kind !== "recording", onMessage: () => shareMessageFn && shareMessageFn() }));
   }
