@@ -7,8 +7,8 @@
    משמש את כפתור השיתוף בכרטיסים באתר (js/app.js) ובדף הסיפור (js/story.js).
 
    window.ZkbShareSheet.choose(o)  חלון הבחירה: "בהודעה" (o.onMessage - השיתוף הקיים) או "בסטטוס".
-   window.ZkbShareSheet.invite(o)  ישר למסך הסטטוס, עם הזמנה ("אהבתם את הסיפור?") - בסוף ההקלטה.
-   o = { title, slug, status: { image, text }, onMessage(), track(event) }
+   window.ZkbShareSheet.invite(o)  אותה בחירה, עם הזמנה ("אהבתם את הסיפור?") - בסוף כל הקלטה, באתר ובדף הסיפור.
+   o = { title, slug, status: { image, text } (בלי status: רק "בהודעה"), isStory, onMessage(), track(event) }
 
    אין דרך לפרסם סטטוס ישירות מדף אינטרנט. מה שאפשר: לפתוח את תפריט השיתוף של הטלפון עם
    התמונה, ובוואטסאפ "הסטטוס שלי" מופיע בראש רשימת הנמענים. המלל (עם הקישור להאזנה) מצורף
@@ -26,10 +26,12 @@
     message: "בהודעה",
     messageSub: "לחבר, למשפחה או לקבוצה, עם קישור להאזנה",
     status: "בסטטוס",
-    statusSub: "תמונת הסיפור עם מלל קצר וקישור להאזנה",
+    statusSub: "תמונה עם מלל קצר וקישור להאזנה",
     statusTitle: "שיתוף בסטטוס",
     inviteTitle: "אהבתם את הסיפור?",
-    inviteText: "שתפו אותו בסטטוס, ועוד משפחות יוכלו להקשיב לו ❤️",
+    inviteText: "שתפו אותו, ועוד משפחות יוכלו להקשיב לו ❤️",
+    inviteTitleRec: "אהבתם את ההקלטה?",
+    inviteTextRec: "שתפו אותה, ועוד משפחות יוכלו להקשיב לה ❤️",
     stepsPhone: [
       "לוחצים \"לשיתוף בסטטוס\" ובוחרים וואטסאפ.",
       "בוחרים \"הסטטוס שלי\" בראש הרשימה.",
@@ -60,10 +62,12 @@
     message: "As a message",
     messageSub: "To a friend, family or a group, with a link to listen",
     status: "To your status",
-    statusSub: "The story's picture with a short text and a link to listen",
+    statusSub: "A picture with a short text and a link to listen",
     statusTitle: "Share to your status",
     inviteTitle: "Enjoyed the story?",
-    inviteText: "Share it to your status so more families can listen ❤️",
+    inviteText: "Share it so more families can listen ❤️",
+    inviteTitleRec: "Enjoyed it?",
+    inviteTextRec: "Share it so more families can listen ❤️",
     stepsPhone: [
       "Tap \"Share to status\" and choose WhatsApp.",
       "Pick \"My status\" at the top of the list.",
@@ -134,7 +138,7 @@
 
   // התמונה יורדת כבר כשהחלון נפתח: navigator.share חייב לרוץ מיד עם הלחיצה.
   function loadFile(o) {
-    if (!canShareFiles) return Promise.resolve(null);
+    if (!canShareFiles || !o.status) return Promise.resolve(null);
     return fetch(o.status.image)
       .then((r) => (r.ok ? r.blob() : null))
       .then((blob) => {
@@ -150,7 +154,7 @@
     lastFocus = document.activeElement;
     current = { o, mode, file: loadFile(o), ready: null };
     current.file.then((f) => { if (current && current.o === o) current.ready = f; });
-    render(mode === "invite" ? "status" : "choose");
+    render("choose");
     root.hidden = false;
     document.body.style.overflow = "hidden";
   }
@@ -169,30 +173,39 @@
 
   function render(screen) {
     const { o, mode } = current;
+    const invite = mode === "invite";
     if (screen === "choose") {
+      // invite = the popup at the end of a recording (Avraham, 2026-10-21): the same two choices, with an invitation
+      const story = o.isStory !== false;
+      const head = invite
+        ? `<h2 class="share-sheet__title" id="share-sheet-title">${esc(story ? T.inviteTitle : T.inviteTitleRec)}</h2>
+        <p class="share-sheet__lead">${esc(story ? T.inviteText : T.inviteTextRec)}</p>`
+        : `<h2 class="share-sheet__title" id="share-sheet-title">${esc(T.chooseTitle)}</h2>`;
+      const statusOption = o.status
+        ? `<button class="share-sheet__option" type="button" data-act="status">
+            <img class="share-sheet__thumb" src="${esc(o.status.image)}" alt="" width="1080" height="1920">
+            <span class="share-sheet__option-text"><strong>${esc(T.status)}</strong><small>${esc(T.statusSub)}</small></span>
+          </button>`
+        : "";
       card.innerHTML = `${closeButton()}
-        <h2 class="share-sheet__title" id="share-sheet-title">${esc(T.chooseTitle)}</h2>
+        ${head}
         <div class="share-sheet__options">
           <button class="share-sheet__option" type="button" data-act="message">
             <span class="share-sheet__icon" aria-hidden="true">💬</span>
             <span class="share-sheet__option-text"><strong>${esc(T.message)}</strong><small>${esc(T.messageSub)}</small></span>
           </button>
-          <button class="share-sheet__option" type="button" data-act="status">
-            <img class="share-sheet__thumb" src="${esc(o.status.image)}" alt="" width="1080" height="1920">
-            <span class="share-sheet__option-text"><strong>${esc(T.status)}</strong><small>${esc(T.statusSub)}</small></span>
-          </button>
-        </div>`;
+          ${statusOption}
+        </div>
+        ${invite ? `<div class="share-sheet__actions"><button class="share-sheet__link" type="button" data-act="close">${esc(T.later)}</button></div>` : ""}`;
       card.querySelector("[data-act='message']").focus();
       return;
     }
-    const invite = mode === "invite";
     const steps = canShareFiles ? T.stepsPhone : T.stepsDesktop;
     const primary = canShareFiles
       ? `<button class="btn btn--primary share-sheet__primary" type="button" data-act="share-status">${esc(T.shareStatus)}</button>`
       : `<a class="btn btn--primary share-sheet__primary" href="${esc(o.status.image)}" download="${esc((o.slug || "story") + "-status.jpg")}" data-act="download">${esc(T.download)}</a>`;
     card.innerHTML = `${closeButton()}
-      <h2 class="share-sheet__title" id="share-sheet-title">${esc(invite ? T.inviteTitle : T.statusTitle)}</h2>
-      ${invite ? `<p class="share-sheet__lead">${esc(T.inviteText)}</p>` : ""}
+      <h2 class="share-sheet__title" id="share-sheet-title">${esc(T.statusTitle)}</h2>
       <div class="share-sheet__status">
         <img class="share-sheet__preview" src="${esc(o.status.image)}" alt="${esc(T.preview(o.title || ""))}" width="1080" height="1920">
         <ol class="share-sheet__steps">${steps.map((s) => `<li>${esc(s)}</li>`).join("")}</ol>
@@ -200,8 +213,7 @@
       <div class="share-sheet__actions">
         ${primary}
         <button class="share-sheet__link" type="button" data-act="copy">${esc(T.copy)}</button>
-        ${invite ? `<button class="share-sheet__link" type="button" data-act="close">${esc(T.later)}</button>`
-                 : `<button class="share-sheet__link" type="button" data-act="back">${esc(T.back)}</button>`}
+        <button class="share-sheet__link" type="button" data-act="back">${esc(T.back)}</button>
       </div>
       <p class="share-sheet__note" role="status" aria-live="polite"></p>`;
     const btn = card.querySelector(".share-sheet__primary");
@@ -300,6 +312,7 @@
     else if (act === "status") render("status");
     else if (act === "message") {
       const fn = current.o.onMessage;
+      markShared(); // shared it as a message: the end-of-recording invitation will not ask again
       close();
       if (typeof fn === "function") fn();
     } else if (act === "share-status") shareStatus();

@@ -1,5 +1,5 @@
 {
-  "_readme": "Sharing a story to WhatsApp status (Avraham, 2026-10-19). For each story listed here, its 'share' button (on the site's card and on the story page s/<slug>/, en/s/<slug>/) asks: as a message (as before) or to status. 'hook' is printed on the status picture (line 1 dark, line 2 teal), made by tools/build_status_images.py into assets/images/status/<slug>.jpg (Hebrew) and assets/images/status/en/<slug>.jpg (English). 'caption' is the text that goes with it ({url} = the story's listening page). 'popup': true = when the story ends on its page, a popup invites the listener to share it to status. Avraham, 2026-10-19: the text must not say the listening is free. After a change: python tools/build_status_images.py, then node tools/build_story_pages.mjs.",
+  "_readme": "Sharing a story to WhatsApp status (Avraham, 2026-10-19). For each story listed here, its 'share' button (on the site's card and on the story page s/<slug>/, en/s/<slug>/) asks: as a message (as before) or to status. 'hook' is printed on the status picture (line 1 dark, line 2 teal), made by tools/build_status_images.py into assets/images/status/<slug>.jpg (Hebrew) and assets/images/status/en/<slug>.jpg (English). 'caption' is the text that goes with it ({url} = the story's listening page). 'pill' (optional) = the label at the bottom of the picture, for a recording that is not a story. 'popup': true = when the story ends on its page, a popup invites the listener to share it to status. Avraham, 2026-10-19: the text must not say the listening is free. After a change: python tools/build_status_images.py, then node tools/build_story_pages.mjs.",
   "kol-nidrei-drunkard": {
     "he": {
       "hook": "ערב יום כיפור. ארון הקודש נפתח לכל נדרי, ושיכור עולה לבימה ומכריז על הקפות.\nלמה האדמו״ר הזקן אמר: ״הניחו לו״?",
@@ -153,6 +153,314 @@
     "en": {
       "hook": "A woman who waited many years for children received a blessing from Rabbi Shlomo Zalman Auerbach.\nWhat did he tell her that stayed with her every day since?",
       "caption": "A true story that touches the heart ✨\nHashem Doesn't Owe Us Anything: a woman who waited years for children, and the words of Rabbi Shlomo Zalman Auerbach that stayed with her every day since.\n🎧 Listen with the kids:\n{url}",
+      "popup": true
+    }
+  },
+  "amazing-bat": {
+    "he": {
+      "hook": "איך עטלף עף בחושך מוחלט ולא מתנגש בשום דבר?\nגלו את הסוד של היונק היחיד שיכול לעוף.",
+      "caption": "הקלטה מרתקת לילדים 🦇\nהעטלף המופלא: איך הוא עף בלילה, בחושך מוחלט, בלי להתנגש בשום דבר?\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "How does a bat fly in total darkness without crashing into anything?\nDiscover the secret of the only mammal that can fly.",
+      "caption": "A fascinating listen for kids 🦇\nThe Amazing Bat: how does it fly at night, in total darkness, without crashing into anything?\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
+      "popup": true
+    }
+  },
+  "platypus": {
+    "he": {
+      "hook": "פרווה של יונק, מקור של ברווז, קרומי שחייה, והוא מטיל ביצים!\nהכירו את אחד מבעלי החיים המוזרים בעולם.",
+      "caption": "הקלטה מרתקת לילדים ✨\nהברווזן: פרווה של יונק, מקור של ברווז, והוא מטיל ביצים. הכירו את אחד מבעלי החיים המפתיעים בעולם.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "Fur like a mammal, a bill like a duck, webbed feet, and it lays eggs!\nMeet one of the strangest animals in the world.",
+      "caption": "A fascinating listen for kids ✨\nThe Platypus: fur like a mammal, a bill like a duck, and it lays eggs. Meet one of the most surprising animals in the world.\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
+      "popup": true
+    }
+  },
+  "wise-builder": {
+    "he": {
+      "hook": "הוא כורת עצים שלמים בשיניים ובונה לעצמו בית בתוך המים.\nלמה דווקא שם?",
+      "caption": "הקלטה מרתקת לילדים ✨\nהבונה החכם: כורת עצים בשיניים ובונה בית בתוך המים. הכירו את אחד הבנאים המוכשרים בטבע.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "It cuts down whole trees with its teeth and builds a house inside the water.\nWhy there, of all places?",
+      "caption": "A fascinating listen for kids ✨\nThe Wise Builder: it cuts down trees with its teeth and builds a house inside the water. Meet one of nature's most talented builders.\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
+      "popup": true
+    }
+  },
+  "parasha-bereishit": {
+    "he": {
+      "hook": "ששת ימי הבריאה, אדם וחווה בגן עדן, וסיפור קין והבל.\nומה הפרשה מלמדת על הכוח לבחור בכל יום?",
+      "caption": "מה בפרשת השבוע? ✨\nפרשת בראשית: ששת ימי הבריאה, גן עדן וסיפור קין והבל, והמסר על הכוח לבחור בכל יום מחדש.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "The six days of creation, Adam and Eve in the Garden of Eden, and Cain and Abel.\nWhat does the parsha teach about the power to choose?",
+      "caption": "What's in this week's parsha? ✨\nParashat Bereishit: the six days of creation, the Garden of Eden and Cain and Abel, and the lesson about the power to choose every day.\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
+      "popup": true
+    }
+  },
+  "parasha-noach": {
+    "he": {
+      "hook": "המבול, תיבת נח והחיות שנכנסו זוג-זוג, ועד מגדל בבל.\nמה עושים כשכולם הולכים בכיוון אחד?",
+      "caption": "מה בפרשת השבוע? ✨\nפרשת נח: המבול, התיבה ומגדל בבל, ומסר חשוב: גם כשכולם הולכים בכיוון אחד, אפשר לבחור בדרך שלנו.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "The flood, Noah's ark and the animals two by two, all the way to the Tower of Babel.\nWhat do we do when everyone goes one way?",
+      "caption": "What's in this week's parsha? ✨\nParashat Noach: the flood, the ark and the Tower of Babel, and an important lesson: even when everyone goes one way, we can choose our own path.\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
+      "popup": true
+    }
+  },
+  "parasha-lechlecha": {
+    "he": {
+      "hook": "אברהם אבינו עוזב את ביתו ויוצא למסע אל ארץ לא נודעת.\nמסע של אמונה שמתחיל בשתי מילים.",
+      "caption": "מה בפרשת השבוע? ✨\nפרשת לך לך: אברהם אבינו יוצא למסע אל ארץ לא נודעת, עומד במבחנים קשים וזוכה לברית עם השם.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "Avraham Avinu leaves his home and sets out on a journey to an unfamiliar land.\nA journey of faith that begins with two words.",
+      "caption": "What's in this week's parsha? ✨\nParashat Lech Lecha: Avraham Avinu sets out for an unfamiliar land, faces hard tests and is given a covenant with Hashem.\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
+      "popup": true
+    }
+  },
+  "parasha-vayera": {
+    "he": {
+      "hook": "אברהם אבינו מכניס אורחים, מתפלל על סדום ועומד בניסיון העקדה.\nמה אנחנו לומדים ממסירות הנפש שלו?",
+      "caption": "מה בפרשת השבוע? ✨\nפרשת וירא: הכנסת אורחים באוהל של אברהם, התפילה על סדום, לידת יצחק וניסיון העקדה.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "Avraham Avinu welcomes guests, prays for Sodom and stands up to the test of the Akeidah.\nWhat do we learn from his devotion?",
+      "caption": "What's in this week's parsha? ✨\nParashat Vayera: welcoming guests in Avraham's tent, the prayer for Sodom, Yitzchak's birth and the test of the Akeidah.\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
+      "popup": true
+    }
+  },
+  "parasha-idea-bereishit": {
+    "he": {
+      "hook": "מה זה אומר שהאדם נברא ״בצלם אלוקים״?\nולמה לכל יהודי יש כוח עצום להשפיע על העולם?",
+      "caption": "רעיון קצר לפרשת השבוע ✨\nרעיון לפרשת בראשית: על הכוח העצום שיש לכל יהודי, גם הפשוט ביותר, להשפיע לטובה על העולם, כי כולנו בני מלך.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "What does it mean that man was created \"in the image of G-d\"?\nAnd what power does every Jew hold?",
+      "caption": "A short thought on this week's parsha ✨\nA Thought on Parashat Bereishit: the tremendous power every Jew holds to make the world better, because we are all children of the King.\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
+      "popup": true
+    }
+  },
+  "parasha-idea-noach": {
+    "he": {
+      "hook": "למה גם בעלי החיים נשטפו במבול, הרי אין להם בחירה?\nרעיון עמוק על הכוח של הבחירות שלנו.",
+      "caption": "רעיון קצר לפרשת השבוע ✨\nרעיון לפרשת נח: למה גם בעלי החיים נשטפו במבול? על הכוח של הבחירות שלנו להשפיע על כל מה שסביבנו.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "Why were the animals swept away in the flood too, if they can't choose?\nA deep thought about the power of our choices.",
+      "caption": "A short thought on this week's parsha ✨\nA Thought on Parashat Noach: why were the animals swept away too? About how much our choices affect everything around us.\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
+      "popup": true
+    }
+  },
+  "parasha-idea-lechlecha": {
+    "he": {
+      "hook": "אברהם אבינו ולוט עומדים בפני בחירה: אחד לפי מה שנראה טוב, והשני לפי מה שנכון.\nואיך אנחנו בוחרים?",
+      "caption": "רעיון קצר לפרשת השבוע ✨\nרעיון לפרשת לך לך: לוט בחר לפי מה שנראה טוב, ואברהם אבינו לפי מה שנכון. ואיך אנחנו בוחרים, כל יום מחדש?\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "Avraham Avinu and Lot face a choice: one goes by what looks good, the other by what's right.\nAnd how do we choose?",
+      "caption": "A short thought on this week's parsha ✨\nA Thought on Parashat Lech Lecha: Lot chose what looked good, and Avraham Avinu chose what was right. How do we choose, every single day?\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
+      "popup": true
+    }
+  },
+  "parasha-idea-vayera": {
+    "he": {
+      "hook": "למה אברהם אבינו מתחיל לבקש על חמישים צדיקים, ולא ישר על עשרה?\nרעיון על הדרך להגיע רחוק.",
+      "caption": "רעיון קצר לפרשת השבוע ✨\nרעיון לפרשת וירא: למה אברהם אבינו התחיל מחמישים צדיקים? צעד אחר צעד, עד שגם מה שנראה בלתי אפשרי נעשה אפשרי.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "Why does Avraham Avinu start by asking for fifty righteous people, and not ten?\nA thought about how to go far.",
+      "caption": "A short thought on this week's parsha ✨\nA Thought on Parashat Vayera: why did Avraham Avinu start with fifty? Step by step, until even the impossible becomes possible.\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
+      "popup": true
+    }
+  },
+  "invention-of-writing": {
+    "he": {
+      "hook": "איך שמרו בני האדם על הידע שלהם לפני שהיה כתב?\nמסע מלוחות החימר ועד המקלדת של היום.",
+      "caption": "הקלטה מרתקת לילדים ✨\nהמצאת הכתב: מכתב היתדות של בבל והכתב המצרי הקדום ועד המקלדת והמסך של היום.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "How did people keep their knowledge before writing was invented?\nA journey from clay tablets to today's keyboard.",
+      "caption": "A fascinating listen for kids ✨\nThe Invention of Writing: how writing began with clay tablets and symbols, and how it changed human life forever.\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
+      "popup": true
+    }
+  },
+  "ocean-depths-journey": {
+    "he": {
+      "hook": "צוללת יורדת אל מעמקי האוקיינוס, והאור נעלם.\nמי חי שם, בחושך הגמור?",
+      "caption": "הקלטה מרתקת לילדים 🌊\nמסע אל מעמקי האוקיינוס: דג החכאי עם הפנס, תולעי ענק ליד הרי געש תת-ימיים, ומדוזה ענקית עם זרועות ארוכות מאוד.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "A submarine sinks into the depths of the ocean, and the light fades away.\nWho lives down there, in total darkness?",
+      "caption": "A fascinating listen for kids 🌊\nJourney to the Ocean Depths: the anglerfish with its flashlight, giant tube worms by underwater volcanoes, and a giant jellyfish with very long tentacles.\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
+      "popup": true
+    }
+  },
+  "how-phone-carries-voices": {
+    "he": {
+      "hook": "מדברים עם חבר בצד השני של העולם, והוא שומע אותנו תוך רגע.\nאיך זה קורה?",
+      "caption": "הקלטה מרתקת לילדים 📞\nאיך הטלפון מעביר קולות? המסע המופלא של הקול שלנו: גלי קול, מיקרופון, אותות חשמליים, גלי רדיו ורמקול.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "We talk to a friend on the other side of the world, and they hear us in an instant.\nHow does that happen?",
+      "caption": "A fascinating listen for kids 📞\nHow Does a Phone Carry Our Voice? The amazing journey of our voice: sound waves, a microphone, electrical signals, radio waves and a speaker.\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
+      "popup": true
+    }
+  },
+  "story-of-plastic": {
+    "he": {
+      "hook": "איך נולד הפלסטיק ולמה הוא כבש את העולם?\nומה הבעיה הגדולה שהתגלתה אחר כך?",
+      "caption": "הקלטה מרתקת לילדים ♻️\nסיפורו של הפלסטיק: מהנפט שבעומק האדמה ועד פח המיחזור, ומה כל אחד מאיתנו יכול לעשות.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "How was plastic born, and why did it take over the world?\nAnd what big problem was discovered later?",
+      "caption": "A fascinating listen for kids ♻️\nThe Story of Plastic: from the oil deep underground to the recycling bin, and what each of us can do.\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
+      "popup": true
+    }
+  },
+  "birkat-hamazon": {
+    "he": {
+      "hook": "למה מברכים אחרי האוכל, ומי באמת נותן לנו את הלחם?\nמה יש בארבע הברכות של ברכת המזון?",
+      "caption": "הקלטה לילדים על ברכת המזון ✨\nברכת המזון: הזדמנות לעצור, להודות ולהבין שהשפע בחיים שלנו לא מובן מאליו.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "Why do we say a blessing after we eat, and who really gives us our bread?\nWhat's in the four blessings of Birkat Hamazon?",
+      "caption": "A listen for kids about Birkat Hamazon ✨\nBirkat Hamazon: a chance to stop, say thank you, and remember that our abundance is never to be taken for granted.\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
+      "popup": true
+    }
+  },
+  "parasha-of-the-week": {
+    "he": {
+      "hook": "למה קוראים בכל שבת פרשה אחרת בתורה?\nומה היא רוצה ללמד אותי היום?",
+      "caption": "הקלטה לילדים על פרשת השבוע ✨\nפרשת השבוע: למה קוראים בכל שבת פרשה אחרת, ומה היא קשורה אלינו גם אחרי אלפי שנים.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "Why do we read a different portion of the Torah every Shabbat?\nAnd what does it want to teach me today?",
+      "caption": "A listen for kids about the weekly Torah portion ✨\nThe Weekly Torah Portion: why we read a different portion every Shabbat, and what it has to do with us thousands of years later.\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
+      "popup": true
+    }
+  },
+  "why-we-bless": {
+    "he": {
+      "hook": "למה מברכים לפני שאוכלים? ומברכים גם על פירור קטן?\nואולי אפשר פשוט לברך ״שהכל״ על הכול?",
+      "caption": "הקלטה לילדים על ברכות ✨\nלמה מברכים? כל מה שכדאי לדעת על הברכה שלפני האוכל.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "Why do we make a bracha before we eat? Even for a tiny crumb?\nAnd can't we just say Shehakol on everything?",
+      "caption": "A listen for kids about brachot ✨\nWhy Do We Make a Bracha? Everything you need to know about the bracha before eating.\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
+      "popup": true
+    }
+  },
+  "bracha-to-eating-gap": {
+    "he": {
+      "hook": "בירכתם על תפוח, ופתאום חבר התחיל לדבר איתכם.\nמה עושים עכשיו?",
+      "caption": "הקלטה לילדים על ברכות ✨\nכמה זמן מותר לחכות בין הברכה לאכילה? מתי צריך לברך שוב, ומתי מותר להתעכב.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "You made a bracha on an apple, and suddenly a friend started talking to you.\nNow what?",
+      "caption": "A listen for kids about brachot ✨\nHow Long May We Wait Between the Bracha and Eating? When we need to make the bracha again, and when it's okay to pause.\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
+      "popup": true
+    }
+  },
+  "healthy-breakfast": {
+    "he": {
+      "hook": "למה לא כדאי לדלג על ארוחת הבוקר?\nואיזה אתגר קטן מחכה לכם השבוע?",
+      "caption": "הקלטה לילדים על בריאות 🍎\nחשיבות ארוחת הבוקר: איך היא נותנת לגוף ולמוח דלק לכל היום, ומה כוללת ארוחת בוקר מאוזנת.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "Why shouldn't we skip breakfast?\nAnd what small challenge is waiting for you this week?",
+      "caption": "A listen for kids about health 🍎\nWhy Breakfast Matters: how it fuels our body and brain for the whole day, and what a balanced breakfast includes.\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
+      "popup": true
+    }
+  },
+  "benefits-of-reading": {
+    "he": {
+      "hook": "קריאה מחזקת את המוח, מפתחת דמיון ואפילו עוזרת להירדם.\nמה אפשר לגלות בין הדפים?",
+      "caption": "הקלטה לילדים על קריאה 📚\nיתרונות הקריאה: למה כדאי לקחת ספר בכל יום, ומה אפשר לגלות בין הדפים.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "Reading strengthens the brain, sparks the imagination and even helps us fall asleep.\nWhat can you discover between the pages?",
+      "caption": "A listen for kids about reading 📚\nThe Benefits of Reading: why it's worth picking up a book every day, and what you can discover between the pages.\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
+      "popup": true
+    }
+  },
+  "teeth-health": {
+    "he": {
+      "hook": "למה חשוב כל כך לצחצח שיניים, ומה עושים החיידקים שבפה?\nאילו הרגלים קטנים שומרים על חיוך בריא?",
+      "caption": "הקלטה לילדים על בריאות 🦷\nבריאות השיניים: מה עושים החיידקים שבפה, ואילו הרגלים קטנים שומרים על חיוך בריא לאורך שנים.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "Why is brushing so important, and what do the germs in our mouths do?\nWhich small habits keep a smile healthy?",
+      "caption": "A listen for kids about health 🦷\nHealthy Teeth: what the germs in our mouths do, and which small habits keep a healthy smile for years.\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
       "popup": true
     }
   }

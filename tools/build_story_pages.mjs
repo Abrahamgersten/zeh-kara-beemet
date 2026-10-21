@@ -187,7 +187,9 @@ function pageHTML(L, lang, cat, ep, slug) {
   const status = statusOf(lang, slug, pageUrl, root);
   const linkAudio = endingAudio(L, slug, "link");
   const statusAudio = endingAudio(L, slug, "status");
-  const storyData = JSON.stringify(Object.assign({ slug, lang, shareText: shareMessage(L, lang, cat, ep, slug, pageUrl) }, status ? { status } : {})).replace(/</g, "\\u003c");
+  // kind: the end-of-recording invitation says "the story" for the tzadikim stories, "the recording" for the rest
+  const kind = cat.id === "tzadikim" ? "story" : "recording";
+  const storyData = JSON.stringify(Object.assign({ slug, lang, kind, shareText: shareMessage(L, lang, cat, ep, slug, pageUrl) }, status ? { status } : {})).replace(/</g, "\\u003c");
 
   let mediaHTML;
   if (main) {

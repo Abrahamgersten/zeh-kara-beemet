@@ -12,7 +12,7 @@ Usage (from the site folder):  python tools/build_status_images.py [slug ...]
 Then: node tools/build_story_pages.mjs (the pages link each picture with ?v=<its hash>, so a replaced picture
 is fetched again in spite of the service worker's cache-first media cache).
 """
-import base64, html, json, re, sys
+import base64, html, json, re, subprocess, sys
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 
@@ -31,15 +31,28 @@ LANGS = {
 }
 
 
+CATALOG_JS = """
+const fs = require("fs"), vm = require("vm");
+const src = fs.readFileSync(process.argv[1], "utf8");
+const a = src.indexOf("const CATEGORIES = ["), b = src.indexOf("\\n];", a);
+const cats = vm.runInNewContext("(" + src.slice(a + "const CATEGORIES = ".length, b + 2) + ")", {});
+const out = {};
+for (const c of cats) for (const e of c.episodes || []) {
+  if (!e.audio || e.sample) continue;
+  const n = e.audio.split("/").pop();
+  const slug = n.includes("-sfx") ? n.slice(0, n.lastIndexOf("-sfx")) : n.replace(/[.][^.]+$/, "");
+  out[slug] = [e.title, (e.images || [e.image])[0]];
+}
+process.stdout.write(JSON.stringify(out));
+"""
+
+
 def catalog(lang):
-    """title and image (a path on disk) of every episode of the language, by slug (the rule of build_story_pages.mjs)."""
+    """title and (first) image, as a path on disk, of every episode of the language, by slug - read by node from the site's
+    own CATEGORIES (the same rule as build_story_pages.mjs; an episode may have `images: [...]` instead of `image`)."""
     L = LANGS[lang]
-    src = (SITE / L["app"]).read_text(encoding="utf-8")
-    out = {}
-    pattern = r'title: "((?:[^"\\]|\\.)*)",.*?image: "([^"]+)",\s*audio: "(?:\.\./)?assets/audio/(?:en/)?([a-z0-9-]+?)(?:-sfx\d+)?\.mp3"'
-    for m in re.finditer(pattern, src, re.S):
-        out[m.group(3)] = (m.group(1).replace('\\"', '"'), (L["root"] / m.group(2)).resolve())
-    return out
+    raw = subprocess.run(["node", "-e", CATALOG_JS, str(SITE / L["app"])], capture_output=True, text=True, encoding="utf-8", check=True).stdout
+    return {slug: (title, (L["root"] / image).resolve()) for slug, (title, image) in json.loads(raw).items()}
 
 
 def data_uri(path):
@@ -106,7 +119,7 @@ def main(only):
                            .replace("__MARK__", mark).replace("__BRAND__", html.escape(L["brand"]))
                            .replace("__TITLE_SIZE__", str(L["title_px"](title))).replace("__TITLE__", html.escape(title))
                            .replace("__ART__", str(art)).replace("__IMG__", data_uri(image))
-                           .replace("__HOOK__", hook).replace("__PILL__", html.escape(L["pill"])))
+                           .replace("__HOOK__", hook).replace("__PILL__", html.escape(langs[lang].get("pill", L["pill"]))))
                     page.set_content(doc, wait_until="networkidle")
                     page.evaluate("document.fonts.ready")
                     top = page.evaluate("document.querySelector('.brand').getBoundingClientRect().top")

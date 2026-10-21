@@ -632,7 +632,7 @@ function shareButtonHTML(cat, ep) {
   const label = cat.id === "tzadikim" ? "שיתוף הסיפור" : "שיתוף ההקלטה";
   return `
       <div class="content-card__share">
-        <button class="btn btn--outline content-card__share-btn" type="button" data-share-slug="${storySlug(ep.audio)}" aria-label="שיתוף בוואטסאפ: ${ep.title}">📤 ${label}</button>
+        <button class="btn btn--outline content-card__share-btn" type="button" data-share-slug="${storySlug(ep.audio)}" data-share-kind="${cat.id === "tzadikim" ? "story" : "recording"}" aria-label="שיתוף בוואטסאפ: ${ep.title}">📤 ${label}</button>
       </div>`;
 }
 
@@ -680,6 +680,21 @@ function setupStoryShare() {
     }
     shareAsMessage(card, slug);
   });
+
+  // the popup at the end of an episode (called by the player): the same two choices, once per episode and page load,
+  // and not for an episode already shared from this device
+  const invited = new Set();
+  window.zkbInviteShare = (playerEl) => {
+    const card = playerEl && playerEl.closest(".content-card");
+    const btn = card && card.querySelector("[data-share-slug]");
+    if (!btn || !window.ZkbShareSheet) return;
+    const slug = btn.dataset.shareSlug;
+    if (invited.has(slug) || window.ZkbShareSheet.alreadyShared(slug)) return;
+    invited.add(slug);
+    const titleEl = card.querySelector(".content-card__title");
+    window.ZkbShareSheet.invite({ title: titleEl ? titleEl.textContent : "", slug, status: statuses[slug] || null,
+      isStory: btn.dataset.shareKind !== "recording", onMessage: () => shareAsMessage(card, slug) });
+  };
 
   async function shareAsMessage(card, slug) {
     const title = card && card.querySelector(".content-card__title") ? card.querySelector(".content-card__title").textContent : "";
@@ -1072,6 +1087,9 @@ function setupPlayers() {
     ep.seek.value = 0;
     ep.current.textContent = "0:00";
     continueChainFrom(ep);
+    // at the end of every episode: "enjoyed it? share it" - as a message or to status (Avraham, 2026-10-21);
+    // a continuing chain keeps playing underneath
+    if (window.zkbInviteShare) window.zkbInviteShare(ep.el);
   });
 
   episodes.forEach((ep) => {

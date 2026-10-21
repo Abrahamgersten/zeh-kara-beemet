@@ -253,6 +253,7 @@
       shareAsMessage();
     });
 
+    shareMessageFn = shareAsMessage;
     async function shareAsMessage() {
       track("share");
       if (typeof navigator.share !== "function") {
@@ -276,25 +277,26 @@
     return Object.assign({ title: title ? title.textContent : "", slug: STORY.slug, status: STORY.status, track }, extra);
   }
 
-  /* הזמנה לשתף בסטטוס בסוף ההקלטה (אברהם, 2026-10-19, על "הרב מרדכי אליהו והחתול"): רק לסיפור
-     שמסומן "popup" ב-tools/status_shares.json. בסוף ולא בפתיחת הדף - כדי לא לעצור את ההאזנה, וזה
-     הרגע שבו הסיפור עוד בלב. פעם אחת בכל טעינה, ולא למי שכבר שיתף את הסיפור הזה בסטטוס. */
+  /* הזמנה לשתף בסוף ההקלטה (אברהם, 2026-10-19 על "הרב מרדכי אליהו והחתול"; מ-2026-10-21 בכל הקלטה:
+     "בסוף כל השמעה של פרק ... חלון שמציע לשתף את הסיפור בהודעה או בסטטוס"). בסוף ולא בפתיחת הדף,
+     כדי לא לעצור את ההאזנה. פעם אחת בכל טעינה, ולא למי שכבר שיתף את ההקלטה הזו (בהודעה או בסטטוס). */
   let invited = false;
+  let shareMessageFn = null; // setupShare() שם כאן את השיתוף בהודעה
   // תמונת הסטטוס יורדת כבר כשההאזנה מתחילה: כשהסיפור נגמר היא מוכנה, ותפריט השיתוף נפתח
   // מיד בלחיצה (באייפון, המתנה להורדה אחרי הלחיצה מבטלת את ההרשאה לפתוח אותו).
   let warmed = false;
   function warmStatusPicture() {
-    if (warmed || !STORY.status || !STORY.status.popup) return;
+    if (warmed || !STORY.status) return;
     warmed = true;
     fetch(STORY.status.image).catch(() => {});
   }
 
   function inviteToStatus() {
-    if (invited || !STORY.status || !STORY.status.popup || !window.ZkbShareSheet) return;
+    if (invited || !window.ZkbShareSheet) return;
     if (window.ZkbShareSheet.alreadyShared(STORY.slug)) return;
     invited = true;
     track("popup");
-    window.ZkbShareSheet.invite(statusOptions({}));
+    window.ZkbShareSheet.invite(statusOptions({ isStory: STORY.kind !== "recording", onMessage: () => shareMessageFn && shareMessageFn() }));
   }
 
   document.addEventListener("DOMContentLoaded", () => {

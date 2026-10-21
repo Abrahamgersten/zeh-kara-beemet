@@ -162,154 +162,264 @@
       "title": "The Amazing Bat",
       "category": "wonders",
       "url": "https://abrahamgersten.github.io/zeh-kara-beemet/en/s/amazing-bat/",
-      "shareText": "*The Amazing Bat*\n\nHow can a bat fly at night, in total darkness, without crashing into anything? Discover the amazing secret of the only mammal in the world that can really fly.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/amazing-bat/\n\nEnjoyed it? Share it with family and friends ❤️"
+      "shareText": "*The Amazing Bat*\n\nHow can a bat fly at night, in total darkness, without crashing into anything? Discover the amazing secret of the only mammal in the world that can really fly.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/amazing-bat/\n\nEnjoyed it? Share it with family and friends ❤️",
+      "status": {
+        "image": "../assets/images/status/en/amazing-bat.jpg?v=47fffbb9",
+        "text": "A fascinating listen for kids 🦇\nThe Amazing Bat: how does it fly at night, in total darkness, without crashing into anything?\n🎧 Listen with the kids:\nhttps://abrahamgersten.github.io/zeh-kara-beemet/en/s/amazing-bat/",
+        "popup": true
+      }
     },
     {
       "slug": "platypus",
       "title": "The Platypus",
       "category": "wonders",
       "url": "https://abrahamgersten.github.io/zeh-kara-beemet/en/s/platypus/",
-      "shareText": "*The Platypus*\n\nAn animal with fur like a mammal, a bill like a duck, and webbed feet - that lays eggs! Meet the platypus, one of the strangest and most surprising animals in the world.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/platypus/\n\nEnjoyed it? Share it with family and friends ❤️"
+      "shareText": "*The Platypus*\n\nAn animal with fur like a mammal, a bill like a duck, and webbed feet - that lays eggs! Meet the platypus, one of the strangest and most surprising animals in the world.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/platypus/\n\nEnjoyed it? Share it with family and friends ❤️",
+      "status": {
+        "image": "../assets/images/status/en/platypus.jpg?v=bb16f93c",
+        "text": "A fascinating listen for kids ✨\nThe Platypus: fur like a mammal, a bill like a duck, and it lays eggs. Meet one of the most surprising animals in the world.\n🎧 Listen with the kids:\nhttps://abrahamgersten.github.io/zeh-kara-beemet/en/s/platypus/",
+        "popup": true
+      }
     },
     {
       "slug": "wise-builder",
       "title": "The Wise Builder",
       "category": "wonders",
       "url": "https://abrahamgersten.github.io/zeh-kara-beemet/en/s/wise-builder/",
-      "shareText": "*The Wise Builder*\n\nA creature that can cut down whole trees with its teeth, and build its own house inside the water. Why there, of all places? Meet the beaver, one of the most talented builders in all of nature.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/wise-builder/\n\nEnjoyed it? Share it with family and friends ❤️"
+      "shareText": "*The Wise Builder*\n\nA creature that can cut down whole trees with its teeth, and build its own house inside the water. Why there, of all places? Meet the beaver, one of the most talented builders in all of nature.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/wise-builder/\n\nEnjoyed it? Share it with family and friends ❤️",
+      "status": {
+        "image": "../assets/images/status/en/wise-builder.jpg?v=b0e15075",
+        "text": "A fascinating listen for kids ✨\nThe Wise Builder: it cuts down trees with its teeth and builds a house inside the water. Meet one of nature's most talented builders.\n🎧 Listen with the kids:\nhttps://abrahamgersten.github.io/zeh-kara-beemet/en/s/wise-builder/",
+        "popup": true
+      }
     },
     {
       "slug": "parasha-bereishit",
       "title": "Parashat Bereishit",
       "category": "parasha-what",
       "url": "https://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-bereishit/",
-      "shareText": "*This Week's Parsha: Bereishit*\n\nThis Shabbat we start the Torah from the very beginning!\nWhat was created on each of the six days? What happened in Gan Eden with the Tree of Knowledge? And why was only Hevel's offering accepted?\n\nThe whole parsha in a few minutes, in simple words, with a great question for the Shabbat table at the end.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-bereishit/\n\nEnjoyed this week's parsha? Share it with family and friends ❤️"
+      "shareText": "*This Week's Parsha: Bereishit*\n\nThis Shabbat we start the Torah from the very beginning!\nWhat was created on each of the six days? What happened in Gan Eden with the Tree of Knowledge? And why was only Hevel's offering accepted?\n\nThe whole parsha in a few minutes, in simple words, with a great question for the Shabbat table at the end.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-bereishit/\n\nEnjoyed this week's parsha? Share it with family and friends ❤️",
+      "status": {
+        "image": "../assets/images/status/en/parasha-bereishit.jpg?v=068acd1d",
+        "text": "What's in this week's parsha? ✨\nParashat Bereishit: the six days of creation, the Garden of Eden and Cain and Abel, and the lesson about the power to choose every day.\n🎧 Listen with the kids:\nhttps://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-bereishit/",
+        "popup": true
+      }
     },
     {
       "slug": "parasha-noach",
       "title": "Parashat Noach",
       "category": "parasha-what",
       "url": "https://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-noach/",
-      "shareText": "*This Week's Parsha: Noach*\n\nFor 120 years Noach built the ark, and not a single drop of rain had fallen yet.\nHow did all the animals get into the ark? Why did Noach send out the dove three times? And what happened to the giant tower they built in Bavel?\n\nThe whole parsha in a few minutes, in simple words, with a great question for the Shabbat table at the end.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-noach/\n\nEnjoyed this week's parsha? Share it with family and friends ❤️"
+      "shareText": "*This Week's Parsha: Noach*\n\nFor 120 years Noach built the ark, and not a single drop of rain had fallen yet.\nHow did all the animals get into the ark? Why did Noach send out the dove three times? And what happened to the giant tower they built in Bavel?\n\nThe whole parsha in a few minutes, in simple words, with a great question for the Shabbat table at the end.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-noach/\n\nEnjoyed this week's parsha? Share it with family and friends ❤️",
+      "status": {
+        "image": "../assets/images/status/en/parasha-noach.jpg?v=5906c33f",
+        "text": "What's in this week's parsha? ✨\nParashat Noach: the flood, the ark and the Tower of Babel, and an important lesson: even when everyone goes one way, we can choose our own path.\n🎧 Listen with the kids:\nhttps://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-noach/",
+        "popup": true
+      }
     },
     {
       "slug": "parasha-lechlecha",
       "title": "Parashat Lech Lecha",
       "category": "parasha-what",
       "url": "https://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-lechlecha/",
-      "shareText": "*This Week's Parsha: Lech Lecha*\n\nHashem told Avraham two words: \"Lech Lecha\" — go from your land, your family, your father's house.\nAvraham didn't ask questions. He left everything behind and set out.\nAlong the way came real tests: going down to Egypt, fighting a war to save Lot, and a special covenant Hashem made with him.\nAnd at the end — his name was changed, a new commandment was given, and Avraham fulfilled it right away.\n\nThe whole parsha in a few minutes, in simple words, with a great question for the Shabbat table at the end.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-lechlecha/\n\nEnjoyed this week's parsha? Share it with family and friends ❤️"
+      "shareText": "*This Week's Parsha: Lech Lecha*\n\nHashem told Avraham two words: \"Lech Lecha\" — go from your land, your family, your father's house.\nAvraham didn't ask questions. He left everything behind and set out.\nAlong the way came real tests: going down to Egypt, fighting a war to save Lot, and a special covenant Hashem made with him.\nAnd at the end — his name was changed, a new commandment was given, and Avraham fulfilled it right away.\n\nThe whole parsha in a few minutes, in simple words, with a great question for the Shabbat table at the end.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-lechlecha/\n\nEnjoyed this week's parsha? Share it with family and friends ❤️",
+      "status": {
+        "image": "../assets/images/status/en/parasha-lechlecha.jpg?v=98f172fd",
+        "text": "What's in this week's parsha? ✨\nParashat Lech Lecha: Avraham Avinu sets out for an unfamiliar land, faces hard tests and is given a covenant with Hashem.\n🎧 Listen with the kids:\nhttps://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-lechlecha/",
+        "popup": true
+      }
     },
     {
       "slug": "parasha-vayera",
       "title": "Parashat Vayera",
       "category": "parasha-what",
       "url": "https://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-vayera/",
-      "shareText": "*This Week's Parsha: Vayera*\n\nThree days after his brit milah, when Avraham was weak and in pain — he *ran* toward three unknown guests.\nWho were those guests, and what did they tell Sarah that made her laugh out loud?\nAnd in the hardest test Hashem ever gave Avraham, why did everything stop at the very last second?\n\nThe whole parsha in a few minutes, in simple words, with a great question for the Shabbat table at the end.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-vayera/\n\nEnjoyed this week's parsha? Share it with family and friends ❤️"
+      "shareText": "*This Week's Parsha: Vayera*\n\nThree days after his brit milah, when Avraham was weak and in pain — he *ran* toward three unknown guests.\nWho were those guests, and what did they tell Sarah that made her laugh out loud?\nAnd in the hardest test Hashem ever gave Avraham, why did everything stop at the very last second?\n\nThe whole parsha in a few minutes, in simple words, with a great question for the Shabbat table at the end.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-vayera/\n\nEnjoyed this week's parsha? Share it with family and friends ❤️",
+      "status": {
+        "image": "../assets/images/status/en/parasha-vayera.jpg?v=f5e5d162",
+        "text": "What's in this week's parsha? ✨\nParashat Vayera: welcoming guests in Avraham's tent, the prayer for Sodom, Yitzchak's birth and the test of the Akeidah.\n🎧 Listen with the kids:\nhttps://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-vayera/",
+        "popup": true
+      }
     },
     {
       "slug": "parasha-idea-bereishit",
       "title": "A Thought on Parashat Bereishit",
       "category": "parasha-idea",
       "url": "https://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-idea-bereishit/",
-      "shareText": "*A Thought on Parashat Bereishit*\n\nWhat does it mean that man was created \"in the image of G-d\"? An idea about the tremendous power that every single Jew holds - and why we should never take it for granted.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-idea-bereishit/\n\nEnjoyed it? Share it with family and friends ❤️"
+      "shareText": "*A Thought on Parashat Bereishit*\n\nWhat does it mean that man was created \"in the image of G-d\"? An idea about the tremendous power that every single Jew holds - and why we should never take it for granted.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-idea-bereishit/\n\nEnjoyed it? Share it with family and friends ❤️",
+      "status": {
+        "image": "../assets/images/status/en/parasha-idea-bereishit.jpg?v=ab5249a3",
+        "text": "A short thought on this week's parsha ✨\nA Thought on Parashat Bereishit: the tremendous power every Jew holds to make the world better, because we are all children of the King.\n🎧 Listen with the kids:\nhttps://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-idea-bereishit/",
+        "popup": true
+      }
     },
     {
       "slug": "parasha-idea-noach",
       "title": "A Thought on Parashat Noach",
       "category": "parasha-idea",
       "url": "https://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-idea-noach/",
-      "shareText": "*A Thought on Parashat Noach*\n\nWhy were the animals swept away in the flood too, when they can't choose between good and evil? A deep idea about how much power our choices have to influence everything around us - for good, and for bad.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-idea-noach/\n\nEnjoyed it? Share it with family and friends ❤️"
+      "shareText": "*A Thought on Parashat Noach*\n\nWhy were the animals swept away in the flood too, when they can't choose between good and evil? A deep idea about how much power our choices have to influence everything around us - for good, and for bad.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-idea-noach/\n\nEnjoyed it? Share it with family and friends ❤️",
+      "status": {
+        "image": "../assets/images/status/en/parasha-idea-noach.jpg?v=616508e4",
+        "text": "A short thought on this week's parsha ✨\nA Thought on Parashat Noach: why were the animals swept away too? About how much our choices affect everything around us.\n🎧 Listen with the kids:\nhttps://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-idea-noach/",
+        "popup": true
+      }
     },
     {
       "slug": "parasha-idea-lechlecha",
       "title": "A Thought on Parashat Lech Lecha",
       "category": "parasha-idea",
       "url": "https://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-idea-lechlecha/",
-      "shareText": "*A Thought on Parashat Lech Lecha*\n\nAvraham Avinu and Lot both face an important choice. One chooses based on what looks good, and the other chooses based on what's right. Which kind of choice do we make, every single day?\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-idea-lechlecha/\n\nEnjoyed it? Share it with family and friends ❤️"
+      "shareText": "*A Thought on Parashat Lech Lecha*\n\nAvraham Avinu and Lot both face an important choice. One chooses based on what looks good, and the other chooses based on what's right. Which kind of choice do we make, every single day?\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-idea-lechlecha/\n\nEnjoyed it? Share it with family and friends ❤️",
+      "status": {
+        "image": "../assets/images/status/en/parasha-idea-lechlecha.jpg?v=3983ecdd",
+        "text": "A short thought on this week's parsha ✨\nA Thought on Parashat Lech Lecha: Lot chose what looked good, and Avraham Avinu chose what was right. How do we choose, every single day?\n🎧 Listen with the kids:\nhttps://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-idea-lechlecha/",
+        "popup": true
+      }
     },
     {
       "slug": "parasha-idea-vayera",
       "title": "A Thought on Parashat Vayera",
       "category": "parasha-idea",
       "url": "https://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-idea-vayera/",
-      "shareText": "*A Thought on Parashat Vayera*\n\nWhy does Avraham Avinu start by asking for fifty righteous people, and not right away for ten? A thought about how to go far - step by step, until even what seems impossible becomes possible.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-idea-vayera/\n\nEnjoyed it? Share it with family and friends ❤️"
+      "shareText": "*A Thought on Parashat Vayera*\n\nWhy does Avraham Avinu start by asking for fifty righteous people, and not right away for ten? A thought about how to go far - step by step, until even what seems impossible becomes possible.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-idea-vayera/\n\nEnjoyed it? Share it with family and friends ❤️",
+      "status": {
+        "image": "../assets/images/status/en/parasha-idea-vayera.jpg?v=ff22eb80",
+        "text": "A short thought on this week's parsha ✨\nA Thought on Parashat Vayera: why did Avraham Avinu start with fifty? Step by step, until even the impossible becomes possible.\n🎧 Listen with the kids:\nhttps://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-idea-vayera/",
+        "popup": true
+      }
     },
     {
       "slug": "invention-of-writing",
       "title": "The Invention of Writing",
       "category": "enlightenment",
       "url": "https://abrahamgersten.github.io/zeh-kara-beemet/en/s/invention-of-writing/",
-      "shareText": "*The Invention of Writing*\n\nFive thousand years ago, knowledge could only be passed down by memory. How writing began with clay tablets and symbols - and how it changed human life forever.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/invention-of-writing/\n\nEnjoyed it? Share it with family and friends ❤️"
+      "shareText": "*The Invention of Writing*\n\nFive thousand years ago, knowledge could only be passed down by memory. How writing began with clay tablets and symbols - and how it changed human life forever.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/invention-of-writing/\n\nEnjoyed it? Share it with family and friends ❤️",
+      "status": {
+        "image": "../assets/images/status/en/invention-of-writing.jpg?v=06238c55",
+        "text": "A fascinating listen for kids ✨\nThe Invention of Writing: how writing began with clay tablets and symbols, and how it changed human life forever.\n🎧 Listen with the kids:\nhttps://abrahamgersten.github.io/zeh-kara-beemet/en/s/invention-of-writing/",
+        "popup": true
+      }
     },
     {
       "slug": "ocean-depths-journey",
       "title": "Journey to the Ocean Depths",
       "category": "enlightenment",
       "url": "https://abrahamgersten.github.io/zeh-kara-beemet/en/s/ocean-depths-journey/",
-      "shareText": "*Journey to the Ocean Depths*\n\nA submarine sinks into the ocean, the light fades, and the adventure begins - meet the anglerfish with its mysterious flashlight, giant tube worms living by underwater volcanoes, and a giant jellyfish with tentacles up to thirty meters long.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/ocean-depths-journey/\n\nEnjoyed it? Share it with family and friends ❤️"
+      "shareText": "*Journey to the Ocean Depths*\n\nA submarine sinks into the ocean, the light fades, and the adventure begins - meet the anglerfish with its mysterious flashlight, giant tube worms living by underwater volcanoes, and a giant jellyfish with tentacles up to thirty meters long.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/ocean-depths-journey/\n\nEnjoyed it? Share it with family and friends ❤️",
+      "status": {
+        "image": "../assets/images/status/en/ocean-depths-journey.jpg?v=4bc9d84f",
+        "text": "A fascinating listen for kids 🌊\nJourney to the Ocean Depths: the anglerfish with its flashlight, giant tube worms by underwater volcanoes, and a giant jellyfish with very long tentacles.\n🎧 Listen with the kids:\nhttps://abrahamgersten.github.io/zeh-kara-beemet/en/s/ocean-depths-journey/",
+        "popup": true
+      }
     },
     {
       "slug": "how-phone-carries-voices",
       "title": "How Does a Phone Carry Our Voice?",
       "category": "enlightenment",
       "url": "https://abrahamgersten.github.io/zeh-kara-beemet/en/s/how-phone-carries-voices/",
-      "shareText": "*How Does a Phone Carry Our Voice?*\n\nWe talk to a friend on the other side of the world, and they hear us in an instant. The amazing journey of our voice: sound waves, a microphone, electrical signals, radio waves and a speaker.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/how-phone-carries-voices/\n\nEnjoyed it? Share it with family and friends ❤️"
+      "shareText": "*How Does a Phone Carry Our Voice?*\n\nWe talk to a friend on the other side of the world, and they hear us in an instant. The amazing journey of our voice: sound waves, a microphone, electrical signals, radio waves and a speaker.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/how-phone-carries-voices/\n\nEnjoyed it? Share it with family and friends ❤️",
+      "status": {
+        "image": "../assets/images/status/en/how-phone-carries-voices.jpg?v=33879583",
+        "text": "A fascinating listen for kids 📞\nHow Does a Phone Carry Our Voice? The amazing journey of our voice: sound waves, a microphone, electrical signals, radio waves and a speaker.\n🎧 Listen with the kids:\nhttps://abrahamgersten.github.io/zeh-kara-beemet/en/s/how-phone-carries-voices/",
+        "popup": true
+      }
     },
     {
       "slug": "story-of-plastic",
       "title": "The Story of Plastic",
       "category": "enlightenment",
       "url": "https://abrahamgersten.github.io/zeh-kara-beemet/en/s/story-of-plastic/",
-      "shareText": "*The Story of Plastic*\n\nHow was plastic born, why did it take over the world, and what big problem was discovered later? A journey from the oil deep underground to the recycling bin - and what each of us can do.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/story-of-plastic/\n\nEnjoyed it? Share it with family and friends ❤️"
+      "shareText": "*The Story of Plastic*\n\nHow was plastic born, why did it take over the world, and what big problem was discovered later? A journey from the oil deep underground to the recycling bin - and what each of us can do.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/story-of-plastic/\n\nEnjoyed it? Share it with family and friends ❤️",
+      "status": {
+        "image": "../assets/images/status/en/story-of-plastic.jpg?v=9c830651",
+        "text": "A fascinating listen for kids ♻️\nThe Story of Plastic: from the oil deep underground to the recycling bin, and what each of us can do.\n🎧 Listen with the kids:\nhttps://abrahamgersten.github.io/zeh-kara-beemet/en/s/story-of-plastic/",
+        "popup": true
+      }
     },
     {
       "slug": "birkat-hamazon",
       "title": "Birkat Hamazon",
       "category": "what-to-do",
       "url": "https://abrahamgersten.github.io/zeh-kara-beemet/en/s/birkat-hamazon/",
-      "shareText": "*Birkat Hamazon*\n\nWhy do we say a blessing after we eat? Who really gives us our bread - and what are the four blessings of Birkat Hamazon? A chance to stop, say thank you, and remember that our abundance is never to be taken for granted.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/birkat-hamazon/\n\nEnjoyed it? Share it with family and friends ❤️"
+      "shareText": "*Birkat Hamazon*\n\nWhy do we say a blessing after we eat? Who really gives us our bread - and what are the four blessings of Birkat Hamazon? A chance to stop, say thank you, and remember that our abundance is never to be taken for granted.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/birkat-hamazon/\n\nEnjoyed it? Share it with family and friends ❤️",
+      "status": {
+        "image": "../assets/images/status/en/birkat-hamazon.jpg?v=5d11de60",
+        "text": "A listen for kids about Birkat Hamazon ✨\nBirkat Hamazon: a chance to stop, say thank you, and remember that our abundance is never to be taken for granted.\n🎧 Listen with the kids:\nhttps://abrahamgersten.github.io/zeh-kara-beemet/en/s/birkat-hamazon/",
+        "popup": true
+      }
     },
     {
       "slug": "parasha-of-the-week",
       "title": "The Weekly Torah Portion",
       "category": "what-to-do",
       "url": "https://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-of-the-week/",
-      "shareText": "*The Weekly Torah Portion*\n\nWhy do we read a different portion of the Torah every Shabbat, and what does it have to do with us thousands of years later? How to listen to the Torah reading and ask: what does this portion want to teach me?\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-of-the-week/\n\nEnjoyed it? Share it with family and friends ❤️"
+      "shareText": "*The Weekly Torah Portion*\n\nWhy do we read a different portion of the Torah every Shabbat, and what does it have to do with us thousands of years later? How to listen to the Torah reading and ask: what does this portion want to teach me?\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-of-the-week/\n\nEnjoyed it? Share it with family and friends ❤️",
+      "status": {
+        "image": "../assets/images/status/en/parasha-of-the-week.jpg?v=e5f4c33e",
+        "text": "A listen for kids about the weekly Torah portion ✨\nThe Weekly Torah Portion: why we read a different portion every Shabbat, and what it has to do with us thousands of years later.\n🎧 Listen with the kids:\nhttps://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-of-the-week/",
+        "popup": true
+      }
     },
     {
       "slug": "why-we-bless",
       "title": "Why Do We Make a Bracha?",
       "category": "what-to-do",
       "url": "https://abrahamgersten.github.io/zeh-kara-beemet/en/s/why-we-bless/",
-      "shareText": "*Why Do We Make a Bracha?*\n\nWhy do we make a bracha before we eat, do we need one even for a tiny crumb, and can't we just say Shehakol on everything? Everything you need to know about the bracha before eating.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/why-we-bless/\n\nEnjoyed it? Share it with family and friends ❤️"
+      "shareText": "*Why Do We Make a Bracha?*\n\nWhy do we make a bracha before we eat, do we need one even for a tiny crumb, and can't we just say Shehakol on everything? Everything you need to know about the bracha before eating.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/why-we-bless/\n\nEnjoyed it? Share it with family and friends ❤️",
+      "status": {
+        "image": "../assets/images/status/en/why-we-bless.jpg?v=43c1dc9f",
+        "text": "A listen for kids about brachot ✨\nWhy Do We Make a Bracha? Everything you need to know about the bracha before eating.\n🎧 Listen with the kids:\nhttps://abrahamgersten.github.io/zeh-kara-beemet/en/s/why-we-bless/",
+        "popup": true
+      }
     },
     {
       "slug": "bracha-to-eating-gap",
       "title": "How Long May We Wait Between the Bracha and Eating?",
       "category": "what-to-do",
       "url": "https://abrahamgersten.github.io/zeh-kara-beemet/en/s/bracha-to-eating-gap/",
-      "shareText": "*How Long May We Wait Between the Bracha and Eating?*\n\nYou made a bracha on an apple, and then a friend started talking to you - now what? When do we need to make the bracha again, and when is it okay to pause between the bracha and eating?\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/bracha-to-eating-gap/\n\nEnjoyed it? Share it with family and friends ❤️"
+      "shareText": "*How Long May We Wait Between the Bracha and Eating?*\n\nYou made a bracha on an apple, and then a friend started talking to you - now what? When do we need to make the bracha again, and when is it okay to pause between the bracha and eating?\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/bracha-to-eating-gap/\n\nEnjoyed it? Share it with family and friends ❤️",
+      "status": {
+        "image": "../assets/images/status/en/bracha-to-eating-gap.jpg?v=df3d4f54",
+        "text": "A listen for kids about brachot ✨\nHow Long May We Wait Between the Bracha and Eating? When we need to make the bracha again, and when it's okay to pause.\n🎧 Listen with the kids:\nhttps://abrahamgersten.github.io/zeh-kara-beemet/en/s/bracha-to-eating-gap/",
+        "popup": true
+      }
     },
     {
       "slug": "healthy-breakfast",
       "title": "Why Breakfast Matters",
       "category": "healthy-to-know",
       "url": "https://abrahamgersten.github.io/zeh-kara-beemet/en/s/healthy-breakfast/",
-      "shareText": "*Why Breakfast Matters*\n\nWhy shouldn't we skip breakfast? How it gives our body and brain fuel for the whole day, what a balanced breakfast includes, and a small challenge for the coming week.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/healthy-breakfast/\n\nEnjoyed it? Share it with family and friends ❤️"
+      "shareText": "*Why Breakfast Matters*\n\nWhy shouldn't we skip breakfast? How it gives our body and brain fuel for the whole day, what a balanced breakfast includes, and a small challenge for the coming week.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/healthy-breakfast/\n\nEnjoyed it? Share it with family and friends ❤️",
+      "status": {
+        "image": "../assets/images/status/en/healthy-breakfast.jpg?v=b1bb2bea",
+        "text": "A listen for kids about health 🍎\nWhy Breakfast Matters: how it fuels our body and brain for the whole day, and what a balanced breakfast includes.\n🎧 Listen with the kids:\nhttps://abrahamgersten.github.io/zeh-kara-beemet/en/s/healthy-breakfast/",
+        "popup": true
+      }
     },
     {
       "slug": "benefits-of-reading",
       "title": "The Benefits of Reading",
       "category": "healthy-to-know",
       "url": "https://abrahamgersten.github.io/zeh-kara-beemet/en/s/benefits-of-reading/",
-      "shareText": "*The Benefits of Reading*\n\nReading strengthens the brain, sparks the imagination, calms us down, and even helps us fall asleep. Why it's worth picking up a book every day - and what you can discover between the pages.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/benefits-of-reading/\n\nEnjoyed it? Share it with family and friends ❤️"
+      "shareText": "*The Benefits of Reading*\n\nReading strengthens the brain, sparks the imagination, calms us down, and even helps us fall asleep. Why it's worth picking up a book every day - and what you can discover between the pages.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/benefits-of-reading/\n\nEnjoyed it? Share it with family and friends ❤️",
+      "status": {
+        "image": "../assets/images/status/en/benefits-of-reading.jpg?v=7f587be2",
+        "text": "A listen for kids about reading 📚\nThe Benefits of Reading: why it's worth picking up a book every day, and what you can discover between the pages.\n🎧 Listen with the kids:\nhttps://abrahamgersten.github.io/zeh-kara-beemet/en/s/benefits-of-reading/",
+        "popup": true
+      }
     },
     {
       "slug": "teeth-health",
       "title": "Healthy Teeth: Why Does It Matter So Much?",
       "category": "healthy-to-know",
       "url": "https://abrahamgersten.github.io/zeh-kara-beemet/en/s/teeth-health/",
-      "shareText": "*Healthy Teeth: Why Does It Matter So Much?*\n\nWhy is brushing so important? What do the germs in our mouths do, how do our teeth affect the health of our whole body, and which small habits keep a healthy smile for years?\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/teeth-health/\n\nEnjoyed it? Share it with family and friends ❤️"
+      "shareText": "*Healthy Teeth: Why Does It Matter So Much?*\n\nWhy is brushing so important? What do the germs in our mouths do, how do our teeth affect the health of our whole body, and which small habits keep a healthy smile for years?\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/teeth-health/\n\nEnjoyed it? Share it with family and friends ❤️",
+      "status": {
+        "image": "../assets/images/status/en/teeth-health.jpg?v=c87d185a",
+        "text": "A listen for kids about health 🦷\nHealthy Teeth: what the germs in our mouths do, and which small habits keep a healthy smile for years.\n🎧 Listen with the kids:\nhttps://abrahamgersten.github.io/zeh-kara-beemet/en/s/teeth-health/",
+        "popup": true
+      }
     }
   ]
 }
