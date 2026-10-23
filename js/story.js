@@ -83,14 +83,51 @@
     audio.preload = "metadata";
     audio.src = (fromStatus && el.dataset.srcStatus) || el.dataset.src;
 
+    // "המשך מאיפה שעצרתם" (אברהם, 2026-10-23) ומדידת ההאזנה לנקודות הנטישה - js/progress.js.
+    // אותו מקום שמור כמו באתר המלא, לפי ההקלטה והשפה.
+    const lang = STORY.lang === "en" ? "en" : "he";
+    let resumeAt = 0;
+    let savedAt = -1;
+    let session = null;
+    const saved = window.ZkbResume && STORY.slug ? window.ZkbResume.get(lang, STORY.slug) : null;
+    if (saved) {
+      resumeAt = saved.t;
+      seek.max = saved.d;
+      seek.value = saved.t;
+      current.textContent = formatTime(saved.t);
+      duration.textContent = formatTime(saved.d);
+      btn.setAttribute("aria-label", el.dataset.labelResume);
+      el.classList.add("player--resume");
+    }
+    function savePlace(force) {
+      if (!window.ZkbResume || !STORY.slug || !(audio.duration > 0)) return;
+      if (!force && Math.abs(audio.currentTime - savedAt) < 5) return;
+      savedAt = audio.currentTime;
+      window.ZkbResume.set(lang, STORY.slug, audio.currentTime, audio.duration);
+    }
+    const leave = () => {
+      savePlace(true);
+      if (session) session.flush();
+    };
+    window.addEventListener("pagehide", leave);
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "hidden") leave();
+    });
+
     audio.addEventListener("loadedmetadata", () => {
       seek.max = audio.duration || 0;
       duration.textContent = formatTime(audio.duration);
+      if (resumeAt > 0 && resumeAt < audio.duration) audio.currentTime = resumeAt;
+      resumeAt = 0;
     });
     audio.addEventListener("timeupdate", () => {
       if (seeking) return;
       seek.value = audio.currentTime;
       current.textContent = formatTime(audio.currentTime);
+      if (!audio.paused) {
+        savePlace(false);
+        if (session) session.time(audio.currentTime, audio.duration);
+      }
     });
     audio.addEventListener("play", () => {
       btn.textContent = "⏸";
@@ -100,11 +137,17 @@
       setMediaSession();
       track("play");
       warmStatusPicture();
+      if (!session && window.ZkbListen && STORY.slug) session = window.ZkbListen.session(STORY.slug, lang, fromStatus ? "status" : "link");
+      if (window.ZkbNew && STORY.slug) window.ZkbNew.seen(lang, STORY.slug);
     });
     audio.addEventListener("pause", () => {
       btn.textContent = "▶";
       btn.classList.remove("is-playing");
       btn.setAttribute("aria-label", el.dataset.labelResume);
+      if (!audio.ended) {
+        savePlace(true);
+        if (session) session.flush();
+      }
     });
     audio.addEventListener("ended", () => {
       btn.textContent = "▶";
@@ -112,6 +155,13 @@
       btn.setAttribute("aria-label", el.dataset.labelPlay);
       seek.value = 0;
       current.textContent = "0:00";
+      el.classList.remove("player--resume");
+      savedAt = -1;
+      if (session) {
+        session.end();
+        session = null;
+      }
+      if (window.ZkbResume && STORY.slug) window.ZkbResume.clear(lang, STORY.slug);
       track("finish");
       inviteToStatus();
     });

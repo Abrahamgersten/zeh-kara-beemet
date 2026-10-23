@@ -1,4 +1,4 @@
-const SHELL_CACHE = "zkb-shell-v21";
+const SHELL_CACHE = "zkb-shell-v22";
 const MEDIA_CACHE = "zkb-media-v43";
 
 const SHELL_ASSETS = [
@@ -8,6 +8,8 @@ const SHELL_ASSETS = [
   "./js/app.js",
   "./js/parasha-order.js",
   "./js/share-sheet.js",
+  "./js/progress.js",
+  "./js/push.js",
   "./manifest.json",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
@@ -70,5 +72,52 @@ self.addEventListener("fetch", (event) => {
         return response;
       })
       .catch(() => caches.match(event.request).then((res) => res || caches.match("./index.html")))
+  );
+});
+
+/* ---------------------------------------------------------------
+   "סיפור חדש עלה" (אברהם, 2026-10-23): the notification sent by רוני המתכנת/Tools/push/send_push.py.
+   payload: { title, body, url, image, lang, tag } - a tap opens the site at that episode (#ep-<slug>).
+--------------------------------------------------------------- */
+self.addEventListener("push", (event) => {
+  let d = {};
+  try {
+    d = event.data ? event.data.json() : {};
+  } catch (e) {
+    d = { body: event.data ? event.data.text() : "" };
+  }
+  const en = d.lang === "en";
+  const title = d.title || (en ? "It Really Happened" : "זה קרה באמת");
+  const options = {
+    body: d.body || "",
+    icon: new URL("icons/icon-192.png", self.registration.scope).href,
+    badge: new URL("icons/favicon-32.png", self.registration.scope).href,
+    data: { url: new URL(d.url || (en ? "en/index.html" : "index.html"), self.registration.scope).href },
+    dir: en ? "ltr" : "rtl",
+    lang: en ? "en" : "he",
+    tag: d.tag || "zkb-new",
+    renotify: true,
+  };
+  if (d.image) options.image = new URL(d.image, self.registration.scope).href;
+  event.waitUntil(Promise.all([
+    self.registration.showNotification(title, options),
+    // open pages hear about it too (used by the automatic check of this feature)
+    self.clients.matchAll({ includeUncontrolled: true }).then((list) => list.forEach((c) => c.postMessage({ type: "zkb-push", title, body: options.body }))),
+  ]));
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const url = (event.notification.data && event.notification.data.url) || self.registration.scope;
+  event.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((list) => {
+      for (const c of list) {
+        if (c.url.split("#")[0] === url.split("#")[0] && "focus" in c) {
+          if ("navigate" in c) c.navigate(url);
+          return c.focus();
+        }
+      }
+      return self.clients.openWindow(url);
+    })
   );
 });

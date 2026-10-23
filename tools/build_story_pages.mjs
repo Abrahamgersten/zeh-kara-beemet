@@ -318,6 +318,7 @@ ${MARKER}
 
 <script type="application/json" id="story-data">${storyData}</script>${status ? `
 <script src="${root}js/share-sheet.js" defer></script>` : ""}
+<script src="${root}js/progress.js" defer></script>
 <script src="${root}js/story.js" defer></script>
 </body>
 </html>

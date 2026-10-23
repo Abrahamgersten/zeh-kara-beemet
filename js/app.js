@@ -714,6 +714,47 @@ function setupStoryShare() {
   }
 }
 
+/* ---------------------------------------------------------------
+   "חדש מאז הביקור האחרון" (Avraham, 2026-10-23): a small tag on a recording this browser has not seen before - for a
+   week, or until it is played (js/progress.js, ZkbNew). The first visit tags nothing.
+--------------------------------------------------------------- */
+function setupNewTags() {
+  if (!window.ZkbNew) return;
+  const lang = document.documentElement.lang === "en" ? "en" : "he";
+  const buttons = Array.from(document.querySelectorAll("[data-share-slug]"));
+  const fresh = window.ZkbNew.check(lang, buttons.map((b) => b.dataset.shareSlug));
+  buttons.forEach((b) => {
+    if (!fresh.has(b.dataset.shareSlug)) return;
+    const media = b.closest(".content-card")?.querySelector(".content-card__media");
+    if (media && !media.querySelector(".content-card__new")) {
+      media.insertAdjacentHTML("beforeend", '<span class="content-card__new">חדש</span>');
+    }
+  });
+}
+
+/* #ep-<slug> (the link of a "new story" notification): open that episode's card and bring it into view */
+function setupEpisodeLink() {
+  const go = () => {
+    const m = /^#ep-([a-z0-9-]+)$/.exec(location.hash);
+    if (!m) return;
+    const btn = document.querySelector(`[data-share-slug="${m[1]}"]`);
+    const card = btn && btn.closest(".content-card");
+    if (!card) return;
+    card.hidden = false;
+    card.removeAttribute("data-overflow-card");
+    card.scrollIntoView({ behavior: "smooth", block: "center" });
+    card.classList.add("content-card--flash");
+    setTimeout(() => card.classList.remove("content-card--flash"), 2600);
+    // pictures above it that finish loading push it down: put it back in view once they have
+    setTimeout(() => {
+      const r = card.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > window.innerHeight) card.scrollIntoView({ block: "center" });
+    }, 1600);
+  };
+  setTimeout(go, 300);
+  window.addEventListener("hashchange", go);
+}
+
 const INITIAL_VISIBLE_EPISODES = 4;
 const PARASHA_CATEGORY_IDS = ["parasha-what", "parasha-idea", "spot-diff"];
 
@@ -1002,9 +1043,50 @@ function setupPlayers() {
       playLabel: el.querySelector(".player__btn").getAttribute("aria-label"),
       seeking: false,
       loggedPlay: false,
+      slug: storySlug(el.dataset.src),
+      session: null, // this playback, for the drop-off chart (js/progress.js)
+      savedAt: -1,
     };
     list.push(ep);
     return ep;
+  });
+
+  // "continue where you stopped" (Avraham, 2026-10-23): the bar and the time show the saved place, and play starts there
+  const lang = document.documentElement.lang === "en" ? "en" : "he";
+  if (window.ZkbResume) {
+    episodes.forEach((ep) => {
+      const saved = window.ZkbResume.get(lang, ep.slug);
+      if (!saved) return;
+      ep.pos = saved.t;
+      ep.seek.max = saved.d;
+      ep.seek.value = saved.t;
+      ep.current.textContent = formatTime(saved.t);
+      ep.duration.textContent = formatTime(saved.d);
+      ep.el.classList.add("player--resume");
+      showPlaying(ep, false);
+    });
+  }
+  function savePlace(ep, force) {
+    if (!window.ZkbResume || !ep || !(audio.duration > 0)) return;
+    if (!force && Math.abs(audio.currentTime - ep.savedAt) < 5) return;
+    ep.savedAt = audio.currentTime;
+    window.ZkbResume.set(lang, ep.slug, audio.currentTime, audio.duration);
+  }
+  function closeSession(ep) {
+    if (ep && ep.session) {
+      ep.session.flush();
+      ep.session = null;
+    }
+  }
+  // leaving the page (or locking it away): keep the place, send the last listening point
+  const leave = () => {
+    if (!active) return;
+    savePlace(active, true);
+    if (active.session) active.session.flush();
+  };
+  window.addEventListener("pagehide", leave);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") leave();
   });
 
   function showPlaying(ep, playing) {
@@ -1018,6 +1100,8 @@ function setupPlayers() {
     if (active) {
       active.pos = audio.currentTime || active.pos;
       showPlaying(active, false);
+      savePlace(active, true);
+      closeSession(active);
     }
     active = ep;
     pendingSeek = ep.pos;
@@ -1055,11 +1139,17 @@ function setupPlayers() {
     if (!active || active.seeking) return;
     active.seek.value = audio.currentTime;
     active.current.textContent = formatTime(audio.currentTime);
+    savePlace(active, false);
+    if (active.session) active.session.time(audio.currentTime, audio.duration);
   });
   audio.addEventListener("play", () => {
     if (!active) return;
     showPlaying(active, true);
     setMediaSession(active);
+    if (!active.session && window.ZkbListen) active.session = window.ZkbListen.session(active.slug, lang, "site");
+    if (window.ZkbNew) window.ZkbNew.seen(lang, active.slug);
+    const newTag = active.el.closest(".content-card")?.querySelector(".content-card__new");
+    if (newTag) newTag.remove();
     // usage tracking (non-blocking, see js/analytics.js) - only on the first play of an episode in a page load
     if (!active.loggedPlay) {
       active.loggedPlay = true;
@@ -1074,12 +1164,21 @@ function setupPlayers() {
     if (active && !audio.ended) {
       active.pos = audio.currentTime;
       showPlaying(active, false);
+      savePlace(active, true);
+      if (active.session) active.session.flush();
     }
   });
   audio.addEventListener("ended", () => {
     if (!active) return;
     const ep = active;
     ep.pos = 0;
+    ep.savedAt = -1;
+    ep.el.classList.remove("player--resume");
+    if (ep.session) {
+      ep.session.end();
+      ep.session = null;
+    }
+    if (window.ZkbResume) window.ZkbResume.clear(lang, ep.slug);
     showPlaying(ep, false);
     ep.seek.value = 0;
     ep.current.textContent = "0:00";
@@ -1406,6 +1505,8 @@ document.addEventListener("DOMContentLoaded", () => {
   setupShowMore();
   setupContinuousDropdowns();
   setupPlayers();
+  setupNewTags();
+  setupEpisodeLink();
   setupStoryShare();
   setupCatNavTracking();
   setupSparkles();

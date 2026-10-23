@@ -27,6 +27,10 @@
   }
   .admin-form-row .btn { padding: 0.7em 1.4em; font-size: 0.95rem; }
   .admin-status { min-height: 1.4em; font-size: 0.9rem; margin-top: 0.8em; color: var(--teal-ink); }
+  .dropoff-bars { display: flex; align-items: flex-end; gap: 2px; height: 46px; min-width: 120px; direction: ltr; }
+  .dropoff-bars span { flex: 1 1 0; min-width: 4px; max-width: 16px; background: #12959f; border-radius: 3px 3px 0 0; }
+  .dropoff-bars span.is-peak { background: #c85a1a; }
+  .dropoff-axis { display: flex; justify-content: space-between; direction: ltr; font-size: 0.72rem; color: var(--ink-soft); }
   .admin-table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
   .admin-table th, .admin-table td { text-align: start; padding: 0.55em 0.7em; border-bottom: 1px solid var(--teal-200); }
   .admin-table th { color: var(--ink-soft); font-weight: 600; }
@@ -113,6 +117,20 @@
   </div>
 
   <div class="admin-card">
+    <h2>📉 איפה מפסיקים להקשיב</h2>
+    <p class="admin-page__sub" style="margin-bottom:1em">לכל הקלטה: כמה מהמאזינים עדיין מקשיבים בכל דקה (עמודה לכל דקה), ובאיזו דקה עצרו הכי הרבה (העמודה הכתומה). כולל את האתר המלא, דפי הסיפור והסטטוס, ב-90 הימים האחרונים, בלי שום פרט מזהה. מי שהגיע ל-25 השניות האחרונות נחשב כמי שסיים (שם הסיומת). הספירה התחילה ב-23.10.2026.</p>
+    <div class="stats-grid" id="dropoff-stats"><div class="stat-box">טוען...</div></div>
+    <p class="insights-subhead">לפי הקלטה, מהמושמעת ביותר</p>
+    <div id="dropoff-table" style="overflow-x:auto"></div>
+  </div>
+
+  <div class="admin-card">
+    <h2>🔔 התראות "סיפור חדש עלה"</h2>
+    <p class="admin-page__sub" style="margin-bottom:1em">כמה טלפונים ומחשבים נרשמו לקבל התראה כשעולה פרק חדש. ההתראה נשלחת אחרי כל פריסה של פרק חדש.</p>
+    <div class="stats-grid" id="push-stats"><div class="stat-box">טוען...</div></div>
+  </div>
+
+  <div class="admin-card">
     <h2>➕ הענקת גישה</h2>
     <form id="grant-form" class="admin-form-row">
       <input type="email" id="grant-email" placeholder="email@example.com" required autocomplete="off">
@@ -194,6 +212,8 @@
     await loadFamilyEngagement(supabase);
     await loadContentEngagement(supabase);
     await loadStoryLinkStats(supabase);
+    await loadDropoff(supabase);
+    await loadPushStats(supabase);
     await loadChecklistItems(supabase);
 
     document.getElementById("checklist-item-form").addEventListener("submit", async (e) => {
@@ -457,6 +477,86 @@
           return `<tr><td>${name}</td><td>${s.opens}</td><td>${s.visitors}</td><td>${s.plays}</td><td>${s.finishes}</td><td>${s.shares}</td><td>${s.statuses || 0}</td><td>${s.joins}</td></tr>`;
         }).join("")}</tbody>
       </table>`;
+  }
+
+  // "איפה מפסיקים להקשיב" - supabase/migrations/0015 (admin_listen_dropoff), נשלח מ-js/progress.js.
+  async function loadDropoff(supabase) {
+    const statsHost = document.getElementById("dropoff-stats");
+    const tableHost = document.getElementById("dropoff-table");
+    const { data, error } = await supabase.rpc("admin_listen_dropoff");
+    if (error) {
+      statsHost.innerHTML = `<p>שגיאה: ${error.message}</p>`;
+      return;
+    }
+    const titles = {};
+    await Promise.all([["he", "s/index.json"], ["en", "en/s/index.json"]].map(async ([lang, url]) => {
+      try {
+        const res = await fetch(url, { cache: "no-store" });
+        if (res.ok) for (const x of (await res.json()).stories || []) titles[`${lang}/${x.slug}`] = x.title;
+      } catch (e) {
+        // the file name is shown instead
+      }
+    }));
+    const esc = (v) => String(v).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+    const stories = data.stories || [];
+    const listens = stories.reduce((n, x) => n + x.listens, 0);
+    const done = stories.reduce((n, x) => n + x.completed, 0);
+    statsHost.innerHTML = [
+      [listens, "השמעות"],
+      [stories.length, "הקלטות שהושמעו"],
+      [listens ? Math.round((100 * done) / listens) + "%" : "-", "הקשיבו עד הסוף"],
+    ].map(([v, l]) => `<div class="stat-box"><span class="stat-box__value">${v}</span><span class="stat-box__label">${l}</span></div>`).join("");
+    if (!stories.length) {
+      tableHost.innerHTML = `<p class="admin-page__sub">עוד אין נתונים. הספירה מתחילה בהשמעות הבאות.</p>`;
+      return;
+    }
+    const sourceName = { site: "באתר", link: "בקישור", status: "מסטטוס" };
+    tableHost.innerHTML = `
+      <table class="admin-table">
+        <thead><tr><th scope="col">הקלטה</th><th scope="col">השמעות</th><th scope="col">עד הסוף</th><th scope="col">ממוצע</th><th scope="col">רוב העוזבים</th><th scope="col">מקשיבים בכל דקה</th></tr></thead>
+        <tbody>${stories.map((x) => {
+          const title = titles[`${x.lang}/${x.slug}`];
+          const name = title
+            ? esc(title) + (x.lang === "en" ? ` <small style="color:var(--ink-soft)">(אנגלית)</small>` : "")
+            : `<small dir="ltr" style="color:var(--ink-soft)">${esc(x.slug)} (${esc(x.lang)})</small>`;
+          const present = x.present || [];
+          const stopped = x.stopped || [];
+          const base = Math.max(1, ...present);
+          const most = Math.max(0, ...stopped);
+          const peak = most > 0 ? stopped.indexOf(most) : -1;
+          const bars = present.map((n, m) => {
+            const pct = Math.round((100 * n) / base);
+            const tip = `דקה ${m + 1}: ${n} מקשיבים (${pct}%), ${stopped[m] || 0} עצרו בה`;
+            return `<span class="${m === peak ? "is-peak" : ""}" style="height:${Math.max(4, pct)}%" title="${tip}" aria-label="${tip}"></span>`;
+          }).join("");
+          const sources = Object.entries(x.by_source || {}).map(([k, v]) => `${sourceName[k] || k} ${v}`).join(" · ");
+          return `<tr>
+            <td>${name}<br><small style="color:var(--ink-soft)">${esc(sources)}</small></td>
+            <td>${x.listens}</td>
+            <td>${x.completed} (${Math.round((100 * x.completed) / x.listens)}%)</td>
+            <td>${x.avg_pct == null ? "-" : x.avg_pct + "%"}</td>
+            <td>${peak >= 0 ? `דקה ${peak + 1} <small style="color:var(--ink-soft)">(${most})</small>` : "-"}</td>
+            <td><div class="dropoff-bars" role="img" aria-label="מקשיבים בכל דקה">${bars}</div>
+                <div class="dropoff-axis"><span>0</span><span>${present.length} דק'</span></div></td>
+          </tr>`;
+        }).join("")}</tbody>
+      </table>`;
+  }
+
+  async function loadPushStats(supabase) {
+    const host = document.getElementById("push-stats");
+    const { data, error } = await supabase.rpc("admin_push_stats");
+    if (error) {
+      host.innerHTML = `<p>שגיאה: ${error.message}</p>`;
+      return;
+    }
+    const last = data.last_sent_at ? new Date(data.last_sent_at).toLocaleString("he-IL", { dateStyle: "short", timeStyle: "short" }) : "עוד לא נשלחה";
+    host.innerHTML = [
+      [data.total || 0, "נרשמו להתראות"],
+      [data.he || 0, "בעברית"],
+      [data.en || 0, "באנגלית"],
+      [last, "התראה אחרונה"],
+    ].map(([v, l]) => `<div class="stat-box"><span class="stat-box__value">${v}</span><span class="stat-box__label">${l}</span></div>`).join("");
   }
 
   async function loadContentEngagement(supabase) {

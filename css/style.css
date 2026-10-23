@@ -1540,6 +1540,62 @@ body.auth-pending { visibility: hidden; }
   .share-sheet__status { grid-template-columns: 72px 1fr; }
   .share-sheet .share-sheet__preview { width: 72px; }
 }
+/* ---------- "חדש מאז הביקור האחרון", "המשך מאיפה שעצרתם", התראות (2026-10-23) ---------- */
+.content-card__new {
+  position: absolute;
+  top: 12px;
+  inset-inline-start: 12px;
+  z-index: 2;
+  padding: 0.25em 0.8em;
+  border-radius: 999px;
+  background: var(--gold-500);
+  color: var(--ink);
+  font-weight: 800;
+  font-size: 0.85rem;
+  box-shadow: 0 6px 16px -6px rgba(7, 34, 41, 0.55);
+  pointer-events: none;
+}
+.player--resume .player__current { color: var(--teal-ink); font-weight: 700; }
+.content-card--flash { animation: card-flash 2.4s ease-out; }
+@keyframes card-flash {
+  0%, 40% { box-shadow: 0 0 0 4px var(--gold-400), var(--shadow-card); }
+  100% { box-shadow: var(--shadow-card); }
+}
+.push-optin { max-width: var(--container-w); margin: 0 auto; padding: 0 1.25rem 2rem; }
+.push-optin[hidden] { display: none; }
+.push-optin__card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.8rem 1.1rem;
+  padding: 1.1rem 1.3rem;
+  background: var(--sand-50);
+  border: 2px solid var(--teal-200);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-soft);
+}
+.push-optin__icon { font-size: 1.8rem; line-height: 1; }
+.push-optin__text { flex: 1 1 16rem; display: grid; gap: 0.2rem; color: var(--ink); line-height: 1.5; }
+.push-optin__text strong { color: var(--teal-heading); font-size: 1.05rem; }
+.push-optin__text span { color: var(--ink-soft); font-size: 0.93rem; }
+.push-optin__actions { display: flex; align-items: center; gap: 0.4rem 1rem; flex-wrap: wrap; }
+.push-optin__on { padding: 0.6em 1.3em; font-size: 0.95rem; }
+.push-optin__on:disabled { opacity: 0.7; cursor: progress; transform: none; }
+.push-optin__later {
+  background: none;
+  border: none;
+  padding: 0.4rem 0.2rem;
+  font: inherit;
+  font-weight: 600;
+  font-size: 0.93rem;
+  color: var(--teal-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.push-optin__later:focus-visible { outline: 3px solid var(--gold-300); outline-offset: 2px; }
+.push-optin__note { flex-basis: 100%; margin: 0; font-weight: 700; color: var(--teal-ink); }
+.push-optin__note:empty { display: none; }
 .story-player-error {
   margin: 0.6rem 0 0;
   color: var(--gold-ink);
