@@ -52,8 +52,9 @@ const LANGS = {
       catId === "tzadikim"
         ? { text: "אהבתם את הסיפור? שתפו אותו עם משפחה וחברים ❤️", button: "שיתוף הסיפור" }
         : { text: "אהבתם את ההקלטה? שתפו אותה עם משפחה וחברים ❤️", button: "שיתוף ההקלטה" },
-    // קישור ההצטרפות החכם (whatsapp/index.html) - מפנה לקבוצה שיש בה מקום.
-    join: { text: "רוצים לקבל סיפור כזה פעמיים בשבוע, בחינם?", button: "להצטרפות לקבוצה", href: "whatsapp/" },
+    // קישור ההצטרפות החכם (whatsapp/index.html) - מפנה לקבוצה שיש בה מקום. ?c=story-page: קמפיין משלו
+    // (אברהם, 2026-10-25), כדי לראות ב-campaigns.html כמה הגיעו לקבוצה דרך הכפתור הזה (מיגרציה 0017).
+    join: { text: "רוצים לקבל סיפור כזה פעמיים בשבוע, בחינם?", button: "להצטרפות לקבוצה", href: "whatsapp/?c=story-page" },
     footerNote: "תוכן מקורי לכל המשפחה - נהניתם? שתפו עם עוד משפחות שיאהבו להקשיב 🎧",
     // the parts of the shared message, as in ברלה's weekly_package.py (used when his files do not say otherwise)
     listenPrefix: "להאזנה:",
