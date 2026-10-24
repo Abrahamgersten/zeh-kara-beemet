@@ -152,7 +152,10 @@ function endingAudio(L, slug, kind) {
   const file = path.join(AUDIO_REPO, rel);
   return fs.existsSync(file) ? `${AUDIO_SITE}${rel}?v=${fileHash(file)}` : null;
 }
-const STATUS_JOIN = "להצטרפות לקבוצת הסיפורים:\nhttps://abrahamgersten.github.io/zeh-kara-beemet/whatsapp/";
+// Status links carry the campaign "site-status" (Avraham, 2026-10-25), so campaigns.html shows how many came from
+// statuses shared from the site - to listen (story page ?c=, migration 0016) and to join the group.
+const STATUS_CAMPAIGN = "site-status";
+const STATUS_JOIN = `להצטרפות לקבוצת הסיפורים:\nhttps://abrahamgersten.github.io/zeh-kara-beemet/whatsapp/?c=${STATUS_CAMPAIGN}`;
 
 function statusOf(lang, slug, pageUrl, prefix) {
   const s = (STATUS[slug] || {})[lang];
@@ -162,8 +165,8 @@ function statusOf(lang, slug, pageUrl, prefix) {
   // With a status ending, the caption's link opens the page in "status" mode, and - since that ending says "click the
   // link in the message and join us" - the caption also carries the group link.
   const text = endingAudio(LANGS[lang], slug, "status")
-    ? `${s.caption.replace("{url}", `${pageUrl}?from=status`)}\n\n${STATUS_JOIN}`
-    : s.caption.replace("{url}", pageUrl);
+    ? `${s.caption.replace("{url}", `${pageUrl}?from=status&c=${STATUS_CAMPAIGN}`)}\n\n${STATUS_JOIN}`
+    : s.caption.replace("{url}", `${pageUrl}?c=${STATUS_CAMPAIGN}`);
   // ?v=<hash>: the service worker keeps images cache-first, so a regenerated picture gets a new address
   return Object.assign({ image: `${prefix}${image}?v=${fileHash(path.join(REPO, image))}`, text }, s.popup ? { popup: true } : {});
 }

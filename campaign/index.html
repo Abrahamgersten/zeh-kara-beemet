@@ -118,6 +118,24 @@
         '<p class="cs-note">נספרים אנשים שלחצו על הקישור של הקמפיין והגיעו לקבוצה. וואטסאפ לא מדווחת מי מהם לחץ אחר כך "הצטרפות". מי שלוחץ שוב תוך חצי שעה לא נספר פעמיים.</p>' +
         '<div class="cs-actions"><button type="button" class="btn btn--outline" id="refresh">רענון המספרים</button></div>';
       document.getElementById("refresh").addEventListener("click", function () { location.reload(); });
+      // האזנות דרך הקמפיין (מיגרציה 0016): מי שפתח דף סיפור מקישור עם הקוד, למשל מהסטטוס.
+      fetch(URL_RPC.replace("join_campaign_public_stats", "campaign_public_listens"), {
+        method: "POST",
+        headers: { apikey: KEY, Authorization: "Bearer " + KEY, "Content-Type": "application/json" },
+        body: JSON.stringify({ p_key: k }),
+        cache: "no-store"
+      }).then(function (r) { return r.ok ? r.json() : null; }).then(function (l) {
+        if (!l || !l.opens) return;
+        var card = document.createElement("section");
+        card.className = "cs-card";
+        card.setAttribute("aria-labelledby", "listen-h");
+        card.innerHTML = '<h2 id="listen-h">🎧 האזנה לסיפור דרך הקמפיין</h2><div class="cs-grid">' +
+          '<div class="cs-box"><b>' + l.opens + "</b><span>נכנסו לסיפור</span></div>" +
+          '<div class="cs-box"><b>' + l.plays + "</b><span>לחצו נגן</span></div>" +
+          '<div class="cs-box"><b>' + l.finishes + "</b><span>הקשיבו עד הסוף</span></div></div>";
+        var days = root.querySelector('section[aria-labelledby="days-h"]');
+        root.insertBefore(card, days);
+      }).catch(function () {});
     })
     .catch(function () { fail("לא הצלחנו לטעון את המספרים כרגע. נסו שוב בעוד רגע."); });
 })();

@@ -238,8 +238,12 @@
     } catch (e) { return false; }
   }
 
+  // האזנות דרך קמפיין (מיגרציה 0016): דף סיפור שנפתח עם ?c=<קוד>, למשל מהקישור שבסטטוס.
+  let listens = {};
+
   async function load() {
-    const { data, error } = await supabase.rpc("admin_join_campaign_stats");
+    const [{ data, error }, lis] = await Promise.all([supabase.rpc("admin_join_campaign_stats"), supabase.rpc("admin_campaign_listens")]);
+    listens = (lis && !lis.error && lis.data) || {};
     const listEl = document.getElementById("list");
     if (error) {
       document.getElementById("totals").innerHTML = "";
@@ -292,6 +296,15 @@
     </div>`;
   }
 
+  function listenHtml(l) {
+    if (!l || !l.opens) return "";
+    return `<div class="cp-nums">
+      <span class="cp-main">🎧 <b>${l.opens}</b> נכנסו לסיפור</span>
+      <span>לחצו נגן <b>${l.plays}</b></span>
+      <span>עד הסוף <b>${l.finishes}</b></span>
+    </div>`;
+  }
+
   function linkHtml(code, name) {
     const url = linkFor(code);
     return `<div class="cp-sharebtns">
@@ -324,6 +337,7 @@
       </div>
       ${c.description ? `<p class="cp-item__desc">${esc(c.description)}</p>` : ""}
       ${numsHtml(c)}
+      ${listenHtml(listens[c.code])}
       ${shareHtml(c.people, peopleSum)}
       ${linkHtml(c.code, c.name)}
       ${c.stats_key ? statsLinkHtml(c.stats_key, c.name) : ""}

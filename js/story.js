@@ -26,6 +26,11 @@
   const COUNTER_URL = "https://nuadpewhrhpdgznbbqbs.supabase.co/rest/v1/rpc/log_story_event";
   const COUNTER_KEY = "sb_publishable_AcpmlZnxKM4yJxr1OsoSjw_CG6Kt2pz";
   const counted = new Set();
+  // קמפיין (אברהם, 2026-10-25): קישור עם ?c=<קוד> נספר גם תחת הקמפיין, למשל הקישור שבסטטוס.
+  const CAMPAIGN = (() => {
+    const c = (new URLSearchParams(location.search).get("c") || "").toLowerCase();
+    return /^[a-z0-9-]{2,40}$/.test(c) ? c : null;
+  })();
 
   function visitorId() {
     try {
@@ -51,7 +56,7 @@
         method: "POST",
         keepalive: true, // "join" נשלח רגע לפני שהדף מתחלף
         headers: { apikey: COUNTER_KEY, Authorization: "Bearer " + COUNTER_KEY, "Content-Type": "application/json" },
-        body: JSON.stringify({ p_slug: STORY.slug, p_lang: STORY.lang, p_event: event, p_visitor: visitorId() }),
+        body: JSON.stringify({ p_slug: STORY.slug, p_lang: STORY.lang, p_event: event, p_visitor: visitorId(), p_campaign: CAMPAIGN }),
       }).catch(() => {});
     } catch (e) {
       // לעולם לא משפיע על הדף
