@@ -201,6 +201,24 @@
     return `<div class="stat-box"><span class="stat-box__value">${value}</span><span class="stat-box__label">${label}</span></div>`;
   }
 
+  // הצטרפות בפועל: מי שקיבל הזמנה מהבוט ונמצא אחר כך בקבוצות הסיפורים, לפי מספר הטלפון (מיגרציה 0020)
+  function joinedHtml(d, F) {
+    const g = (d.group_joins || {})[F.key] || {};
+    const invited = stepCount(d, F.key, "intro");
+    const joined = g.joined_after_bot || 0;
+    return box(joined, `הצטרפו לקבוצה בפועל${invited ? ` (${pct(joined, invited)}% ממי שקיבל הזמנה)` : ""}`) +
+      box((g.member_before || 0) + (g.unknown || 0), "כבר היו בקבוצה קודם");
+  }
+
+  function trackingNote(d) {
+    const t = d.group_tracking;
+    if (!t) return `<p class="bt-note">ההצטרפות בפועל נבדקת לפי מספר הטלפון, פעם בשעה. הבדיקה הראשונה עוד לא רצה.</p>`;
+    const gs = Object.values(t.groups || {});
+    const size = gs.reduce((s, x) => s + x.size, 0), seen = gs.reduce((s, x) => s + x.with_phone, 0);
+    const when = (x) => new Date(x).toLocaleString("he-IL", { day: "numeric", month: "numeric", hour: "2-digit", minute: "2-digit" });
+    return `<p class="bt-note">"הצטרפו לקבוצה בפועל" נבדק לפי מספר הטלפון, פעם בשעה, מ-${esc(when(t.baseline_at))} (בדיקה אחרונה: ${esc(when(t.last_snapshot_at))}). וואטסאפ מראה את המספר של ${seen} מתוך ${size} חברי הקבוצות, ולכן זה מספר מינימלי.</p>`;
+  }
+
   function outcomesHtml(d, F) {
     const j = d.joins || {}, l = d.listens || {}, v = d.variants || {};
     if (F.key === "promo") {
@@ -213,7 +231,8 @@
         return `<tr><td>${x === "a" ? "פלייר א 🏝️ (הילד מימין)" : "פלייר ב 💎 (האי בחלום)"}</td><td>${s}</td><td>${a}</td><td>${s ? (a / s).toFixed(1) : "-"}</td></tr>`;
       }).join("");
       return `<h3>מה זה הביא</h3>
-        <div class="bt-out">${box(j["bot-diamond-promo"] || 0, "לחצו על קישור הקבוצה")}${box(arrived, "אנשים חדשים שהגיעו מהסטטוסים")}${box(k, "אנשים חדשים לכל מי ששיתף")}</div>
+        <div class="bt-out">${box(j["bot-diamond-promo"] || 0, "לחצו על קישור הקבוצה")}${joinedHtml(d, F)}${box(arrived, "אנשים חדשים שהגיעו מהסטטוסים")}${box(k, "אנשים חדשים לכל מי ששיתף")}</div>
+        ${trackingNote(d)}
         <p class="bt-loop">🔁 <b>הסיבוב נסגר</b> כשמי ששיתף מביא אנשים חדשים, והם חוזרים לשלב 1. כשהמספר "אנשים חדשים לכל מי ששיתף" גבוה מ-1, ההפצה גדלה מעצמה.</p>
         <h3>השוואת הפליירים (A/B)</h3>
         <table class="bt-table"><thead><tr><th>פלייר</th><th>קיבלו אותו</th><th>הגיעו דרכו</th><th>לכל מי שקיבל</th></tr></thead><tbody>${ab}</tbody></table>
@@ -223,7 +242,7 @@
       return `<h3>מה זה הביא (מהסטטוסים שלהם)</h3>
         <div class="bt-out">${box(l.open || 0, "נכנסו לסיפור")}${box(l.play || 0, "לחצו נגן")}${box(l.finish || 0, "הקשיבו עד הסוף")}${box((j["bot-recording"] || 0), "הגיעו לקבוצה מהקישור בסטטוס")}${box(l.join || 0, "לחצו להצטרפות בתחתית הסיפור")}</div>`;
     }
-    return `<h3>מה זה הביא</h3><div class="bt-out">${box(j["bot-diamond"] || 0, "הגיעו לקבוצה מהקישור בפלייר")}</div>`;
+    return `<h3>מה זה הביא</h3><div class="bt-out">${box(j["bot-diamond"] || 0, "לחצו על קישור הקבוצה בפלייר (גם מהסטטוסים)")}${joinedHtml(d, F)}</div>`;
   }
 
   function daysHtml(d) {
