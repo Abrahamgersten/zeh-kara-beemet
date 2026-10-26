@@ -22,8 +22,10 @@
   .bt-range button { border: 0; background: transparent; font: 600 0.9rem var(--font-body); color: var(--teal-ink); padding: 0.45em 1.05em; border-radius: 999px; cursor: pointer; }
   .bt-range button[aria-pressed="true"] { background: var(--teal-800); color: #fff; }
   .bt-range button:focus-visible, .bt-refresh:focus-visible { outline: 3px solid var(--gold-300); outline-offset: 2px; }
-  .bt-refresh { font-size: 0.86rem; }
+  .btn--sm { padding: 0.45em 1em; font-size: 0.86rem; }
   .bt-updated { font-size: 0.8rem; color: var(--ink-soft); }
+  .bt-mine { margin: -0.6rem 0 1.4rem; }
+  .bt-mine .btn { margin-inline-start: 0.3em; }
 
   .stats-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.6em; margin-bottom: 1.6rem; }
   .stat-box { background: #fff; border-radius: var(--radius-sm); padding: 0.85em 0.8em; text-align: center; box-shadow: 0 4px 14px -8px rgba(7, 34, 41, 0.25); }
@@ -90,6 +92,7 @@
     <button type="button" class="btn btn--outline btn--sm bt-refresh" id="refresh">רענון</button>
     <span class="bt-updated" id="updated" aria-live="polite"></span>
   </div>
+  <p class="bt-note bt-mine">הבדיקות שלך לא נספרות: המספר שלך בוואטסאפ, והמכשירים שסימנת. כדאי לסמן כל טלפון ודפדפן שאתה בודק ממנו (פעם אחת בכל אחד): <button type="button" class="btn btn--outline btn--sm" id="mine">לא לספור את המכשיר הזה</button> <span id="mine-status" role="status"></span></p>
 
   <div class="stats-grid" id="totals"><div class="stat-box">טוען...</div></div>
   <div id="flows"></div>
@@ -284,7 +287,21 @@
       });
     }
     document.getElementById("refresh").addEventListener("click", load);
+    document.getElementById("mine").addEventListener("click", excludeThisDevice);
     await load();
+  }
+
+  // אותו מספר אקראי שדפי הסיפור וקישור הקבוצה שומרים בדפדפן (zkb_story_visitor); נוצר כאן אם עוד אין.
+  async function excludeThisDevice() {
+    const status = document.getElementById("mine-status");
+    let v = null;
+    try {
+      v = localStorage.getItem("zkb_story_visitor");
+      if (!v) { v = crypto.randomUUID(); localStorage.setItem("zkb_story_visitor", v); }
+    } catch (e) { status.textContent = "הדפדפן הזה לא שומר נתונים (גלישה פרטית?), אז הוא גם לא נספר."; return; }
+    const { data, error } = await supabase.rpc("admin_exclude_device", { p_visitor: v, p_note: navigator.userAgent.slice(0, 120) });
+    status.textContent = error || !data ? "לא הצלחתי לסמן, נסה שוב." : "✔️ המכשיר הזה לא נספר יותר.";
+    if (!error && data) load();
   }
 
   function showDenied(text) {

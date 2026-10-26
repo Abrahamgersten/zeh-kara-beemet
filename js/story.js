@@ -47,9 +47,12 @@
     }
   }
 
+  // &t=1 = בדיקה של אברהם (מיגרציה 0019): הדף עובד כרגיל ולא נספר.
+  const TEST = new URLSearchParams(location.search).get("t") === "1";
+
   function track(event) {
     // פעם אחת לכל סוג אירוע בטעינת דף, ורק באתר החי (לא בתצוגה מקומית בזמן פיתוח).
-    if (!STORY.slug || counted.has(event) || location.hostname !== "abrahamgersten.github.io") return;
+    if (TEST || !STORY.slug || counted.has(event) || location.hostname !== "abrahamgersten.github.io") return;
     counted.add(event);
     try {
       fetch(COUNTER_URL, {
