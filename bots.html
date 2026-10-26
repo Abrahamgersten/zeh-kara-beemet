@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ביצועי הבוטים - זה קרה באמת</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0f8793">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Suez+One&family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<style>
+  /* דוח המשפך של בוטי הוואטסאפ (אברהם, 2026-10-26). מסך ניהול פנימי, באותה שפה של campaigns.html. */
+  .bt-page { max-width: 820px; margin: 0 auto; padding: 2.2rem 1rem 4rem; }
+  .bt-page h1 { font-size: 1.75rem; color: var(--teal-heading); margin-bottom: 0.25em; }
+  .bt-sub { color: var(--ink-soft); margin: 0 0 1.2em; line-height: 1.6; }
+  .bt-back { font-size: 0.9rem; color: var(--teal-ink); }
+  .bt-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5em; margin-bottom: 1.4rem; }
+  .bt-range { display: inline-flex; background: var(--sand-50); border-radius: 999px; padding: 4px; box-shadow: var(--shadow-soft); }
+  .bt-range button { border: 0; background: transparent; font: 600 0.9rem var(--font-body); color: var(--teal-ink); padding: 0.45em 1.05em; border-radius: 999px; cursor: pointer; }
+  .bt-range button[aria-pressed="true"] { background: var(--teal-800); color: #fff; }
+  .bt-range button:focus-visible, .bt-refresh:focus-visible { outline: 3px solid var(--gold-300); outline-offset: 2px; }
+  .bt-refresh { font-size: 0.86rem; }
+  .bt-updated { font-size: 0.8rem; color: var(--ink-soft); }
+
+  .stats-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.6em; margin-bottom: 1.6rem; }
+  .stat-box { background: #fff; border-radius: var(--radius-sm); padding: 0.85em 0.8em; text-align: center; box-shadow: 0 4px 14px -8px rgba(7, 34, 41, 0.25); }
+  .stat-box__value { display: block; font-family: var(--font-display); font-size: 1.45rem; color: var(--teal-heading); line-height: 1.1; }
+  .stat-box__label { font-size: 0.74rem; color: var(--ink-soft); margin-top: 0.3em; display: block; }
+
+  .bt-card { background: var(--sand-50); border-radius: var(--radius-md); box-shadow: var(--shadow-soft); padding: 1.4rem 1.25rem; margin-bottom: 1.6rem; }
+  .bt-card h2 { font-size: 1.15rem; color: var(--teal-heading); margin: 0 0 0.2em; }
+  .bt-trigger { font-size: 0.82rem; color: var(--ink-soft); margin: 0 0 1em; }
+  .bt-card h3 { font-size: 0.95rem; color: var(--teal-ink); margin: 1.3em 0 0.6em; }
+
+  /* משפך: פס אופקי לכל שלב, צבע אחד, מעוגן לימין (תחילת השורה בעברית) */
+  .fn { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.75em; }
+  .fn-step { background: #fff; border-radius: var(--radius-sm); padding: 0.7em 0.85em 0.65em; box-shadow: 0 4px 14px -10px rgba(7, 34, 41, 0.3); }
+  .fn-head { display: flex; justify-content: space-between; align-items: baseline; gap: 0.8em; }
+  .fn-label { font-weight: 600; font-size: 0.92rem; line-height: 1.35; }
+  .fn-num { font-family: var(--font-display); font-size: 1.3rem; color: var(--teal-heading); line-height: 1; white-space: nowrap; }
+  .fn-track { height: 10px; background: var(--teal-200); background: color-mix(in srgb, var(--teal-200) 45%, #fff); border-radius: 4px; margin: 0.45em 0 0.35em; overflow: hidden; }
+  .fn-fill { display: block; height: 100%; background: var(--teal-800); border-radius: 4px; min-width: 2px; }
+  .fn-meta { font-size: 0.8rem; color: var(--ink-soft); line-height: 1.5; }
+  .fn-rate { font-weight: 700; color: var(--ink); }
+  .fn-drop { display: inline-block; margin-top: 0.3em; font-size: 0.8rem; font-weight: 700; color: #8a3b12; background: #fde9d9; border-radius: 6px; padding: 0.15em 0.55em; }
+  .fn-step.is-drop { box-shadow: 0 0 0 2px #f0b48a, 0 4px 14px -10px rgba(7, 34, 41, 0.3); }
+
+  .bt-side { display: flex; flex-wrap: wrap; gap: 0.4em 1.2em; font-size: 0.84rem; color: var(--ink-soft); margin: 0.75em 0 0; }
+  .bt-side b { color: var(--ink); }
+  .bt-out { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.6em; }
+  .bt-out .stat-box__value { font-size: 1.3rem; }
+  .bt-loop { font-size: 0.86rem; line-height: 1.6; background: #fff; border-radius: var(--radius-sm); padding: 0.8em 0.9em; margin: 0.8em 0 0; }
+
+  .bt-table { width: 100%; border-collapse: collapse; font-size: 0.86rem; background: #fff; border-radius: var(--radius-sm); overflow: hidden; }
+  .bt-table th, .bt-table td { padding: 0.5em 0.6em; text-align: center; border-bottom: 1px solid var(--sand-50); }
+  .bt-table th:first-child, .bt-table td:first-child { text-align: start; }
+  .bt-table thead th { background: color-mix(in srgb, var(--teal-200) 35%, #fff); color: var(--teal-ink); font-weight: 700; }
+  .bt-note { font-size: 0.8rem; color: var(--ink-soft); margin: 0.6em 0 0; line-height: 1.55; }
+  .bt-empty { color: var(--ink-soft); font-size: 0.9rem; margin: 0; }
+  .bt-error { color: #a33a3a; }
+  .bt-denied { text-align: center; padding: 4rem 1.25rem; color: var(--ink-soft); }
+  @media (max-width: 480px) { .stats-grid { grid-template-columns: 1fr 1fr; } .stats-grid .stat-box:last-child { grid-column: 1 / -1; } }
+  @media (prefers-reduced-motion: reduce) { .btn { transition: none; } .btn:hover { transform: none; } }
+</style>
+</head>
+<body class="auth-pending">
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a href="index.html" class="brand">
+      <img class="brand__mark" src="icons/brand-mark.png" alt="" width="40" height="40">
+      <span class="brand__name">זה קרה באמת · בוטים</span>
+    </a>
+  </div>
+</header>
+
+<main class="bt-page" id="bt-root" hidden>
+  <h1>🤖 ביצועי הבוטים בוואטסאפ</h1>
+  <p class="bt-sub">כל שלב בכל בוט, ואיפה אנשים נעצרים. נספרים אנשים שונים, בלי הבדיקות שלך. המספרים מתעדכנים לבד, בלי טוקנים. <a class="bt-back" href="admin.html">לניהול</a> · <a class="bt-back" href="campaigns.html">לקמפיינים</a></p>
+
+  <div class="bt-bar">
+    <div class="bt-range" role="group" aria-label="תקופה">
+      <button type="button" data-days="7" aria-pressed="false">7 ימים</button>
+      <button type="button" data-days="30" aria-pressed="true">30 ימים</button>
+      <button type="button" data-days="" aria-pressed="false">מההתחלה</button>
+    </div>
+    <button type="button" class="btn btn--outline btn--sm bt-refresh" id="refresh">רענון</button>
+    <span class="bt-updated" id="updated" aria-live="polite"></span>
+  </div>
+
+  <div class="stats-grid" id="totals"><div class="stat-box">טוען...</div></div>
+  <div id="flows"></div>
+</main>
+
+<div id="bt-denied" class="bt-denied" hidden>
+  <p>אין לך גישה לעמוד הזה.</p>
+</div>
+
+<script type="module">
+  import { getSupabaseClient, getSession, isSupabaseConfigured, revealPage } from "./js/auth.js";
+
+  let supabase;
+  let days = 30;
+
+  const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const pct = (a, b) => (b ? Math.round((a / b) * 100) : 0);
+  const dayHe = (d) => new Date(d + "T12:00:00").toLocaleDateString("he-IL", { weekday: "short", day: "numeric", month: "numeric" });
+
+  // השלבים של כל בוט. chain = אותם אנשים לאורך הדרך (מהם מחושבים אחוזי המעבר ונקודת הנשירה);
+  // outcomes = מה שקרה בעקבותיהם (אנשים אחרים או לחיצות באתר), בלי אחוז מהשלב הקודם.
+  const FLOWS = [
+    {
+      key: "promo", title: "🏝️ אי היהלומים + חוברת קומיקס", trigger: 'מופעל כשמישהו שולח "אי היהלומים" (מהפלייר בסטטוס או בהקלדה)',
+      chain: [
+        ["request", "פנו לבוט"],
+        ["intro", "קיבלו את הקישור לסיפור ואת ההזמנה לקבוצה"],
+        ["offer", "קיבלו את הצעת הקומיקס (3 דקות אחר כך)"],
+        ["yes", "הסכימו לשתף בסטטוס"],
+        ["rest", "קיבלו את הפלייר לסטטוס ואת החוברת"],
+      ],
+    },
+    {
+      key: "rec", title: "🎧 הקלטת הסיפור השבועי", trigger: 'מופעל כשמישהו שולח "אשמח להקלטה"',
+      chain: [
+        ["request", "ביקשו הקלטה"],
+        ["intro", "קיבלו את התמונה ואת קובץ ההקלטה"],
+        ["offer", "קיבלו את שאלת הסטטוס"],
+        ["yes", "הסכימו לשתף בסטטוס"],
+        ["rest", "קיבלו את התמונה והמלל לסטטוס"],
+      ],
+    },
+    {
+      key: "diamond", title: "💎 אשמח לסיפור (הבוט הראשון)", trigger: 'מופעל כשמישהו שולח "אשמח לסיפור"',
+      chain: [
+        ["request", "פנו לבוט"],
+        ["intro", "קיבלו את הקישור לאי היהלומים ואת הבקשה לשתף את פלייר הקבוצה"],
+        ["yes", "הסכימו לשתף"],
+        ["rest_agreed", "קיבלו את פלייר הקבוצה אחרי שהסכימו"],
+      ],
+    },
+  ];
+
+  function stepCount(d, flow, step) {
+    const s = (d.flows || {})[flow] || {};
+    if (flow === "diamond" && step === "rest_agreed") return ((d.variants || {})["diamond:rest"] || {}).agreed || 0;
+    return s[step] || 0;
+  }
+
+  function chainHtml(d, F) {
+    const counts = F.chain.map(([k]) => stepCount(d, F.key, k));
+    const top = Math.max(counts[0], 1);
+    // נקודת הנשירה: המעבר שבו הלכו לאיבוד הכי הרבה אנשים (רק כשבאמת הלך מישהו לאיבוד)
+    let dropAt = -1, worst = 0;
+    for (let i = 1; i < counts.length; i++) {
+      const lost = counts[i - 1] - counts[i];
+      if (lost > worst) { worst = lost; dropAt = i; }
+    }
+    return `<ol class="fn">${F.chain.map(([k, label], i) => {
+      const n = counts[i];
+      const rate = i === 0 ? "" : `<span class="fn-rate">${pct(n, counts[i - 1])}%</span> מהשלב הקודם · `;
+      const ofAll = `${pct(n, counts[0])}% מכל מי שפנה`;
+      const sub = subLine(d, F.key, k);
+      return `<li class="fn-step${i === dropAt ? " is-drop" : ""}" title="${esc(label)}: ${n}">
+        <div class="fn-head"><span class="fn-label">${i + 1}. ${esc(label)}</span><span class="fn-num">${n}</span></div>
+        <div class="fn-track" aria-hidden="true"><span class="fn-fill" style="width:${Math.max(0, Math.min(100, (n / top) * 100))}%"></span></div>
+        <div class="fn-meta">${rate}${i === 0 ? "" : ofAll}${sub ? (i === 0 ? "" : " · ") + sub : ""}</div>
+        ${i === dropAt ? `<span class="fn-drop">⬇️ כאן נושרים הכי הרבה: ${worst} ${worst === 1 ? "אדם" : "אנשים"}</span>` : ""}
+      </li>`;
+    }).join("")}</ol>`;
+  }
+
+  function subLine(d, flow, step) {
+    const v = (d.variants || {});
+    if (flow === "promo" && step === "request") {
+      const r = v["promo:request"] || {};
+      return `מפלייר א 🏝️ <b>${r.a || 0}</b> · מפלייר ב 💎 <b>${r.b || 0}</b> · הקלידו לבד <b>${r.none || 0}</b>`;
+    }
+    if (flow === "promo" && step === "rest") {
+      const r = v["promo:rest"] || {};
+      return `פלייר א <b>${r.a || 0}</b> · פלייר ב <b>${r.b || 0}</b>${r.old ? ` · הפלייר הקודם <b>${r.old}</b>` : ""}`;
+    }
+    return "";
+  }
+
+  function sideHtml(d, F) {
+    const s = (d.flows || {})[F.key] || {};
+    const asked = F.key === "diamond" ? (s.intro || 0) : (s.offer || 0);
+    const silent = Math.max(0, asked - (s.yes || 0) - (s.no || 0));
+    const parts = [`סירבו <b>${s.no || 0}</b>`, `לא ענו <b>${silent}</b>`, `ענו משהו אחר (עבר אליך לקבוצה) <b>${s.other || 0}</b>`];
+    if (F.key === "diamond") parts.push(`קיבלו את הפלייר אחרי 30 דקות של שתיקה <b>${((d.variants || {})["diamond:rest"] || {}).timeout || 0}</b>`);
+    return `<p class="bt-side">${parts.map((p) => `<span>${p}</span>`).join("")}</p>`;
+  }
+
+  function box(value, label) {
+    return `<div class="stat-box"><span class="stat-box__value">${value}</span><span class="stat-box__label">${label}</span></div>`;
+  }
+
+  function outcomesHtml(d, F) {
+    const j = d.joins || {}, l = d.listens || {}, v = d.variants || {};
+    if (F.key === "promo") {
+      const req = v["promo:request"] || {}, sent = v["promo:rest"] || {};
+      const arrived = (req.a || 0) + (req.b || 0);
+      const shared = stepCount(d, "promo", "rest");
+      const k = shared ? (arrived / shared).toFixed(1) : "0";
+      const ab = ["a", "b"].map((x) => {
+        const s = sent[x] || 0, a = req[x] || 0;
+        return `<tr><td>${x === "a" ? "פלייר א 🏝️ (הילד מימין)" : "פלייר ב 💎 (האי בחלום)"}</td><td>${s}</td><td>${a}</td><td>${s ? (a / s).toFixed(1) : "-"}</td></tr>`;
+      }).join("");
+      return `<h3>מה זה הביא</h3>
+        <div class="bt-out">${box(j["bot-diamond-promo"] || 0, "לחצו על קישור הקבוצה")}${box(arrived, "אנשים חדשים שהגיעו מהסטטוסים")}${box(k, "אנשים חדשים לכל מי ששיתף")}</div>
+        <p class="bt-loop">🔁 <b>הסיבוב נסגר</b> כשמי ששיתף מביא אנשים חדשים, והם חוזרים לשלב 1. כשהמספר "אנשים חדשים לכל מי ששיתף" גבוה מ-1, ההפצה גדלה מעצמה.</p>
+        <h3>השוואת הפליירים (A/B)</h3>
+        <table class="bt-table"><thead><tr><th>פלייר</th><th>קיבלו אותו</th><th>הגיעו דרכו</th><th>לכל מי שקיבל</th></tr></thead><tbody>${ab}</tbody></table>
+        <p class="bt-note">"הגיעו דרכו" נספר לפי הסמל בהודעה המוכנה שבקישור (🏝️ או 💎). קישור הקבוצה נספר באתר, ולכן לא ידוע מי בדיוק לחץ, רק כמה.</p>`;
+    }
+    if (F.key === "rec") {
+      return `<h3>מה זה הביא (מהסטטוסים שלהם)</h3>
+        <div class="bt-out">${box(l.open || 0, "נכנסו לסיפור")}${box(l.play || 0, "לחצו נגן")}${box(l.finish || 0, "הקשיבו עד הסוף")}${box((j["bot-recording"] || 0), "הגיעו לקבוצה מהקישור בסטטוס")}${box(l.join || 0, "לחצו להצטרפות בתחתית הסיפור")}</div>`;
+    }
+    return `<h3>מה זה הביא</h3><div class="bt-out">${box(j["bot-diamond"] || 0, "הגיעו לקבוצה מהקישור בפלייר")}</div>`;
+  }
+
+  function daysHtml(d) {
+    const rows = d.days || [];
+    if (!rows.length) return "";
+    const by = {};
+    for (const r of rows) (by[r.day] ||= {})[r.flow] = r.people;
+    const list = Object.keys(by).sort().reverse();
+    return `<section class="bt-card" aria-labelledby="days-h"><h2 id="days-h">📅 פניות לבוטים לפי יום (14 הימים האחרונים)</h2>
+      <table class="bt-table"><thead><tr><th>יום</th><th>אי היהלומים</th><th>הקלטה</th><th>אשמח לסיפור</th></tr></thead>
+      <tbody>${list.map((day) => `<tr><td>${esc(dayHe(day))}</td><td>${by[day].promo || 0}</td><td>${by[day].rec || 0}</td><td>${by[day].diamond || 0}</td></tr>`).join("")}</tbody></table></section>`;
+  }
+
+  function render(d) {
+    const sum = (step) => FLOWS.reduce((s, F) => s + stepCount(d, F.key, step), 0);
+    const joins = Object.values(d.joins || {}).reduce((s, x) => s + x, 0);
+    document.getElementById("totals").innerHTML =
+      box(sum("request"), "פנו לבוטים") + box(sum("rest") , "קיבלו חומר לסטטוס או מתנה") + box(joins, "לחצו על קישור לקבוצה מהבוטים");
+    document.getElementById("flows").innerHTML = FLOWS.map((F) => `
+      <section class="bt-card" aria-labelledby="h-${F.key}">
+        <h2 id="h-${F.key}">${F.title}</h2>
+        <p class="bt-trigger">${esc(F.trigger)}</p>
+        ${stepCount(d, F.key, "request") ? chainHtml(d, F) + sideHtml(d, F) : `<p class="bt-empty">עוד אין פניות בתקופה הזו.</p>`}
+        ${outcomesHtml(d, F)}
+      </section>`).join("") + daysHtml(d) +
+      `<p class="bt-note">הספירה המלאה פועלת מ-26.10.2026. מה שקרה קודם (מ-24.10) שוחזר מהיסטוריית השליחה של הבוט, ולכן חסרים בו "סירבו" ו"ענו משהו אחר".</p>`;
+  }
+  window.__botsRender = render; // for the visual check with sample numbers
+
+  async function load() {
+    const updated = document.getElementById("updated");
+    updated.textContent = "טוען...";
+    const { data, error } = await supabase.rpc("admin_bot_funnel", { p_days: days });
+    if (error) {
+      document.getElementById("flows").innerHTML = `<p class="bt-error">שגיאה בטעינת הנתונים: ${esc(error.message)}</p>`;
+      updated.textContent = "";
+      return;
+    }
+    render(data);
+    updated.textContent = "עודכן " + new Date().toLocaleTimeString("he-IL", { hour: "2-digit", minute: "2-digit" });
+  }
+
+  async function init() {
+    if (!isSupabaseConfigured()) { showDenied("המערכת עדיין לא הוקמה."); return; }
+    const session = await getSession();
+    if (!session) {
+      try { sessionStorage.setItem("zkb_after_login", "bots.html"); } catch (e) {}
+      window.location.replace("login.html");
+      return;
+    }
+    supabase = getSupabaseClient();
+    const { data: isAdmin, error } = await supabase.rpc("is_admin");
+    if (error || !isAdmin) { showDenied(); return; }
+    document.getElementById("bt-root").hidden = false;
+    revealPage();
+    for (const b of document.querySelectorAll(".bt-range button")) {
+      b.addEventListener("click", () => {
+        days = b.dataset.days ? Number(b.dataset.days) : null;
+        for (const x of document.querySelectorAll(".bt-range button")) x.setAttribute("aria-pressed", String(x === b));
+        load();
+      });
+    }
+    document.getElementById("refresh").addEventListener("click", load);
+    await load();
+  }
+
+  function showDenied(text) {
+    const el = document.getElementById("bt-denied");
+    if (text) el.querySelector("p").textContent = text;
+    el.hidden = false;
+    revealPage();
+  }
+
+  if (location.protocol !== "file:") init();
+</script>
+</body>
+</html>
