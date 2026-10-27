@@ -43,8 +43,12 @@
   // ומחזיר את הקבוצה הנוכחית באותה קריאה (supabase/migrations/0013_join_campaigns.sql).
   // גם בלי קוד הכניסה נספרת, כ"קישור רגיל". המספר האקראי הוא אותו מספר של דפי הסיפור (js/story.js).
   // &t=1 = בדיקה של אברהם (הבוט מוסיף אותו להודעות שהוא שולח לו): מעבירים לקבוצה בלי לספור (מיגרציה 0019).
-  var code = null, visitor = null, test = false;
-  try { var qs = new URLSearchParams(location.search); code = qs.get("c"); test = qs.get("t") === "1"; } catch (e) {}
+  // &u=<5 ספרות> = הקוד האישי שבוט "האזנה לסיפור" שם בקישור, כדי לדעת מי לחץ (מיגרציה 0023).
+  var code = null, visitor = null, test = false, ref = null;
+  try {
+    var qs = new URLSearchParams(location.search); code = qs.get("c"); test = qs.get("t") === "1";
+    ref = /^\d{5}$/.test(qs.get("u") || "") ? qs.get("u") : null;
+  } catch (e) {}
   try {
     visitor = localStorage.getItem("zkb_story_visitor");
     if (!visitor && window.crypto && crypto.getRandomValues) {
@@ -63,7 +67,8 @@
       Authorization: "Bearer sb_publishable_AcpmlZnxKM4yJxr1OsoSjw_CG6Kt2pz",
       "Content-Type": "application/json"
     },
-    body: JSON.stringify(test ? { p_code: code, p_visitor: visitor, p_test: true } : { p_code: code, p_visitor: visitor }),
+    body: JSON.stringify(test ? { p_code: code, p_visitor: visitor, p_test: true }
+      : ref ? { p_code: code, p_visitor: visitor, p_ref: ref } : { p_code: code, p_visitor: visitor }),
     cache: "no-store",
     signal: ctl ? ctl.signal : undefined
   }).then(function (r) { return r.ok ? r.json() : FALLBACK; })
