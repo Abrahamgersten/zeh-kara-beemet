@@ -2,160 +2,272 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>שיחות - זה קרה באמת</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<title>שיחות</title>
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#0f8793">
-<link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Suez+One&family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111b21" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="inbox.webmanifest">
+<link rel="icon" href="icons/inbox-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="icons/inbox-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="שיחות">
 <style>
-  /* תיבת השיחות של המספר העסקי (אברהם, 2026-10-27): כל מי שכתב לבוטים, ותשובה ממנו ישירות, בלי טוקנים ובלי המחשב.
+  /* תיבת השיחות של המספר העסקי (אברהם, 2026-10-27), במראה של וואטסאפ ואפליקציה להתקנה בטלפון (inbox.webmanifest).
      קריאה: admin_inbox_list / admin_inbox_thread / admin_inbox_mark (מיגרציה 0021). שליחה ותמונות: פונקציית הקצה wa-inbox.
-     בטלפון: רשימה או שיחה (#מספר בכתובת). במסך רחב: שתיהן זו לצד זו. */
-  body.ib-body { display: flex; flex-direction: column; height: 100vh; height: 100dvh; overflow: hidden; }
-  .ib-body .site-header { position: static; flex: none; }
-  .ib-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-  .btn--sm { padding: 0.45em 1em; font-size: 0.86rem; }
+     בטלפון: רשימה או שיחה (#מספר בכתובת). במסך רחב: שתיהן זו לצד זו. מצב כהה לפי הגדרת הטלפון. */
+  :root {
+    --bg: #ffffff; --panel: #f0f2f5; --text: #111b21; --text2: #667781; --line: #e9edef;
+    --accent: #008069; --send: #00a884; --dot: #25d366; --hover: #f5f6f6; --sel: #f0f2f5;
+    --chat: #efeae2; --in: #ffffff; --out: #d9fdd3; --who: #007a63;
+    --chip: #f0f2f5; --chip-text: #54656f; --chip-on: #d9fdd3; --chip-on-text: #0a5c47;
+    --sys: #ffeecd; --sys-text: #54656f; --fail: #ffe1e1; --fail-text: #8a1c1c; --read: #53bdeb;
+    --shadow: 0 1px 0.5px rgba(11, 20, 26, 0.13);
+    --doodle: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' fill='none' stroke='%23000' stroke-opacity='.06' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M24 18l6 12 13 2-9 9 2 13-12-6-12 6 2-13-9-9 13-2z'/%3E%3Cpath d='M64 112c0-10 15-10 15 0 0-10 15-10 15 0 0 12-15 20-15 20s-15-8-15-20z'/%3E%3Cpath d='M140 122V96l18-5v26'/%3E%3Ccircle cx='134' cy='124' r='6'/%3E%3Ccircle cx='152' cy='119' r='6'/%3E%3Cpath d='M32 156a16 16 0 1 0 18-22 12 12 0 0 1-18 22z'/%3E%3Crect x='100' y='18' width='30' height='22' rx='7'/%3E%3Cpath d='M106 40l-4 8 10-8'/%3E%3Ccircle cx='160' cy='164' r='4'/%3E%3Ccircle cx='96' cy='168' r='3'/%3E%3C/svg%3E");
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Hebrew", Heebo, Arial, sans-serif;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111b21; --panel: #202c33; --text: #e9edef; --text2: #8696a0; --line: #222d34;
+      --accent: #00a884; --send: #00a884; --dot: #00a884; --hover: #202c33; --sel: #2a3942;
+      --chat: #0b141a; --in: #202c33; --out: #005c4b; --who: #53bdeb;
+      --chip: #202c33; --chip-text: #8696a0; --chip-on: #0a332c; --chip-on-text: #d9fdd3;
+      --sys: #182229; --sys-text: #ffd279; --fail: #3b1d1d; --fail-text: #f2b8b8;
+      --shadow: 0 1px 0.5px rgba(0, 0, 0, 0.35);
+      --doodle: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' fill='none' stroke='%23fff' stroke-opacity='.05' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M24 18l6 12 13 2-9 9 2 13-12-6-12 6 2-13-9-9 13-2z'/%3E%3Cpath d='M64 112c0-10 15-10 15 0 0-10 15-10 15 0 0 12-15 20-15 20s-15-8-15-20z'/%3E%3Cpath d='M140 122V96l18-5v26'/%3E%3Ccircle cx='134' cy='124' r='6'/%3E%3Ccircle cx='152' cy='119' r='6'/%3E%3Cpath d='M32 156a16 16 0 1 0 18-22 12 12 0 0 1-18 22z'/%3E%3Crect x='100' y='18' width='30' height='22' rx='7'/%3E%3Cpath d='M106 40l-4 8 10-8'/%3E%3Ccircle cx='160' cy='164' r='4'/%3E%3Ccircle cx='96' cy='168' r='3'/%3E%3C/svg%3E");
+      color-scheme: dark;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body { height: 100vh; height: 100dvh; overflow: hidden; background: var(--bg); color: var(--text); font-size: 15px; -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
+  body.auth-pending { visibility: hidden; }
+  button, input, textarea { font: inherit; color: inherit; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .icon { width: 24px; height: 24px; display: block; fill: currentColor; }
 
-  .ib { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(300px, 380px) 1fr; max-width: 1200px; width: 100%; margin: 0 auto; }
-  .ib[hidden] { display: none; }
+  .app { height: 100%; display: grid; grid-template-columns: minmax(320px, 38%) 1fr; }
+  .app[hidden] { display: none; }
 
-  /* רשימת השיחות */
-  .ib-list { display: flex; flex-direction: column; min-height: 0; background: var(--sand-50); border-inline-end: 1px solid color-mix(in srgb, var(--teal-200) 60%, var(--sand-200)); }
-  .ib-list__top { padding: 0.9rem 0.9rem 0.6rem; display: grid; gap: 0.55rem; }
-  .ib-tabs { display: grid; grid-template-columns: 1fr 1fr; background: #fff; border-radius: 999px; padding: 4px; box-shadow: 0 4px 14px -10px rgba(7, 34, 41, 0.35); }
-  .ib-tabs button { border: 0; background: transparent; font: 600 0.9rem var(--font-body); color: var(--teal-ink); padding: 0.5em 0.6em; border-radius: 999px; cursor: pointer; }
-  .ib-tabs button[aria-pressed="true"] { background: var(--teal-800); color: #fff; }
-  .ib-count { display: inline-block; min-width: 1.5em; padding: 0 0.4em; margin-inline-start: 0.25em; border-radius: 999px; background: var(--gold-500); color: var(--ink); font-size: 0.78rem; line-height: 1.5; }
-  .ib-search { width: 100%; box-sizing: border-box; font: 400 0.95rem var(--font-body); padding: 0.55em 0.9em; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--teal-200) 70%, var(--sand-200)); background: #fff; color: var(--ink); }
-  .ib-hint { margin: 0; font-size: 0.78rem; color: var(--ink-soft); line-height: 1.5; min-height: 1.2em; }
-  .ib-hint.is-error { color: #a33a3a; }
-  .ib-convs { list-style: none; margin: 0; padding: 0 0.5rem 0.5rem; overflow-y: auto; flex: 1; min-height: 0; }
-  .ib-conv { display: grid; grid-template-columns: 1fr auto; gap: 0.15em 0.6em; width: 100%; text-align: start; border: 0; background: transparent; padding: 0.7em 0.7em; border-radius: var(--radius-sm); cursor: pointer; font: inherit; color: inherit; }
-  .ib-conv:hover { background: color-mix(in srgb, var(--teal-200) 35%, #fff); }
-  .ib-conv[aria-current="true"] { background: var(--teal-200); }
-  .ib-conv__name { font-weight: 700; font-size: 0.95rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .ib-conv__time { font-size: 0.75rem; color: var(--ink-soft); white-space: nowrap; align-self: center; }
-  .ib-conv__prev { font-size: 0.85rem; color: var(--ink-soft); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .ib-conv__tags { display: flex; gap: 0.3em; align-items: center; justify-content: flex-end; }
-  .ib-conv.is-unread .ib-conv__name::after { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--gold-600); margin-inline-start: 0.4em; vertical-align: middle; }
-  .ib-chip { font-size: 0.72rem; font-weight: 700; border-radius: 6px; padding: 0.1em 0.45em; white-space: nowrap; }
-  .ib-chip--reply { background: var(--gold-100); color: var(--gold-ink); }
-  .ib-chip--closed { background: #eceae4; color: var(--ink-soft); }
-  .ib-empty-list { color: var(--ink-soft); font-size: 0.9rem; padding: 1rem; line-height: 1.6; }
-  .ib-foot { margin: 0; padding: 0.6rem 0.9rem 0.8rem; font-size: 0.82rem; color: var(--ink-soft); }
-  .ib-foot a { color: var(--teal-ink); }
+  /* ---------- רשימת השיחות ---------- */
+  .list { display: flex; flex-direction: column; min-height: 0; background: var(--bg); border-inline-end: 1px solid var(--line); }
+  .bar { display: flex; align-items: center; gap: 4px; min-height: 60px; padding: 8px 16px; padding-top: calc(8px + env(safe-area-inset-top)); }
+  .bar h1 { flex: 1; margin: 0; font-size: 22px; font-weight: 700; color: var(--accent); letter-spacing: -0.2px; }
+  .iconbtn { border: 0; background: transparent; color: var(--text2); width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; cursor: pointer; flex: none; }
+  .iconbtn:hover { background: var(--hover); }
+  .menu-wrap { position: relative; }
+  .menu { position: absolute; top: 44px; inset-inline-end: 0; z-index: 20; min-width: 210px; background: var(--bg); border-radius: 12px; box-shadow: 0 4px 22px rgba(11, 20, 26, 0.22); padding: 6px 0; }
+  .menu[hidden] { display: none; }
+  .menu a, .menu button { display: block; width: 100%; text-align: start; padding: 11px 18px; border: 0; background: transparent; color: var(--text); text-decoration: none; cursor: pointer; font-size: 15px; }
+  .menu a:hover, .menu button:hover { background: var(--hover); }
+  .search { margin: 2px 16px 8px; position: relative; }
+  .search input { width: 100%; border: 0; border-radius: 24px; background: var(--panel); padding: 10px 44px 10px 14px; font-size: 15px; }
+  .search input::placeholder { color: var(--text2); }
+  .search .icon { position: absolute; top: 50%; inset-inline-start: 14px; transform: translateY(-50%); width: 20px; height: 20px; color: var(--text2); pointer-events: none; }
+  .chips { display: flex; gap: 8px; padding: 2px 16px 10px; }
+  .chips button { border: 0; border-radius: 999px; padding: 6px 14px; background: var(--chip); color: var(--chip-text); font-size: 14px; font-weight: 500; cursor: pointer; }
+  .chips button[aria-pressed="true"] { background: var(--chip-on); color: var(--chip-on-text); }
+  .chips .n { font-weight: 700; margin-inline-start: 4px; }
+  .install { display: flex; align-items: center; gap: 12px; margin: 0 12px 8px; padding: 10px 12px; border-radius: 12px; background: var(--chip-on); color: var(--chip-on-text); font-size: 14px; }
+  .install[hidden] { display: none; }
+  .install img { width: 36px; height: 36px; border-radius: 9px; flex: none; }
+  .install span { flex: 1; line-height: 1.35; }
+  .install button { border: 0; background: var(--send); color: #fff; border-radius: 999px; padding: 7px 14px; font-weight: 600; cursor: pointer; }
+  .install .x { background: transparent; color: inherit; padding: 4px 6px; font-size: 18px; line-height: 1; }
+  .status-line { margin: 0; padding: 0 16px 4px; font-size: 12px; color: var(--text2); min-height: 16px; }
+  .status-line.err { color: var(--fail-text); }
+  .rows { list-style: none; margin: 0; padding: 0; overflow-y: auto; flex: 1; min-height: 0; }
+  .row { display: flex; align-items: center; gap: 13px; width: 100%; border: 0; background: transparent; padding: 0 16px; cursor: pointer; text-align: start; }
+  .row:hover { background: var(--hover); }
+  .row[aria-current="true"] { background: var(--sel); }
+  .av { width: 49px; height: 49px; border-radius: 50%; flex: none; background: #dfe5e7; color: #fff; display: grid; place-items: end center; overflow: hidden; }
+  .av svg { width: 82%; height: 82%; display: block; }
+  .row__main { flex: 1; min-width: 0; padding: 12px 0; border-bottom: 1px solid var(--line); display: grid; gap: 3px; }
+  li:last-child .row__main { border-bottom: 0; }
+  .row__top, .row__bottom { display: flex; align-items: center; gap: 8px; min-width: 0; }
+  .row__name { flex: 1; min-width: 0; font-size: 17px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .row__time { font-size: 12px; color: var(--text2); flex: none; }
+  .row__prev { flex: 1; min-width: 0; font-size: 14px; color: var(--text2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .row__tags { display: flex; align-items: center; gap: 6px; flex: none; font-size: 13px; }
+  .left { font-size: 11.5px; font-weight: 600; color: var(--chip-on-text); background: var(--chip-on); border-radius: 999px; padding: 1px 7px; }
+  .left--closed { color: var(--text2); background: var(--chip); }
+  .unread-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--dot); }
+  .row.is-unread .row__time { color: var(--accent); font-weight: 700; }
+  .row.is-unread .row__name { font-weight: 700; }
+  .empty { color: var(--text2); font-size: 14px; padding: 28px 24px; text-align: center; line-height: 1.6; }
 
-  /* שיחה */
-  .ib-thread { display: flex; flex-direction: column; min-height: 0; min-width: 0; background: color-mix(in srgb, var(--sand-200) 30%, var(--sand-50)); }
-  .ib-thread__inner { display: flex; flex-direction: column; flex: 1; min-height: 0; }
-  .ib-thread__inner[hidden] { display: none; }
-  .ib-pick { margin: auto; color: var(--ink-soft); padding: 2rem; text-align: center; }
-  .ib-th { display: flex; align-items: center; gap: 0.6rem; padding: 0.7rem 0.9rem; background: var(--sand-50); border-bottom: 1px solid color-mix(in srgb, var(--teal-200) 60%, var(--sand-200)); }
-  .ib-back { display: none; border: 0; background: transparent; font-size: 1.4rem; color: var(--teal-ink); cursor: pointer; padding: 0.2em 0.35em; border-radius: 8px; }
-  .ib-th__who { flex: 1; min-width: 0; }
-  .ib-th__who h1 { font: 700 1.05rem var(--font-body); color: var(--teal-heading); margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .ib-th__who p { margin: 0.1em 0 0; font-size: 0.8rem; color: var(--ink-soft); }
-  .ib-th__who a { color: inherit; }
-  .ib-msgs { flex: 1; min-height: 0; overflow-y: auto; padding: 1rem 0.9rem; display: flex; flex-direction: column; gap: 0.35rem; }
-  .ib-day { align-self: center; font-size: 0.75rem; color: var(--ink-soft); background: #fff; border-radius: 999px; padding: 0.15em 0.8em; margin: 0.6rem 0 0.3rem; box-shadow: 0 2px 8px -6px rgba(7, 34, 41, 0.4); }
-  .ib-msg { max-width: min(78%, 34rem); padding: 0.5em 0.75em 0.35em; border-radius: 14px; box-shadow: 0 2px 8px -6px rgba(7, 34, 41, 0.45); font-size: 0.93rem; line-height: 1.5; overflow-wrap: anywhere; }
-  .ib-msg--in { align-self: flex-start; background: #fff; border-start-start-radius: 4px; }
-  .ib-msg--me { align-self: flex-end; background: var(--teal-200); border-start-end-radius: 4px; }
-  .ib-msg--bot { align-self: flex-end; background: var(--gold-100); border-start-end-radius: 4px; }
-  .ib-msg__who { display: block; font-size: 0.72rem; font-weight: 700; color: var(--gold-ink); margin-bottom: 0.15em; }
-  .ib-msg__text { white-space: pre-wrap; }
-  .ib-msg__text a { color: var(--teal-ink); }
-  .ib-msg__meta { display: flex; justify-content: flex-end; gap: 0.35em; font-size: 0.7rem; color: var(--ink-soft); margin-top: 0.15em; }
-  .ib-tick--read { color: #1f8fd6; }
-  .ib-tick--failed { color: #a33a3a; font-weight: 700; }
-  .ib-msg img { display: block; max-width: 100%; max-height: 260px; border-radius: 10px; margin: 0.2em 0 0.3em; }
-  .ib-msg audio, .ib-msg video { display: block; max-width: 100%; margin: 0.2em 0; }
-  .ib-media-btn { border: 1px solid var(--teal-800); background: #fff; color: var(--teal-ink); border-radius: 999px; font: 600 0.82rem var(--font-body); padding: 0.3em 0.9em; cursor: pointer; margin-top: 0.2em; }
-  .ib-sys { align-self: center; max-width: 90%; text-align: center; font-size: 0.76rem; color: var(--ink-soft); background: color-mix(in srgb, #fff 70%, transparent); border-radius: 8px; padding: 0.2em 0.7em; }
-  .ib-sys--fail { color: #8a2d2d; background: #fbe4e4; }
+  /* ---------- שיחה ---------- */
+  .chat { display: flex; flex-direction: column; min-height: 0; min-width: 0; background: var(--chat) var(--doodle); position: relative; }
+  .chat__inner { display: flex; flex-direction: column; flex: 1; min-height: 0; }
+  .chat__inner[hidden] { display: none; }
+  .welcome { margin: auto; text-align: center; color: var(--text2); padding: 24px; max-width: 420px; line-height: 1.6; }
+  .welcome img { width: 96px; height: 96px; border-radius: 22px; margin-bottom: 16px; opacity: 0.9; }
+  .welcome h2 { color: var(--text); font-weight: 300; font-size: 28px; margin: 0 0 8px; }
+  .head { display: flex; align-items: center; gap: 10px; min-height: 60px; padding: 8px 10px; padding-top: calc(8px + env(safe-area-inset-top)); background: var(--bg); border-bottom: 1px solid var(--line); }
+  .back { display: none; }
+  .head .av { width: 40px; height: 40px; }
+  .head__who { flex: 1; min-width: 0; }
+  .head__who h2 { margin: 0; font-size: 16.5px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .head__who p { margin: 1px 0 0; font-size: 13px; color: var(--text2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .head__who a { color: inherit; text-decoration: none; }
+  .done-btn { border: 1px solid var(--line); background: var(--bg); color: var(--accent); border-radius: 999px; padding: 6px 12px; font-size: 13.5px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+  .done-btn[hidden] { display: none; }
+  .msgs { flex: 1; min-height: 0; overflow-y: auto; padding: 10px 6% 8px; display: flex; flex-direction: column; }
+  .day { align-self: center; margin: 10px 0 6px; padding: 5px 12px; border-radius: 8px; background: var(--in); color: var(--text2); font-size: 12.5px; box-shadow: var(--shadow); }
+  .sys { align-self: center; max-width: 88%; margin: 4px 0; padding: 5px 12px; border-radius: 8px; background: var(--sys); color: var(--sys-text); font-size: 12.5px; text-align: center; line-height: 1.45; box-shadow: var(--shadow); }
+  .sys--fail { background: var(--fail); color: var(--fail-text); }
+  .msg { position: relative; max-width: min(85%, 560px); margin-top: 2px; padding: 6px 9px 8px; border-radius: 8px; box-shadow: var(--shadow); font-size: 14.6px; line-height: 1.42; overflow-wrap: anywhere; }
+  .msg.tail { margin-top: 10px; }
+  .msg--in { align-self: flex-start; background: var(--in); }
+  .msg--out { align-self: flex-end; background: var(--out); }
+  .msg--in.tail { border-start-start-radius: 0; }
+  .msg--out.tail { border-start-end-radius: 0; }
+  .msg.tail::before { content: ""; position: absolute; top: 0; width: 8px; height: 13px; background: inherit; }
+  .msg--in.tail::before { inset-inline-start: -8px; clip-path: polygon(0 0, 100% 0, 100% 100%); }
+  .msg--out.tail::before { inset-inline-end: -8px; clip-path: polygon(0 0, 100% 0, 0 100%); }
+  .who { display: block; font-size: 12.8px; font-weight: 600; color: var(--who); margin-bottom: 2px; }
+  .txt { white-space: pre-wrap; }
+  .txt a { color: #027eb5; }
+  .sp { display: inline-block; width: 52px; height: 1px; }
+  .msg--out .sp { width: 70px; }
+  .meta { position: absolute; bottom: 4px; inset-inline-end: 8px; display: flex; align-items: center; gap: 3px; font-size: 11px; color: var(--text2); white-space: nowrap; }
+  .meta--media { position: static; justify-content: flex-end; margin-top: 2px; }
+  .tick { width: 16px; height: 11px; }
+  .tick--read { color: var(--read); }
+  .tick--fail { color: var(--fail-text); font-weight: 700; }
+  .msg img { display: block; max-width: 100%; max-height: 300px; border-radius: 6px; margin: 0 0 4px; }
+  .msg audio, .msg video { display: block; max-width: 100%; margin: 2px 0 4px; }
+  .media-btn { display: inline-flex; align-items: center; gap: 6px; border: 0; background: var(--panel); color: var(--accent); border-radius: 8px; padding: 7px 12px; font-size: 13.5px; font-weight: 600; cursor: pointer; margin: 4px 0 2px; }
+  .note { font-size: 12px; color: var(--text2); }
 
-  .ib-compose { padding: 0.55rem 0.9rem calc(0.7rem + env(safe-area-inset-bottom)); background: var(--sand-50); border-top: 1px solid color-mix(in srgb, var(--teal-200) 60%, var(--sand-200)); display: grid; gap: 0.35rem; }
-  .ib-window { margin: 0; font-size: 0.78rem; color: var(--ink-soft); line-height: 1.5; }
-  .ib-window.is-closed { color: #8a3b12; }
-  .ib-compose__row { display: flex; gap: 0.5rem; align-items: flex-end; }
-  .ib-compose textarea { flex: 1; resize: none; font: 400 0.98rem/1.45 var(--font-body); padding: 0.6em 0.9em; border-radius: 20px; border: 1px solid color-mix(in srgb, var(--teal-200) 70%, var(--sand-200)); background: #fff; color: var(--ink); max-height: 9.5em; min-height: 2.75em; box-sizing: border-box; }
-  .ib-compose textarea:disabled { background: #f1efe9; }
-  .ib-send { flex: none; width: 2.75em; height: 2.75em; border-radius: 50%; border: 0; background: var(--teal-800); color: #fff; cursor: pointer; display: grid; place-items: center; }
-  .ib-send:disabled { background: #b9c6c8; cursor: not-allowed; }
-  .ib-send svg { width: 1.2em; height: 1.2em; transform: scaleX(-1); }
+  .compose { padding: 6px 8px calc(8px + env(safe-area-inset-bottom)); display: grid; gap: 6px; }
+  .window { justify-self: center; margin: 0; padding: 4px 12px; border-radius: 8px; background: var(--sys); color: var(--sys-text); font-size: 12.5px; text-align: center; box-shadow: var(--shadow); }
+  .window.closed { background: var(--fail); color: var(--fail-text); }
+  .compose__row { display: flex; align-items: flex-end; gap: 6px; }
+  .compose__row[hidden] { display: none; }
+  .field { flex: 1; min-width: 0; background: var(--in); border-radius: 24px; box-shadow: var(--shadow); display: flex; }
+  .field textarea { flex: 1; min-width: 0; border: 0; background: transparent; resize: none; padding: 11px 16px; font-size: 15.5px; line-height: 1.4; max-height: 9.6em; min-height: 46px; outline: none; }
+  .field:focus-within { box-shadow: var(--shadow), 0 0 0 2px var(--send); }
+  .sendbtn { flex: none; width: 48px; height: 48px; border-radius: 50%; border: 0; background: var(--send); color: #fff; display: grid; place-items: center; cursor: pointer; }
+  .sendbtn:disabled { opacity: 0.55; cursor: default; }
+  .sendbtn svg { width: 24px; height: 24px; fill: currentColor; transform: scaleX(-1); }
+  .send-status { margin: 0; font-size: 12.5px; color: var(--text2); text-align: center; min-height: 0; }
+  .send-status:empty { display: none; }
+  .send-status.err { color: var(--fail-text); font-weight: 600; }
 
-  .ib button:focus-visible, .ib a:focus-visible, .ib-search:focus-visible, .ib-compose textarea:focus-visible, .ib-msgs:focus-visible { outline: 3px solid var(--gold-300); outline-offset: 2px; }
-  .ib-denied { text-align: center; padding: 4rem 1.25rem; color: var(--ink-soft); }
+  .sheet { position: fixed; inset: 0; z-index: 50; background: rgba(11, 20, 26, 0.45); display: grid; place-items: end center; }
+  .sheet[hidden] { display: none; }
+  .sheet__box { width: min(100%, 460px); background: var(--bg); color: var(--text); border-radius: 18px 18px 0 0; padding: 22px 22px calc(22px + env(safe-area-inset-bottom)); line-height: 1.6; }
+  .sheet__box h3 { margin: 0 0 8px; font-size: 18px; }
+  .sheet__box ol { margin: 0 0 14px; padding-inline-start: 22px; }
+  .sheet__box button { width: 100%; border: 0; border-radius: 999px; background: var(--send); color: #fff; padding: 11px; font-weight: 600; font-size: 15px; cursor: pointer; }
+  .denied { text-align: center; padding: 4rem 1.25rem; color: var(--text2); }
+
+  button:focus-visible, a:focus-visible, .msgs:focus-visible, .search input:focus-visible { outline: 2px solid var(--send); outline-offset: 2px; }
 
   @media (max-width: 820px) {
-    .ib { grid-template-columns: 1fr; }
-    .ib-list { border-inline-end: 0; }
-    .ib.is-thread .ib-list { display: none; }
-    .ib:not(.is-thread) .ib-thread { display: none; }
-    .ib-back { display: block; }
-    .ib-msg { max-width: 86%; }
+    .app { grid-template-columns: 1fr; }
+    .list { border-inline-end: 0; }
+    .app.in-chat .list { display: none; }
+    .app:not(.in-chat) .chat { display: none; }
+    .back { display: grid; }
+    .msgs { padding: 8px 12px; }
+    .msg { max-width: 86%; }
   }
-  @media (prefers-reduced-motion: reduce) { .btn { transition: none; } .btn:hover { transform: none; } }
+  @media (min-width: 821px) {
+    .head, .bar { background: var(--panel); }
+    .list .bar { background: var(--bg); }
+  }
 </style>
 </head>
-<body class="auth-pending ib-body">
+<body class="auth-pending">
 
-<header class="site-header">
-  <div class="site-header__inner">
-    <a href="admin.html" class="brand">
-      <img class="brand__mark" src="icons/brand-mark.png" alt="" width="40" height="40">
-      <span class="brand__name">זה קרה באמת · שיחות</span>
-    </a>
-  </div>
-</header>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-person" viewBox="0 0 212 212"><path fill="currentColor" d="M106 41c22 0 39 18 39 40s-17 40-39 40-39-18-39-40 17-40 39-40zm0 92c38 0 80 18 86 60v19H20v-19c6-42 48-60 86-60z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><path d="M15.5 14h-.8l-.3-.3A6.5 6.5 0 1 0 9.5 16a6.5 6.5 0 0 0 4.2-1.6l.3.3v.8l5 5 1.5-1.5-5-5zm-6 0a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9z"/></symbol>
+  <symbol id="i-dots" viewBox="0 0 24 24"><path d="M12 7a2 2 0 1 0-.01-4.01A2 2 0 0 0 12 7zm0 2a2 2 0 1 0 .01 4.01A2 2 0 0 0 12 9zm0 6a2 2 0 1 0 .01 4.01A2 2 0 0 0 12 15z"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M4 11h12.2l-5.6-5.6L12 4l8 8-8 8-1.4-1.4 5.6-5.6H4z"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></symbol>
+  <symbol id="i-tick" viewBox="0 0 16 11"><path d="M1.6 5.9l3.1 3.1 6.8-7.2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-ticks" viewBox="0 0 16 11"><path d="M1.2 5.9l3.1 3.1 6.8-7.2M7.4 8.3l.7.7 6.8-7.2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</svg>
 
-<main class="ib" id="ib" hidden>
-  <section class="ib-list" aria-label="רשימת השיחות">
-    <div class="ib-list__top">
-      <div class="ib-tabs" role="group" aria-label="אילו שיחות להציג">
-        <button type="button" data-filter="open" aria-pressed="true">דורשים תשובה<span class="ib-count" id="open-count" hidden></span></button>
-        <button type="button" data-filter="all" aria-pressed="false">כל השיחות</button>
+<div class="app" id="app" hidden>
+  <section class="list" aria-label="רשימת השיחות">
+    <div class="bar">
+      <h1>שיחות</h1>
+      <div class="menu-wrap">
+        <button type="button" class="iconbtn" id="menu-btn" aria-label="תפריט" aria-haspopup="true" aria-expanded="false"><svg class="icon"><use href="#i-dots"/></svg></button>
+        <div class="menu" id="menu" role="menu" hidden>
+          <button type="button" role="menuitem" id="menu-install" hidden>📲 התקנה כאפליקציה</button>
+          <a role="menuitem" href="bots.html">📊 דוח הבוטים</a>
+          <a role="menuitem" href="admin.html">⚙️ ניהול האתר</a>
+        </div>
       </div>
-      <label for="search" class="ib-sr">חיפוש לפי שם או מספר</label>
-      <input type="search" class="ib-search" id="search" placeholder="חיפוש שם או מספר" autocomplete="off">
-      <p class="ib-hint" id="list-status" role="status"></p>
     </div>
-    <ul class="ib-convs" id="convs"></ul>
-    <p class="ib-foot"><a href="bots.html">לדוח הבוטים</a> · <a href="admin.html">לניהול</a></p>
+    <div class="install" id="install" hidden>
+      <img src="icons/inbox-192.png" alt="">
+      <span>להתקין את "שיחות" כאפליקציה בטלפון?</span>
+      <button type="button" id="install-go">התקנה</button>
+      <button type="button" class="x" id="install-x" aria-label="לא עכשיו">×</button>
+    </div>
+    <div class="search">
+      <label for="search" class="sr">חיפוש לפי שם או מספר</label>
+      <input type="search" id="search" placeholder="חיפוש" autocomplete="off">
+      <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
+    </div>
+    <div class="chips" role="group" aria-label="אילו שיחות להציג">
+      <button type="button" data-filter="open" aria-pressed="true">דורשים תשובה<span class="n" id="open-count"></span></button>
+      <button type="button" data-filter="all" aria-pressed="false">הכול</button>
+    </div>
+    <p class="status-line" id="list-status" role="status"></p>
+    <ul class="rows" id="rows"></ul>
   </section>
 
-  <section class="ib-thread" aria-label="השיחה">
-    <p class="ib-pick" id="pick">בחרו שיחה מהרשימה.</p>
-    <div class="ib-thread__inner" id="thread" hidden>
-      <div class="ib-th">
-        <button type="button" class="ib-back" id="back" aria-label="חזרה לרשימה">→</button>
-        <div class="ib-th__who">
-          <h1 id="th-name"></h1>
+  <section class="chat" aria-label="השיחה">
+    <div class="welcome" id="welcome">
+      <img src="icons/inbox-192.png" alt="">
+      <h2>שיחות</h2>
+      <p>בחרו שיחה מהרשימה כדי לקרוא ולענות. התשובות יוצאות מהמספר העסקי 055-918-6168.</p>
+    </div>
+    <div class="chat__inner" id="chat" hidden>
+      <div class="head">
+        <button type="button" class="iconbtn back" id="back" aria-label="חזרה לרשימה"><svg class="icon"><use href="#i-back"/></svg></button>
+        <span class="av" aria-hidden="true"><svg><use href="#i-person"/></svg></span>
+        <div class="head__who">
+          <h2 id="th-name"></h2>
           <p id="th-meta"></p>
         </div>
-        <button type="button" class="btn btn--outline btn--sm" id="mark" hidden>סימון כטופל</button>
+        <button type="button" class="done-btn" id="mark" hidden>✓ טופל</button>
       </div>
-      <div class="ib-msgs" id="msgs" tabindex="0" aria-label="ההודעות בשיחה"></div>
-      <form class="ib-compose" id="compose">
-        <p class="ib-window" id="window"></p>
-        <div class="ib-compose__row">
-          <label for="reply" class="ib-sr">התשובה שלך</label>
-          <textarea id="reply" rows="1" placeholder="כתבו תשובה..." enterkeyhint="send"></textarea>
-          <button type="submit" class="ib-send" id="send" aria-label="שליחה">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3.4 20.4 21 12 3.4 3.6 3.4 10l12.6 2-12.6 2z"/></svg>
-          </button>
+      <div class="msgs" id="msgs" tabindex="0" aria-label="ההודעות בשיחה"></div>
+      <form class="compose" id="compose">
+        <p class="window" id="window"></p>
+        <div class="compose__row" id="compose-row">
+          <div class="field">
+            <label for="reply" class="sr">התשובה שלך</label>
+            <textarea id="reply" rows="1" placeholder="הודעה" enterkeyhint="send"></textarea>
+          </div>
+          <button type="submit" class="sendbtn" id="send" aria-label="שליחה"><svg aria-hidden="true"><use href="#i-send"/></svg></button>
         </div>
-        <p class="ib-hint" id="send-status" role="status"></p>
+        <p class="send-status" id="send-status" role="status"></p>
       </form>
     </div>
   </section>
-</main>
+</div>
 
-<div id="denied" class="ib-denied" hidden><p>אין לך גישה לעמוד הזה.</p></div>
+<div class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+  <div class="sheet__box">
+    <h3 id="sheet-title">התקנה כאפליקציה</h3>
+    <div id="sheet-body"></div>
+    <button type="button" id="sheet-ok">הבנתי</button>
+  </div>
+</div>
+
+<div id="denied" class="denied" hidden><p>אין לך גישה לעמוד הזה.</p></div>
 
 <script type="module">
   import { getSupabaseClient, getSession, revealPage } from "./js/auth.js";
@@ -181,6 +293,7 @@
     rec: { request: "ביקשו הקלטה", intro: "נשלחו התמונה וההקלטה", offer: "נשלחה שאלת הסטטוס", yes: "הסכימו לשתף", no: "לא הסכימו", rest: "נשלחו התמונה והמלל לסטטוס", other: "ענו משהו אחר" },
   };
   const IN_KIND = { image: "📷 תמונה", audio: "🎤 הקלטה", video: "🎬 סרטון", document: "📄 קובץ", sticker: "מדבקה", reaction: "תגובה באימוג'י", unsupported: "הודעה שוואטסאפ לא מעביר לבוטים (למשל סקר)", location: "📍 מיקום", contacts: "👤 איש קשר" };
+  const AV = '<span class="av" aria-hidden="true"><svg><use href="#i-person"/></svg></span>';
 
   const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const linkify = (t) => esc(t).replace(/https?:\/\/[^\s<]+/g, (u) => `<a href="${u}" target="_blank" rel="noopener">${u}</a>`);
@@ -206,45 +319,46 @@
     const ms = Date.parse(lastIn) + DAY - now();
     if (ms <= 0) return null;
     const h = Math.floor(ms / 3600000), m = Math.floor((ms % 3600000) / 60000);
-    return { ms, short: h ? `עוד ${h} ש'` : `עוד ${m} דק'`, long: h ? `${h} שעות${m ? ` ו-${m} דקות` : ""}` : `${m} דקות` };
+    return { ms, short: h ? `${h} ש'` : `${m} דק'`, long: h ? `${h} שעות${m ? ` ו-${m} דקות` : ""}` : `${m} דקות` };
   }
   const nameOf = (r) => r.name || phone(r.wa_id);
   const preview = (r) => (r.last_in_kind === "text" ? r.last_in_body : r.last_in_kind === "interactive" ? "🔘 " + (r.last_in_body || "") : IN_KIND[r.last_in_kind] || "הודעה") || "";
+  const tickSvg = (s) => s === "failed" ? `<span class="tick--fail">!</span>`
+    : `<svg class="tick${s === "read" ? " tick--read" : ""}" aria-label="${s === "read" ? "נקראה" : s === "delivered" ? "נמסרה" : "נשלחה"}"><use href="#${s === "sent" ? "i-tick" : "i-ticks"}"/></svg>`;
 
   // ---------- רשימה ----------
   async function loadList() {
     const { data, error } = await supabase.rpc("admin_inbox_list", { p_filter: filter, p_days: 30 });
     const st = $("list-status");
-    if (error) { st.textContent = "לא הצלחתי לטעון את השיחות. אנסה שוב בעוד רגע."; st.classList.add("is-error"); return; }
-    st.classList.remove("is-error");
+    if (error) { st.textContent = "אין חיבור כרגע. אנסה שוב בעוד רגע."; st.classList.add("err"); return; }
+    st.classList.remove("err"); st.textContent = "";
     skew = Date.parse(data.now) - Date.now();
     rows = data.rows || [];
-    const c = $("open-count");
-    c.hidden = !data.open_count; c.textContent = data.open_count || "";
-    document.title = (data.open_count ? `(${data.open_count}) ` : "") + "שיחות - זה קרה באמת";
-    st.textContent = "עודכן ב-" + time(now());
+    $("open-count").textContent = data.open_count ? " " + data.open_count : "";
+    document.title = (data.open_count ? `(${data.open_count}) ` : "") + "שיחות";
+    if ("setAppBadge" in navigator) { (data.open_count ? navigator.setAppBadge(data.open_count) : navigator.clearAppBadge()).catch(() => {}); }
     renderList();
   }
 
   function renderList() {
-    const q = $("search").value.trim().replace(/[-\s]/g, "");
-    const shown = rows.filter((r) => !q || (r.name || "").includes($("search").value.trim()) || r.wa_id.includes(q.replace(/^0/, "972")) || r.wa_id.includes(q));
-    const ul = $("convs");
+    const raw = $("search").value.trim();
+    const q = raw.replace(/[-\s]/g, "");
+    const shown = rows.filter((r) => !raw || (r.name || "").includes(raw) || (q && (r.wa_id.includes(q) || r.wa_id.includes(q.replace(/^0/, "972")))));
+    const ul = $("rows");
     if (!shown.length) {
-      ul.innerHTML = `<li class="ib-empty-list">${q ? "אין שיחות שמתאימות לחיפוש." : filter === "open" ? "אין כרגע הודעות שמחכות לתשובה. 🙂<br>מה שהבוט לא יודע לענות עליו יופיע כאן." : "אין שיחות ב-30 הימים האחרונים."}</li>`;
+      ul.innerHTML = `<li class="empty">${raw ? "אין שיחות שמתאימות לחיפוש." : filter === "open" ? "אין כרגע הודעות שמחכות לתשובה 🙂<br>מה שהבוט לא יודע לענות עליו יופיע כאן." : "אין שיחות ב-30 הימים האחרונים."}</li>`;
       return;
     }
     ul.innerHTML = shown.map((r) => {
       const w = left(r.last_in_at);
       const tags = [
-        r.needs_reply && w ? `<span class="ib-chip ib-chip--reply">${w.short}</span>` : "",
-        r.needs_reply && !w ? `<span class="ib-chip ib-chip--closed">החלון נסגר</span>` : "",
+        r.needs_reply ? (w ? `<span class="left" title="אפשר לענות עוד ${w.long}">${w.short}</span>` : `<span class="left left--closed">נסגר</span>`) : "",
         (r.flows || []).map((f) => (FLOWS[f] || "").split(" ")[0]).join(""),
-      ].join(" ");
-      return `<li><button type="button" class="ib-conv${r.unread ? " is-unread" : ""}" data-wa="${esc(r.wa_id)}" aria-current="${r.wa_id === current}">
-        <span class="ib-conv__name">${esc(nameOf(r))}</span><span class="ib-conv__time">${when(r.last_in_at)}</span>
-        <span class="ib-conv__prev">${esc(preview(r))}</span><span class="ib-conv__tags">${tags}</span>
-        ${r.unread ? '<span class="ib-sr">הודעה חדשה</span>' : ""}</button></li>`;
+        r.unread ? `<span class="unread-dot" aria-label="הודעה חדשה"></span>` : "",
+      ].join("");
+      return `<li><button type="button" class="row${r.unread ? " is-unread" : ""}" data-wa="${esc(r.wa_id)}" aria-current="${r.wa_id === current}">${AV}
+        <span class="row__main"><span class="row__top"><span class="row__name">${esc(nameOf(r))}</span><span class="row__time">${when(r.last_in_at)}</span></span>
+        <span class="row__bottom"><span class="row__prev">${esc(preview(r))}</span><span class="row__tags">${tags}</span></span></span></button></li>`;
     }).join("");
   }
 
@@ -252,18 +366,22 @@
   async function openThread(wa, { quiet = false } = {}) {
     const changed = wa !== current;
     current = wa;
-    $("ib").classList.add("is-thread");
-    $("pick").hidden = true;
-    $("thread").hidden = false;
-    if (changed) { $("msgs").innerHTML = ""; $("send-status").textContent = ""; $("th-name").textContent = phone(wa); $("th-meta").textContent = ""; }
+    $("app").classList.add("in-chat");
+    $("welcome").hidden = true;
+    $("chat").hidden = false;
+    if (changed) {
+      $("msgs").innerHTML = ""; $("send-status").textContent = "";
+      const r = rows.find((x) => x.wa_id === wa);
+      $("th-name").textContent = r ? nameOf(r) : phone(wa); $("th-meta").textContent = phone(wa);
+    }
     const { data, error } = await supabase.rpc("admin_inbox_thread", { p_wa_id: wa });
     if (current !== wa) return;
-    if (error || !data || !data.info) { if (!quiet) $("msgs").innerHTML = `<p class="ib-sys">לא הצלחתי לטעון את השיחה.</p>`; return; }
+    if (error || !data || !data.info) { if (!quiet) $("msgs").innerHTML = `<p class="sys">לא הצלחתי לטעון את השיחה.</p>`; return; }
     skew = Date.parse(data.now) - Date.now();
     const before = thread && thread.info && thread.info.wa_id === wa ? thread.items.length : -1;
     thread = data;
     renderThread(changed || data.items.length !== before);
-    for (const b of document.querySelectorAll(".ib-conv")) b.setAttribute("aria-current", String(b.dataset.wa === wa));
+    for (const b of document.querySelectorAll(".row")) b.setAttribute("aria-current", String(b.dataset.wa === wa));
     if (data.info.unread) {
       await supabase.rpc("admin_inbox_mark", { p_wa_id: wa, p_action: "seen" });
       const r = rows.find((x) => x.wa_id === wa);
@@ -274,8 +392,8 @@
 
   function closeThread() {
     current = null; thread = null;
-    $("ib").classList.remove("is-thread");
-    $("thread").hidden = true; $("pick").hidden = false;
+    $("app").classList.remove("in-chat");
+    $("chat").hidden = true; $("welcome").hidden = false;
     renderList();
   }
 
@@ -288,14 +406,14 @@
 
     const box = $("msgs");
     const nearBottom = box.scrollHeight - box.scrollTop - box.clientHeight < 80;
-    let lastDay = null;
     const html = [];
+    let lastDay = null, lastSide = null;
     // שלבי בוט רצופים (אותו בוט) נכנסים לשורה אחת, וכך גם הודעות שלא נמסרו ברצף
     let group = null;
-    const flush = () => { if (group) html.push(groupHtml(group)); group = null; };
+    const flush = () => { if (group) { html.push(groupHtml(group)); lastSide = null; } group = null; };
     for (const it of items) {
       const d = dayKey(it.at);
-      if (d !== lastDay) { flush(); html.push(`<div class="ib-day">${dayLabel(it.at)}</div>`); lastDay = d; }
+      if (d !== lastDay) { flush(); html.push(`<div class="day">${dayLabel(it.at)}</div>`); lastDay = d; lastSide = null; }
       if (it.t === "bot") {
         const label = (STEPS[it.flow] || {})[it.step];
         if (label === "") continue;
@@ -309,50 +427,51 @@
         continue;
       }
       flush();
-      html.push(itemHtml(it));
+      const side = it.t === "in" ? "in" : "out";
+      html.push(itemHtml(it, side !== lastSide));
+      lastSide = side;
     }
     flush();
-    if (!items.length) html.push(`<p class="ib-sys">אין הודעות.</p>`);
+    if (!items.length) html.push(`<p class="sys">אין הודעות.</p>`);
     box.innerHTML = html.join("");
     if (scrollDown || nearBottom) box.scrollTop = box.scrollHeight;
     renderWindow();
   }
 
   function groupHtml(g) {
-    if (g.t === "bot") return `<p class="ib-sys">🤖 ${esc(FLOWS[g.flow] || g.flow)}: ${esc(g.labels.join(" ← "))} · ${time(g.at)}</p>`;
+    if (g.t === "bot") return `<p class="sys">🤖 ${esc(FLOWS[g.flow] || g.flow)}: ${esc(g.labels.join(" ← "))} · ${time(g.at)}</p>`;
     const code = (String(g.body || "").match(/\b1\d{5}\b/) || [])[0];
     const what = g.count === 1 ? "הודעה מהבוט לא נמסרה" : `${g.count} הודעות מהבוט לא נמסרו`;
-    return `<p class="ib-sys ib-sys--fail" title="${esc(g.body)}">⚠️ ${what}${code ? ` (שגיאה ${code})` : ""} · ${time(g.at)}</p>`;
+    return `<p class="sys sys--fail" title="${esc(g.body)}">⚠️ ${what}${code ? ` (שגיאה ${code})` : ""} · ${time(g.at)}</p>`;
   }
 
-  function itemHtml(it) {
+  function itemHtml(it, tail) {
+    const cls = `msg ${it.t === "in" ? "msg--in" : "msg--out"}${tail ? " tail" : ""}`;
     if (it.t === "in") {
-      let body = "";
-      if (it.kind === "text") body = `<div class="ib-msg__text">${linkify(it.body)}</div>`;
-      else if (it.kind === "interactive") body = `<div class="ib-msg__text">🔘 ${esc(it.body)}</div>`;
-      else {
-        body = `<div class="ib-msg__text">${esc(IN_KIND[it.kind] || "הודעה")}${it.body ? "\n" + linkify(it.body) : ""}</div>` + mediaHtml(it);
-      }
-      return `<div class="ib-msg ib-msg--in">${body}<div class="ib-msg__meta">${time(it.at)}</div></div>`;
+      const meta = `<span class="meta">${time(it.at)}</span>`;
+      if (it.kind === "text") return `<div class="${cls}"><span class="txt">${linkify(it.body)}</span><span class="sp"></span>${meta}</div>`;
+      if (it.kind === "interactive") return `<div class="${cls}"><span class="txt">🔘 ${esc(it.body)}</span><span class="sp"></span>${meta}</div>`;
+      const media = mediaHtml(it);
+      return `<div class="${cls}"><span class="txt">${esc(IN_KIND[it.kind] || "הודעה")}${it.body ? "\n" + linkify(it.body) : ""}</span>${media}<span class="meta meta--media">${time(it.at)}</span></div>`;
     }
     // יוצאת: של הבוט או של אברהם
     const me = it.by === "avraham";
-    const icon = { audio: "🎧 הקלטה", document: "📄 ", image: "", buttons: "", text: "" }[it.kind] ?? "";
+    const who = me ? "" : '<span class="who">🤖 הבוט</span>';
     const img = it.media_link ? `<img src="${esc(it.media_link)}" alt="" loading="lazy">` : "";
-    const text = it.kind === "audio" ? icon : icon + (it.body || "");
-    const ticks = it.status === "failed" ? `<span class="ib-tick--failed" title="${esc(it.error || "")}">⚠️ לא נמסרה</span>`
-      : it.status === "read" ? `<span class="ib-tick--read" aria-label="נקראה">✓✓</span>`
-      : it.status === "delivered" ? `<span aria-label="נמסרה">✓✓</span>` : `<span aria-label="נשלחה">✓</span>`;
-    return `<div class="ib-msg ${me ? "ib-msg--me" : "ib-msg--bot"}">${me ? "" : '<span class="ib-msg__who">🤖 הבוט</span>'}${img}${text ? `<div class="ib-msg__text">${linkify(text)}</div>` : ""}<div class="ib-msg__meta">${time(it.at)} ${ticks}</div></div>`;
+    const text = it.kind === "audio" ? "🎧 הקלטה" : it.kind === "document" ? "📄 " + (it.body || "") : (it.body || "");
+    const meta = `${time(it.at)} ${tickSvg(it.status)}`;
+    const err = it.status === "failed" ? `<span class="note" title="${esc(it.error || "")}">לא נמסרה</span>` : "";
+    if (!text) return `<div class="${cls}">${who}${img}<span class="meta meta--media">${err}${meta}</span></div>`;
+    return `<div class="${cls}">${who}${img}<span class="txt">${linkify(text)}</span><span class="sp"></span><span class="meta">${err}${meta}</span></div>`;
   }
 
   function mediaHtml(it) {
     if (!["image", "audio", "video", "sticker", "document"].includes(it.kind)) return "";
-    if (!it.media_id) return `<div class="ib-msg__meta">(נשלח לפני 27.10, אי אפשר להציג אותו כאן)</div>`;
+    if (!it.media_id) return `<div class="note">(נשלח לפני 27.10, אי אפשר להציג אותו כאן)</div>`;
     const c = mediaCache.get(it.media_id);
     if (c) return mediaTag(c, it.kind);
-    const label = { image: "הצגת התמונה", sticker: "הצגת המדבקה", audio: "השמעה", video: "הצגת הסרטון", document: "פתיחת הקובץ" }[it.kind];
-    return `<button type="button" class="ib-media-btn" data-media="${esc(it.media_id)}" data-kind="${esc(it.kind)}">${label}</button>`;
+    const label = { image: "הצגת התמונה", sticker: "הצגת המדבקה", audio: "▶ השמעה", video: "הצגת הסרטון", document: "פתיחת הקובץ" }[it.kind];
+    return `<br><button type="button" class="media-btn" data-media="${esc(it.media_id)}" data-kind="${esc(it.kind)}">${label}</button>`;
   }
   function mediaTag(c, kind) {
     if (c.type.startsWith("image/")) return `<img src="${c.url}" alt="${kind === "sticker" ? "מדבקה" : "תמונה שנשלחה"}">`;
@@ -370,18 +489,18 @@
       mediaCache.set(btn.dataset.media, c);
       btn.outerHTML = mediaTag(c, btn.dataset.kind);
     } catch (e) {
-      btn.outerHTML = `<div class="ib-msg__meta">${e.message === "gone" ? "וואטסאפ כבר לא שומר את הקובץ (עברו 30 יום)." : "לא הצלחתי לטעון. נסו שוב."}</div>`;
+      btn.outerHTML = `<div class="note">${e.message === "gone" ? "וואטסאפ כבר לא שומר את הקובץ (עברו 30 יום)." : "לא הצלחתי לטעון. נסו שוב."}</div>`;
     }
   }
 
   function renderWindow() {
     const w = thread && left(thread.info.last_in_at);
     const el = $("window");
-    el.classList.toggle("is-closed", !w);
+    el.classList.toggle("closed", !w);
     el.textContent = w
-      ? `אפשר לענות עוד ${w.long}. תשובה בתוך 24 שעות מההודעה האחרונה שלהם היא בחינם.`
-      : "עברו 24 שעות מההודעה האחרונה שלהם. אפשר לענות רק אחרי שיכתבו שוב (פנייה יזומה דורשת תבנית בתשלום).";
-    $("reply").disabled = !w;
+      ? `⏳ אפשר לענות עוד ${w.long} · בחינם`
+      : "עברו 24 שעות מההודעה האחרונה שלהם. אפשר לענות רק אחרי שיכתבו שוב.";
+    $("compose-row").hidden = !w;
     $("send").disabled = !w || sending;
   }
 
@@ -396,29 +515,29 @@
     const ta = $("reply"), st = $("send-status");
     const text = ta.value.trim();
     if (!text || sending || !current) return;
-    sending = true; $("send").disabled = true; st.classList.remove("is-error"); st.textContent = "שולח...";
+    sending = true; $("send").disabled = true; st.classList.remove("err"); st.textContent = "שולח...";
     const to = current;
     try {
       const r = await fetch(FN, { method: "POST", headers: { ...(await authHeaders()), "Content-Type": "application/json" }, body: JSON.stringify({ action: "send", to, text }) });
       const j = await r.json().catch(() => ({}));
       if (!r.ok) {
-        st.classList.add("is-error");
+        st.classList.add("err");
         st.textContent = j.error === "window" ? "לא נשלח: עברו 24 שעות מההודעה האחרונה שלהם." : j.error === "forbidden" ? "לא נשלח: צריך להתחבר מחדש." : "לא נשלח. נסו שוב בעוד רגע." + (j.detail ? " (" + j.detail + ")" : "");
         return;
       }
       ta.value = ""; grow();
-      st.textContent = "נשלח ✓";
-      setTimeout(() => { if (st.textContent === "נשלח ✓") st.textContent = ""; }, 4000);
+      st.textContent = "";
       if (current === to) await openThread(to, { quiet: true });
       loadList();
     } catch (err) {
-      st.classList.add("is-error"); st.textContent = "לא נשלח: אין חיבור לאינטרנט. נסו שוב.";
+      st.classList.add("err"); st.textContent = "לא נשלח: אין חיבור לאינטרנט. נסו שוב.";
     } finally {
       sending = false; renderWindow();
+      if (!st.classList.contains("err")) ta.focus({ preventScroll: true });
     }
   }
 
-  function grow() { const ta = $("reply"); ta.style.height = "auto"; ta.style.height = Math.min(ta.scrollHeight + 2, 152) + "px"; }
+  function grow() { const ta = $("reply"); ta.style.height = "auto"; ta.style.height = Math.min(ta.scrollHeight, 150) + "px"; }
 
   async function mark() {
     const btn = $("mark");
@@ -427,6 +546,36 @@
     btn.disabled = false;
     if (error) { $("send-status").textContent = "לא הצלחתי לסמן."; return; }
     await Promise.all([openThread(current, { quiet: true }), loadList()]);
+  }
+
+  // ---------- התקנה כאפליקציה ----------
+  let installEvent = null;
+  const standalone = matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+  const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const mobile = matchMedia("(max-width: 820px)").matches;
+  const dismissed = () => { try { return localStorage.getItem("inbox_install_x") === "1"; } catch (e) { return false; } };
+  function offerInstall() {
+    if (standalone) return;
+    $("menu-install").hidden = !(installEvent || ios || mobile);
+    $("install").hidden = !(mobile && (installEvent || ios)) || dismissed();
+  }
+  window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); installEvent = e; offerInstall(); });
+  window.addEventListener("appinstalled", () => { installEvent = null; $("install").hidden = true; $("menu-install").hidden = true; });
+  function showSheet(html) { $("sheet-body").innerHTML = html; $("sheet").hidden = false; $("sheet-ok").focus(); }
+  async function install() {
+    $("menu").hidden = true;
+    if (installEvent) {
+      installEvent.prompt();
+      const { outcome } = await installEvent.userChoice.catch(() => ({}));
+      if (outcome === "accepted") { $("install").hidden = true; $("menu-install").hidden = true; }
+      installEvent = null;
+      return;
+    }
+    if (ios) {
+      showSheet(`<p>באייפון ההתקנה נעשית מ-Safari:</p><ol><li>לוחצים על כפתור השיתוף <b>⬆️</b> בתחתית המסך.</li><li>בוחרים <b>"הוספה למסך הבית"</b>.</li><li>לוחצים <b>"הוסף"</b>. האייקון הירוק "שיחות" יופיע במסך הבית.</li></ol><p>בפתיחה הראשונה מהאייקון צריך להתחבר פעם אחת (עם Google).</p>`);
+    } else {
+      showSheet(`<p>באנדרואיד, ב-Chrome:</p><ol><li>לוחצים על שלוש הנקודות <b>⋮</b> למעלה.</li><li>בוחרים <b>"התקנת האפליקציה"</b> או <b>"הוספה למסך הבית"</b>.</li><li>מאשרים. האייקון הירוק "שיחות" יופיע במסך הבית.</li></ol>`);
+    }
   }
 
   // ---------- ניווט ----------
@@ -445,28 +594,42 @@
     supabase = getSupabaseClient();
     const { data: isAdmin, error } = await supabase.rpc("is_admin");
     if (error || !isAdmin) { $("denied").hidden = false; revealPage(); return; }
-    $("ib").hidden = false;
+    $("app").hidden = false;
     revealPage();
+    if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
 
-    for (const b of document.querySelectorAll(".ib-tabs button")) {
+    for (const b of document.querySelectorAll(".chips button")) {
       b.addEventListener("click", () => {
         filter = b.dataset.filter;
-        for (const x of document.querySelectorAll(".ib-tabs button")) x.setAttribute("aria-pressed", String(x === b));
+        for (const x of document.querySelectorAll(".chips button")) x.setAttribute("aria-pressed", String(x === b));
         loadList();
       });
     }
     $("search").addEventListener("input", renderList);
-    $("convs").addEventListener("click", (e) => {
-      const b = e.target.closest(".ib-conv");
+    $("rows").addEventListener("click", (e) => {
+      const b = e.target.closest(".row");
       if (b) { fromList = true; location.hash = b.dataset.wa; }
     });
     $("back").addEventListener("click", () => { if (fromList) { fromList = false; history.back(); } else location.hash = ""; });
-    $("msgs").addEventListener("click", (e) => { const b = e.target.closest(".ib-media-btn"); if (b) loadMedia(b); });
+    $("msgs").addEventListener("click", (e) => { const b = e.target.closest(".media-btn"); if (b) loadMedia(b); });
     $("compose").addEventListener("submit", send);
     $("reply").addEventListener("input", grow);
-    $("reply").addEventListener("keydown", (e) => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) send(e); });
+    $("reply").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey && !mobile) send(e); });
     $("mark").addEventListener("click", mark);
+    $("menu-btn").addEventListener("click", (e) => {
+      e.stopPropagation();
+      const open = $("menu").hidden;
+      $("menu").hidden = !open; $("menu-btn").setAttribute("aria-expanded", String(open));
+    });
+    document.addEventListener("click", (e) => { if (!e.target.closest(".menu-wrap")) { $("menu").hidden = true; $("menu-btn").setAttribute("aria-expanded", "false"); } });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") { $("menu").hidden = true; $("sheet").hidden = true; } });
+    $("menu-install").addEventListener("click", install);
+    $("install-go").addEventListener("click", install);
+    $("install-x").addEventListener("click", () => { $("install").hidden = true; try { localStorage.setItem("inbox_install_x", "1"); } catch (e) {} });
+    $("sheet-ok").addEventListener("click", () => { $("sheet").hidden = true; });
+    $("sheet").addEventListener("click", (e) => { if (e.target === $("sheet")) $("sheet").hidden = true; });
     window.addEventListener("hashchange", route);
+    offerInstall();
 
     await loadList();
     route();
