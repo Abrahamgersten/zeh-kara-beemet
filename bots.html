@@ -116,6 +116,18 @@
   // outcomes = מה שקרה בעקבותיהם (אנשים אחרים או לחיצות באתר), בלי אחוז מהשלב הקודם.
   const FLOWS = [
     {
+      key: "story", title: "🎧 האזנה לסיפור (מהסטטוסים)", trigger: 'מופעל כשמישהו שולח "האזנה לסיפור" (מהקישור בסטטוס של מישהו)',
+      chain: [
+        ["request", "פנו לבוט"],
+        ["intro", "קיבלו את הסיפור השבועי ואת ההזמנה לקבוצה"],
+        ["offer", "קיבלו את ההודעה הקולית ובקשת הסטטוס (3 דקות אחר כך)"],
+        ["yes", "הסכימו לשתף (גם אחרי תזכורת)"],
+        ["rest", "קיבלו את החומר לסטטוס עם הקוד האישי"],
+        ["posted", "אישרו שהעלו לסטטוס"],
+        ["gift", "קיבלו את אי היהלומים"],
+      ],
+    },
+    {
       key: "promo", title: "🏝️ אי היהלומים + חוברת קומיקס", trigger: 'מופעל כשמישהו שולח "אי היהלומים" (מהפלייר בסטטוס או בהקלדה)',
       chain: [
         ["request", "פנו לבוט"],
@@ -177,6 +189,10 @@
 
   function subLine(d, flow, step) {
     const v = (d.variants || {});
+    if (flow === "story" && step === "request") {
+      const r = v["story:request"] || {};
+      return `מסטטוס של מי שקיבל קוד <b>${r.ref || 0}</b> · בלי קוד (הסטטוס שלך או הקלדה) <b>${r.direct || 0}</b>`;
+    }
     if (flow === "promo" && step === "request") {
       const r = v["promo:request"] || {};
       return `מפלייר א 🏝️ <b>${r.a || 0}</b> · מפלייר ב 💎 <b>${r.b || 0}</b> · הקלידו לבד <b>${r.none || 0}</b>`;
@@ -194,6 +210,7 @@
     const silent = Math.max(0, asked - (s.yes || 0) - (s.no || 0));
     const parts = [`סירבו <b>${s.no || 0}</b>`, `לא ענו <b>${silent}</b>`, `ענו משהו אחר (עבר אליך לקבוצה) <b>${s.other || 0}</b>`];
     if (F.key === "diamond") parts.push(`קיבלו את הפלייר אחרי 30 דקות של שתיקה <b>${((d.variants || {})["diamond:rest"] || {}).timeout || 0}</b>`);
+    if (F.key === "story") parts.push(`קיבלו תזכורת אחרי 7 דקות <b>${s.nudge1 || 0}</b>`, `תזכורת אחרי 12 שעות <b>${s.nudge2 || 0}</b>`, `לחצו "עדיין לא" <b>${s.not_yet || 0}</b>`);
     return `<p class="bt-side">${parts.map((p) => `<span>${p}</span>`).join("")}</p>`;
   }
 
@@ -221,6 +238,18 @@
 
   function outcomesHtml(d, F) {
     const j = d.joins || {}, l = d.listens || {}, v = d.variants || {};
+    if (F.key === "story") {
+      // מי הביא את מי: הקוד האישי בקישור שבסטטוס (מיגרציה 0022)
+      const r = d.referrals || {};
+      const k = r.codes ? (r.brought / r.codes).toFixed(2) : "0";
+      const top = (r.top || []).map((t) => `<tr><td>${esc(t.name || "ללא שם")} (…${esc(t.tail)})</td><td>${t.people}</td></tr>`).join("");
+      return `<h3>מה זה הביא</h3>
+        <div class="bt-out">${box(j["bot-story"] || 0, "לחצו על קישור הקבוצה")}${joinedHtml(d, F)}${box(r.brought || 0, "אנשים חדשים שהגיעו מסטטוס של מישהו")}${box(k, "אנשים חדשים לכל מי שקיבל חומר לסטטוס")}</div>
+        ${trackingNote(d)}
+        <p class="bt-loop">🔁 <b>האם הבוט צומח לבד?</b> כל מי שמקבל חומר לסטטוס מקבל קוד אישי בקישור, וכך ידוע מי הביא את מי. כש"אנשים חדשים לכל מי שקיבל חומר לסטטוס" גבוה מ-1, כל גל מביא גל גדול ממנו, והבוט צומח מעצמו. מתחת ל-1 הוא מגדיל כל הפצה שלך, אבל לא מחזיק את עצמו.</p>
+        ${top ? `<h3>המשתפים שהביאו הכי הרבה אנשים</h3><table class="bt-table"><thead><tr><th>מי שיתף</th><th>כמה הגיעו מהסטטוס שלו</th></tr></thead><tbody>${top}</tbody></table>` : ""}
+        <p class="bt-note">"אישרו שהעלו" נספר לפי הכפתור "כבר העליתי לסטטוס" (או צילום מסך ששלחו). מי שהגיע בלי קוד נספר כ"בלי קוד": הסטטוס שלך, או מי שהקליד לבד.</p>`;
+    }
     if (F.key === "promo") {
       const req = v["promo:request"] || {}, sent = v["promo:rest"] || {};
       const arrived = (req.a || 0) + (req.b || 0);
@@ -252,8 +281,8 @@
     for (const r of rows) (by[r.day] ||= {})[r.flow] = r.people;
     const list = Object.keys(by).sort().reverse();
     return `<section class="bt-card" aria-labelledby="days-h"><h2 id="days-h">📅 פניות לבוטים לפי יום (14 הימים האחרונים)</h2>
-      <table class="bt-table"><thead><tr><th>יום</th><th>אי היהלומים</th><th>הקלטה</th><th>אשמח לסיפור</th></tr></thead>
-      <tbody>${list.map((day) => `<tr><td>${esc(dayHe(day))}</td><td>${by[day].promo || 0}</td><td>${by[day].rec || 0}</td><td>${by[day].diamond || 0}</td></tr>`).join("")}</tbody></table></section>`;
+      <table class="bt-table"><thead><tr><th>יום</th><th>האזנה לסיפור</th><th>אי היהלומים</th><th>הקלטה</th><th>אשמח לסיפור</th></tr></thead>
+      <tbody>${list.map((day) => `<tr><td>${esc(dayHe(day))}</td><td>${by[day].story || 0}</td><td>${by[day].promo || 0}</td><td>${by[day].rec || 0}</td><td>${by[day].diamond || 0}</td></tr>`).join("")}</tbody></table></section>`;
   }
 
   function render(d) {

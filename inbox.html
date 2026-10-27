@@ -286,10 +286,11 @@
   let fromList = false;      // the conversation was opened from the list (so "back" can go back in history)
   const mediaCache = new Map(); // media_id -> { url, type }
 
-  const FLOWS = { diamond: "💎 אשמח לסיפור", promo: "🏝️ אי היהלומים", rec: "🎧 הקלטה" };
+  const FLOWS = { diamond: "💎 אשמח לסיפור", promo: "🏝️ אי היהלומים", rec: "🎧 הקלטה", story: "📣 האזנה לסיפור" };
   const STEPS = {
     diamond: { request: "ביקשו את הסיפור", intro: "נשלחו הקישור לסיפור ובקשת הסטטוס", offer: "", yes: "הסכימו לשתף", no: "לא הסכימו", rest: "נשלחו הפלייר וההודעה הקולית", other: "ענו משהו אחר" },
     promo: { request: "פנו (אי היהלומים)", intro: "נשלחו הקישור לסיפור וההזמנה לקבוצה", offer: "נשלחה הצעת החוברת", yes: "ביקשו את החוברת", no: "לא כרגע", rest: "נשלחו הפלייר לסטטוס והחוברת" },
+    story: { request: "פנו (האזנה לסיפור)", intro: "נשלחו הסיפור השבועי וההזמנה לקבוצה", offer: "נשלחו ההודעה הקולית ובקשת הסטטוס", nudge1: "תזכורת עם באנר אי היהלומים", nudge2: "תזכורת", yes: "הסכימו לשתף", no: "לא עכשיו", rest: "נשלח החומר לסטטוס", not_yet: "עדיין לא העלו", posted: "אישרו שהעלו", gift: "נשלחה המתנה", other: "ענו משהו אחר" },
     rec: { request: "ביקשו הקלטה", intro: "נשלחו התמונה וההקלטה", offer: "נשלחה שאלת הסטטוס", yes: "הסכימו לשתף", no: "לא הסכימו", rest: "נשלחו התמונה והמלל לסטטוס", other: "ענו משהו אחר" },
   };
   const IN_KIND = { image: "📷 תמונה", audio: "🎤 הקלטה", video: "🎬 סרטון", document: "📄 קובץ", sticker: "מדבקה", reaction: "תגובה באימוג'י", unsupported: "הודעה שוואטסאפ לא מעביר לבוטים (למשל סקר)", location: "📍 מיקום", contacts: "👤 איש קשר" };
