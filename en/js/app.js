@@ -649,6 +649,41 @@ function setupStoryShare() {
   if (!host) return;
   let texts = null;
   let statuses = {}; // stories that can also be shared to WhatsApp status (tools/status_shares.json, js/share-sheet.js)
+  // Where people share to status from (Avraham, 2026-10-28: the app, the story pages or the bot - bots.html): the app's
+  // share sheet is counted like the story pages (log_story_event, js/story.js) under the campaign "app" - "popup" = the
+  // invitation after an episode offered the status, "status" = they pressed "share to status". Its status text links
+  // with c=app-status, so arrivals from statuses shared in the app are counted apart from the story pages' site-status.
+  const STATUS_COUNTER = "https://nuadpewhrhpdgznbbqbs.supabase.co/rest/v1/rpc/log_story_event";
+  const STATUS_KEY = "sb_publishable_AcpmlZnxKM4yJxr1OsoSjw_CG6Kt2pz";
+  const STATUS_LANG = document.documentElement.lang === "en" ? "en" : "he";
+  const appStatus = (slug) => (statuses[slug] ? { ...statuses[slug], text: statuses[slug].text.replace(/([?&]c=)site-status/g, "$1app-status") } : null);
+  function statusVisitor() {
+    try {
+      let v = localStorage.getItem("zkb_story_visitor"); // the same browser number as the story pages (js/story.js)
+      if (!v) {
+        v = typeof crypto.randomUUID === "function" ? crypto.randomUUID()
+          : Array.from(crypto.getRandomValues(new Uint8Array(16)), (b) => b.toString(16).padStart(2, "0")).join("");
+        localStorage.setItem("zkb_story_visitor", v);
+      }
+      return v;
+    } catch (e) {
+      return null;
+    }
+  }
+  function trackStatus(slug, event) {
+    // only on the live site, and not Avraham's tests (&t=1, migration 0019)
+    if (location.hostname !== "abrahamgersten.github.io" || new URLSearchParams(location.search).get("t") === "1") return;
+    try {
+      fetch(STATUS_COUNTER, {
+        method: "POST",
+        keepalive: true,
+        headers: { apikey: STATUS_KEY, Authorization: "Bearer " + STATUS_KEY, "Content-Type": "application/json" },
+        body: JSON.stringify({ p_slug: slug, p_lang: STATUS_LANG, p_event: event, p_visitor: statusVisitor(), p_campaign: "app" }),
+      }).catch(() => {});
+    } catch (e) {
+      // never affects the app
+    }
+  }
   fetch("s/index.json")
     .then((r) => (r.ok ? r.json() : null))
     .then((j) => {
@@ -683,7 +718,7 @@ function setupStoryShare() {
     const card = btn.closest(".content-card");
     if (statuses[slug] && window.ZkbShareSheet) {
       const titleEl = card && card.querySelector(".content-card__title");
-      window.ZkbShareSheet.choose({ title: titleEl ? titleEl.textContent : "", slug, status: statuses[slug], onMessage: () => shareAsMessage(card, slug) });
+      window.ZkbShareSheet.choose({ title: titleEl ? titleEl.textContent : "", slug, status: appStatus(slug), track: (ev) => trackStatus(slug, ev), onMessage: () => shareAsMessage(card, slug) });
       return;
     }
     shareAsMessage(card, slug);
@@ -697,7 +732,8 @@ function setupStoryShare() {
     if (!btn || !window.ZkbShareSheet) return;
     const slug = btn.dataset.shareSlug;
     const titleEl = card.querySelector(".content-card__title");
-    window.ZkbShareSheet.invite({ title: titleEl ? titleEl.textContent : "", slug, status: statuses[slug] || null,
+    if (statuses[slug]) trackStatus(slug, "popup");
+    window.ZkbShareSheet.invite({ title: titleEl ? titleEl.textContent : "", slug, status: appStatus(slug), track: (ev) => trackStatus(slug, ev),
       isStory: btn.dataset.shareKind !== "recording", onMessage: () => shareAsMessage(card, slug) });
   };
 

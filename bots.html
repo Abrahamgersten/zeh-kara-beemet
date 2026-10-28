@@ -60,6 +60,10 @@
   .bt-table th, .bt-table td { padding: 0.5em 0.6em; text-align: center; border-bottom: 1px solid var(--sand-50); }
   .bt-table th:first-child, .bt-table td:first-child { text-align: start; }
   .bt-table thead th { background: color-mix(in srgb, var(--teal-200) 35%, #fff); color: var(--teal-ink); font-weight: 700; }
+  .bt-scroll { overflow-x: auto; }
+  .bt-src th, .bt-src td { padding: 0.5em 0.45em; }
+  .bt-src tbody th { text-align: start; font-weight: 700; }
+  @media (max-width: 480px) { .bt-src { font-size: 0.78rem; } .bt-src th, .bt-src td { padding: 0.45em 0.3em; } }
   .bt-note { font-size: 0.8rem; color: var(--ink-soft); margin: 0.6em 0 0; line-height: 1.55; }
   .bt-empty { color: var(--ink-soft); font-size: 0.9rem; margin: 0; }
   .bt-error { color: #a33a3a; }
@@ -160,19 +164,21 @@
       ],
     },
     {
-      key: "diamond", title: "💎 אשמח לסיפור (הבוט הראשון)", trigger: 'מופעל כשמישהו שולח "אשמח לסיפור"',
+      key: "diamond", title: "💎 אשמח לסיפור (הבוט הראשון)", trigger: 'מופעל כשמישהו שולח "אשמח לסיפור". מ-28.10: החומר לסטטוס הוא הסיפור השבועי עם קישור "האזנה לסיפור" וקוד אישי (עד אז פלייר הקבוצה)',
       chain: [
         ["request", "פנו לבוט"],
-        ["intro", "קיבלו את הקישור לאי היהלומים ואת הבקשה לשתף את פלייר הקבוצה"],
+        ["intro", "קיבלו את הקישור לאי היהלומים ואת הבקשה לשתף בסטטוס"],
         ["yes", "הסכימו לשתף"],
-        ["rest_agreed", "קיבלו את פלייר הקבוצה אחרי שהסכימו"],
+        ["rest_agreed", "קיבלו את החומר לסטטוס אחרי שהסכימו"],
+        ["posted", "אישרו שהעלו לסטטוס (מ-28.10)"],
       ],
     },
   ];
 
   function stepCount(d, flow, step) {
     const s = (d.flows || {})[flow] || {};
-    if (flow === "diamond" && step === "rest_agreed") return ((d.variants || {})["diamond:rest"] || {}).agreed || 0;
+    // the old flow marked "agreed"; since 28.10 a rest after yes has no mark, and only the one after silence is "timeout"
+    if (flow === "diamond" && step === "rest_agreed") return Math.max(0, (s.rest || 0) - (((d.variants || {})["diamond:rest"] || {}).timeout || 0));
     return s[step] || 0;
   }
 
@@ -221,7 +227,8 @@
     const asked = F.key === "diamond" ? (s.intro || 0) : (s.offer || 0);
     const silent = Math.max(0, asked - (s.yes || 0) - (s.no || 0));
     const parts = [`סירבו <b>${s.no || 0}</b>`, `לא ענו <b>${silent}</b>`, `ענו משהו אחר (עבר אליך לקבוצה) <b>${s.other || 0}</b>`];
-    if (F.key === "diamond") parts.push(`קיבלו את הפלייר אחרי 30 דקות של שתיקה <b>${((d.variants || {})["diamond:rest"] || {}).timeout || 0}</b>`);
+    if (F.key === "diamond") parts.push(`קיבלו את החומר לסטטוס אחרי 30 דקות של שתיקה <b>${((d.variants || {})["diamond:rest"] || {}).timeout || 0}</b>`,
+      `לחצו "עדיין לא" <b>${s.not_yet || 0}</b>`, `קיבלו "הסטטוס שלכם הביא X משפחות" <b>${s.report || 0}</b>`, `קיבלו חוברת קומיקס ממוספרת <b>${s.booklet || 0}</b>`);
     if (F.key === "story") parts.push(`קיבלו את הבאנר עם המתנה אחרי 2 דקות <b>${s.nudge1 || 0}</b>`, `תזכורת אחרי 20 שעות <b>${s.nudge2 || 0}</b>`, `לחצו "עדיין לא" <b>${s.not_yet || 0}</b>`);
     if (F.key === "storyb") parts.push(`קיבלו תזכורת עם הבאנר אחרי 3 דקות <b>${s.nudge1 || 0}</b>`, `לחצו "עדיין לא" <b>${s.not_yet || 0}</b>`,
       `קיבלו "הסטטוס שלכם הביא X משפחות" <b>${(s.report || 0) + (s.report_gift || 0)}</b>`, `מתוכם קיבלו גם את חוברת הקומיקס <b>${s.report_gift || 0}</b>`);
@@ -286,7 +293,8 @@
       return `<h3>מה זה הביא (מהסטטוסים שלהם)</h3>
         <div class="bt-out">${box(l.open || 0, "נכנסו לסיפור")}${box(l.play || 0, "לחצו נגן")}${box(l.finish || 0, "הקשיבו עד הסוף")}${box((j["bot-recording"] || 0), "הגיעו לקבוצה מהקישור בסטטוס")}${box(l.join || 0, "לחצו להצטרפות בתחתית הסיפור")}</div>`;
     }
-    return `<h3>מה זה הביא</h3><div class="bt-out">${box(j["bot-diamond"] || 0, "לחצו על קישור הקבוצה בפלייר (גם מהסטטוסים)")}${joinedHtml(d, F)}</div>`;
+    const came = (((d.status_sources || {}).sources || {}).diamond || {}).arrivals || 0;
+    return `<h3>מה זה הביא</h3><div class="bt-out">${box(came, "אנשים חדשים שהגיעו מהסטטוס (קוד אישי, מ-28.10)")}${box(j["bot-diamond"] || 0, "לחצו על קישור הקבוצה בפלייר הישן")}${joinedHtml(d, F)}</div>`;
   }
 
   function daysHtml(d) {
@@ -327,12 +335,43 @@
       <p class="bt-note">כדאי לחכות לפחות לכ-100 פונים בכל גרסה לפני שמחליטים. הגרסה שמביאה יותר "חדשים לכל מי שקיבל חומר" ויותר הצטרפות לקבוצה היא זו שצומחת.</p></section>`;
   }
 
+  // איפה משתפים יותר בסטטוס: באפליקציה, בדפי הסיפור או בבוטים (אברהם, 28.10; admin_status_sources, מיגרציה 0025)
+  const SOURCES = [
+    ["app", "📱 אפליקציה"],
+    ["pages", "🔗 דפי הסיפור"],
+    ["story", "🎧 האזנה לסיפור (A+B)"],
+    ["rec", "🎧 אשמח להקלטה"],
+    ["diamond", "💎 אשמח לסיפור"],
+    ["promo", "🏝️ אי היהלומים"],
+  ];
+  function sourcesHtml(x) {
+    const S = (x && x.sources) || {};
+    const get = (k) => S[k] || { offered: 0, shared: 0, posted: null, arrivals: 0 };
+    const per = (a, n) => (n ? (a / n).toFixed(1) : "-");
+    const row = (label, r, strong) => {
+      const td = (v) => (strong ? `<td><b>${v}</b></td>` : `<td>${v}</td>`);
+      return `<tr>${strong ? `<th scope="row">${label}</th>` : `<td>${label}</td>`}${td(r.offered)}${td(`${r.shared}${r.offered ? ` (${pct(r.shared, r.offered)}%)` : ""}`)}${td(r.posted == null ? "-" : r.posted)}${td(r.arrivals)}${td(per(r.arrivals, r.shared))}</tr>`;
+    };
+    const sum = (keys) => keys.map(get).reduce((a, r) => ({ offered: a.offered + r.offered, shared: a.shared + r.shared,
+      posted: r.posted == null ? a.posted : (a.posted || 0) + r.posted, arrivals: a.arrivals + r.arrivals }), { offered: 0, shared: 0, posted: null, arrivals: 0 });
+    const since = x && x.app_since ? new Date(x.app_since).toLocaleDateString("he-IL", { day: "numeric", month: "numeric" }) : "28.10";
+    return `<section class="bt-card" aria-labelledby="h-src"><h2 id="h-src">📍 איפה משתפים יותר בסטטוס</h2>
+      <p class="bt-trigger">מי שהקשיב בממשק (האפליקציה ודפי הסיפור) מול מי שקיבל את הסיפור או את הבקשה בבוט. האחוז = מתוך מי שהוזמן לשתף.</p>
+      <div class="bt-scroll"><table class="bt-table bt-src"><thead><tr><th>איפה</th><th>הוזמנו</th><th>שיתפו</th><th>אישרו שהעלו</th><th>הגיעו</th><th>לכל משתף</th></tr></thead><tbody>
+      ${row("בממשק", sum(["app", "pages"]), true)}
+      ${SOURCES.slice(0, 2).map(([k, label]) => row(label, get(k))).join("")}
+      ${row("בבוטים", sum(["story", "rec", "diamond", "promo"]), true)}
+      ${SOURCES.slice(2).map(([k, label]) => row(label, get(k))).join("")}
+      </tbody></table></div>
+      <p class="bt-note">"הוזמנו" = הוזמנו לשתף: בממשק, ההזמנה שבסוף ההקלטה; בבוט, הבקשה לשתף. "שיתפו" בממשק = לחצו "לשיתוף בסטטוס", בלי לדעת אם באמת העלו; בבוט = הסכימו וקיבלו את החומר (בלי מי שקיבל אותו אחרי שתיקה), ו"אישרו שהעלו" = לחצו "העליתי". "הגיעו" = הגיעו דרך הסטטוסים: בממשק, מי שנכנס לדף הסיפור מהקישור שבסטטוס; בבוטים, מי ששלח "האזנה לסיפור" עם הקוד האישי של המשתף (בהקלטה: נכנסו מהקישור שבסטטוס שלה, באי היהלומים: לפי הסמל שבהודעה). האפליקציה נספרת לחוד מ-${esc(since)}; עד אז ההגעות מהסטטוסים שלה נספרו בשורה של דפי הסיפור.</p></section>`;
+  }
+
   function render(d) {
     const sum = (step) => FLOWS.reduce((s, F) => s + stepCount(d, F.key, step), 0);
     const joins = Object.values(d.joins || {}).reduce((s, x) => s + x, 0);
     document.getElementById("totals").innerHTML =
       box(sum("request"), "פנו לבוטים") + box(sum("rest") , "קיבלו חומר לסטטוס או מתנה") + box(joins, "לחצו על קישור לקבוצה מהבוטים");
-    document.getElementById("flows").innerHTML = FLOWS.map((F) => (F.key === "story" ? abHtml(d) : "") + `
+    document.getElementById("flows").innerHTML = sourcesHtml(d.status_sources) + FLOWS.map((F) => (F.key === "story" ? abHtml(d) : "") + `
       <section class="bt-card" aria-labelledby="h-${F.key}">
         <h2 id="h-${F.key}">${F.title}</h2>
         <p class="bt-trigger">${esc(F.trigger)}</p>
@@ -346,7 +385,11 @@
   async function load() {
     const updated = document.getElementById("updated");
     updated.textContent = "טוען...";
-    const { data, error } = await supabase.rpc("admin_bot_funnel", { p_days: days });
+    const [{ data, error }, sources] = await Promise.all([
+      supabase.rpc("admin_bot_funnel", { p_days: days }),
+      supabase.rpc("admin_status_sources", { p_days: days }),
+    ]);
+    if (data && !sources.error) data.status_sources = sources.data;
     if (error) {
       document.getElementById("flows").innerHTML = `<p class="bt-error">שגיאה בטעינת הנתונים: ${esc(error.message)}</p>`;
       updated.textContent = "";
