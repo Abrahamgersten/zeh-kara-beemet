@@ -116,11 +116,23 @@
   // outcomes = מה שקרה בעקבותיהם (אנשים אחרים או לחיצות באתר), בלי אחוז מהשלב הקודם.
   const FLOWS = [
     {
-      key: "story", title: "🎧 האזנה לסיפור (מהסטטוסים)", trigger: 'מופעל כשמישהו שולח "האזנה לסיפור" (מהקישור בסטטוס של מישהו)',
+      key: "story", title: "🎧 האזנה לסיפור · גרסה A (שלך)", trigger: 'מופעל כשמישהו שולח "האזנה לסיפור" (מהקישור בסטטוס). מספרים שנגמרים בספרה זוגית, חצי מהפונים',
       chain: [
         ["request", "פנו לבוט"],
-        ["intro", "קיבלו את הסיפור השבועי (כהודעה קולית) ואת קישור הקבוצה"],
+        ["intro", "קיבלו את הסיפור השבועי ואת קישור הקבוצה"],
         ["offer", "קיבלו את ההודעה הקולית ובקשת הסטטוס (3 דקות אחר כך)"],
+        ["yes", "הסכימו לשתף (גם אחרי תזכורת)"],
+        ["rest", "קיבלו את החומר לסטטוס עם הקוד האישי"],
+        ["posted", "אישרו שהעלו לסטטוס"],
+        ["gift", "קיבלו את אי היהלומים"],
+      ],
+    },
+    {
+      key: "storyb", title: "🎧 האזנה לסיפור · גרסה B (של רוני)", trigger: 'אותו קישור, מספרים שנגמרים בספרה אי-זוגית (חצי מהפונים)',
+      chain: [
+        ["request", "פנו לבוט"],
+        ["intro", "קיבלו תמונה עם קישור הקבוצה, והסיפור שנגמר בהזמנה לקבוצה"],
+        ["offer", "קיבלו את ההודעה הקולית ובקשת הסטטוס, כשהסיפור נגמר"],
         ["yes", "הסכימו לשתף (גם אחרי תזכורת)"],
         ["rest", "קיבלו את החומר לסטטוס עם הקוד האישי"],
         ["posted", "אישרו שהעלו לסטטוס"],
@@ -189,8 +201,8 @@
 
   function subLine(d, flow, step) {
     const v = (d.variants || {});
-    if (flow === "story" && step === "request") {
-      const r = v["story:request"] || {};
+    if ((flow === "story" || flow === "storyb") && step === "request") {
+      const r = v[flow + ":request"] || {};
       return `מסטטוס של מי שקיבל קוד <b>${r.ref || 0}</b> · בלי קוד (הסטטוס שלך או הקלדה) <b>${r.direct || 0}</b>`;
     }
     if (flow === "promo" && step === "request") {
@@ -210,7 +222,9 @@
     const silent = Math.max(0, asked - (s.yes || 0) - (s.no || 0));
     const parts = [`סירבו <b>${s.no || 0}</b>`, `לא ענו <b>${silent}</b>`, `ענו משהו אחר (עבר אליך לקבוצה) <b>${s.other || 0}</b>`];
     if (F.key === "diamond") parts.push(`קיבלו את הפלייר אחרי 30 דקות של שתיקה <b>${((d.variants || {})["diamond:rest"] || {}).timeout || 0}</b>`);
-    if (F.key === "story") parts.push(`קיבלו את הצעת המתנה אחרי 2 דקות <b>${s.nudge1 || 0}</b>`, `את הבאנר אחרי 7 דקות <b>${s.nudge2 || 0}</b>`, `תזכורת אחרי 12 שעות <b>${s.nudge3 || 0}</b>`, `לחצו "עדיין לא" <b>${s.not_yet || 0}</b>`);
+    if (F.key === "story") parts.push(`קיבלו את הצעת המתנה אחרי 2 דקות <b>${s.nudge1 || 0}</b>`, `את הבאנר אחרי 7 דקות <b>${s.nudge2 || 0}</b>`, `תזכורת אחרי 20 שעות <b>${s.nudge3 || 0}</b>`, `לחצו "עדיין לא" <b>${s.not_yet || 0}</b>`);
+    if (F.key === "storyb") parts.push(`קיבלו תזכורת עם הבאנר אחרי 3 דקות <b>${s.nudge1 || 0}</b>`, `לחצו "עדיין לא" <b>${s.not_yet || 0}</b>`,
+      `קיבלו "הסטטוס שלכם הביא X משפחות" <b>${(s.report || 0) + (s.report_gift || 0)}</b>`, `מתוכם קיבלו גם את חוברת הקומיקס <b>${s.report_gift || 0}</b>`);
     return `<p class="bt-side">${parts.map((p) => `<span>${p}</span>`).join("")}</p>`;
   }
 
@@ -238,20 +252,18 @@
 
   function outcomesHtml(d, F) {
     const j = d.joins || {}, l = d.listens || {}, v = d.variants || {};
-    if (F.key === "story") {
-      // מי הביא את מי: הקוד האישי בקישור שבסטטוס (מיגרציה 0022)
-      const r = d.referrals || {};
-      const k = r.codes ? (r.brought / r.codes).toFixed(2) : "0";
-      const top = (r.top || []).map((t) => `<tr><td>${esc(t.name || "ללא שם")} (…${esc(t.tail)})</td><td>${t.people}</td></tr>`).join("");
-      const s = (d.flows || {}).story || {};
-      return `<h3>האזנה והצטרפות (נבדק חצי שעה אחרי ההתחלה)</h3>
-        <div class="bt-out">${box(s.listened || 0, "הקשיבו לסיפור (לפי וואטסאפ)")}${box(s.clicked_join || 0, "לחצו על קישור הקבוצה שלהם")}${box(s.followup_listened || 0, "הקשיבו ולא לחצו: קיבלו \"נהניתם מהסיפור?\"")}${box(s.followup_not_listened || 0, "לא הקשיבו ולא לחצו: קיבלו את ההמלצה")}</div>
+    if (F.key === "story" || F.key === "storyb") {
+      // מי הביא את מי, לכל גרסה: הקוד האישי בקישור שבסטטוס (מיגרציות 0022, 0024)
+      const arm = storyArm(d, F.key);
+      const s = (d.flows || {})[F.key] || {};
+      const isA = F.key === "story";
+      const top = isA ? ((d.referrals || {}).top || []).map((t) => `<tr><td>${esc(t.name || "ללא שם")} (…${esc(t.tail)})</td><td>${t.people}</td></tr>`).join("") : "";
+      return `<h3>הצטרפות (נבדק חצי שעה אחרי ההתחלה)</h3>
+        <div class="bt-out">${box(s.clicked_join || 0, "לחצו על קישור הקבוצה שלהם")}${box((s.followup_listened || 0) + (s.followup_not_listened || 0), "לא לחצו: קיבלו הזמנה לקבוצה")}</div>
         <h3>מה זה הביא</h3>
-        <div class="bt-out">${box(j["bot-story"] || 0, "לחצו על קישור הקבוצה")}${joinedHtml(d, F)}${box(r.brought || 0, "אנשים חדשים שהגיעו מסטטוס של מישהו")}${box(k, "אנשים חדשים לכל מי שקיבל חומר לסטטוס")}</div>
-        ${trackingNote(d)}
-        <p class="bt-loop">🔁 <b>האם הבוט צומח לבד?</b> כל מי שמקבל חומר לסטטוס מקבל קוד אישי בקישור, וכך ידוע מי הביא את מי. כש"אנשים חדשים לכל מי שקיבל חומר לסטטוס" גבוה מ-1, כל גל מביא גל גדול ממנו, והבוט צומח מעצמו. מתחת ל-1 הוא מגדיל כל הפצה שלך, אבל לא מחזיק את עצמו.</p>
-        ${top ? `<h3>המשתפים שהביאו הכי הרבה אנשים</h3><table class="bt-table"><thead><tr><th>מי שיתף</th><th>כמה הגיעו מהסטטוס שלו</th></tr></thead><tbody>${top}</tbody></table>` : ""}
-        <p class="bt-note">"אישרו שהעלו" נספר לפי הכפתור "כבר העליתי לסטטוס" (או צילום מסך ששלחו). מי שהגיע בלי קוד נספר כ"בלי קוד": הסטטוס שלך, או מי שהקליד לבד.</p>`;
+        <div class="bt-out">${box(j[isA ? "bot-story" : "bot-story-b"] || 0, "לחצו על קישור הקבוצה")}${joinedHtml(d, F)}${box(arm.brought, "אנשים חדשים שהגיעו מסטטוס של מישהו")}${box(arm.k, "אנשים חדשים לכל מי שקיבל חומר לסטטוס")}</div>
+        ${isA ? trackingNote(d) : ""}
+        ${top ? `<h3>המשתפים שהביאו הכי הרבה אנשים (שתי הגרסאות)</h3><table class="bt-table"><thead><tr><th>מי שיתף</th><th>כמה הגיעו מהסטטוס שלו</th></tr></thead><tbody>${top}</tbody></table>` : ""}`;
     }
     if (F.key === "promo") {
       const req = v["promo:request"] || {}, sent = v["promo:rest"] || {};
@@ -285,7 +297,34 @@
     const list = Object.keys(by).sort().reverse();
     return `<section class="bt-card" aria-labelledby="days-h"><h2 id="days-h">📅 פניות לבוטים לפי יום (14 הימים האחרונים)</h2>
       <table class="bt-table"><thead><tr><th>יום</th><th>האזנה לסיפור</th><th>אי היהלומים</th><th>הקלטה</th><th>אשמח לסיפור</th></tr></thead>
-      <tbody>${list.map((day) => `<tr><td>${esc(dayHe(day))}</td><td>${by[day].story || 0}</td><td>${by[day].promo || 0}</td><td>${by[day].rec || 0}</td><td>${by[day].diamond || 0}</td></tr>`).join("")}</tbody></table></section>`;
+      <tbody>${list.map((day) => `<tr><td>${esc(dayHe(day))}</td><td>${(by[day].story || 0) + (by[day].storyb || 0)}</td><td>${by[day].promo || 0}</td><td>${by[day].rec || 0}</td><td>${by[day].diamond || 0}</td></tr>`).join("")}</tbody></table></section>`;
+  }
+
+  // "האזנה לסיפור" גרסה A / B: כמה קיבלו קוד, כמה חדשים הביאו, וכמה חדשים לכל מקבל (מיגרציה 0024)
+  function storyArm(d, key) {
+    const r = ((d.referrals_by_arm || {})[key === "storyb" ? "b" : "a"]) || {};
+    const codes = r.codes || 0, brought = r.brought || 0;
+    return { codes, brought, k: codes ? (brought / codes).toFixed(2) : "0" };
+  }
+
+  function abHtml(d) {
+    const row = (label, a, b) => `<tr><td>${label}</td><td>${a}</td><td>${b}</td></tr>`;
+    const f = (key) => (d.flows || {})[key] || {};
+    const A = f("story"), B = f("storyb"), ra = storyArm(d, "story"), rb = storyArm(d, "storyb");
+    const j = d.joins || {}, g = d.group_joins || {};
+    const rate = (n, of) => `${n || 0}${of ? ` (${pct(n || 0, of)}%)` : ""}`;
+    return `<section class="bt-card" aria-labelledby="h-ab"><h2 id="h-ab">⚖️ האזנה לסיפור: גרסה A מול גרסה B</h2>
+      <p class="bt-trigger">כל אחד מקבל תמיד אותה גרסה, לפי הספרה האחרונה של המספר. האחוזים הם מתוך השלב שלפני.</p>
+      <table class="bt-table"><thead><tr><th>מדד</th><th>A (שלך)</th><th>B (של רוני)</th></tr></thead><tbody>
+      ${row("פנו לבוט", A.request || 0, B.request || 0)}
+      ${row("הסכימו לשתף", rate(A.yes, A.offer), rate(B.yes, B.offer))}
+      ${row("אישרו שהעלו לסטטוס", rate(A.posted, A.rest), rate(B.posted, B.rest))}
+      ${row("אנשים חדשים שהביאו", ra.brought, rb.brought)}
+      ${row("חדשים לכל מי שקיבל חומר לסטטוס", ra.k, rb.k)}
+      ${row("לחצו על קישור הקבוצה", j["bot-story"] || 0, j["bot-story-b"] || 0)}
+      ${row("הצטרפו לקבוצה בפועל", (g.story || {}).joined_after_bot || 0, (g.storyb || {}).joined_after_bot || 0)}
+      </tbody></table>
+      <p class="bt-note">כדאי לחכות לפחות לכ-100 פונים בכל גרסה לפני שמחליטים. הגרסה שמביאה יותר "חדשים לכל מי שקיבל חומר" ויותר הצטרפות לקבוצה היא זו שצומחת.</p></section>`;
   }
 
   function render(d) {
@@ -293,7 +332,7 @@
     const joins = Object.values(d.joins || {}).reduce((s, x) => s + x, 0);
     document.getElementById("totals").innerHTML =
       box(sum("request"), "פנו לבוטים") + box(sum("rest") , "קיבלו חומר לסטטוס או מתנה") + box(joins, "לחצו על קישור לקבוצה מהבוטים");
-    document.getElementById("flows").innerHTML = FLOWS.map((F) => `
+    document.getElementById("flows").innerHTML = FLOWS.map((F) => (F.key === "story" ? abHtml(d) : "") + `
       <section class="bt-card" aria-labelledby="h-${F.key}">
         <h2 id="h-${F.key}">${F.title}</h2>
         <p class="bt-trigger">${esc(F.trigger)}</p>

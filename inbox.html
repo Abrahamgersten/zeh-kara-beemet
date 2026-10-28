@@ -286,7 +286,7 @@
   let fromList = false;      // the conversation was opened from the list (so "back" can go back in history)
   const mediaCache = new Map(); // media_id -> { url, type }
 
-  const FLOWS = { diamond: "💎 אשמח לסיפור", promo: "🏝️ אי היהלומים", rec: "🎧 הקלטה", story: "📣 האזנה לסיפור" };
+  const FLOWS = { diamond: "💎 אשמח לסיפור", promo: "🏝️ אי היהלומים", rec: "🎧 הקלטה", story: "📣 האזנה לסיפור", storyb: "📣 האזנה לסיפור (B)" };
   const STEPS = {
     diamond: { request: "ביקשו את הסיפור", intro: "נשלחו הקישור לסיפור ובקשת הסטטוס", offer: "", yes: "הסכימו לשתף", no: "לא הסכימו", rest: "נשלחו הפלייר וההודעה הקולית", other: "ענו משהו אחר" },
     promo: { request: "פנו (אי היהלומים)", intro: "נשלחו הקישור לסיפור וההזמנה לקבוצה", offer: "נשלחה הצעת החוברת", yes: "ביקשו את החוברת", no: "לא כרגע", rest: "נשלחו הפלייר לסטטוס והחוברת" },
