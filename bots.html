@@ -222,7 +222,7 @@
     const silent = Math.max(0, asked - (s.yes || 0) - (s.no || 0));
     const parts = [`סירבו <b>${s.no || 0}</b>`, `לא ענו <b>${silent}</b>`, `ענו משהו אחר (עבר אליך לקבוצה) <b>${s.other || 0}</b>`];
     if (F.key === "diamond") parts.push(`קיבלו את הפלייר אחרי 30 דקות של שתיקה <b>${((d.variants || {})["diamond:rest"] || {}).timeout || 0}</b>`);
-    if (F.key === "story") parts.push(`קיבלו את הצעת המתנה אחרי 2 דקות <b>${s.nudge1 || 0}</b>`, `את הבאנר אחרי 7 דקות <b>${s.nudge2 || 0}</b>`, `תזכורת אחרי 20 שעות <b>${s.nudge3 || 0}</b>`, `לחצו "עדיין לא" <b>${s.not_yet || 0}</b>`);
+    if (F.key === "story") parts.push(`קיבלו את הבאנר עם המתנה אחרי 2 דקות <b>${s.nudge1 || 0}</b>`, `תזכורת אחרי 20 שעות <b>${s.nudge2 || 0}</b>`, `לחצו "עדיין לא" <b>${s.not_yet || 0}</b>`);
     if (F.key === "storyb") parts.push(`קיבלו תזכורת עם הבאנר אחרי 3 דקות <b>${s.nudge1 || 0}</b>`, `לחצו "עדיין לא" <b>${s.not_yet || 0}</b>`,
       `קיבלו "הסטטוס שלכם הביא X משפחות" <b>${(s.report || 0) + (s.report_gift || 0)}</b>`, `מתוכם קיבלו גם את חוברת הקומיקס <b>${s.report_gift || 0}</b>`);
     return `<p class="bt-side">${parts.map((p) => `<span>${p}</span>`).join("")}</p>`;
