@@ -463,5 +463,85 @@
       "pill": "Listen together as a family",
       "popup": true
     }
+  },
+  "power-of-one-mitzvah": {
+    "he": {
+      "hook": "ילדה שמיום היוולדה לא אמרה מילה, וכל הרופאים כבר התייאשו.\nואז הרבי מלובביץ' שאל אותה שאלה אחת.",
+      "caption": "סיפור אמיתי שמחמם את הלב ✨\nכוחה של מצווה אחת: ילדה שלא דיברה מעולם, הורים שכבר התייאשו, ומצווה אחת שהיא קיבלה על עצמה אצל הרבי מלובביץ'.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "popup": true
+    },
+    "en": {
+      "hook": "A girl who had never said a word, and every doctor had given up.\nThen the Lubavitcher Rebbe asked her one question.",
+      "caption": "A heartwarming true story ✨\nThe Power of One Mitzvah: a girl who had never spoken, parents who had given up, and one mitzvah she took upon herself at the Lubavitcher Rebbe's.\n🎧 Listen with the kids:\n{url}",
+      "popup": true
+    }
+  },
+  "standing-before-a-king": {
+    "he": {
+      "hook": "הגוי ירה ברובה ממש מעל הראש שלו, באמצע התפילה.\nורבי דוד פיינשטיין? המשיך להתפלל.",
+      "caption": "סיפור אמיתי ומפתיע ✨\nכעמידה בפני מלך: רבי דוד פיינשטיין, סבא רבא של רבי משה, התפלל בכוונה כזאת שאפילו יריית רובה לא הוציאה אותו מהתפילה.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "popup": true
+    },
+    "en": {
+      "hook": "His boss fired a rifle right over his head, in the middle of his prayer.\nAnd Rabbi Dovid Feinstein? He kept on praying.",
+      "caption": "An amazing true story ✨\nLike Standing Before a King: Rabbi Dovid Feinstein, Rav Moshe's great-grandfather, prayed with such kavanah that even a rifle shot could not pull him out of his prayer.\n🎧 Listen with the kids:\n{url}",
+      "popup": true
+    }
+  },
+  "who-moved-the-clock": {
+    "he": {
+      "hook": "פעמיים בשנה אנחנו מזיזים את השעון.\nאבל מי המציא את זה, ולמה?",
+      "caption": "הקלטה מרתקת לילדים ⏰\nמי הזיז את השעון? מהנרות של בנג'מין פרנקלין ועד שעון הקיץ בישראל: הסיפור של שעה אחת שזזה.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "Twice a year, we move the clock.\nBut who came up with that, and why?",
+      "caption": "A fascinating listen for kids ⏰\nWho Moved the Clock? From Benjamin Franklin's candles to summer time in Israel: the story of one hour that moved.\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
+      "popup": true
+    }
+  },
+  "bracha-on-medicine": {
+    "he": {
+      "hook": "מברכים על תרופה? ועל המים שבולעים איתה?\nומה עושים כשנזכרים באמצע האוכל ששכחנו לברך?",
+      "caption": "הקלטה לילדים על ברכות ✨\nמה מברכים על תרופות? וגם: מה עושים כששכחנו לברך באמצע האוכל.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "Do we make a bracha on medicine? On the water we swallow it with?\nAnd what if we remember in the middle of eating that we forgot?",
+      "caption": "A listen for kids about brachot ✨\nWhat Bracha Do We Make on Medicine? And: what to do when we forgot the bracha in the middle of eating.\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
+      "popup": true
+    }
+  },
+  "parasha-chayei-sarah": {
+    "he": {
+      "hook": "אליעזר עומד ליד הבאר ומתפלל לסימן.\nואז רבקה מגיעה, ולא מחכה שיבקשו ממנה.",
+      "caption": "מה בפרשת השבוע? ✨\nפרשת חיי שרה: מערת המכפלה, אליעזר והגמלים ליד הבאר, והחסד של רבקה אמנו.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "Eliezer stands by the well and prays for a sign.\nThen Rivka comes, and she doesn't wait to be asked.",
+      "caption": "What's in this week's parsha? ✨\nParashat Chayei Sarah: the Cave of Machpelah, Eliezer and the camels at the well, and the kindness of Rivka Imeinu.\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
+      "popup": true
+    }
+  },
+  "parasha-idea-chayei-sarah": {
+    "he": {
+      "hook": "ליצחק אסור לצאת לחרן, ויעקב בנו כן יורד לשם.\nלמה? כי לכל אחד יש תפקיד משלו.",
+      "caption": "רעיון קצר לפרשת השבוע ✨\nרעיון לפרשת חיי שרה: למה לא כדאי לנסות להיות בדיוק כמו אחרים, ואיך מוצאים את המקום המיוחד שלנו.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "Yitzchak may not go to Charan, but his son Yaakov does go there.\nWhy? Because each of us has our own role.",
+      "caption": "A short thought on this week's parsha ✨\nA Thought on Parashat Chayei Sarah: why we shouldn't try to be exactly like others, and how to find our own special place.\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
+      "popup": true
+    }
   }
 }
