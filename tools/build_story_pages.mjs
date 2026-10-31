@@ -278,7 +278,7 @@ ${MARKER}
         <div class="content-card__body">
           <span class="content-card__eyebrow">${esc(cat.name)}</span>
           <h1 class="content-card__title">${esc(ep.title)}</h1>
-          <p class="content-card__desc"><strong>${esc(L.about)}</strong>${esc(ep.description)}</p>
+          ${ep.description ? `<p class="content-card__desc"><strong>${esc(L.about)}</strong>${esc(ep.description)}</p>` : ""}
           <div class="player-wrap">
             <div class="player" data-src="${esc(linkAudio || up + ep.audio)}"${statusAudio ? ` data-src-status="${esc(statusAudio)}"` : ""} data-title="${esc(ep.title)}" data-brand="${esc(L.brand)}" data-label-play="${esc(L.play)}" data-label-pause="${esc(L.pause)}" data-label-resume="${esc(L.resume)}">
               <button class="player__btn" type="button" aria-label="${esc(L.play)}">▶</button>

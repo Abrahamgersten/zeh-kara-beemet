@@ -467,6 +467,76 @@ const CATEGORIES = [
       },
     ],
   },
+  {
+    id: "jokes",
+    name: "מלתא דבדיחותא",
+    icon: "😂",
+    color: "#ffa000",
+    type: "audio",
+    tagline: "בדיחה טובה לכל המשפחה, עם חיוך גדול בסוף.",
+    episodes: [
+      {
+        title: "כרטיסיית ילדים · הנהג שכולם רוצים · זקן וגנב",
+        description: "",
+        image: "assets/images/jokes/joke-10.jpg",
+        audio: "assets/audio/jokes/joke-10.mp3",
+      },
+      {
+        title: "האבק בסלון · המחלה של הפרות · נמלות במעלית",
+        description: "",
+        image: "assets/images/jokes/joke-09.jpg",
+        audio: "assets/audio/jokes/joke-09.mp3",
+      },
+      {
+        title: "המזגן של הקמצן · השכנים בשתיים בלילה",
+        description: "",
+        image: "assets/images/jokes/joke-08.jpg",
+        audio: "assets/audio/jokes/joke-08.mp3",
+      },
+      {
+        title: "שני כיסים · מאז שהייתי גור",
+        description: "",
+        image: "assets/images/jokes/joke-07.jpg",
+        audio: "assets/audio/jokes/joke-07.mp3",
+      },
+      {
+        title: "הארון של המשוגעים · סבא תנין",
+        description: "",
+        image: "assets/images/jokes/joke-06.jpg",
+        audio: "assets/audio/jokes/joke-06.mp3",
+      },
+      {
+        title: "החתול השחור · הזריקה · הנמלה שלקחה ברצינות",
+        description: "",
+        image: "assets/images/jokes/joke-05.jpg",
+        audio: "assets/audio/jokes/joke-05.mp3",
+      },
+      {
+        title: "הדיאטה של הרופא · הווייז והחילזון",
+        description: "",
+        image: "assets/images/jokes/joke-04.jpg",
+        audio: "assets/audio/jokes/joke-04.mp3",
+      },
+      {
+        title: "הרשלי והמאפייה",
+        description: "",
+        image: "assets/images/jokes/joke-03.jpg",
+        audio: "assets/audio/jokes/joke-03.mp3",
+      },
+      {
+        title: "הפרה שלומדת שפה · האבא הכי נמוך",
+        description: "",
+        image: "assets/images/jokes/joke-02.jpg",
+        audio: "assets/audio/jokes/joke-02.mp3",
+      },
+      {
+        title: "אלפי מנשה",
+        description: "",
+        image: "assets/images/jokes/joke-01.jpg",
+        audio: "assets/audio/jokes/joke-01.mp3",
+      },
+    ],
+  },
 ];
 
 /* ---------------------------------------------------------------
@@ -628,7 +698,7 @@ function audioCardHTML(cat, ep, idx, audioIdx, audioTotal) {
     <div class="content-card__body">
       <span class="content-card__eyebrow">${cat.name}</span>
       <h3 class="content-card__title">${ep.title}</h3>
-      <p class="content-card__desc"><strong>על הפרק: </strong>${ep.description}</p>
+      ${ep.description ? `<p class="content-card__desc"><strong>על הפרק: </strong>${ep.description}</p>` : ""}
       ${playerHTML(ep, audioIdx, audioTotal)}
       ${shareButtonHTML(cat, ep)}
       ${pdfReportHTML(ep)}

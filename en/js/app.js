@@ -474,6 +474,64 @@ const CATEGORIES = [
       },
     ],
   },
+  {
+    id: "jokes",
+    name: "Just for Laughs",
+    icon: "😂",
+    color: "#ffa000",
+    type: "audio",
+    tagline: "A good joke for the whole family, with a big smile at the end.",
+    episodes: [
+      {
+        title: "The Dust in the Living Room · Mad Cow · Ants in the Elevator",
+        description: "",
+        image: "../assets/images/jokes/joke-09.jpg",
+        audio: "../assets/audio/jokes/en/joke-08.mp3",
+      },
+      {
+        title: "The Stingy Man's Air Conditioner · The Neighbors at Two in the Morning",
+        description: "",
+        image: "../assets/images/jokes/joke-08.jpg",
+        audio: "../assets/audio/jokes/en/joke-07.mp3",
+      },
+      {
+        title: "Two Pockets · Since I Was a Puppy · The Driver Everyone Wants to Be",
+        description: "",
+        image: "../assets/images/jokes/joke-07.jpg",
+        audio: "../assets/audio/jokes/en/joke-06.mp3",
+      },
+      {
+        title: "The Heavy Closet · The Child's Bus Pass",
+        description: "",
+        image: "../assets/images/jokes/joke-06.jpg",
+        audio: "../assets/audio/jokes/en/joke-05.mp3",
+      },
+      {
+        title: "The Black Cat · The Shot · The Ant Who Took It Seriously",
+        description: "",
+        image: "../assets/images/jokes/joke-05.jpg",
+        audio: "../assets/audio/jokes/en/joke-04.mp3",
+      },
+      {
+        title: "The Doctor's Diet · Waze and the Snail",
+        description: "",
+        image: "../assets/images/jokes/joke-04.jpg",
+        audio: "../assets/audio/jokes/en/joke-03.mp3",
+      },
+      {
+        title: "Hershele and the Bakery",
+        description: "",
+        image: "../assets/images/jokes/joke-03.jpg",
+        audio: "../assets/audio/jokes/en/joke-02.mp3",
+      },
+      {
+        title: "The Cow Learning a Language · The Shortest Dad",
+        description: "",
+        image: "../assets/images/jokes/joke-02.jpg",
+        audio: "../assets/audio/jokes/en/joke-01.mp3",
+      },
+    ],
+  },
 ];
 
 /* ---------------------------------------------------------------
@@ -637,7 +695,7 @@ function audioCardHTML(cat, ep, idx, audioIdx, audioTotal) {
     <div class="content-card__body">
       <span class="content-card__eyebrow">${cat.name}</span>
       <h3 class="content-card__title">${ep.title}</h3>
-      <p class="content-card__desc"><strong>About this episode: </strong>${ep.description}</p>
+      ${ep.description ? `<p class="content-card__desc"><strong>About this episode: </strong>${ep.description}</p>` : ""}
       ${playerHTML(ep, audioIdx, audioTotal)}
       ${shareButtonHTML(cat, ep)}
       ${pdfReportHTML(ep)}
