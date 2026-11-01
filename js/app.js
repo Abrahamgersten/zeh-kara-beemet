@@ -185,7 +185,7 @@ const CATEGORIES = [
         parasha: "חיי שרה",
         description: "שרה אמנו נפטרת, אברהם אבינו קונה את מערת המכפלה ושולח את אליעזר עבדו לחרן למצוא אישה ליצחק. מה קרה ליד באר המים, ומה אנחנו לומדים מרבקה אמנו, שלא חיכתה שיבקשו ממנה לעזור.",
         image: "assets/images/parasha-chayei-sarah.jpeg",
-        audio: "assets/audio/parasha-chayei-sarah-sfx4.mp3",
+        audio: "assets/audio/parasha-chayei-sarah-sfx5.mp3",
       },
     ],
   },
@@ -521,7 +521,7 @@ const CATEGORIES = [
         title: "הרשלי והמאפייה",
         description: "",
         image: "assets/images/jokes/joke-03.jpg",
-        audio: "assets/audio/jokes/joke-03.mp3",
+        audio: "assets/audio/jokes/joke-03-sfx2.mp3",
       },
       {
         title: "הפרה שלומדת שפה · האבא הכי נמוך",

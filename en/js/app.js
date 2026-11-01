@@ -522,7 +522,7 @@ const CATEGORIES = [
         title: "Hershele and the Bakery",
         description: "",
         image: "../assets/images/jokes/joke-03.jpg",
-        audio: "../assets/audio/jokes/en/joke-02.mp3",
+        audio: "../assets/audio/jokes/en/joke-02-sfx2.mp3",
       },
       {
         title: "The Cow Learning a Language · The Shortest Dad",
