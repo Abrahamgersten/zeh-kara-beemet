@@ -29,6 +29,7 @@
   var FALLBACK = "https://chat.whatsapp.com/GIoja07vZquHA8DWlDt6M1";
   var URL_RE = /^https:\/\/chat\.whatsapp\.com\/[A-Za-z0-9]+$/;
   var done = false;
+  var dl = false; // ?dl=1 = ניסוי: באנדרואיד מנסים לפתוח את אפליקציית וואטסאפ ישירות (intent), עם חזרה לקישור הרגיל
   function finish(url) {
     if (done) return;
     done = true;
@@ -36,6 +37,13 @@
     window.__joinUrl = url;
     var go = document.getElementById("go");
     if (go) go.href = url;
+    var m = /^https:\/\/chat\.whatsapp\.com\/([A-Za-z0-9]+)$/.exec(url);
+    if (dl && m && /Android/i.test(navigator.userAgent)) {
+      var back = setTimeout(function () { location.replace(url); }, 1600);
+      document.addEventListener("visibilitychange", function () { if (document.hidden) clearTimeout(back); });
+      location.href = "intent://chat?code=" + m[1] + "#Intent;scheme=whatsapp;S.browser_fallback_url=" + encodeURIComponent(url) + ";end";
+      return;
+    }
     location.replace(url);
   }
   window.__joinFinish = finish;
@@ -46,7 +54,7 @@
   // &u=<5 ספרות> = הקוד האישי שבוט "האזנה לסיפור" שם בקישור, כדי לדעת מי לחץ (מיגרציה 0023).
   var code = null, visitor = null, test = false, ref = null;
   try {
-    var qs = new URLSearchParams(location.search); code = qs.get("c"); test = qs.get("t") === "1";
+    var qs = new URLSearchParams(location.search); code = qs.get("c"); test = qs.get("t") === "1"; dl = qs.get("dl") === "1";
     ref = /^\d{5}$/.test(qs.get("u") || "") ? qs.get("u") : null;
   } catch (e) {}
   try {
