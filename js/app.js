@@ -533,7 +533,7 @@ const CATEGORIES = [
         title: "אלפי מנשה",
         description: "",
         image: "assets/images/jokes/joke-01.jpg",
-        audio: "assets/audio/jokes/joke-01.mp3",
+        audio: "assets/audio/jokes/joke-01-sfx2.mp3",
       },
     ],
   },
