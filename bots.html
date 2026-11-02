@@ -239,6 +239,9 @@
     return `<div class="stat-box"><span class="stat-box__value">${value}</span><span class="stat-box__label">${label}</span></div>`;
   }
 
+  // מ-2.11 הבוטים שולחים קישור ישיר לקבוצה, שלא עובר באתר, אז המספר הזה נעצר
+  const CLICKS_LABEL = "לחצו על קישור הקבוצה (עד 2.11)";
+
   // הצטרפות בפועל: מי שקיבל הזמנה מהבוט ונמצא אחר כך בקבוצות הסיפורים, לפי מספר הטלפון (מיגרציה 0020)
   function joinedHtml(d, F) {
     const g = (d.group_joins || {})[F.key] || {};
@@ -250,11 +253,11 @@
 
   function trackingNote(d) {
     const t = d.group_tracking;
-    if (!t) return `<p class="bt-note">ההצטרפות בפועל נבדקת לפי מספר הטלפון, פעם בשעה. הבדיקה הראשונה עוד לא רצה.</p>`;
+    if (!t) return `<p class="bt-note">ההצטרפות בפועל נבדקת לפי מספר הטלפון, כל 10 דקות. הבדיקה הראשונה עוד לא רצה.</p>`;
     const gs = Object.values(t.groups || {});
     const size = gs.reduce((s, x) => s + x.size, 0), seen = gs.reduce((s, x) => s + x.with_phone, 0);
     const when = (x) => new Date(x).toLocaleString("he-IL", { day: "numeric", month: "numeric", hour: "2-digit", minute: "2-digit" });
-    return `<p class="bt-note">"הצטרפו לקבוצה בפועל" נבדק לפי מספר הטלפון, פעם בשעה, מ-${esc(when(t.baseline_at))} (בדיקה אחרונה: ${esc(when(t.last_snapshot_at))}). וואטסאפ מראה את המספר של ${seen} מתוך ${size} חברי הקבוצות, ולכן זה מספר מינימלי.</p>`;
+    return `<p class="bt-note">מ-2.11 הבוטים שולחים קישור וואטסאפ ישיר לקבוצה, ולכן לחיצות כבר לא נספרות. המדד הוא "הצטרפו לקבוצה בפועל", שנבדק לפי מספר הטלפון, כל 10 דקות, מ-${esc(when(t.baseline_at))} (בדיקה אחרונה: ${esc(when(t.last_snapshot_at))}). וואטסאפ מראה את המספר של ${seen} מתוך ${size} חברי הקבוצות, ולכן זה מספר מינימלי.</p>`;
   }
 
   function outcomesHtml(d, F) {
@@ -266,9 +269,9 @@
       const isA = F.key === "story";
       const top = isA ? ((d.referrals || {}).top || []).map((t) => `<tr><td>${esc(t.name || "ללא שם")} (…${esc(t.tail)})</td><td>${t.people}</td></tr>`).join("") : "";
       return `<h3>הצטרפות (נבדק חצי שעה אחרי ההתחלה)</h3>
-        <div class="bt-out">${box(s.clicked_join || 0, "לחצו על קישור הקבוצה שלהם")}${box((s.followup_listened || 0) + (s.followup_not_listened || 0), "לא לחצו: קיבלו הזמנה לקבוצה")}</div>
+        <div class="bt-out">${box((s.clicked_join || 0) + (s.in_group || 0), "כבר בקבוצה או לחצו על הקישור: בלי הזמנה נוספת")}${box((s.followup_listened || 0) + (s.followup_not_listened || 0), "לא בקבוצה: קיבלו הזמנה לקבוצה")}</div>
         <h3>מה זה הביא</h3>
-        <div class="bt-out">${box(j[isA ? "bot-story" : "bot-story-b"] || 0, "לחצו על קישור הקבוצה")}${joinedHtml(d, F)}${box(arm.brought, "אנשים חדשים שהגיעו מסטטוס של מישהו")}${box(arm.k, "אנשים חדשים לכל מי שקיבל חומר לסטטוס")}</div>
+        <div class="bt-out">${box(j[isA ? "bot-story" : "bot-story-b"] || 0, CLICKS_LABEL)}${joinedHtml(d, F)}${box(arm.brought, "אנשים חדשים שהגיעו מסטטוס של מישהו")}${box(arm.k, "אנשים חדשים לכל מי שקיבל חומר לסטטוס")}</div>
         ${isA ? trackingNote(d) : ""}
         ${top ? `<h3>המשתפים שהביאו הכי הרבה אנשים (שתי הגרסאות)</h3><table class="bt-table"><thead><tr><th>מי שיתף</th><th>כמה הגיעו מהסטטוס שלו</th></tr></thead><tbody>${top}</tbody></table>` : ""}`;
     }
@@ -282,12 +285,12 @@
         return `<tr><td>${x === "a" ? "פלייר א 🏝️ (הילד מימין)" : "פלייר ב 💎 (האי בחלום)"}</td><td>${s}</td><td>${a}</td><td>${s ? (a / s).toFixed(1) : "-"}</td></tr>`;
       }).join("");
       return `<h3>מה זה הביא</h3>
-        <div class="bt-out">${box(j["bot-diamond-promo"] || 0, "לחצו על קישור הקבוצה")}${joinedHtml(d, F)}${box(arrived, "אנשים חדשים שהגיעו מהסטטוסים")}${box(k, "אנשים חדשים לכל מי ששיתף")}</div>
+        <div class="bt-out">${box(j["bot-diamond-promo"] || 0, CLICKS_LABEL)}${joinedHtml(d, F)}${box(arrived, "אנשים חדשים שהגיעו מהסטטוסים")}${box(k, "אנשים חדשים לכל מי ששיתף")}</div>
         ${trackingNote(d)}
         <p class="bt-loop">🔁 <b>הסיבוב נסגר</b> כשמי ששיתף מביא אנשים חדשים, והם חוזרים לשלב 1. כשהמספר "אנשים חדשים לכל מי ששיתף" גבוה מ-1, ההפצה גדלה מעצמה.</p>
         <h3>השוואת הפליירים (A/B)</h3>
         <table class="bt-table"><thead><tr><th>פלייר</th><th>קיבלו אותו</th><th>הגיעו דרכו</th><th>לכל מי שקיבל</th></tr></thead><tbody>${ab}</tbody></table>
-        <p class="bt-note">"הגיעו דרכו" נספר לפי הסמל בהודעה המוכנה שבקישור (🏝️ או 💎). קישור הקבוצה נספר באתר, ולכן לא ידוע מי בדיוק לחץ, רק כמה.</p>`;
+        <p class="bt-note">"הגיעו דרכו" נספר לפי הסמל בהודעה המוכנה שבקישור (🏝️ או 💎).</p>`;
     }
     if (F.key === "rec") {
       return `<h3>מה זה הביא (מהסטטוסים שלהם)</h3>
@@ -329,7 +332,7 @@
       ${row("אישרו שהעלו לסטטוס", rate(A.posted, A.rest), rate(B.posted, B.rest))}
       ${row("אנשים חדשים שהביאו", ra.brought, rb.brought)}
       ${row("חדשים לכל מי שקיבל חומר לסטטוס", ra.k, rb.k)}
-      ${row("לחצו על קישור הקבוצה", j["bot-story"] || 0, j["bot-story-b"] || 0)}
+      ${row(CLICKS_LABEL, j["bot-story"] || 0, j["bot-story-b"] || 0)}
       ${row("הצטרפו לקבוצה בפועל", (g.story || {}).joined_after_bot || 0, (g.storyb || {}).joined_after_bot || 0)}
       </tbody></table>
       <p class="bt-note">כדאי לחכות לפחות לכ-100 פונים בכל גרסה לפני שמחליטים. הגרסה שמביאה יותר "חדשים לכל מי שקיבל חומר" ויותר הצטרפות לקבוצה היא זו שצומחת.</p></section>`;
@@ -370,7 +373,7 @@
     const sum = (step) => FLOWS.reduce((s, F) => s + stepCount(d, F.key, step), 0);
     const joins = Object.values(d.joins || {}).reduce((s, x) => s + x, 0);
     document.getElementById("totals").innerHTML =
-      box(sum("request"), "פנו לבוטים") + box(sum("rest") , "קיבלו חומר לסטטוס או מתנה") + box(joins, "לחצו על קישור לקבוצה מהבוטים");
+      box(sum("request"), "פנו לבוטים") + box(sum("rest") , "קיבלו חומר לסטטוס או מתנה") + box(joins, "לחצו על קישור לקבוצה מהבוטים (עד 2.11)");
     document.getElementById("flows").innerHTML = sourcesHtml(d.status_sources) + FLOWS.map((F) => (F.key === "story" ? abHtml(d) : "") + `
       <section class="bt-card" aria-labelledby="h-${F.key}">
         <h2 id="h-${F.key}">${F.title}</h2>
