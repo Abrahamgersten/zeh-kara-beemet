@@ -218,6 +218,30 @@
       }
     },
     {
+      "slug": "poison-dart-frogs",
+      "title": "The Poison Dart Frogs",
+      "category": "wonders",
+      "url": "https://abrahamgersten.github.io/zeh-kara-beemet/en/s/poison-dart-frogs/",
+      "shareText": "*The Poison Dart Frogs*\n\nTiny, colorful, shiny frogs that are considered some of the most poisonous animals in the world. Why are they called poison dart frogs, and how do they become poisonous when they aren't even born that way?\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/poison-dart-frogs/\n\nEnjoyed it? Share it with family and friends ❤️",
+      "status": {
+        "image": "../assets/images/status/en/poison-dart-frogs.jpg?v=11d2ab0d",
+        "text": "The wonders of creation ✨\nThe Poison Dart Frogs: why they have that name, and how they become poisonous when they aren't born that way.\n🎧 Listen with the kids:\nhttps://abrahamgersten.github.io/zeh-kara-beemet/en/s/poison-dart-frogs/?c=site-status",
+        "popup": true
+      }
+    },
+    {
+      "slug": "berele-come-out",
+      "title": "The Amazing Sea Snails",
+      "category": "wonders",
+      "url": "https://abrahamgersten.github.io/zeh-kara-beemet/en/s/berele-come-out/",
+      "shareText": "*The Amazing Sea Snails*\n\nSea snails aren't like the snails in the garden: some come in all the colors of the rainbow, some change shape and glow in the dark, and some can even grow a whole new body from just their head!\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/berele-come-out/\n\nEnjoyed it? Share it with family and friends ❤️",
+      "status": {
+        "image": "../assets/images/status/en/berele-come-out.jpg?v=3c342084",
+        "text": "The wonders of creation ✨\nThe Amazing Sea Snails: rainbow colors, changing shapes, glowing in the dark, and growing a new body.\n🎧 Listen with the kids:\nhttps://abrahamgersten.github.io/zeh-kara-beemet/en/s/berele-come-out/?c=site-status",
+        "popup": true
+      }
+    },
+    {
       "slug": "parasha-bereishit",
       "title": "Parashat Bereishit",
       "category": "parasha-what",
@@ -274,6 +298,18 @@
       "status": {
         "image": "../assets/images/status/en/parasha-chayei-sarah.jpg?v=941c3ddd",
         "text": "What's in this week's parsha? ✨\nParashat Chayei Sarah: the Cave of Machpelah, Eliezer and the camels at the well, and the kindness of Rivka Imeinu.\n🎧 Listen with the kids:\nhttps://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-chayei-sarah/?c=site-status",
+        "popup": true
+      }
+    },
+    {
+      "slug": "parasha-toldot",
+      "title": "Parashat Toldot",
+      "category": "parasha-what",
+      "url": "https://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-toldot/",
+      "shareText": "*Parashat Toldot*\n\nYaakov and Esav are born, and very soon it's clear how different they are. The lentil stew and the sale of the firstborn rights, the blessings Yaakov receives from his father Yitzchak, and the great escape to Charan.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-toldot/\n\nEnjoyed this week's parsha? Share it with family and friends ❤️",
+      "status": {
+        "image": "../assets/images/status/en/parasha-toldot.jpg?v=c4b3bf77",
+        "text": "What's in this week's parsha? ✨\nParashat Toldot: Yaakov and Esav, the sale of the firstborn rights, Yitzchak's blessings, and the escape to Charan.\n🎧 Listen with the kids:\nhttps://abrahamgersten.github.io/zeh-kara-beemet/en/s/parasha-toldot/?c=site-status",
         "popup": true
       }
     },
@@ -490,6 +526,18 @@
       "status": {
         "image": "../assets/images/status/en/teeth-health.jpg?v=c87d185a",
         "text": "A listen for kids about health 🦷\nHealthy Teeth: what the germs in our mouths do, and which small habits keep a healthy smile for years.\n🎧 Listen with the kids:\nhttps://abrahamgersten.github.io/zeh-kara-beemet/en/s/teeth-health/?c=site-status",
+        "popup": true
+      }
+    },
+    {
+      "slug": "friends-keep-us-healthy",
+      "title": "How Do Friends Help Us Stay Healthy?",
+      "category": "healthy-to-know",
+      "url": "https://abrahamgersten.github.io/zeh-kara-beemet/en/s/friends-keep-us-healthy/",
+      "shareText": "*How Do Friends Help Us Stay Healthy?*\n\nDid you know that good friends help us stay healthy, in our feelings and in our bodies? Why a good friend can change a bad day, how friendship gets us moving and playing outside, and what to do when you want to make new friends.\n\nListen together before bedtime 🎧\nListen: https://abrahamgersten.github.io/zeh-kara-beemet/en/s/friends-keep-us-healthy/\n\nEnjoyed it? Share it with family and friends ❤️",
+      "status": {
+        "image": "../assets/images/status/en/friends-keep-us-healthy.jpg?v=0970f345",
+        "text": "A listen for kids about health ✨\nHow Do Friends Help Us Stay Healthy? In our feelings and in our bodies, and how to make new friends.\n🎧 Listen with the kids:\nhttps://abrahamgersten.github.io/zeh-kara-beemet/en/s/friends-keep-us-healthy/?c=site-status",
         "popup": true
       }
     },

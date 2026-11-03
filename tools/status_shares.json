@@ -543,5 +543,61 @@
       "pill": "Listen together as a family",
       "popup": true
     }
+  },
+  "friends-keep-us-healthy": {
+    "he": {
+      "hook": "יום לא מוצלח בבית הספר?\nחבר טוב יכול לשנות אותו, ולעזור לנו להיות בריאים יותר.",
+      "caption": "הקלטה לילדים על בריאות ✨\nאיך חברים עוזרים לנו להיות בריאים? בנפש ובגוף, ומה עושים כשרוצים להכיר חברים חדשים.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "A not-so-great day at school?\nA good friend can change it, and even help us be healthier.",
+      "caption": "A listen for kids about health ✨\nHow Do Friends Help Us Stay Healthy? In our feelings and in our bodies, and how to make new friends.\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
+      "popup": true
+    }
+  },
+  "parasha-toldot": {
+    "he": {
+      "hook": "עשו חוזר רעב מהשדה, ויעקב מבשל נזיד עדשים.\nועל קערה אחת נמכרת הבכורה.",
+      "caption": "מה בפרשת השבוע? ✨\nפרשת תולדות: יעקב ועשו, מכירת הבכורה, הברכות של יצחק והבריחה לחרן.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "Esav comes home hungry from the field, and Yaakov is cooking lentil stew.\nAnd for one bowl, the firstborn rights are sold.",
+      "caption": "What's in this week's parsha? ✨\nParashat Toldot: Yaakov and Esav, the sale of the firstborn rights, Yitzchak's blessings, and the escape to Charan.\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
+      "popup": true
+    }
+  },
+  "poison-dart-frogs": {
+    "he": {
+      "hook": "צפרדע קטנה מסנטימטר אחד,\nשהיא מבעלי החיים הארסיים ביותר בעולם.",
+      "caption": "נפלאות הבריאה ✨\nצפרדעי החצים המורעלים: למה קוראים להן כך, ואיך הן הופכות לרעילות כשהן בכלל לא נולדות כך?\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "A frog less than half an inch long,\nand one of the most poisonous animals in the world.",
+      "caption": "The wonders of creation ✨\nThe Poison Dart Frogs: why they have that name, and how they become poisonous when they aren't born that way.\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
+      "popup": true
+    }
+  },
+  "berele-come-out": {
+    "he": {
+      "hook": "חילזון שהראש שלו נפרד מהגוף,\nומצמיח לעצמו גוף חדש!",
+      "caption": "נפלאות הבריאה ✨\nברלה ברלה צא החוצה: חלזונות הים בכל צבעי הקשת, שמשנים צורה, זוהרים בחושך ומצמיחים גוף חדש.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "A snail whose head comes off its body,\nand then it grows itself a whole new body!",
+      "caption": "The wonders of creation ✨\nThe Amazing Sea Snails: rainbow colors, changing shapes, glowing in the dark, and growing a new body.\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
+      "popup": true
+    }
   }
 }
