@@ -51,7 +51,9 @@ const LANGS = {
     share: (catId) =>
       catId === "tzadikim"
         ? { text: "אהבתם את הסיפור? שתפו אותו עם משפחה וחברים ❤️", button: "שיתוף הסיפור" }
-        : { text: "אהבתם את ההקלטה? שתפו אותה עם משפחה וחברים ❤️", button: "שיתוף ההקלטה" },
+        : catId === "jokes"
+          ? { text: "רוצים להעלות חיוך על הפנים של עוד מישהו? שתפו איתו את הבדיחה! 😊", button: "שיתוף הבדיחה" }
+          : { text: "אהבתם את ההקלטה? שתפו אותה עם משפחה וחברים ❤️", button: "שיתוף ההקלטה" },
     // קישור ההצטרפות החכם (whatsapp/index.html) - מפנה לקבוצה שיש בה מקום. ?c=story-page: קמפיין משלו
     // (אברהם, 2026-10-25), כדי לראות ב-campaigns.html כמה הגיעו לקבוצה דרך הכפתור הזה (מיגרציה 0017).
     join: { text: "רוצים לקבל סיפור כזה פעמיים בשבוע, בחינם?", button: "להצטרפות לקבוצה", href: "whatsapp/?c=story-page" },
@@ -172,8 +174,13 @@ function statusOf(lang, slug, pageUrl, prefix) {
   return Object.assign({ image: `${prefix}${image}?v=${fileHash(path.join(REPO, image))}`, text }, s.popup ? { popup: true } : {});
 }
 
+// A joke goes as a video (its picture with its recording), so its text has no listening link: Avraham's own
+// wording (2026-11-03), with the joke's name.
+const JOKE_SHARE = (title) => `*מילתא דבדיחותא 😄*\n${title}\n\nרוצים לקבל בדיחה כזו כל יום? הצטרפו לקבוצה שלנו 🎧\nhttps://abrahamgersten.github.io/zeh-kara-beemet/whatsapp/\n\nרוצים להעלות חיוך על הפנים של עוד מישהו?\nשתפו איתו את הבדיחה!😊`;
+
 // The same order as his caption: teaser -> listening link -> share line -> (cta) -> group invitation.
 function shareMessage(L, lang, cat, ep, slug, pageUrl) {
+  if (cat.id === "jokes" && lang === "he" && ep.video) return JOKE_SHARE(ep.title);
   const kind = cat.id === (PACKAGE.story_category || "tzadikim") ? "story" : cat.id === (PACKAGE.parasha_category || "parasha-what") ? "parasha" : null;
   const parts = [
     (((TEASERS || {})[slug] || {})[lang] || `*${ep.title}*\n\n${ep.description}\n\n${L.teaserClosing}`) + `\n${L.listenPrefix} ${pageUrl}`,
@@ -197,7 +204,9 @@ function pageHTML(L, lang, cat, ep, slug) {
   const statusAudio = endingAudio(L, slug, "status");
   // kind: the end-of-recording invitation says "the story" for the tzadikim stories, "the recording" for the rest
   const kind = cat.id === "tzadikim" ? "story" : "recording";
-  const storyData = JSON.stringify(Object.assign({ slug, lang, kind, shareText: shareMessage(L, lang, cat, ep, slug, pageUrl) }, status ? { status } : {})).replace(/</g, "\\u003c");
+  // video: a joke is shared as a video (js/share-sheet.js), with the paths of this page
+  const video = cat.id === "jokes" && lang === "he" && ep.video ? `${up}${ep.video}` : null;
+  const storyData = JSON.stringify(Object.assign({ slug, lang, kind, shareText: shareMessage(L, lang, cat, ep, slug, pageUrl) }, status ? { status } : {}, video ? { video } : {})).replace(/</g, "\\u003c");
 
   let mediaHTML;
   if (main) {
@@ -320,7 +329,7 @@ ${MARKER}
   <img id="lightbox-img" alt="">
 </div>
 
-<script type="application/json" id="story-data">${storyData}</script>${status ? `
+<script type="application/json" id="story-data">${storyData}</script>${status || video ? `
 <script src="${root}js/share-sheet.js" defer></script>` : ""}
 <script src="${root}js/progress.js" defer></script>
 <script src="${root}js/story.js" defer></script>

@@ -14,6 +14,10 @@
    התמונה, ובוואטסאפ "הסטטוס שלי" מופיע בראש רשימת הנמענים. המלל (עם הקישור להאזנה) מצורף
    באנדרואיד ככיתוב; באייפון וואטסאפ משמיט מלל שמגיע עם קובץ, ולכן הוא מועתק מראש להדבקה.
    במחשב (אין שיתוף קבצים): הורדת התמונה והעתקת המלל.
+
+   window.ZkbShareSheet.shareVideo(o)  בדיחה נשלחת כסרטון: התמונה שלה עם ההקלטה, והמלל ככיתוב (אברהם, 2026-11-03).
+   window.ZkbShareSheet.warmVideo(url, slug)  הסרטון יורד כבר כשמנגנים את הבדיחה, כדי שהשיתוף ייפתח מיד בלחיצה.
+   o = { title, slug, video, poster, text, onFallback() } - onFallback: במחשב, או כשהסרטון לא ירד.
 --------------------------------------------------------------- */
 (function () {
   const isApple = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
@@ -56,6 +60,13 @@
     failed: "השיתוף לא נפתח. נסו ללחוץ שוב.",
     copyFailed: "לא הצלחנו להעתיק. זה המלל:",
     preview: (t) => `תמונת הסטטוס של ${t}`,
+    videoTitle: "שיתוף הבדיחה",
+    videoSteps: ["לוחצים \"לשליחה\" ובוחרים וואטסאפ.", "בוחרים למי לשלוח. הבדיחה נשלחת כסרטון, עם המלל."],
+    videoStepsApple: ["לוחצים \"לשליחה\" ובוחרים וואטסאפ.", "בוחרים למי לשלוח. הבדיחה נשלחת כסרטון.", "מדביקים בכיתוב את המלל. הוא כבר הועתק."],
+    shareVideo: "📤 לשליחה",
+    preparingVideo: "רגע, מכינים את הבדיחה…",
+    videoAsText: "שליחה בלי הסרטון",
+    videoPreview: (t) => `התמונה של ${t}`,
   };
   const EN = {
     chooseTitle: "How would you like to share?",
@@ -92,6 +103,13 @@
     failed: "The share menu didn't open. Please tap again.",
     copyFailed: "Couldn't copy. Here's the text:",
     preview: (t) => `Status picture: ${t}`,
+    videoTitle: "Share the joke",
+    videoSteps: ["Tap \"Send\" and choose WhatsApp.", "Pick who gets it. The joke goes as a video, with the text."],
+    videoStepsApple: ["Tap \"Send\" and choose WhatsApp.", "Pick who gets it. The joke goes as a video.", "Paste the text into the caption. It's already copied."],
+    shareVideo: "📤 Send",
+    preparingVideo: "One moment, preparing the joke…",
+    videoAsText: "Send without the video",
+    videoPreview: (t) => `The picture of ${t}`,
   };
   const T = document.documentElement.lang === "en" ? EN : HE;
 
@@ -174,6 +192,39 @@
   function render(screen) {
     const { o, mode } = current;
     const invite = mode === "invite";
+    if (screen === "video") {
+      const steps = isApple ? T.videoStepsApple : T.videoSteps;
+      card.innerHTML = `${closeButton()}
+        <h2 class="share-sheet__title" id="share-sheet-title">${esc(T.videoTitle)}</h2>
+        <div class="share-sheet__status">
+          ${o.poster ? `<img class="share-sheet__preview share-sheet__preview--square" src="${esc(o.poster)}" alt="${esc(T.videoPreview(o.title || ""))}" width="1024" height="1024">` : ""}
+          <ol class="share-sheet__steps">${steps.map((s) => `<li>${esc(s)}</li>`).join("")}</ol>
+        </div>
+        <div class="share-sheet__actions">
+          <button class="btn btn--primary share-sheet__primary" type="button" data-act="share-video">${esc(T.shareVideo)}</button>
+          ${isApple ? `<button class="share-sheet__link" type="button" data-act="copy">${esc(T.copy)}</button>` : ""}
+          <button class="share-sheet__link" type="button" data-act="close">${esc(T.close)}</button>
+        </div>
+        <p class="share-sheet__note" role="status" aria-live="polite"></p>`;
+      const btn = card.querySelector(".share-sheet__primary");
+      btn.focus();
+      // as with the status picture: the button opens only once the video is here, so the tap opens the share menu
+      if (!current.ready) {
+        btn.disabled = true;
+        btn.textContent = T.preparingVideo;
+        current.file.then((f) => {
+          if (!current || current.o !== o || !btn.isConnected) return;
+          if (f) {
+            btn.disabled = false;
+            btn.textContent = T.shareVideo;
+            if (document.activeElement === document.body || document.activeElement === btn) btn.focus();
+          } else {
+            btn.outerHTML = `<button class="btn btn--primary share-sheet__primary" type="button" data-act="video-text">${esc(T.videoAsText)}</button>`;
+          }
+        });
+      }
+      return;
+    }
     if (screen === "choose") {
       // invite = the popup at the end of a recording (Avraham, 2026-10-21): the same two choices, with an invitation
       const story = o.isStory !== false;
@@ -242,8 +293,8 @@
     if (el) el.textContent = text;
   }
 
-  function copyText() {
-    const text = current.o.status.text;
+  function copyText(text) {
+    if (text === undefined) text = current.o.status.text;
     try {
       if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
         return navigator.clipboard.writeText(text).then(() => true, () => legacyCopy(text));
@@ -305,6 +356,80 @@
     copied.then(() => note(T.failed));
   }
 
+  // ---------- a joke as a video (Avraham, 2026-11-03) ----------
+  // "כשלוחצים על כפתור השיתוף של הבדיחה זה ישלח את הבדיחה ... כאודיו מצורף לתמונה", with his text. The video is
+  // assets/video/jokes/<the joke's audio name>.mp4 (רוני המתכנת/Tools/daily_joke/build_share_videos.py).
+  const videos = {}; // url -> { file: Promise<File|null>, ready: File|null }
+  function videoOf(url, slug) {
+    if (!canShareFiles || !url) return null;
+    if (!videos[url]) {
+      const v = { ready: null };
+      v.file = fetch(url)
+        .then((r) => (r.ok ? r.blob() : null))
+        .then((blob) => {
+          if (!blob) return null;
+          const file = new File([blob], `${slug || "joke"}.mp4`, { type: "video/mp4" });
+          return navigator.canShare({ files: [file] }) ? file : null;
+        })
+        .catch(() => null);
+      v.file.then((f) => {
+        v.ready = f;
+        if (!f && videos[url] === v) delete videos[url]; // a failed download is tried again next time
+      });
+      videos[url] = v;
+    }
+    return videos[url];
+  }
+
+  function shareVideo(o) {
+    const v = videoOf(o.video, o.slug);
+    if (!v) {
+      if (typeof o.onFallback === "function") o.onFallback(); // a computer: WhatsApp with the text
+      return;
+    }
+    if (v.ready && !isApple) {
+      // Android, already downloaded (it was played): straight to the share menu, on this same tap
+      navigator.share({ files: [v.ready], text: o.text }).catch((err) => {
+        if (!(err && err.name === "AbortError")) openVideo(o, v);
+      });
+      return;
+    }
+    openVideo(o, v);
+  }
+
+  function openVideo(o, v) {
+    ensure();
+    lastFocus = document.activeElement;
+    current = { o, mode: "video", file: v.file, ready: v.ready };
+    v.file.then((f) => { if (current && current.o === o) current.ready = f; });
+    render("video");
+    root.hidden = false;
+    document.body.style.overflow = "hidden";
+  }
+
+  async function shareVideoNow() {
+    const o = current.o;
+    const copied = isApple ? copyText(o.text) : Promise.resolve(true); // on this tap, before the menu (iPhone drops the text)
+    const file = current.ready || (await current.file);
+    if (!file) {
+      note(T.failed);
+      return;
+    }
+    const attempts = isApple ? [{ files: [file] }] : [{ files: [file], text: o.text }, { files: [file] }];
+    for (const data of attempts) {
+      try {
+        await navigator.share(data);
+        note(T.thanks);
+        setTimeout(close, 1400);
+        return;
+      } catch (err) {
+        if (err && err.name === "AbortError") return;
+        if (err && err.name === "NotAllowedError") break;
+      }
+    }
+    copied.then(() => note(T.failed));
+  }
+
   function handle(act, el, e) {
     if (!current) return;
     if (act === "close") close();
@@ -316,8 +441,16 @@
       close();
       if (typeof fn === "function") fn();
     } else if (act === "share-status") shareStatus();
-    else if (act === "copy") copyText().then((ok) => note(ok ? T.copied : `${T.copyFailed}
-${current ? current.o.status.text : ""}`));
+    else if (act === "share-video") shareVideoNow();
+    else if (act === "video-text") {
+      const fn = current.o.onFallback;
+      close();
+      if (typeof fn === "function") fn();
+    } else if (act === "copy") {
+      const text = current.mode === "video" ? current.o.text : current.o.status.text;
+      copyText(text).then((ok) => note(ok ? T.copied : `${T.copyFailed}
+${text}`));
+    }
     else if (act === "download") {
       if (typeof current.o.track === "function") current.o.track("status");
       copyText().then((ok) => { if (ok) note(T.copied); });
@@ -331,6 +464,10 @@ ${current ? current.o.status.text : ""}`));
     },
     invite(o) {
       open(o, "invite");
+    },
+    shareVideo,
+    warmVideo(url, slug) {
+      videoOf(url, slug);
     },
     // מי ששיתף כבר בסטטוס את הסיפור הזה לא יקבל שוב את ההזמנה בסוף ההקלטה
     alreadyShared(slug) {

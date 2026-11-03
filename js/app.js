@@ -480,60 +480,70 @@ const CATEGORIES = [
         description: "",
         image: "assets/images/jokes/joke-10.jpg",
         audio: "assets/audio/jokes/joke-10.mp3",
+        video: "assets/video/jokes/joke-10.mp4",
       },
       {
         title: "האבק בסלון · המחלה של הפרות · נמלות במעלית",
         description: "",
         image: "assets/images/jokes/joke-09.jpg",
         audio: "assets/audio/jokes/joke-09.mp3",
+        video: "assets/video/jokes/joke-09.mp4",
       },
       {
         title: "המזגן של הקמצן · השכנים בשתיים בלילה",
         description: "",
         image: "assets/images/jokes/joke-08.jpg",
         audio: "assets/audio/jokes/joke-08.mp3",
+        video: "assets/video/jokes/joke-08.mp4",
       },
       {
         title: "שני כיסים · מאז שהייתי גור",
         description: "",
         image: "assets/images/jokes/joke-07.jpg",
         audio: "assets/audio/jokes/joke-07.mp3",
+        video: "assets/video/jokes/joke-07.mp4",
       },
       {
         title: "הארון של המשוגעים · סבא תנין",
         description: "",
         image: "assets/images/jokes/joke-06.jpg",
         audio: "assets/audio/jokes/joke-06.mp3",
+        video: "assets/video/jokes/joke-06.mp4",
       },
       {
         title: "החתול השחור · הזריקה · הנמלה שלקחה ברצינות",
         description: "",
         image: "assets/images/jokes/joke-05.jpg",
         audio: "assets/audio/jokes/joke-05.mp3",
+        video: "assets/video/jokes/joke-05.mp4",
       },
       {
         title: "הדיאטה של הרופא · הווייז והחילזון",
         description: "",
         image: "assets/images/jokes/joke-04.jpg",
         audio: "assets/audio/jokes/joke-04.mp3",
+        video: "assets/video/jokes/joke-04.mp4",
       },
       {
         title: "הרשלי והמאפייה",
         description: "",
         image: "assets/images/jokes/joke-03.jpg",
         audio: "assets/audio/jokes/joke-03-sfx2.mp3",
+        video: "assets/video/jokes/joke-03-sfx2.mp4",
       },
       {
         title: "הפרה שלומדת שפה · האבא הכי נמוך",
         description: "",
         image: "assets/images/jokes/joke-02.jpg",
         audio: "assets/audio/jokes/joke-02.mp3",
+        video: "assets/video/jokes/joke-02.mp4",
       },
       {
         title: "אלפי מנשה",
         description: "",
         image: "assets/images/jokes/joke-01.jpg",
         audio: "assets/audio/jokes/joke-01-sfx2.mp3",
+        video: "assets/video/jokes/joke-01-sfx2.mp4",
       },
     ],
   },
@@ -760,10 +770,12 @@ function storySlug(audioPath) {
 
 function shareButtonHTML(cat, ep) {
   if (!ep.audio) return "";
-  const label = cat.id === "tzadikim" ? "שיתוף הסיפור" : "שיתוף ההקלטה";
+  const label = cat.id === "tzadikim" ? "שיתוף הסיפור" : cat.id === "jokes" ? "שיתוף הבדיחה" : "שיתוף ההקלטה";
+  // a joke is shared as a video (its picture with its recording, Avraham 2026-11-03): data-share-video
+  const video = ep.video ? ` data-share-video="${ep.video}"` : "";
   return `
       <div class="content-card__share">
-        <button class="btn btn--outline content-card__share-btn" type="button" data-share-slug="${storySlug(ep.audio)}" data-share-kind="${cat.id === "tzadikim" ? "story" : "recording"}" aria-label="שיתוף בוואטסאפ: ${ep.title}">📤 ${label}</button>
+        <button class="btn btn--outline content-card__share-btn" type="button" data-share-slug="${storySlug(ep.audio)}" data-share-kind="${cat.id === "tzadikim" ? "story" : "recording"}"${video} aria-label="שיתוף בוואטסאפ: ${ep.title}">📤 ${label}</button>
       </div>`;
 }
 
@@ -863,6 +875,14 @@ function setupStoryShare() {
   async function shareAsMessage(card, slug) {
     const title = card && card.querySelector(".content-card__title") ? card.querySelector(".content-card__title").textContent : "";
     const text = (texts && texts[slug]) || `${title} - זה קרה באמת\n${STORY_PAGE_BASE}${slug}/`;
+    const videoBtn = card && card.querySelector("[data-share-video]");
+    if (videoBtn && window.ZkbShareSheet && window.ZkbShareSheet.shareVideo) {
+      // a joke: the video with his text (js/share-sheet.js). A computer cannot attach it: the text and a listening link.
+      const img = card.querySelector(".content-card__main-img");
+      window.ZkbShareSheet.shareVideo({ title, slug, video: videoBtn.dataset.shareVideo, poster: img ? img.currentSrc || img.src : "", text,
+        onFallback: () => window.open("https://wa.me/?text=" + encodeURIComponent(`${text}\n\nלהאזנה לבדיחה: ${STORY_PAGE_BASE}${slug}/`), "_blank", "noopener") });
+      return;
+    }
     const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent(text);
     if (typeof navigator.share !== "function") {
       window.open(whatsappUrl, "_blank", "noopener");
@@ -1315,6 +1335,9 @@ function setupPlayers() {
     setMediaSession(active);
     if (!active.session && window.ZkbListen) active.session = window.ZkbListen.session(active.slug, lang, "site");
     if (window.ZkbNew) window.ZkbNew.seen(lang, active.slug);
+    // a joke that is playing: its share video starts downloading now, so "share" opens the menu right away
+    const videoBtn = active.el.closest(".content-card")?.querySelector("[data-share-video]");
+    if (videoBtn && window.ZkbShareSheet && window.ZkbShareSheet.warmVideo) window.ZkbShareSheet.warmVideo(videoBtn.dataset.shareVideo, videoBtn.dataset.shareSlug);
     const newTag = active.el.closest(".content-card")?.querySelector(".content-card__new");
     if (newTag) newTag.remove();
     // usage tracking (non-blocking, see js/analytics.js) - only on the first play of an episode in a page load

@@ -145,6 +145,7 @@
       setMediaSession();
       track("play");
       warmStatusPicture();
+      if (STORY.video && window.ZkbShareSheet && window.ZkbShareSheet.warmVideo) window.ZkbShareSheet.warmVideo(STORY.video, STORY.slug);
       if (!session && window.ZkbListen && STORY.slug) session = window.ZkbListen.session(STORY.slug, lang, fromStatus ? "status" : "link");
       if (window.ZkbNew && STORY.slug) window.ZkbNew.seen(lang, STORY.slug);
     });
@@ -304,6 +305,14 @@
     const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent(text);
     // סיפור עם תמונת סטטוס: קודם שואלים - בהודעה (כאן) או בסטטוס (js/share-sheet.js)
     btn.addEventListener("click", () => {
+      if (STORY.video && window.ZkbShareSheet && window.ZkbShareSheet.shareVideo) {
+        // a joke: the video with the text (js/share-sheet.js); a computer: WhatsApp with the text and this page
+        track("share");
+        const title = document.querySelector(".content-card__title");
+        window.ZkbShareSheet.shareVideo({ title: title ? title.textContent : "", slug: STORY.slug, video: STORY.video, poster: img ? img.currentSrc || img.src : "",
+          text, onFallback: () => window.open("https://wa.me/?text=" + encodeURIComponent(`${text}\n\n${location.href.split(/[?#]/)[0]}`), "_blank", "noopener") });
+        return;
+      }
       if (STORY.status && window.ZkbShareSheet) {
         window.ZkbShareSheet.choose(statusOptions({ onMessage: shareAsMessage }));
         return;

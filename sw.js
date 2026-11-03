@@ -40,10 +40,11 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
   if (event.request.method !== "GET" || url.origin !== self.location.origin) return;
 
-  const isMedia = url.pathname.includes("/assets/images/") || url.pathname.includes("/assets/audio/");
+  const isMedia = url.pathname.includes("/assets/images/") || url.pathname.includes("/assets/audio/") || url.pathname.includes("/assets/video/");
 
   if (isMedia) {
-    // Cache-first for images/audio, so once an episode is played/viewed it works offline.
+    // Cache-first for images/audio/video, so once an episode is played/viewed it works offline. A corrected file
+    // gets a new name (-sfx2), so cache-first never keeps an old one.
     event.respondWith(
       caches.open(MEDIA_CACHE).then(async (cache) => {
         const cached = await cache.match(event.request);
