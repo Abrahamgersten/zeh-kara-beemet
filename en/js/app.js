@@ -483,6 +483,78 @@ const CATEGORIES = [
     tagline: "A good joke for the whole family, with a big smile at the end.",
     episodes: [
       {
+        title: "The Car Door in the Desert · The Waving Neighbor",
+        description: "",
+        image: "../assets/images/jokes/joke-22.jpg",
+        audio: "../assets/audio/jokes/en/joke-20.mp3",
+      },
+      {
+        title: "Chana, Berta and the Thunder · David Helped Menachem",
+        description: "",
+        image: "../assets/images/jokes/joke-21.jpg",
+        audio: "../assets/audio/jokes/en/joke-19.mp3",
+      },
+      {
+        title: "Just One Question · The Teacher Is Never Wrong",
+        description: "",
+        image: "../assets/images/jokes/joke-20.jpg",
+        audio: "../assets/audio/jokes/en/joke-18.mp3",
+      },
+      {
+        title: "Hershele and the Goat · Talking to a Smart Man",
+        description: "",
+        image: "../assets/images/jokes/joke-19.jpg",
+        audio: "../assets/audio/jokes/en/joke-17.mp3",
+      },
+      {
+        title: "Berel's Ear · The Little Snake",
+        description: "",
+        image: "../assets/images/jokes/joke-18.jpg",
+        audio: "../assets/audio/jokes/en/joke-16.mp3",
+      },
+      {
+        title: "Moshe Doesn't Want to Get Up · Good at Sleeping",
+        description: "",
+        image: "../assets/images/jokes/joke-17.jpg",
+        audio: "../assets/audio/jokes/en/joke-15.mp3",
+      },
+      {
+        title: "Eight Years Old, Period · Pneumonia",
+        description: "",
+        image: "../assets/images/jokes/joke-16.jpg",
+        audio: "../assets/audio/jokes/en/joke-14.mp3",
+      },
+      {
+        title: "The Penguin and the Police Officer · What's the Weather Like?",
+        description: "",
+        image: "../assets/images/jokes/joke-15.jpg",
+        audio: "../assets/audio/jokes/en/joke-13.mp3",
+      },
+      {
+        title: "Two Glasses by the Bed · The Puzzle Genius",
+        description: "",
+        image: "../assets/images/jokes/joke-14.jpg",
+        audio: "../assets/audio/jokes/en/joke-12.mp3",
+      },
+      {
+        title: "The White Cow and the Black Cow",
+        description: "",
+        image: "../assets/images/jokes/joke-13.jpg",
+        audio: "../assets/audio/jokes/en/joke-11.mp3",
+      },
+      {
+        title: "Shimon and the Wolves",
+        description: "",
+        image: "../assets/images/jokes/joke-12.jpg",
+        audio: "../assets/audio/jokes/en/joke-10.mp3",
+      },
+      {
+        title: "Eighty Hot Peppers",
+        description: "",
+        image: "../assets/images/jokes/joke-11.jpg",
+        audio: "../assets/audio/jokes/en/joke-09.mp3",
+      },
+      {
         title: "The Dust in the Living Room · Mad Cow · Ants in the Elevator",
         description: "",
         image: "../assets/images/jokes/joke-09.jpg",
