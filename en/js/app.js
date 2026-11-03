@@ -547,7 +547,7 @@ const CATEGORIES = [
         title: "Eight Years Old, Period · Pneumonia",
         description: "",
         image: "../assets/images/jokes/joke-16.jpg",
-        audio: "../assets/audio/jokes/en/joke-14-sfx2.mp3",
+        audio: "../assets/audio/jokes/en/joke-14-sfx3.mp3",
       },
       {
         title: "The Penguin and the Police Officer · What's the Weather Like?",
