@@ -863,6 +863,18 @@ function shareButtonHTML(cat, ep) {
       </div>`;
 }
 
+/* The jokes (Avraham, 2026-11-03): the share invitation at the end of a joke only once in 10 jokes played to the end on this
+   device (the same count on the joke pages, js/story.js). Without storage (private browsing) the invitation is not shown. */
+function zkbJokeInviteDue() {
+  try {
+    const n = (parseInt(localStorage.getItem("zkb_jokes_finished") || "0", 10) || 0) + 1;
+    localStorage.setItem("zkb_jokes_finished", String(n));
+    return n % 10 === 0;
+  } catch (e) {
+    return false;
+  }
+}
+
 function setupStoryShare() {
   const host = document.getElementById("category-sections");
   if (!host) return;
@@ -949,6 +961,7 @@ function setupStoryShare() {
     const card = playerEl && playerEl.closest(".content-card");
     const btn = card && card.querySelector("[data-share-slug]");
     if (!btn || !window.ZkbShareSheet) return;
+    if (card.closest("#cat-jokes") && !zkbJokeInviteDue()) return; // a joke: once in 10 jokes
     const slug = btn.dataset.shareSlug;
     const titleEl = card.querySelector(".content-card__title");
     if (statuses[slug]) trackStatus(slug, "popup");

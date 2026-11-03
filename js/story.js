@@ -357,8 +357,20 @@
     fetch(STORY.status.image).catch(() => {});
   }
 
+  // a joke's page (s/joke-NN/): the invitation once in 10 jokes played to the end, the same count as the site (js/app.js)
+  function jokeInviteDue() {
+    try {
+      const n = (parseInt(localStorage.getItem("zkb_jokes_finished") || "0", 10) || 0) + 1;
+      localStorage.setItem("zkb_jokes_finished", String(n));
+      return n % 10 === 0;
+    } catch (e) {
+      return false;
+    }
+  }
+
   function inviteToStatus() {
     if (!window.ZkbShareSheet) return;
+    if (/^joke-\d/.test(STORY.slug || "") && !jokeInviteDue()) return;
     track("popup");
     window.ZkbShareSheet.invite(statusOptions({ isStory: STORY.kind !== "recording", onMessage: () => shareMessageFn && shareMessageFn() }));
   }
