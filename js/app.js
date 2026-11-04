@@ -428,7 +428,7 @@ const CATEGORIES = [
     // נישות הלכתיות (אברהם, 2026-11-04: "כל פעם הולך להוסיף נישות הלכתיות שונות"): פרק עם niche: "<id>" מוצג תחת
     // הכותרת של הנישה; פרק בלי נישה, תחת "עוד שאלות". נישה חדשה = שורה כאן ו-niche בפרקים שלה.
     niches: [
-      { id: "brachot", name: "ברכות", icon: "🍎" },
+      { id: "brachot", name: "ברכות", icon: "🍎", blurb: "למה מברכים, מתי מברכים שוב ומה מברכים על תרופות. ובכל פרק שאלה לבדוק את עצמכם 📖" },
     ],
     episodes: [
       {
@@ -1205,14 +1205,23 @@ function nicheSectionHTML(cat, groups) {
         </div>`;
     }
     const count = g.episodes.length === 1 ? "פרק אחד" : `${g.episodes.length} פרקים`;
+    // the folder as an inviting tile (Avraham, 2026-11-05: "bigger and more inviting, maybe with a picture"): the pictures of
+    // its first four episodes as a mosaic, so a new niche gets its picture by itself
+    const pics = g.episodes.map((ep) => ep.image).filter(Boolean).slice(0, 4);
+    const mosaic = pics.length
+      ? `<span class="niche__mosaic niche__mosaic--${pics.length}" aria-hidden="true">${pics.map((src) => `<img src="${src}" alt="" width="160" height="160" loading="lazy">`).join("")}</span>`
+      : "";
     return `
         <div class="niche niche--folder" id="cat-${cat.id}-${g.id}">
           <h3 class="niche__heading">
             <button class="niche__folder" type="button" aria-expanded="false" aria-controls="niche-body-${cat.id}-${g.id}" data-niche-toggle>
-              <span class="niche__icon" aria-hidden="true">${g.icon}</span>
-              <span class="niche__name">${g.name}</span>
-              <span class="niche__count">${count}</span>
-              <span class="niche__chevron" aria-hidden="true"></span>
+              ${mosaic}
+              <span class="niche__text">
+                <span class="niche__name"><span class="niche__icon" aria-hidden="true">${g.icon}</span>${g.name}</span>
+                ${g.blurb ? `<span class="niche__blurb">${g.blurb}</span>` : ""}
+                <span class="niche__count">${count}</span>
+                <span class="niche__cta"><span class="niche__cta-open">לפרקים</span><span class="niche__cta-close">סגירה</span><span class="niche__chevron" aria-hidden="true"></span></span>
+              </span>
             </button>
           </h3>
           <div class="niche__body" id="niche-body-${cat.id}-${g.id}" hidden>

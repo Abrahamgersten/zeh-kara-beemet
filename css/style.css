@@ -1407,26 +1407,69 @@ body.auth-pending { visibility: hidden; }
 }
 .niche__icon { font-size: 1.3rem; }
 /* a niche is a folder that opens on a tap (2026-11-05) */
-.niche__heading { margin: 1.2rem 0 0.8rem; font-size: inherit; }
+.niche__heading { margin: 1.2rem 0 1rem; font-size: inherit; }
+/* the folder is a large tile (2026-11-05): a mosaic of its episodes' pictures, the name, a short line, the count and a call */
 .niche__folder {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 1rem;
   width: 100%;
-  padding: 1rem 1.2rem;
+  padding: 0.9rem;
   border: 2px solid var(--sand-200);
-  border-radius: var(--radius-sm);
-  background: #fff;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #fff 0%, var(--sand-100) 100%);
   box-shadow: var(--shadow-soft);
   font: inherit;
-  color: var(--teal-ink);
+  color: var(--ink);
   text-align: start;
   cursor: pointer;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
+  transition: transform 0.16s cubic-bezier(0.23, 1, 0.32, 1), border-color 0.2s ease, box-shadow 0.2s ease;
 }
-.niche__folder .niche__icon { font-size: 1.6rem; }
-.niche__name { font-size: 1.25rem; font-weight: 800; }
-.niche__count { margin-inline-start: auto; font-size: 0.95rem; color: var(--ink-soft); }
+.niche__folder:active { transform: scale(0.98); }
+.niche__mosaic {
+  flex: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+  width: 116px;
+  aspect-ratio: 1;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--sand-200);
+  box-shadow: 0 8px 18px -10px rgba(7, 34, 41, 0.55);
+}
+.niche__mosaic img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.niche__mosaic--1 img { grid-column: span 2; grid-row: span 2; }
+.niche__mosaic--2 img { grid-row: span 2; }
+.niche__mosaic--3 img:first-child { grid-row: span 2; }
+.niche__text { display: grid; justify-items: start; gap: 0.35rem; min-width: 0; }
+.niche__name { display: flex; align-items: center; gap: 0.4rem; font-size: 1.5rem; font-weight: 800; line-height: 1.2; color: var(--teal-ink); }
+.niche__folder .niche__icon { font-size: 1.5rem; }
+.niche__blurb { font-size: 0.95rem; line-height: 1.45; color: var(--ink-soft); }
+.niche__count { padding: 0.1em 0.7em; border-radius: 999px; background: var(--sand-200); font-size: 0.85rem; font-weight: 700; color: var(--ink); }
+.niche__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+  padding: 0.45em 1.2em;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--gold-400), var(--gold-600));
+  box-shadow: 0 8px 18px -8px rgba(217, 154, 43, 0.6);
+  font-weight: 800;
+  color: var(--ink);
+}
+.niche__cta-close { display: none; }
+.niche__folder[aria-expanded="true"] .niche__cta { background: transparent; border-color: var(--teal-ink); box-shadow: none; color: var(--teal-ink); }
+.niche__folder[aria-expanded="true"] .niche__cta-open { display: none; }
+.niche__folder[aria-expanded="true"] .niche__cta-close { display: inline; }
+@media (min-width: 720px) {
+  .niche__folder { gap: 1.4rem; padding: 1.1rem; }
+  .niche__mosaic { width: 160px; }
+  .niche__name { font-size: 1.75rem; }
+  .niche__blurb { font-size: 1.02rem; }
+}
 .niche__chevron {
   width: 0.65rem;
   height: 0.65rem;
@@ -1436,10 +1479,13 @@ body.auth-pending { visibility: hidden; }
   transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
 }
 .niche__folder[aria-expanded="true"] .niche__chevron { transform: translateY(2px) rotate(-135deg); }
-.niche__folder[aria-expanded="true"] { border-color: var(--teal-ink); background: var(--sand-100, #fff8ea); }
+.niche__folder[aria-expanded="true"] { border-color: var(--teal-ink); }
 .niche__folder:focus-visible { outline: 3px solid var(--gold-300); outline-offset: 2px; }
 @media (hover: hover) and (pointer: fine) {
-  .niche__folder:hover { border-color: var(--teal-ink); }
+  .niche__folder:hover { transform: translateY(-2px); border-color: var(--teal-ink); box-shadow: 0 16px 34px -14px rgba(7, 34, 41, 0.45); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .niche__folder, .niche__folder:hover, .niche__folder:active { transform: none; }
 }
 .niche__body:not([hidden]) { animation: niche-in 0.22s cubic-bezier(0.23, 1, 0.32, 1); }
 @keyframes niche-in {
