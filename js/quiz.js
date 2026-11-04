@@ -16,6 +16,58 @@
   let lastFocus = null;
   let sound = null;
   let current = null;
+  let clap = null;
+  // a right answer (Avraham, 2026-11-05): applause, and confetti falling from the top of the page. The applause is 3.2 s of a
+  // public-domain recording, about 7 LU under the narration; with reduced motion only the applause.
+  const CLAP = "assets/audio/quiz/applause.mp3";
+  const COLORS = ["#ffb347", "#ffd28f", "#0a7681", "#22bcc7", "#f2716b", "#7bc96f", "#b388eb", "#ffffff"];
+
+  function confetti() {
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (typeof Element.prototype.animate !== "function") return;
+    const layer = document.createElement("div");
+    layer.className = "confetti";
+    layer.setAttribute("aria-hidden", "true");
+    const fall = window.innerHeight + 60;
+    const count = window.innerWidth < 600 ? 70 : 120;
+    let longest = 0;
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement("i");
+      const w = 6 + Math.random() * 6;
+      const round = Math.random() < 0.3;
+      const h = round ? w : w * (1.5 + Math.random());
+      p.style.left = `${Math.random() * 100}%`;
+      p.style.width = `${w}px`;
+      p.style.height = `${h}px`;
+      p.style.background = COLORS[i % COLORS.length];
+      if (round) p.style.borderRadius = "50%";
+      layer.appendChild(p);
+      const drift = (Math.random() - 0.5) * 180;
+      const spin = (Math.random() < 0.5 ? -1 : 1) * (360 + Math.random() * 720);
+      const flip = 360 + Math.random() * 720; // the paper turning over as it falls
+      const duration = 1600 + Math.random() * 1200;
+      const delay = Math.random() * 400;
+      longest = Math.max(longest, duration + delay);
+      p.animate([
+        { transform: "translate3d(0, 0, 0) rotate(0deg) rotateX(0deg)", opacity: 1 },
+        { transform: `translate3d(${drift * 0.6}px, ${fall * 0.6}px, 0) rotate(${spin * 0.6}deg) rotateX(${flip * 0.6}deg)`, opacity: 1, offset: 0.6 },
+        { transform: `translate3d(${drift}px, ${fall}px, 0) rotate(${spin}deg) rotateX(${flip}deg)`, opacity: 0 },
+      ], { duration, delay, easing: "linear", fill: "both" }); // a steady fall: constant motion is linear
+    }
+    document.body.appendChild(layer);
+    setTimeout(() => layer.remove(), longest + 120);
+  }
+
+  function celebrate() {
+    try {
+      clap = clap || new Audio(CLAP);
+      clap.currentTime = 0;
+      clap.play().catch(() => {});
+    } catch (e) {
+      // no sound, still the confetti
+    }
+    confetti();
+  }
 
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
@@ -81,7 +133,7 @@
     const q = o.quiz;
     card.innerHTML = `
       <button class="share-sheet__close" type="button" data-act="close" aria-label="סגירה">✕</button>
-      <p class="quiz-sheet__eyebrow">🧠 בדוק את עצמך</p>
+      <p class="quiz-sheet__eyebrow">📖 בדוק את עצמך</p>
       <h2 class="share-sheet__title quiz-sheet__question" id="quiz-title">${esc(q.question)}</h2>
       ${q.audio ? `<button class="share-sheet__link quiz-sheet__listen" type="button" data-act="listen">🔊 השמעת השאלה</button>` : ""}
       <div class="quiz-sheet__options" role="group" aria-label="התשובות">
@@ -96,6 +148,10 @@
     document.body.style.overflow = "hidden";
     card.querySelector("[data-act='answer']").focus();
     if (o.autoplay) playSound();
+    if (!clap) {
+      clap = new Audio(CLAP); // ready before the answer, so the applause starts on the tap
+      clap.preload = "auto";
+    }
   }
 
   function close() {
@@ -118,6 +174,7 @@
       btn.classList.add("is-right");
       card.querySelectorAll("[data-act='answer']").forEach((b) => { b.disabled = b !== btn; });
       note.textContent = `כל הכבוד! 🎉 ${q.explain || ""}`.trim();
+      celebrate();
       const after = card.querySelector(".quiz-sheet__after");
       after.hidden = false;
       const first = after.querySelector("button");

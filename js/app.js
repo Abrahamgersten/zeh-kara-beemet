@@ -853,7 +853,7 @@ function audioCardHTML(cat, ep, idx, audioIdx, audioTotal) {
       <h3 class="content-card__title">${ep.title}</h3>
       ${ep.description ? `<p class="content-card__desc"><strong>על הפרק: </strong>${ep.description}</p>` : ""}
       ${playerHTML(ep, audioIdx, audioTotal)}
-      ${ep.quiz ? `<div class="content-card__quiz"><button class="btn btn--primary content-card__quiz-btn" type="button" data-quiz-slug="${storySlug(ep.audio)}">🧠 בדוק את עצמך</button></div>` : ""}
+      ${ep.quiz ? `<div class="content-card__quiz"><button class="btn btn--primary content-card__quiz-btn" type="button" data-quiz-slug="${storySlug(ep.audio)}">📖 בדוק את עצמך</button></div>` : ""}
       ${shareButtonHTML(cat, ep)}
       ${pdfReportHTML(ep)}
     </div>
@@ -1105,6 +1105,7 @@ function setupEpisodeLink() {
     const btn = document.querySelector(`[data-share-slug="${m[1]}"]`);
     const card = btn && btn.closest(".content-card");
     if (!card) return;
+    openNiche(card.closest(".niche__body"));
     card.hidden = false;
     card.removeAttribute("data-overflow-card");
     card.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -1171,8 +1172,9 @@ function renderCategorySections() {
   }).join("");
 }
 
-/* Halachic niches inside a category (Avraham, 2026-11-04): each niche is a sub-heading with its own cards and its own
-   "show more"; the episodes without a niche follow under "עוד שאלות". "Play in a row" goes in this order. */
+/* Halachic niches inside a category (Avraham, 2026-11-04): each niche is a folder of its own (2026-11-05: "a tab or a
+   library of its own, and when you tap it the episodes of that topic come in"), with its own "show more"; the episodes
+   without a niche follow, open, under "עוד שאלות". "Play in a row" goes in this order and opens a folder it plays from. */
 function nicheGroups(cat, episodes) {
   if (!cat.niches || !cat.niches.length) return null;
   const groups = cat.niches
@@ -1194,11 +1196,29 @@ function nicheSectionHTML(cat, groups) {
     const more = g.episodes.length > INITIAL_VISIBLE_EPISODES
       ? `<button class="btn btn--ghost category-section__more" type="button" data-show-more="cat-${cat.id}-${g.id}">הצג עוד פרקים</button>`
       : "";
-    return `
+    if (g.id === "other") {
+      return `
         <div class="niche" id="cat-${cat.id}-${g.id}">
           <h3 class="niche__title"><span class="niche__icon" aria-hidden="true">${g.icon}</span>${g.name}</h3>
           <div class="cards-list">${cards}</div>
           ${more}
+        </div>`;
+    }
+    const count = g.episodes.length === 1 ? "פרק אחד" : `${g.episodes.length} פרקים`;
+    return `
+        <div class="niche niche--folder" id="cat-${cat.id}-${g.id}">
+          <h3 class="niche__heading">
+            <button class="niche__folder" type="button" aria-expanded="false" aria-controls="niche-body-${cat.id}-${g.id}" data-niche-toggle>
+              <span class="niche__icon" aria-hidden="true">${g.icon}</span>
+              <span class="niche__name">${g.name}</span>
+              <span class="niche__count">${count}</span>
+              <span class="niche__chevron" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div class="niche__body" id="niche-body-${cat.id}-${g.id}" hidden>
+            <div class="cards-list">${cards}</div>
+            ${more}
+          </div>
         </div>`;
   }).join("");
   return `
@@ -1214,8 +1234,21 @@ function nicheSectionHTML(cat, groups) {
     </section>`;
 }
 
+// opens (or with toggle, flips) the folder of a niche; used by its button, by "play in a row" and by #ep- links
+function openNiche(body, toggle) {
+  const btn = body && document.querySelector(`[aria-controls="${body.id}"]`);
+  if (!btn) return;
+  const open = toggle ? body.hidden : true;
+  body.hidden = !open;
+  btn.setAttribute("aria-expanded", String(open));
+}
+
 function setupShowMore() {
   const host = document.getElementById("category-sections");
+  host.addEventListener("click", (e) => {
+    const folder = e.target.closest("[data-niche-toggle]");
+    if (folder) openNiche(document.getElementById(folder.getAttribute("aria-controls")), true);
+  });
   host.addEventListener("click", (e) => {
     const btn = e.target.closest("[data-show-more]");
     if (!btn) return;
@@ -1563,6 +1596,7 @@ function setupPlayers() {
     setMediaSession(active);
     if (!active.session && window.ZkbListen) active.session = window.ZkbListen.session(active.slug, lang, "site");
     if (window.ZkbNew) window.ZkbNew.seen(lang, active.slug);
+    openNiche(active.el.closest(".niche__body")); // "play in a row" reached an episode inside a closed folder
     // a joke that is playing: its share video starts downloading now, so "share" opens the menu right away
     const videoBtn = active.el.closest(".content-card")?.querySelector("[data-share-video]");
     if (videoBtn && window.ZkbShareSheet && window.ZkbShareSheet.warmVideo) window.ZkbShareSheet.warmVideo(videoBtn.dataset.shareVideo, videoBtn.dataset.shareSlug);

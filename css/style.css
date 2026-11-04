@@ -1406,6 +1406,54 @@ body.auth-pending { visibility: hidden; }
   color: var(--teal-ink);
 }
 .niche__icon { font-size: 1.3rem; }
+/* a niche is a folder that opens on a tap (2026-11-05) */
+.niche__heading { margin: 1.2rem 0 0.8rem; font-size: inherit; }
+.niche__folder {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 1rem 1.2rem;
+  border: 2px solid var(--sand-200);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  box-shadow: var(--shadow-soft);
+  font: inherit;
+  color: var(--teal-ink);
+  text-align: start;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+.niche__folder .niche__icon { font-size: 1.6rem; }
+.niche__name { font-size: 1.25rem; font-weight: 800; }
+.niche__count { margin-inline-start: auto; font-size: 0.95rem; color: var(--ink-soft); }
+.niche__chevron {
+  width: 0.65rem;
+  height: 0.65rem;
+  border-right: 2.5px solid currentColor;   /* physical sides: down when closed, up when open, in either direction */
+  border-bottom: 2.5px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.niche__folder[aria-expanded="true"] .niche__chevron { transform: translateY(2px) rotate(-135deg); }
+.niche__folder[aria-expanded="true"] { border-color: var(--teal-ink); background: var(--sand-100, #fff8ea); }
+.niche__folder:focus-visible { outline: 3px solid var(--gold-300); outline-offset: 2px; }
+@media (hover: hover) and (pointer: fine) {
+  .niche__folder:hover { border-color: var(--teal-ink); }
+}
+.niche__body:not([hidden]) { animation: niche-in 0.22s cubic-bezier(0.23, 1, 0.32, 1); }
+@keyframes niche-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .niche__body:not([hidden]) { animation: niche-fade 0.2s ease; }
+  .niche__chevron { transition: none; }
+}
+@keyframes niche-fade { from { opacity: 0; } to { opacity: 1; } }
+/* confetti for a right answer (js/quiz.js), over everything and never in the way */
+.confetti { position: fixed; inset: 0; z-index: 1000; overflow: hidden; pointer-events: none; perspective: 600px; }
+.confetti i { position: absolute; top: -16px; display: block; border-radius: 2px; will-change: transform, opacity; }
 .quiz-sheet__eyebrow { margin: 0 0 0.3rem; font-weight: 700; color: var(--ink-soft); }
 .quiz-sheet__question { line-height: 1.5; }
 .quiz-sheet__listen { margin: 0.2rem 0 0.6rem; }
