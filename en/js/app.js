@@ -598,12 +598,6 @@ const CATEGORIES = [
         audio: "../assets/audio/jokes/en/joke-06.mp3",
       },
       {
-        title: "The Heavy Closet · The Child's Bus Pass",
-        description: "",
-        image: "../assets/images/jokes/joke-06.jpg",
-        audio: "../assets/audio/jokes/en/joke-05.mp3",
-      },
-      {
         title: "The Black Cat · The Shot · The Ant Who Took It Seriously",
         description: "",
         image: "../assets/images/jokes/joke-05.jpg",

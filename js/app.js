@@ -613,13 +613,6 @@ const CATEGORIES = [
         video: "assets/video/jokes/joke-07.mp4",
       },
       {
-        title: "הארון של המשוגעים · סבא תנין",
-        description: "",
-        image: "assets/images/jokes/joke-06.jpg",
-        audio: "assets/audio/jokes/joke-06.mp3",
-        video: "assets/video/jokes/joke-06.mp4",
-      },
-      {
         title: "החתול השחור · הזריקה · הנמלה שלקחה ברצינות",
         description: "",
         image: "assets/images/jokes/joke-05.jpg",
