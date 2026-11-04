@@ -425,12 +425,26 @@ const CATEGORIES = [
     color: "#22bcc7",
     type: "audio",
     tagline: "שאלה הלכתית לילדים, עם התשובה - הכול מוקרא יחד בהקלטה אחת.",
+    // נישות הלכתיות (אברהם, 2026-11-04: "כל פעם הולך להוסיף נישות הלכתיות שונות"): פרק עם niche: "<id>" מוצג תחת
+    // הכותרת של הנישה; פרק בלי נישה, תחת "עוד שאלות". נישה חדשה = שורה כאן ו-niche בפרקים שלה.
+    niches: [
+      { id: "brachot", name: "ברכות", icon: "🍎" },
+    ],
     episodes: [
       {
         title: "ברכת המזון",
         description: "למה מברכים אחרי האוכל? מי באמת נותן לנו את הלחם - ומה יש בארבע הברכות של ברכת המזון. הזדמנות לעצור, להודות ולהבין שהשפע בחיים שלנו הוא לא מובן מאליו.",
         image: "assets/images/birkat-hamazon.jpeg",
         audio: "assets/audio/birkat-hamazon-sfx4.mp3",
+        niche: "brachot",
+        quiz: {
+          question: "מכמה ברכות מורכבת ברכת המזון?",
+          options: ["משתי ברכות", "מארבע ברכות", "משבע ברכות", "תלוי כמה משולשי פיצה אכלתי 🍕"],
+          answer: 1,
+          funny: 3,
+          explain: "ברכת הזן, ברכת הארץ, ברכת ירושלים, והטוב והמטיב.",
+          audio: null, // assets/audio/quiz/birkat-hamazon.mp3 once Avraham records it (Tools/brachot_quiz)
+        },
       },
       {
         title: "פרשת השבוע",
@@ -443,18 +457,45 @@ const CATEGORIES = [
         description: "למה צריך לברך לפני שאוכלים, האם מברכים גם על פירור קטן, ואולי אפשר פשוט לברך \"שהכל\" על הכול? כל מה שכדאי לדעת על הברכה שלפני האוכל.",
         image: "assets/images/why-we-bless.jpeg",
         audio: "assets/audio/why-we-bless-sfx4.mp3",
+        niche: "brachot",
+        quiz: {
+          question: "כמה צריך לאכול כדי שנהיה חייבים לברך לפני האכילה?",
+          options: ["לפחות פרוסה שלמה", "אפילו פירור אחד קטן", "רק כשממש ממש רעבים", "רק אם העוגייה מבקשת יפה 🍪"],
+          answer: 1,
+          funny: 3,
+          explain: "אין כמות קטנה מדי לברכה, אפילו גרגיר אחד.",
+          audio: null, // assets/audio/quiz/why-we-bless.mp3 once Avraham records it (Tools/brachot_quiz)
+        },
       },
       {
         title: "כמה זמן מותר לחכות בין הברכה לאכילה?",
         description: "בירכתם על תפוח ופתאום חבר התחיל לדבר איתכם - מה עושים עכשיו? מתי צריך לברך שוב, ומתי מותר להתעכב בין הברכה לאכילה.",
         image: "assets/images/bracha-to-eating-gap.jpeg",
         audio: "assets/audio/bracha-to-eating-gap-sfx4.mp3",
+        niche: "brachot",
+        quiz: {
+          question: "בירכתם על תפוח, ואז סיפרתם לחבר מה קרה בהפסקה. מה עושים לפני שאוכלים?",
+          options: ["אוכלים, הברכה עדיין בתוקף", "מברכים שוב", "מחכים חמש דקות ואז אוכלים", "מספרים גם לתפוח, שלא ירגיש לא נעים 🍎"],
+          answer: 1,
+          funny: 3,
+          explain: "דיברנו על משהו שלא קשור לאכילה, ולכן מברכים שוב.",
+          audio: null, // assets/audio/quiz/bracha-to-eating-gap.mp3 once Avraham records it (Tools/brachot_quiz)
+        },
       },
       {
         title: "מה מברכים על תרופות?",
         description: "האם מברכים על תרופה, ועל המים ששותים כדי לבלוע אותה? ומה עושים כשנזכרים באמצע האוכל ששכחנו לברך? כל מה שכדאי לדעת, בפשטות.",
         image: "assets/images/bracha-on-medicine.jpeg",
         audio: "assets/audio/bracha-on-medicine-sfx4.mp3",
+        niche: "brachot",
+        quiz: {
+          question: "שתיתם מים רק כדי לבלוע תרופה, ולא כי הייתם צמאים. מברכים על המים?",
+          options: ["כן, על מים תמיד מברכים", "לא מברכים", "מברכים רק אם המים קרים", "רק אם הכוס מחייכת אליי 🥤"],
+          answer: 1,
+          funny: 3,
+          explain: "על מים ששותים רק כדי לבלוע תרופה לא מברכים, כי לא שותים אותם מצמא.",
+          audio: null, // assets/audio/quiz/bracha-on-medicine.mp3 once Avraham records it (Tools/brachot_quiz)
+        },
       },
     ],
   },
@@ -812,6 +853,7 @@ function audioCardHTML(cat, ep, idx, audioIdx, audioTotal) {
       <h3 class="content-card__title">${ep.title}</h3>
       ${ep.description ? `<p class="content-card__desc"><strong>על הפרק: </strong>${ep.description}</p>` : ""}
       ${playerHTML(ep, audioIdx, audioTotal)}
+      ${ep.quiz ? `<div class="content-card__quiz"><button class="btn btn--primary content-card__quiz-btn" type="button" data-quiz-slug="${storySlug(ep.audio)}">🧠 בדוק את עצמך</button></div>` : ""}
       ${shareButtonHTML(cat, ep)}
       ${pdfReportHTML(ep)}
     </div>
@@ -959,6 +1001,23 @@ function setupStoryShare() {
     return Promise.race([load, new Promise((res) => setTimeout(() => res(null), 1500))]);
   }
 
+  // "check yourself" (Avraham, 2026-11-04): the question of the episode, from its card or at its end; after a right
+  // answer the dialog offers to share the recording, so the end-of-episode share stays one tap away
+  const quizzes = {};
+  CATEGORIES.forEach((c) => c.episodes.forEach((ep) => { if (ep.quiz && ep.audio) quizzes[storySlug(ep.audio)] = ep.quiz; }));
+  window.zkbOpenQuiz = (card, autoplay) => {
+    const btn = card && card.querySelector("[data-quiz-slug]");
+    if (!btn || !window.ZkbQuiz) return;
+    const titleEl = card.querySelector(".content-card__title");
+    const share = card.querySelector("[data-share-slug]");
+    window.ZkbQuiz.open({ title: titleEl ? titleEl.textContent : "", quiz: quizzes[btn.dataset.quizSlug], autoplay,
+      onShare: share ? () => share.click() : null });
+  };
+  host.addEventListener("click", (e) => {
+    const q = e.target.closest("[data-quiz-slug]");
+    if (q) window.zkbOpenQuiz(q.closest(".content-card"), true);
+  });
+
   // with a status picture: ask first - as a message (below) or to status (js/share-sheet.js)
   host.addEventListener("click", (e) => {
     const btn = e.target.closest("[data-share-slug]");
@@ -980,6 +1039,10 @@ function setupStoryShare() {
     const btn = card && card.querySelector("[data-share-slug]");
     if (!btn || !window.ZkbShareSheet) return;
     if (card.closest("#cat-jokes") && !zkbJokeInviteDue()) return; // a joke: once in 10 jokes
+    if (card.querySelector("[data-quiz-slug]") && window.zkbOpenQuiz) { // Avraham, 2026-11-04: the "check yourself" question
+      window.zkbOpenQuiz(card, false);
+      return;
+    }
     const slug = btn.dataset.shareSlug;
     const titleEl = card.querySelector(".content-card__title");
     if (statuses[slug]) trackStatus(slug, "popup");
@@ -1074,6 +1137,8 @@ function renderCategorySections() {
     // רק פרקים עם אודיו בפועל נספרים לצורך "נגן ברצף" - פרק "תעלה בקרוב" לא בר-המשך.
     const audioEpisodes = episodesNewestFirst.filter((ep) => ep.audio);
 
+    const groups = nicheGroups(cat, episodesNewestFirst);
+    if (groups) return nicheSectionHTML(cat, groups);
     const cardsHTML = episodesNewestFirst
       .map((ep, idx) => {
         const hiddenAttr = idx >= INITIAL_VISIBLE_EPISODES ? ' hidden data-overflow-card="true"' : "";
@@ -1104,6 +1169,49 @@ function renderCategorySections() {
       </div>
     </section>`;
   }).join("");
+}
+
+/* Halachic niches inside a category (Avraham, 2026-11-04): each niche is a sub-heading with its own cards and its own
+   "show more"; the episodes without a niche follow under "עוד שאלות". "Play in a row" goes in this order. */
+function nicheGroups(cat, episodes) {
+  if (!cat.niches || !cat.niches.length) return null;
+  const groups = cat.niches
+    .map((n) => ({ ...n, episodes: episodes.filter((ep) => ep.niche === n.id) }))
+    .filter((g) => g.episodes.length);
+  const rest = episodes.filter((ep) => !cat.niches.some((n) => n.id === ep.niche));
+  if (rest.length) groups.push({ id: "other", name: "עוד שאלות", icon: "💡", episodes: rest });
+  return groups;
+}
+
+function nicheSectionHTML(cat, groups) {
+  const audioEpisodes = groups.flatMap((g) => g.episodes).filter((ep) => ep.audio);
+  const groupsHTML = groups.map((g) => {
+    const cards = g.episodes.map((ep, idx) => {
+      const hiddenAttr = idx >= INITIAL_VISIBLE_EPISODES ? ' hidden data-overflow-card="true"' : "";
+      const audioIdx = ep.audio ? audioEpisodes.indexOf(ep) : -1;
+      return audioCardHTML(cat, ep, idx, audioIdx, audioEpisodes.length).replace("<article ", `<article${hiddenAttr} `);
+    }).join("");
+    const more = g.episodes.length > INITIAL_VISIBLE_EPISODES
+      ? `<button class="btn btn--ghost category-section__more" type="button" data-show-more="cat-${cat.id}-${g.id}">הצג עוד פרקים</button>`
+      : "";
+    return `
+        <div class="niche" id="cat-${cat.id}-${g.id}">
+          <h3 class="niche__title"><span class="niche__icon" aria-hidden="true">${g.icon}</span>${g.name}</h3>
+          <div class="cards-list">${cards}</div>
+          ${more}
+        </div>`;
+  }).join("");
+  return `
+    <section class="category-section" id="cat-${cat.id}">
+      <div class="category-section__inner">
+        <div class="category-section__head">
+          <span class="category-section__icon" aria-hidden="true" style="background:${cat.color}">${cat.icon}</span>
+          <h2 class="category-section__title">${cat.name}</h2>
+        </div>
+        <p class="category-section__tagline">${cat.tagline}</p>
+        ${groupsHTML}
+      </div>
+    </section>`;
 }
 
 function setupShowMore() {
@@ -1322,6 +1430,11 @@ function setupPlayers() {
   //    that is already playing is allowed.
   const audio = new Audio();
   audio.preload = "none";
+  // the "check yourself" question (js/quiz.js) stops the episode while it is read, and a chain with it
+  window.zkbPauseMain = () => {
+    continuousPlan = null;
+    if (!audio.paused) audio.pause();
+  };
   let active = null; // the episode whose file is loaded in the shared element
   let pendingSeek = 0; // where to start an episode that was resumed or scrubbed before its file loaded
   let continuousPlan = null; // { remaining } while a chain is in progress

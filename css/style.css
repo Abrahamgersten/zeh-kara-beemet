@@ -1393,6 +1393,56 @@ body.auth-pending { visibility: hidden; }
 
 /* "שיתוף" on every recording card (2026-10-18) - shares this one recording to WhatsApp (js/app.js setupStoryShare) */
 .content-card__share { margin-top: 0.7rem; }
+/* "בדוק את עצמך" and the halachic niches (2026-11-04) */
+.content-card__quiz { margin-top: 0.7rem; }
+.content-card__quiz-btn { padding: 0.55em 1.3em; font-size: 0.95rem; }
+.niche + .niche { margin-top: 2rem; }
+.niche__title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1.2rem 0 0.8rem;
+  font-size: 1.25rem;
+  color: var(--teal-ink);
+}
+.niche__icon { font-size: 1.3rem; }
+.quiz-sheet__eyebrow { margin: 0 0 0.3rem; font-weight: 700; color: var(--ink-soft); }
+.quiz-sheet__question { line-height: 1.5; }
+.quiz-sheet__listen { margin: 0.2rem 0 0.6rem; }
+.quiz-sheet__options { display: grid; gap: 0.55rem; margin-top: 0.6rem; }
+.quiz-sheet__option {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  width: 100%;
+  padding: 0.75rem 0.9rem;
+  border: 2px solid var(--sand-200);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  font: inherit;
+  font-size: 1.02rem;
+  text-align: start;
+  color: var(--ink);
+  cursor: pointer;
+}
+.quiz-sheet__option:hover:not([disabled]) { border-color: var(--teal-ink); }
+.quiz-sheet__option:focus-visible { outline: 3px solid var(--gold-300); outline-offset: 2px; }
+.quiz-sheet__option[disabled] { cursor: default; }
+.quiz-sheet__letter {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 50%;
+  background: var(--sand-200);
+  font-weight: 700;
+}
+.quiz-sheet__option.is-right { border-color: #2e9e5b; background: #e9f7ef; }
+.quiz-sheet__option.is-right .quiz-sheet__letter { background: #2e9e5b; color: #fff; }
+.quiz-sheet__option.is-wrong { border-color: #d9534f; background: #fdeeee; opacity: 0.8; }
+.quiz-sheet__note { min-height: 1.5em; margin: 0.8rem 0 0; font-weight: 600; line-height: 1.5; }
+.quiz-sheet .quiz-sheet__after[hidden] { display: none; } /* .share-sheet__actions is a flex row: hidden until the right answer */
 .content-card__share-btn { padding: 0.55em 1.3em; font-size: 0.95rem; }
 .content-card__report:empty { display: none; }
 

@@ -8,6 +8,7 @@ const SHELL_ASSETS = [
   "./js/app.js",
   "./js/parasha-order.js",
   "./js/share-sheet.js",
+  "./js/quiz.js",
   "./js/progress.js",
   "./js/push.js",
   "./manifest.json",
