@@ -428,7 +428,7 @@ const CATEGORIES = [
     // נישות הלכתיות (אברהם, 2026-11-04: "כל פעם הולך להוסיף נישות הלכתיות שונות"): פרק עם niche: "<id>" מוצג תחת
     // הכותרת של הנישה; פרק בלי נישה, תחת "עוד שאלות". נישה חדשה = שורה כאן ו-niche בפרקים שלה.
     niches: [
-      { id: "brachot", name: "ברכות", icon: "🍎", blurb: "למה מברכים, מתי מברכים שוב ומה מברכים על תרופות. ובכל פרק שאלה לבדוק את עצמכם 📖" },
+      { id: "brachot", name: "ברכות", icon: "🍎", image: "icons/icon-512.png", blurb: "למה מברכים, מתי מברכים שוב ומה מברכים על תרופות. ובכל פרק שאלה לבדוק את עצמכם 📖" },
     ],
     episodes: [
       {
@@ -437,14 +437,32 @@ const CATEGORIES = [
         image: "assets/images/birkat-hamazon.jpeg",
         audio: "assets/audio/birkat-hamazon-sfx4.mp3",
         niche: "brachot",
-        quiz: {
-          question: "מכמה ברכות מורכבת ברכת המזון?",
-          options: ["משתי ברכות", "מארבע ברכות", "משבע ברכות", "תלוי כמה משולשי פיצה אכלתי 🍕"],
-          answer: 1,
-          funny: 3,
-          explain: "ברכת הזן, ברכת הארץ, ברכת ירושלים, והטוב והמטיב.",
-          audio: null, // assets/audio/quiz/birkat-hamazon.mp3 once Avraham records it (Tools/brachot_quiz)
-        },
+        quiz: [
+          {
+            question: "מכמה ברכות מורכבת ברכת המזון?",
+            options: ["משתי ברכות", "מארבע ברכות", "משבע ברכות", "תלוי כמה משולשי פיצה אכלתי 🍕"],
+            answer: 1,
+            funny: 3,
+            explain: "ברכת הזן, ברכת הארץ, ברכת ירושלים, והטוב והמטיב.",
+            audio: null,
+          },
+          {
+            question: "מה אנחנו מזכירים בברכה השלישית של ברכת המזון?",
+            options: ["את ירושלים, ומתפללים על בנייתה", "את ארץ ישראל הטובה", "את כל הברואים שהשם נותן להם מזון", "את הקינוח, שעוד לא הגיע 🍰"],
+            answer: 0,
+            funny: 3,
+            explain: "הברכה השלישית היא ברכת ירושלים: מזכירים את ירושלים ומתפללים על בנייתה.",
+            audio: null,
+          },
+          {
+            question: "מי באמת נותן לנו את הלחם?",
+            options: ["האופה שאפה אותו", "החקלאי שגידל את החיטה", "הטוסטר, כמובן 🍞", "השם יתברך"],
+            answer: 3,
+            funny: 2,
+            explain: "הרבה אנשים עבדו בשביל הלחם, אבל את האדמה, הגשם והשמש נתן לנו השם.",
+            audio: null,
+          },
+        ],
       },
       {
         title: "פרשת השבוע",
@@ -458,14 +476,32 @@ const CATEGORIES = [
         image: "assets/images/why-we-bless.jpeg",
         audio: "assets/audio/why-we-bless-sfx4.mp3",
         niche: "brachot",
-        quiz: {
-          question: "כמה צריך לאכול כדי שנהיה חייבים לברך לפני האכילה?",
-          options: ["לפחות פרוסה שלמה", "אפילו פירור אחד קטן", "רק כשממש ממש רעבים", "רק אם העוגייה מבקשת יפה 🍪"],
-          answer: 1,
-          funny: 3,
-          explain: "אין כמות קטנה מדי לברכה, אפילו גרגיר אחד.",
-          audio: null, // assets/audio/quiz/why-we-bless.mp3 once Avraham records it (Tools/brachot_quiz)
-        },
+        quiz: [
+          {
+            question: "כמה צריך לאכול כדי שנהיה חייבים לברך לפני האכילה?",
+            options: ["לפחות פרוסה שלמה", "אפילו פירור אחד קטן", "רק כשממש ממש רעבים", "רק אם העוגייה מבקשת יפה 🍪"],
+            answer: 1,
+            funny: 3,
+            explain: "אין כמות קטנה מדי לברכה, אפילו גרגיר אחד.",
+            audio: null,
+          },
+          {
+            question: "מישהו בירך בטעות 'שהכל' על מאכל שיש לו ברכה אחרת. מה הדין?",
+            options: ["צריך לבקש סליחה מהמאכל 🙇", "יצא ידי חובה, אבל רק בדיעבד", "חייב לברך שוב את הברכה הנכונה", "אסור לו לאכול מהמאכל הזה"],
+            answer: 1,
+            funny: 0,
+            explain: "יצא ידי חובה בדיעבד, אבל לכתחילה לומדים איזו ברכה מתאימה לכל מאכל.",
+            audio: null,
+          },
+          {
+            question: "לא יודעים איזו ברכה מברכים על מאכל, ניסינו לברר ולא הצלחנו. מה עושים?",
+            options: ["אוכלים בלי ברכה", "מברכים את כל הברכות שאני מכיר, ליתר ביטחון", "מברכים 'שהכל נהיה בדברו'", "שואלים את המאכל מה הוא מעדיף 🤔"],
+            answer: 2,
+            funny: 3,
+            explain: "כשבאמת ניסינו לברר ולא הצלחנו, מברכים 'שהכל נהיה בדברו'.",
+            audio: null,
+          },
+        ],
       },
       {
         title: "כמה זמן מותר לחכות בין הברכה לאכילה?",
@@ -473,14 +509,32 @@ const CATEGORIES = [
         image: "assets/images/bracha-to-eating-gap.jpeg",
         audio: "assets/audio/bracha-to-eating-gap-sfx4.mp3",
         niche: "brachot",
-        quiz: {
-          question: "בירכתם על תפוח, ואז סיפרתם לחבר מה קרה בהפסקה. מה עושים לפני שאוכלים?",
-          options: ["אוכלים, הברכה עדיין בתוקף", "מברכים שוב", "מחכים חמש דקות ואז אוכלים", "מספרים גם לתפוח, שלא ירגיש לא נעים 🍎"],
-          answer: 1,
-          funny: 3,
-          explain: "דיברנו על משהו שלא קשור לאכילה, ולכן מברכים שוב.",
-          audio: null, // assets/audio/quiz/bracha-to-eating-gap.mp3 once Avraham records it (Tools/brachot_quiz)
-        },
+        quiz: [
+          {
+            question: "בירכתם על תפוח, ואז סיפרתם לחבר מה קרה בהפסקה. מה עושים לפני שאוכלים?",
+            options: ["אוכלים, הברכה עדיין בתוקף", "מברכים שוב", "מחכים חמש דקות ואז אוכלים", "מספרים גם לתפוח, שלא ירגיש לא נעים 🍎"],
+            answer: 1,
+            funny: 3,
+            explain: "דיברנו על משהו שלא קשור לאכילה, ולכן מברכים שוב.",
+            audio: null,
+          },
+          {
+            question: "בירכתם על תפוח וחיכיתם קצת בשקט, בלי לדבר. צריך לברך שוב?",
+            options: ["לא, אין צורך לברך שוב", "כן, תמיד מברכים שוב", "רק אם התפוח התחיל להשתעמם 🍏", "רק אם עברה יותר מדקה"],
+            answer: 0,
+            funny: 2,
+            explain: "אם לא דיברנו, אין צורך לברך שוב. אבל לכתחילה אוכלים מיד אחרי הברכה.",
+            audio: null,
+          },
+          {
+            question: "רוצים לחתוך תפוח גדול לחתיכות. מתי עדיף לברך?",
+            options: ["אחרי שחותכים, על החתיכות", "באמצע החיתוך", "רק כשהתפוח מסכים להיחתך 🍎", "לפני שחותכים, על הפרי השלם"],
+            answer: 3,
+            funny: 2,
+            explain: "עדיף לברך על הפרי השלם, וכך מכבדים יותר את הברכה. מותר לחתוך אחרי הברכה, כי זה חלק מהכנת האוכל.",
+            audio: null,
+          },
+        ],
       },
       {
         title: "מה מברכים על תרופות?",
@@ -488,14 +542,32 @@ const CATEGORIES = [
         image: "assets/images/bracha-on-medicine.jpeg",
         audio: "assets/audio/bracha-on-medicine-sfx4.mp3",
         niche: "brachot",
-        quiz: {
-          question: "שתיתם מים רק כדי לבלוע תרופה, ולא כי הייתם צמאים. מברכים על המים?",
-          options: ["כן, על מים תמיד מברכים", "לא מברכים", "מברכים רק אם המים קרים", "רק אם הכוס מחייכת אליי 🥤"],
-          answer: 1,
-          funny: 3,
-          explain: "על מים ששותים רק כדי לבלוע תרופה לא מברכים, כי לא שותים אותם מצמא.",
-          audio: null, // assets/audio/quiz/bracha-on-medicine.mp3 once Avraham records it (Tools/brachot_quiz)
-        },
+        quiz: [
+          {
+            question: "שתיתם מים רק כדי לבלוע תרופה, ולא כי הייתם צמאים. מברכים על המים?",
+            options: ["כן, על מים תמיד מברכים", "לא מברכים", "מברכים רק אם המים קרים", "רק אם הכוס מחייכת אליי 🥤"],
+            answer: 1,
+            funny: 3,
+            explain: "על מים ששותים רק כדי לבלוע תרופה לא מברכים, כי לא שותים אותם מצמא.",
+            audio: null,
+          },
+          {
+            question: "יש תרופה עם טעם טוב. מה מברכים עליה?",
+            options: ["לא מברכים על תרופה אף פעם", "שהכל נהיה בדברו", "בורא פרי העץ", "שואלים את התרופה אם היא טעימה 😋"],
+            answer: 1,
+            funny: 3,
+            explain: "על תרופה עם טעם טוב מברכים 'שהכל'. על תרופה שהטעם שלה לא טוב, לא מברכים.",
+            audio: null,
+          },
+          {
+            question: "נזכרתם באמצע האוכל ששכחתם לברך, והפה מלא. מה עושים?",
+            options: ["מסמנים לאוכל לחכות רגע 🤫", "מברכים עם הפה מלא, העיקר לברך", "יורקים את הכול החוצה", "מזיזים את האוכל לצד הפה, מברכים וממשיכים"],
+            answer: 3,
+            funny: 0,
+            explain: "אסור לברך כשהפה מלא. מזיזים את האוכל לצד של הפה, מברכים, וממשיכים לאכול.",
+            audio: null,
+          },
+        ],
       },
     ],
   },
@@ -1004,7 +1076,8 @@ function setupStoryShare() {
   // "check yourself" (Avraham, 2026-11-04): the question of the episode, from its card or at its end; after a right
   // answer the dialog offers to share the recording, so the end-of-episode share stays one tap away
   const quizzes = {};
-  CATEGORIES.forEach((c) => c.episodes.forEach((ep) => { if (ep.quiz && ep.audio) quizzes[storySlug(ep.audio)] = ep.quiz; }));
+  // up to three questions an episode (2026-11-05): quiz is a list; one question alone still works
+  CATEGORIES.forEach((c) => c.episodes.forEach((ep) => { if (ep.quiz && ep.audio) quizzes[storySlug(ep.audio)] = [].concat(ep.quiz); }));
   window.zkbOpenQuiz = (card, autoplay) => {
     const btn = card && card.querySelector("[data-quiz-slug]");
     if (!btn || !window.ZkbQuiz) return;
@@ -1205,12 +1278,9 @@ function nicheSectionHTML(cat, groups) {
         </div>`;
     }
     const count = g.episodes.length === 1 ? "פרק אחד" : `${g.episodes.length} פרקים`;
-    // the folder as an inviting tile (Avraham, 2026-11-05: "bigger and more inviting, maybe with a picture"): the pictures of
-    // its first four episodes as a mosaic, so a new niche gets its picture by itself
-    const pics = g.episodes.map((ep) => ep.image).filter(Boolean).slice(0, 4);
-    const mosaic = pics.length
-      ? `<span class="niche__mosaic niche__mosaic--${pics.length}" aria-hidden="true">${pics.map((src) => `<img src="${src}" alt="" width="160" height="160" loading="lazy">`).join("")}</span>`
-      : "";
+    // the folder as an inviting tile (Avraham, 2026-11-05: "bigger and more inviting, maybe with a picture"); its picture is
+    // one image of its own (niche.image: "one picture, made from the WhatsApp profile picture"), not a mosaic of the episodes
+    const mosaic = g.image ? `<span class="niche__pic" aria-hidden="true"><img src="${g.image}" alt="" width="512" height="512" loading="lazy"></span>` : "";
     return `
         <div class="niche niche--folder" id="cat-${cat.id}-${g.id}">
           <h3 class="niche__heading">

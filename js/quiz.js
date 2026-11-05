@@ -6,7 +6,8 @@
    "להציע את המנוי" (רוני המתכנת/Tools/brachot_quiz/build_quiz_audio.py), ובסוף האזנה לפרק היא קופצת במקום
    חלון השיתוף. אחרי תשובה נכונה אפשר לשתף את ההקלטה מתוך החלון.
 
-   window.ZkbQuiz.open(o)  o = { title, quiz: { question, options[4], answer, funny, explain, audio }, autoplay, onShare() }
+   window.ZkbQuiz.open(o)  o = { title, quiz: [{ question, options[4], answer, funny, explain, audio }, ...], autoplay, onShare() }
+   עד שלוש שאלות לפרק (2026-11-05): "שאלה 1 מתוך 3", ואחרי תשובה נכונה "לשאלה הבאה"; בסוף, השיתוף.
    autoplay: השאלה מושמעת מיד (לחיצה על הכפתור). בסוף פרק לא, כי "נגן ברצף" אולי כבר מנגן את הפרק הבא.
 --------------------------------------------------------------- */
 (function () {
@@ -114,8 +115,12 @@
     if (b) b.textContent = "🔊 השמעת השאלה";
   }
 
+  function question() {
+    return current && current.list[current.at];
+  }
+
   function playSound() {
-    const q = current && current.o.quiz;
+    const q = question();
     if (!q || !q.audio) return;
     if (window.zkbPauseMain) window.zkbPauseMain(); // the episode stops while the question is read
     stopSound();
@@ -129,11 +134,24 @@
   function open(o) {
     ensure();
     lastFocus = document.activeElement;
-    current = { o, tried: new Set(), done: false };
-    const q = o.quiz;
+    current = { o, list: [].concat(o.quiz), at: 0, done: false };
+    render(o.autoplay);
+    root.hidden = false;
+    document.body.style.overflow = "hidden";
+    if (!clap) {
+      clap = new Audio(CLAP); // ready before the answer, so the applause starts on the tap
+      clap.preload = "auto";
+    }
+  }
+
+  function render(autoplay) {
+    const o = current.o;
+    const q = question();
+    const total = current.list.length;
+    const last = current.at === total - 1;
     card.innerHTML = `
       <button class="share-sheet__close" type="button" data-act="close" aria-label="סגירה">✕</button>
-      <p class="quiz-sheet__eyebrow">📖 בדוק את עצמך</p>
+      <p class="quiz-sheet__eyebrow">📖 בדוק את עצמך${total > 1 ? `<span class="quiz-sheet__step"> · שאלה ${current.at + 1} מתוך ${total}</span>` : ""}</p>
       <h2 class="share-sheet__title quiz-sheet__question" id="quiz-title">${esc(q.question)}</h2>
       ${q.audio ? `<button class="share-sheet__link quiz-sheet__listen" type="button" data-act="listen">🔊 השמעת השאלה</button>` : ""}
       <div class="quiz-sheet__options" role="group" aria-label="התשובות">
@@ -141,17 +159,13 @@
       </div>
       <p class="quiz-sheet__note" role="status" aria-live="polite"></p>
       <div class="share-sheet__actions quiz-sheet__after" hidden>
-        ${o.onShare ? `<button class="btn btn--primary share-sheet__primary" type="button" data-act="share">📤 שיתוף ההקלטה</button>` : ""}
+        ${last ? (o.onShare ? `<button class="btn btn--primary share-sheet__primary" type="button" data-act="share">📤 שיתוף ההקלטה</button>` : "")
+               : `<button class="btn btn--primary share-sheet__primary" type="button" data-act="next">לשאלה הבאה ←</button>`}
         <button class="share-sheet__link" type="button" data-act="close">סגירה</button>
       </div>`;
-    root.hidden = false;
-    document.body.style.overflow = "hidden";
+    current.done = false;
     card.querySelector("[data-act='answer']").focus();
-    if (o.autoplay) playSound();
-    if (!clap) {
-      clap = new Audio(CLAP); // ready before the answer, so the applause starts on the tap
-      clap.preload = "auto";
-    }
+    if (autoplay) playSound();
   }
 
   function close() {
@@ -165,7 +179,7 @@
 
   function answer(btn) {
     if (!current || current.done) return;
-    const q = current.o.quiz;
+    const q = question();
     const i = Number(btn.dataset.i);
     const note = card.querySelector(".quiz-sheet__note");
     if (i === q.answer) {
@@ -193,6 +207,11 @@
     if (act === "close") close();
     else if (act === "answer") answer(el);
     else if (act === "listen") (sound ? stopSound() : playSound());
+    else if (act === "next" && current) {
+      stopSound();
+      current.at += 1;
+      render(true); // the tap on "next" is the go-ahead to read the next question
+    }
     else if (act === "share" && current) {
       const fn = current.o.onShare;
       close();
