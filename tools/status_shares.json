@@ -599,5 +599,17 @@
       "pill": "Listen together as a family",
       "popup": true
     }
+  },
+  "honor-torah-scholars": {
+    "he": {
+      "hook": "נדבן עשיר מאמריקה נעלב: למה הרב מכבד ככה אברך עני בבגדים קרועים?\nואז הוא הציץ בלילה דרך החלון של הבית שלו.",
+      "caption": "סיפור אמיתי שמחמם את הלב ✨\nכבוד תלמידי חכמים: רבי שמואל סלנט, נדבן עשיר מאמריקה ואברך עני, ומה שהנדבן ראה בלילה דרך החלון.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "popup": true
+    },
+    "en": {
+      "hook": "A wealthy donor from America was insulted: why would the Rav honor a poor avrech in torn clothes?\nThen, one night, he peeked through the window of his home.",
+      "caption": "A heartwarming true story ✨\nHonoring Torah Scholars: Rabbi Shmuel Salant, a wealthy donor from America, a poor avrech, and what the donor saw through the window that night.\n🎧 Listen with the kids:\n{url}",
+      "popup": true
+    }
   }
 }

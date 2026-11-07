@@ -114,6 +114,12 @@ const CATEGORIES = [
         image: "assets/images/standing-before-a-king.jpeg",
         audio: "assets/audio/standing-before-a-king-sfx5.mp3",
       },
+      {
+        title: "כבוד תלמידי חכמים",
+        description: "סיפור אמיתי על רבי שמואל סלנט, רבה של ירושלים, ועל נדבן עשיר מאמריקה שלא הבין למה הרב מכבד כל כך אברך עני בבגדים קרועים, עד שהציץ בלילה דרך החלון של ביתו.",
+        image: "assets/images/honor-torah-scholars.jpeg",
+        audio: "assets/audio/honor-torah-scholars-sfx4.mp3",
+      },
     ],
   },
   {
