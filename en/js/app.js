@@ -116,6 +116,12 @@ const CATEGORIES = [
         image: "../assets/images/en/standing-before-a-king.jpeg",
         audio: "../assets/audio/en/standing-before-a-king-sfx4.mp3",
       },
+      {
+        title: "Honoring Torah Scholars",
+        description: "A true story about Rabbi Shmuel Salant, the rabbi of Yerushalayim, and a wealthy donor from America who couldn't understand why the Rav gave so much honor to a poor avrech in torn clothes, until he peeked through the window of his home one night.",
+        image: "../assets/images/en/honor-torah-scholars.jpeg",
+        audio: "../assets/audio/en/honor-torah-scholars-sfx3.mp3",
+      },
     ],
   },
   {
