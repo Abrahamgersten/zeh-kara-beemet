@@ -355,6 +355,10 @@ function emit(file, content) {
   written += 1;
 }
 
+// sitemap.xml (8.11, for Google Search Console): the public pages and every story page. No <lastmod>, so the file only
+// changes when a page is added or removed. Admin pages are left out (and carry noindex).
+const sitemap = ["", "about.html", "sipur/", "en/"].map((p) => new URL(p, SITE_URL).href);
+
 for (const [lang, L] of Object.entries(LANGS)) {
   const outDir = path.join(REPO, L.langRoot, "s");
   const stories = [];
@@ -374,6 +378,7 @@ for (const [lang, L] of Object.entries(LANGS)) {
       const url = new URL(`${L.langRoot ? L.langRoot + "/" : ""}s/${slug}/`, SITE_URL).href;
       // shareText: what "share" sends - on the story page and on the episode's card on the site (js/app.js)
       const status = statusOf(lang, slug, url, L.langRoot ? "../" : "");
+      sitemap.push(url);
       stories.push(Object.assign({ slug, title: ep.title, category: cat.id, url, shareText: shareMessage(L, lang, cat, ep, slug, url) }, status ? { status } : {}));
     }
   }
@@ -394,6 +399,9 @@ for (const [lang, L] of Object.entries(LANGS)) {
   }
   console.log(`[${lang}] ${stories.length} story pages`);
 }
+
+emit(path.join(REPO, "sitemap.xml"), '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+  sitemap.map((u) => `  <url><loc>${u}</loc></url>`).join("\n") + "\n</urlset>\n");
 
 if (CHECK) {
   console.log(stale ? `${stale} file(s) out of date - run: node tools/build_story_pages.mjs` : "story pages are up to date");
