@@ -611,5 +611,89 @@
       "caption": "A heartwarming true story ✨\nHonoring Torah Scholars: Rabbi Shmuel Salant, a wealthy donor from America, a poor avrech, and what the donor saw through the window that night.\n🎧 Listen with the kids:\n{url}",
       "popup": true
     }
+  },
+  "bracha-ikar-tafel": {
+    "he": {
+      "hook": "אוכלים טונה על קרקר: צריך לברך גם על הקרקר?\nומה עם המים ששותים אחרי פלפל חריף?",
+      "caption": "הקלטה לילדים על ברכות ✨\nעיקר וטפל בברכות: מתי הברכה על המאכל העיקרי פוטרת גם את מה שאוכלים איתו.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "Tuna on a cracker: do we make a bracha on the cracker too?\nAnd what about the water we drink after a hot pepper?",
+      "caption": "A listen for kids about brachot ✨\nThe Main Food and the Side Food: when the bracha on the main food covers what we eat with it.\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
+      "popup": true
+    }
+  },
+  "bracha-precedence": {
+    "he": {
+      "hook": "עוגיות, ענבים, תמרים ותפוח על אותה צלחת.\nעל מה מברכים קודם?",
+      "caption": "הקלטה לילדים על ברכות ✨\nסדר קדימה בברכות: הסימן מגע\"ש, שבעת המינים, והמילה 'ארץ' שעוזרת לדעת מה קודם.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "Cookies, grapes, dates and an apple on one plate.\nWhich bracha comes first?",
+      "caption": "A listen for kids about brachot ✨\nWhich Bracha Comes First? The memory sign MaGA'Sh, the Seven Species, and the word 'land' that tells us what comes first.\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
+      "popup": true
+    }
+  },
+  "spilled-chocolate-milk": {
+    "he": {
+      "hook": "ידעני בירך על כוס שוקו, והחתולה שפכה אותה.\nצריך לברך שוב על הכוס החדשה?",
+      "caption": "הקלטה לילדים על ברכות ✨\nמה עושים כשהשוקו נשפך? שיחה בין ידעני לרב, וגם: מה עושים עם תפוז שנפל על הרצפה אחרי הברכה.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "Yedani made a bracha on his chocolate milk, and the cat spilled it.\nDoes he need a new bracha on the next cup?",
+      "caption": "A listen for kids about brachot ✨\nWhat If the Chocolate Milk Spills? A conversation between Yedani and the Rav, and what to do with an orange that fell on the floor.\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
+      "popup": true
+    }
+  },
+  "bracha-on-pizza": {
+    "he": {
+      "hook": "על משולש פיצה אחד מברכים מזונות, ועל שניים המוציא?\nידעני עולה לשאול את הרב.",
+      "caption": "הקלטה לילדים על ברכות ✨\nמה מברכים על פיצה? מה נוהגים בני ספרד ובני אשכנז, ולמה הכמות משנה את הברכה.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "One slice of pizza is Mezonos, and two slices are HaMotzi?\nYedani goes to ask the Rav.",
+      "caption": "A listen for kids about brachot ✨\nWhat Bracha Do We Make on Pizza? What Sephardim and Ashkenazim do, and why the amount changes the bracha.\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
+      "popup": true
+    }
+  },
+  "parasha-vayetze": {
+    "he": {
+      "hook": "יעקב עובד שבע שנים שלמות בשביל רחל.\nובסוף מתברר שלבן רימה אותו.",
+      "caption": "מה בפרשת השבוע? ✨\nפרשת ויצא: חלום הסולם, יעקב ולבן הרמאי, י\"ב השבטים, והבריחה הביתה עם לבן שרודף אחריו.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "Yaakov works seven whole years for Rachel.\nThen he finds out that Lavan tricked him.",
+      "caption": "What's in this week's parsha? ✨\nParashat Vayetze: the dream of the ladder, Yaakov and Lavan the trickster, the twelve tribes, and the escape home with Lavan chasing after him.\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
+      "popup": true
+    }
+  },
+  "parasha-idea-vayetze": {
+    "he": {
+      "hook": "יעקב, איש האמת, מוקף כל חייו בשקרים ורמאויות.\nלמה דווקא הוא?",
+      "caption": "רעיון קצר לפרשת השבוע ✨\nרעיון לפרשת ויצא: למה דווקא במקום שהכי קשה לנו, שם אנחנו מגלים כמה כוח יש בתוכנו.\n🎧 להאזנה, גם עם הילדים:\n{url}",
+      "pill": "להאזנה עם כל המשפחה",
+      "popup": true
+    },
+    "en": {
+      "hook": "Yaakov, the man of truth, is surrounded by lies and tricks all his life.\nWhy him, of all people?",
+      "caption": "A short thought on this week's parsha ✨\nA Thought on Parashat Vayetze: why exactly where things are hardest for us, we discover how much strength we have inside.\n🎧 Listen with the kids:\n{url}",
+      "pill": "Listen together as a family",
+      "popup": true
+    }
   }
 }

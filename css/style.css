@@ -1408,61 +1408,113 @@ body.auth-pending { visibility: hidden; }
 .niche__icon { font-size: 1.3rem; }
 /* a niche is a folder that opens on a tap (2026-11-05) */
 .niche__heading { margin: 1.2rem 0 1rem; font-size: inherit; }
-/* the folder is a large tile (2026-11-05): a mosaic of its episodes' pictures, the name, a short line, the count and a call */
+/* the folder is a picture-led tile (2026-11-08, Avraham: "the picture should be more dominant and blended with the card"):
+   the niche picture fills the top (phone) or the start half (wide screens), its edge melts into a deep night-blue taken
+   from the picture itself, and the name, line, count and call sit on that blue in light colors. */
 .niche__folder {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+  --niche-night: #1c2e50;
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
   width: 100%;
-  padding: 0.9rem;
-  border: 2px solid var(--sand-200);
-  border-radius: 20px;
-  background: linear-gradient(135deg, #fff 0%, var(--sand-100) 100%);
-  box-shadow: var(--shadow-soft);
+  padding: 0;
+  overflow: hidden;
+  isolation: isolate;
+  border: 0;
+  border-radius: 24px;
+  background: radial-gradient(130% 100% at 100% 0%, #2f4f86 0%, var(--niche-night) 58%, #16243f 100%);
+  box-shadow: 0 22px 44px -24px rgba(12, 24, 48, 0.75);
   font: inherit;
-  color: var(--ink);
+  color: #fff8ec;
   text-align: start;
   cursor: pointer;
-  transition: transform 0.16s cubic-bezier(0.23, 1, 0.32, 1), border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.2s ease;
 }
-.niche__folder:active { transform: scale(0.98); }
+.niche__folder:active { transform: scale(0.985); }
 .niche__pic {
-  flex: none;
-  width: 116px;
-  aspect-ratio: 1;
-  border-radius: 16px;
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 0.9;
   overflow: hidden;
-  background: var(--sand-200);
-  box-shadow: 0 8px 18px -10px rgba(7, 34, 41, 0.55);
+  -webkit-mask-image: linear-gradient(to bottom, #000 50%, rgba(0, 0, 0, 0.35) 82%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 50%, rgba(0, 0, 0, 0.35) 82%, transparent 100%);
 }
-.niche__pic img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.niche__text { display: grid; justify-items: start; gap: 0.35rem; min-width: 0; }
-.niche__name { display: flex; align-items: center; gap: 0.4rem; font-size: 1.5rem; font-weight: 800; line-height: 1.2; color: var(--teal-ink); }
-.niche__folder .niche__icon { font-size: 1.5rem; }
-.niche__blurb { font-size: 0.95rem; line-height: 1.45; color: var(--ink-soft); }
-.niche__count { padding: 0.1em 0.7em; border-radius: 999px; background: var(--sand-200); font-size: 0.85rem; font-weight: 700; color: var(--ink); }
+.niche__pic img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 28%;
+  transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.niche__text {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: start;
+  gap: 0.5rem;
+  min-width: 0;
+  margin-top: -4.2rem;
+  padding: 0 1.25rem 1.35rem;
+}
+.niche__folder--plain .niche__text { margin-top: 0; padding-top: 1.35rem; }
+.niche__name {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.15;
+  color: #fff8ec;
+  text-shadow: 0 2px 14px rgba(8, 18, 38, 0.55);
+}
+.niche__folder .niche__icon { font-size: 1.7rem; }
+.niche__blurb { max-width: 34rem; font-size: 1rem; line-height: 1.5; color: rgba(255, 248, 236, 0.88); }
+.niche__count {
+  padding: 0.15em 0.8em;
+  border: 1px solid rgba(255, 248, 236, 0.28);
+  border-radius: 999px;
+  background: rgba(255, 248, 236, 0.12);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff8ec;
+}
 .niche__cta {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  margin-top: 0.25rem;
-  padding: 0.45em 1.2em;
+  margin-top: 0.35rem;
+  padding: 0.55em 1.5em;
   border: 2px solid transparent;
   border-radius: 999px;
   background: linear-gradient(135deg, var(--gold-400), var(--gold-600));
-  box-shadow: 0 8px 18px -8px rgba(217, 154, 43, 0.6);
+  box-shadow: 0 10px 22px -10px rgba(240, 129, 44, 0.75);
+  font-size: 1.05rem;
   font-weight: 800;
   color: var(--ink);
 }
 .niche__cta-close { display: none; }
-.niche__folder[aria-expanded="true"] .niche__cta { background: transparent; border-color: var(--teal-ink); box-shadow: none; color: var(--teal-ink); }
+.niche__folder[aria-expanded="true"] { box-shadow: 0 0 0 3px var(--gold-300), 0 22px 44px -24px rgba(12, 24, 48, 0.75); }
+.niche__folder[aria-expanded="true"] .niche__cta { background: transparent; border-color: rgba(255, 248, 236, 0.75); box-shadow: none; color: #fff8ec; }
 .niche__folder[aria-expanded="true"] .niche__cta-open { display: none; }
 .niche__folder[aria-expanded="true"] .niche__cta-close { display: inline; }
 @media (min-width: 720px) {
-  .niche__folder { gap: 1.4rem; padding: 1.1rem; }
-  .niche__pic { width: 160px; }
-  .niche__name { font-size: 1.75rem; }
-  .niche__blurb { font-size: 1.02rem; }
+  /* the picture takes the start half (the right side in Hebrew) at full height, and fades into the blue toward the text */
+  .niche__folder { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); align-items: center; height: clamp(360px, 31vw, 440px); }
+  .niche__folder--plain { grid-template-columns: minmax(0, 1fr); height: auto; }
+  .niche__pic {
+    position: relative;
+    align-self: stretch;
+    aspect-ratio: auto;
+    height: auto;
+    -webkit-mask-image: linear-gradient(to left, #000 55%, transparent 100%);
+    mask-image: linear-gradient(to left, #000 55%, transparent 100%);
+  }
+  .niche__pic img { position: absolute; inset: 0; object-position: 50% 18%; }
+  .niche__text { margin: 0; margin-inline-start: -2.5rem; padding: 2.2rem 2.6rem; gap: 0.7rem; }
+  .niche__name { font-size: 2.6rem; }
+  .niche__folder .niche__icon { font-size: 2.1rem; }
+  .niche__blurb { font-size: 1.12rem; }
 }
 .niche__chevron {
   width: 0.65rem;
@@ -1473,13 +1525,14 @@ body.auth-pending { visibility: hidden; }
   transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
 }
 .niche__folder[aria-expanded="true"] .niche__chevron { transform: translateY(2px) rotate(-135deg); }
-.niche__folder[aria-expanded="true"] { border-color: var(--teal-ink); }
-.niche__folder:focus-visible { outline: 3px solid var(--gold-300); outline-offset: 2px; }
+.niche__folder:focus-visible { outline: 3px solid var(--gold-300); outline-offset: 3px; }
 @media (hover: hover) and (pointer: fine) {
-  .niche__folder:hover { transform: translateY(-2px); border-color: var(--teal-ink); box-shadow: 0 16px 34px -14px rgba(7, 34, 41, 0.45); }
+  .niche__folder:hover { transform: translateY(-3px); box-shadow: 0 30px 54px -26px rgba(12, 24, 48, 0.8); }
+  .niche__folder:hover .niche__pic img { transform: scale(1.04); }
 }
 @media (prefers-reduced-motion: reduce) {
   .niche__folder, .niche__folder:hover, .niche__folder:active { transform: none; }
+  .niche__folder:hover .niche__pic img { transform: none; }
 }
 .niche__body:not([hidden]) { animation: niche-in 0.22s cubic-bezier(0.23, 1, 0.32, 1); }
 @keyframes niche-in {
