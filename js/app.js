@@ -478,7 +478,7 @@ const CATEGORIES = [
         title: "ברכת המזון",
         description: "למה מברכים אחרי האוכל? מי באמת נותן לנו את הלחם - ומה יש בארבע הברכות של ברכת המזון. הזדמנות לעצור, להודות ולהבין שהשפע בחיים שלנו הוא לא מובן מאליו.",
         image: "assets/images/birkat-hamazon.jpeg",
-        audio: "assets/audio/birkat-hamazon-sfx4.mp3",
+        audio: "assets/audio/birkat-hamazon-sfx5.mp3",
         niche: "brachot",
         quiz: [
           {
@@ -517,7 +517,7 @@ const CATEGORIES = [
         title: "למה מברכים?",
         description: "למה צריך לברך לפני שאוכלים, האם מברכים גם על פירור קטן, ואולי אפשר פשוט לברך \"שהכל\" על הכול? כל מה שכדאי לדעת על הברכה שלפני האוכל.",
         image: "assets/images/why-we-bless.jpeg",
-        audio: "assets/audio/why-we-bless-sfx4.mp3",
+        audio: "assets/audio/why-we-bless-sfx5.mp3",
         niche: "brachot",
         quiz: [
           {
@@ -550,7 +550,7 @@ const CATEGORIES = [
         title: "כמה זמן מותר לחכות בין הברכה לאכילה?",
         description: "בירכתם על תפוח ופתאום חבר התחיל לדבר איתכם - מה עושים עכשיו? מתי צריך לברך שוב, ומתי מותר להתעכב בין הברכה לאכילה.",
         image: "assets/images/bracha-to-eating-gap.jpeg",
-        audio: "assets/audio/bracha-to-eating-gap-sfx4.mp3",
+        audio: "assets/audio/bracha-to-eating-gap-sfx5.mp3",
         niche: "brachot",
         quiz: [
           {
@@ -583,7 +583,7 @@ const CATEGORIES = [
         title: "מה מברכים על תרופות?",
         description: "האם מברכים על תרופה, ועל המים ששותים כדי לבלוע אותה? ומה עושים כשנזכרים באמצע האוכל ששכחנו לברך? כל מה שכדאי לדעת, בפשטות.",
         image: "assets/images/bracha-on-medicine.jpeg",
-        audio: "assets/audio/bracha-on-medicine-sfx4.mp3",
+        audio: "assets/audio/bracha-on-medicine-sfx5.mp3",
         niche: "brachot",
         quiz: [
           {
@@ -616,7 +616,7 @@ const CATEGORIES = [
         title: "עיקר וטפל בברכות",
         description: "אוכלים טונה על קרקר: צריך לברך גם על הקרקר? מה זה עיקר וטפל, למה לא מברכים על המים ששותים אחרי פלפל חריף, ומתי בכל זאת צריך לברך גם על הטפל.",
         image: "assets/images/bracha-ikar-tafel.jpeg",
-        audio: "assets/audio/bracha-ikar-tafel-sfx4.mp3",
+        audio: "assets/audio/bracha-ikar-tafel-sfx5.mp3",
         niche: "brachot",
         quiz: [
           {
@@ -649,7 +649,7 @@ const CATEGORIES = [
         title: "סדר קדימה בברכות",
         description: "צלחת עם עוגיות, פירות וירקות: על מה מברכים קודם? הסימן מגע\"ש, הפרי שהכי אוהבים, שבעת המינים והמילה \"ארץ\" שבפסוק, ומה עושים עם פרי שלם וחתוך.",
         image: "assets/images/bracha-precedence.jpeg",
-        audio: "assets/audio/bracha-precedence-sfx5.mp3",
+        audio: "assets/audio/bracha-precedence-sfx6.mp3",
         niche: "brachot",
         quiz: [
           {
@@ -682,7 +682,7 @@ const CATEGORIES = [
         title: "מה עושים כשהשוקו נשפך?",
         description: "ידעני בירך על כוס שוקו, והחתולה שפכה אותה. צריך לברך שוב על הכוס החדשה? ומה עושים עם תפוז שנפל על הרצפה מיד אחרי הברכה? שיחה בין ידעני לרב.",
         image: "assets/images/spilled-chocolate-milk.jpeg",
-        audio: "assets/audio/spilled-chocolate-milk-sfx6.mp3",
+        audio: "assets/audio/spilled-chocolate-milk-sfx7.mp3",
         niche: "brachot",
         quiz: [
           {
@@ -715,7 +715,7 @@ const CATEGORIES = [
         title: "מה מברכים על פיצה?",
         description: "ידעני עולה אל הרב עם שאלה: נכון שעל משולש אחד מברכים מזונות ועל שניים המוציא? מה נוהגים בני ספרד ובני אשכנז, ולמה הכמות שאוכלים יכולה לשנות את הברכה.",
         image: "assets/images/bracha-on-pizza.jpeg",
-        audio: "assets/audio/bracha-on-pizza-sfx5.mp3",
+        audio: "assets/audio/bracha-on-pizza-sfx6.mp3",
         niche: "brachot",
         quiz: [
           {
