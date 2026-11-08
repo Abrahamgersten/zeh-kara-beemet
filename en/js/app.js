@@ -527,7 +527,7 @@ const CATEGORIES = [
         title: "What Bracha Do We Make on Medicine?",
         description: "Do we make a bracha on medicine, or on the water we drink to swallow it? And what do we do if we remember in the middle of eating that we forgot to make a bracha? Everything you need to know, simply explained.",
         image: "../assets/images/en/bracha-on-medicine.jpeg",
-        audio: "../assets/audio/en/bracha-on-medicine-sfx4.mp3",
+        audio: "../assets/audio/en/bracha-on-medicine-sfx5.mp3",
       },
       {
         title: "The Main Food and the Side Food",
@@ -539,7 +539,7 @@ const CATEGORIES = [
         title: "Which Bracha Comes First?",
         description: "A plate of cookies, fruits and vegetables - which bracha do we make first? The memory sign MaGA'Sh, the fruit we love most, the Seven Species and the word \"land\" in the pasuk, and what to do with a whole fruit and a cut one.",
         image: "../assets/images/en/bracha-precedence.jpeg",
-        audio: "../assets/audio/en/bracha-precedence-sfx5.mp3",
+        audio: "../assets/audio/en/bracha-precedence-sfx6.mp3",
       },
       {
         title: "What If the Chocolate Milk Spills?",
