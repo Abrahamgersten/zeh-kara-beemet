@@ -649,7 +649,7 @@ const CATEGORIES = [
         title: "סדר קדימה בברכות",
         description: "צלחת עם עוגיות, פירות וירקות: על מה מברכים קודם? הסימן מגע\"ש, הפרי שהכי אוהבים, שבעת המינים והמילה \"ארץ\" שבפסוק, ומה עושים עם פרי שלם וחתוך.",
         image: "assets/images/bracha-precedence.jpeg",
-        audio: "assets/audio/bracha-precedence-sfx4.mp3",
+        audio: "assets/audio/bracha-precedence-sfx5.mp3",
         niche: "brachot",
         quiz: [
           {
@@ -682,7 +682,7 @@ const CATEGORIES = [
         title: "מה עושים כשהשוקו נשפך?",
         description: "ידעני בירך על כוס שוקו, והחתולה שפכה אותה. צריך לברך שוב על הכוס החדשה? ומה עושים עם תפוז שנפל על הרצפה מיד אחרי הברכה? שיחה בין ידעני לרב.",
         image: "assets/images/spilled-chocolate-milk.jpeg",
-        audio: "assets/audio/spilled-chocolate-milk-sfx4.mp3",
+        audio: "assets/audio/spilled-chocolate-milk-sfx5.mp3",
         niche: "brachot",
         quiz: [
           {
