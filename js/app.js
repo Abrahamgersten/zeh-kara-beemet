@@ -682,7 +682,7 @@ const CATEGORIES = [
         title: "מה עושים כשהשוקו נשפך?",
         description: "ידעני בירך על כוס שוקו, והחתולה שפכה אותה. צריך לברך שוב על הכוס החדשה? ומה עושים עם תפוז שנפל על הרצפה מיד אחרי הברכה? שיחה בין ידעני לרב.",
         image: "assets/images/spilled-chocolate-milk.jpeg",
-        audio: "assets/audio/spilled-chocolate-milk-sfx5.mp3",
+        audio: "assets/audio/spilled-chocolate-milk-sfx6.mp3",
         niche: "brachot",
         quiz: [
           {
@@ -715,7 +715,7 @@ const CATEGORIES = [
         title: "מה מברכים על פיצה?",
         description: "ידעני עולה אל הרב עם שאלה: נכון שעל משולש אחד מברכים מזונות ועל שניים המוציא? מה נוהגים בני ספרד ובני אשכנז, ולמה הכמות שאוכלים יכולה לשנות את הברכה.",
         image: "assets/images/bracha-on-pizza.jpeg",
-        audio: "assets/audio/bracha-on-pizza-sfx4.mp3",
+        audio: "assets/audio/bracha-on-pizza-sfx5.mp3",
         niche: "brachot",
         quiz: [
           {
