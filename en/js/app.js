@@ -517,7 +517,7 @@ const CATEGORIES = [
         title: "Which Bracha Comes First?",
         description: "A plate of cookies, fruits and vegetables - which bracha do we make first? The memory sign MaGA'Sh, the fruit we love most, the Seven Species and the word \"land\" in the pasuk, and what to do with a whole fruit and a cut one.",
         image: "../assets/images/en/bracha-precedence.jpeg",
-        audio: "../assets/audio/en/bracha-precedence-sfx3.mp3",
+        audio: "../assets/audio/en/bracha-precedence-sfx4.mp3",
       },
       {
         title: "What If the Chocolate Milk Spills?",
