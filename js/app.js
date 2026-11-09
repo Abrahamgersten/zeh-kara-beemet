@@ -134,31 +134,31 @@ const CATEGORIES = [
         title: "העטלף המופלא",
         description: "איך עטלף מצליח לעוף בלילה, בחשכה מוחלטת, בלי להתנגש בשום דבר? גלו את הסוד המדהים של היונק היחיד בעולם שיכול לעוף.",
         images: ["assets/images/amazing-bat-main.jpeg", "assets/images/amazing-bat.jpeg"],
-        audio: "assets/audio/amazing-bat-sfx5.mp3",
+        audio: "assets/audio/amazing-bat-sfx6.mp3",
       },
       {
         title: "הברווזן",
         description: "בעל חיים עם פרווה של יונק, מקור של ברווז וקרומי שחייה - שמטיל ביצים! הכירו את הברווזן, אחד מבעלי החיים המוזרים והמפתיעים ביותר בעולם.",
         images: ["assets/images/platypus-main.jpeg", "assets/images/platypus.jpeg"],
-        audio: "assets/audio/platypus-sfx5.mp3",
+        audio: "assets/audio/platypus-sfx6.mp3",
       },
       {
         title: "הבונה החכם",
         description: "יצור שכורת עצים שלמים בשיניים שלו, ובונה לעצמו בית בתוך המים. למה דווקא שם? הכירו את הבונה, אחד הבנאים המוכשרים ביותר בטבע.",
         image: "assets/images/wise-builder.jpeg",
-        audio: "assets/audio/wise-builder-sfx5.mp3",
+        audio: "assets/audio/wise-builder-sfx6.mp3",
       },
       {
         title: "צפרדעי החצים המורעלים",
         description: "צפרדעים קטנטנות, צבעוניות ומבריקות, שנחשבות לבעלי החיים הארסיים ביותר בעולם. למה קוראים להן צפרדעי החצים, ואיך הן הופכות לרעילות כשהן בכלל לא נולדות כך?",
         image: "assets/images/poison-dart-frogs.jpeg",
-        audio: "assets/audio/poison-dart-frogs-sfx5.mp3",
+        audio: "assets/audio/poison-dart-frogs-sfx6.mp3",
       },
       {
         title: "ברלה ברלה צא החוצה",
         description: "חלזונות הים הם לא כמו החלזונות שבגינה: יש ביניהם בכל צבעי הקשת, כאלה שמשנים צורה וזוהרים בחושך, ואפילו כאלה שמצמיחים לעצמם גוף חדש מהראש בלבד!",
         image: "assets/images/berele-come-out.jpeg",
-        audio: "assets/audio/berele-come-out-sfx5.mp3",
+        audio: "assets/audio/berele-come-out-sfx6.mp3",
       },
     ],
   },
@@ -499,7 +499,7 @@ const CATEGORIES = [
         title: "ברכת המזון",
         description: "למה מברכים אחרי האוכל? מי באמת נותן לנו את הלחם - ומה יש בארבע הברכות של ברכת המזון. הזדמנות לעצור, להודות ולהבין שהשפע בחיים שלנו הוא לא מובן מאליו.",
         image: "assets/images/birkat-hamazon.jpeg",
-        audio: "assets/audio/birkat-hamazon-sfx6.mp3",
+        audio: "assets/audio/birkat-hamazon-sfx7.mp3",
         niche: "brachot",
         quiz: [
           {
@@ -541,7 +541,7 @@ const CATEGORIES = [
         title: "למה מברכים?",
         description: "למה צריך לברך לפני שאוכלים, האם מברכים גם על פירור קטן, ואולי אפשר פשוט לברך \"שהכל\" על הכול? כל מה שכדאי לדעת על הברכה שלפני האוכל.",
         image: "assets/images/why-we-bless.jpeg",
-        audio: "assets/audio/why-we-bless-sfx6.mp3",
+        audio: "assets/audio/why-we-bless-sfx7.mp3",
         niche: "brachot",
         quiz: [
           {
@@ -577,7 +577,7 @@ const CATEGORIES = [
         title: "כמה זמן מותר לחכות בין הברכה לאכילה?",
         description: "בירכתם על תפוח ופתאום חבר התחיל לדבר איתכם - מה עושים עכשיו? מתי צריך לברך שוב, ומתי מותר להתעכב בין הברכה לאכילה.",
         image: "assets/images/bracha-to-eating-gap.jpeg",
-        audio: "assets/audio/bracha-to-eating-gap-sfx6.mp3",
+        audio: "assets/audio/bracha-to-eating-gap-sfx7.mp3",
         niche: "brachot",
         quiz: [
           {
@@ -612,7 +612,7 @@ const CATEGORIES = [
         title: "מה מברכים על תרופות?",
         description: "האם מברכים על תרופה, ועל המים ששותים כדי לבלוע אותה? ומה עושים כשנזכרים באמצע האוכל ששכחנו לברך? כל מה שכדאי לדעת, בפשטות.",
         image: "assets/images/bracha-on-medicine.jpeg",
-        audio: "assets/audio/bracha-on-medicine-sfx6.mp3",
+        audio: "assets/audio/bracha-on-medicine-sfx7.mp3",
         niche: "brachot",
         quiz: [
           {
@@ -648,7 +648,7 @@ const CATEGORIES = [
         title: "עיקר וטפל בברכות",
         description: "אוכלים טונה על קרקר: צריך לברך גם על הקרקר? מה זה עיקר וטפל, למה לא מברכים על המים ששותים אחרי פלפל חריף, ומתי בכל זאת צריך לברך גם על הטפל.",
         image: "assets/images/bracha-ikar-tafel.jpeg",
-        audio: "assets/audio/bracha-ikar-tafel-sfx6.mp3",
+        audio: "assets/audio/bracha-ikar-tafel-sfx7.mp3",
         niche: "brachot",
         quiz: [
           {
@@ -684,7 +684,7 @@ const CATEGORIES = [
         title: "סדר קדימה בברכות",
         description: "צלחת עם עוגיות, פירות וירקות: על מה מברכים קודם? הסימן מגע\"ש, הפרי שהכי אוהבים, שבעת המינים והמילה \"ארץ\" שבפסוק, ומה עושים עם פרי שלם וחתוך.",
         image: "assets/images/bracha-precedence.jpeg",
-        audio: "assets/audio/bracha-precedence-sfx8.mp3",
+        audio: "assets/audio/bracha-precedence-sfx9.mp3",
         niche: "brachot",
         quiz: [
           {
@@ -720,7 +720,7 @@ const CATEGORIES = [
         title: "מה עושים כשהשוקו נשפך?",
         description: "ידעני בירך על כוס שוקו, והחתולה שפכה אותה. צריך לברך שוב על הכוס החדשה? ומה עושים עם תפוז שנפל על הרצפה מיד אחרי הברכה? שיחה בין ידעני לרב.",
         image: "assets/images/spilled-chocolate-milk.jpeg",
-        audio: "assets/audio/spilled-chocolate-milk-sfx8.mp3",
+        audio: "assets/audio/spilled-chocolate-milk-sfx9.mp3",
         niche: "brachot",
         quiz: [
           {
@@ -756,7 +756,7 @@ const CATEGORIES = [
         title: "מה מברכים על פיצה?",
         description: "ידעני עולה אל הרב עם שאלה: נכון שעל משולש אחד מברכים מזונות ועל שניים המוציא? מה נוהגים בני ספרד ובני אשכנז, ולמה הכמות שאוכלים יכולה לשנות את הברכה.",
         image: "assets/images/bracha-on-pizza.jpeg",
-        audio: "assets/audio/bracha-on-pizza-sfx7.mp3",
+        audio: "assets/audio/bracha-on-pizza-sfx8.mp3",
         niche: "brachot",
         quiz: [
           {
