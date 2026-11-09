@@ -13,6 +13,9 @@
    "נכון מאוד" והתשובה, אחרי תשובה נכונה (עם התשואות; בקובץ יש שקט קצר בהתחלה, כדי שיתנגן מהלחיצה עצמה, כי טלפון מרשה
    צליל רק מלחיצה). תשובה לא נכונה: ידעני "אוי, לא... גם אני טעיתי", ועל התשובה המצחיקה "זאת התשובה שאני הייתי בוחר!".
    כל ההקלטות על אותו רכיב שמע: רכיב שכבר התנגן מותר לנגן שוב בלי לחיצה.
+   אברהם, 2026-11-09 בערב: (1) אחרי תשובה נכונה, כשהרב מסיים לומר "נכון מאוד", עוברים לבד לשאלה הבאה (הכפתור נשאר למי
+   שממהר, בלי החץ). (2) בזמן שידעני קורא "א'... ב'..." התשובה שהוא קורא מודגשת: cues = [א, ב, ג, ד, סוף הקריאה] בשניות
+   בתוך קובץ השאלה (Tools/brachot_quiz/quiz_lines.py, quiz_cues.json).
 --------------------------------------------------------------- */
 (function () {
   const LETTERS = ["א", "ב", "ג", "ד"];
@@ -21,10 +24,14 @@
   let lastFocus = null;
   let voice = null; // one element for every line of the questions (see above)
   let voiceKind = null; // "ask" while the question is read, "ok" / "react" for the answers
-  const WRONG = "assets/audio/quiz/yedani-wrong.mp3";
-  const FUNNY = "assets/audio/quiz/yedani-funny.mp3";
+  const WRONG = "assets/audio/quiz/yedani-wrong-2.mp3";
+  const FUNNY = "assets/audio/quiz/yedani-funny-2.mp3";
   let current = null;
   let clap = null;
+  let reading = 0; // requestAnimationFrame id while Yedani reads the answers
+  let autoNext = 0; // timeout id: the next question after a right answer
+  const AFTER_OK = 900; // ms after the Rav finishes, then the next question
+  const NO_OK = 3200; // ms when there is no Rav line (or a phone would not play it): after the applause
   // a right answer (Avraham, 2026-11-05): applause, and confetti falling from the top of the page. The applause is 3.2 s of a
   // public-domain recording, about 7 LU under the narration; with reduced motion only the applause.
   const CLAP = "assets/audio/quiz/applause.mp3";
@@ -122,22 +129,81 @@
     if (voice && !voice.paused) voice.pause();
     voiceKind = null;
     listenLabel();
+    stopReading();
+  }
+
+  // the answer Yedani is reading right now lights up (cues: see the top of this file)
+  function stopReading() {
+    if (reading) cancelAnimationFrame(reading);
+    reading = 0;
+    if (card) card.querySelectorAll(".quiz-sheet__option.is-reading").forEach((b) => b.classList.remove("is-reading"));
+  }
+
+  function trackReading() {
+    reading = 0;
+    const q = question();
+    if (!q || !q.cues || voiceKind !== "ask" || !voice || voice.paused) {
+      stopReading();
+      return;
+    }
+    const t = voice.currentTime;
+    let k = -1;
+    for (let i = 0; i < 4; i++) if (t >= q.cues[i]) k = i;
+    if (q.cues[4] && t >= q.cues[4]) k = -1; // the music after the last answer
+    card.querySelectorAll("[data-act='answer']").forEach((b, i) => b.classList.toggle("is-reading", i === k));
+    reading = requestAnimationFrame(trackReading);
+  }
+
+  function cancelAutoNext() {
+    if (autoNext) clearTimeout(autoNext);
+    autoNext = 0;
+    if (current) current.waitOk = false;
+  }
+
+  function goNext() {
+    cancelAutoNext();
+    if (!current || current.at >= current.list.length - 1) return;
+    stopSound();
+    current.at += 1;
+    render(true);
   }
 
   function playClip(src, kind) {
     if (!voice) {
       voice = new Audio();
       voice.preload = "auto";
-      voice.addEventListener("ended", () => { voiceKind = null; listenLabel(); });
+      voice.addEventListener("ended", () => {
+        const was = voiceKind;
+        voiceKind = null;
+        listenLabel();
+        stopReading();
+        // the Rav finished "נכון מאוד": on to the next question
+        if (was === "ok" && current && current.waitOk) {
+          cancelAutoNext();
+          autoNext = setTimeout(goNext, AFTER_OK);
+        }
+      });
+      voice.addEventListener("playing", () => {
+        if (voiceKind === "ask" && !reading) reading = requestAnimationFrame(trackReading);
+      });
     }
     if (window.zkbPauseMain) window.zkbPauseMain(); // the episode stops while the question is read
     voice.pause();
+    stopReading();
     voice.src = src;
     voiceKind = kind;
     listenLabel();
     const p = voice.play();
     // no sound allowed yet (a phone, the end of an episode, no tap): the "listen" button is there
-    if (p && p.catch) p.catch(() => { if (voiceKind === kind) { voiceKind = null; listenLabel(); } });
+    if (p && p.catch) p.catch(() => {
+      if (voiceKind !== kind) return;
+      voiceKind = null;
+      listenLabel();
+      if (kind === "ok" && current && current.waitOk) { // no Rav: still on to the next question
+        cancelAutoNext();
+        autoNext = setTimeout(goNext, NO_OK);
+      }
+    });
   }
 
   function question() {
@@ -179,16 +245,18 @@
       <p class="quiz-sheet__note" role="status" aria-live="polite"></p>
       <div class="share-sheet__actions quiz-sheet__after" hidden>
         ${last ? (o.onShare ? `<button class="btn btn--primary share-sheet__primary" type="button" data-act="share">📤 שיתוף ההקלטה</button>` : "")
-               : `<button class="btn btn--primary share-sheet__primary" type="button" data-act="next">לשאלה הבאה ←</button>`}
+               : `<button class="btn btn--primary share-sheet__primary" type="button" data-act="next">לשאלה הבאה</button>`}
         <button class="share-sheet__link" type="button" data-act="close">סגירה</button>
       </div>`;
     current.done = false;
+    current.waitOk = false;
     card.querySelector("[data-act='answer']").focus();
     if (autoplay) playSound();
   }
 
   function close() {
     if (!root || root.hidden) return;
+    cancelAutoNext();
     stopSound();
     root.hidden = true;
     document.body.style.overflow = "";
@@ -208,7 +276,11 @@
       card.querySelectorAll("[data-act='answer']").forEach((b) => { b.disabled = b !== btn; });
       note.textContent = `כל הכבוד! 🎉 ${q.explain || ""}`.trim();
       celebrate();
+      const more = current.at < current.list.length - 1;
+      cancelAutoNext();
+      if (more) current.waitOk = true; // the next question comes on its own once the Rav finishes (Avraham, 2026-11-09)
       if (q.audioOk) playClip(q.audioOk, "ok"); // the Rav: "נכון מאוד!" and the answer, over the applause
+      else if (more) autoNext = setTimeout(goNext, NO_OK);
       const after = card.querySelector(".quiz-sheet__after");
       after.hidden = false;
       const first = after.querySelector("button");
@@ -227,12 +299,12 @@
     const act = el.dataset.act;
     if (act === "close") close();
     else if (act === "answer") answer(el);
-    else if (act === "listen") (voiceKind === "ask" ? stopSound() : playSound());
-    else if (act === "next" && current) {
-      stopSound();
-      current.at += 1;
-      render(true); // the tap on "next" is the go-ahead to read the next question
+    else if (act === "listen") {
+      cancelAutoNext(); // hearing the question again: no jump to the next one in the middle
+      if (voiceKind === "ask") stopSound();
+      else playSound();
     }
+    else if (act === "next" && current) goNext(); // the tap on "next" is the go-ahead to read the next question
     else if (act === "share" && current) {
       const fn = current.o.onShare;
       close();
