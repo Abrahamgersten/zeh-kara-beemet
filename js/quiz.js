@@ -8,14 +8,21 @@
 
    window.ZkbQuiz.open(o)  o = { title, quiz: [{ question, options[4], answer, funny, explain, audio }, ...], autoplay, onShare() }
    עד שלוש שאלות לפרק (2026-11-05): "שאלה 1 מתוך 3", ואחרי תשובה נכונה "לשאלה הבאה"; בסוף, השיתוף.
-   autoplay: השאלה מושמעת מיד (לחיצה על הכפתור). בסוף פרק לא, כי "נגן ברצף" אולי כבר מנגן את הפרק הבא.
+   השאלה מושמעת מיד כשהיא מופיעה, גם בסוף פרק (אברהם, 2026-11-09: "כמובן שהאודיו בשאלות יוקרא אוטומטית עם הופעת השאלה").
+   ידעני והרב (2026-11-09, Tools/brachot_quiz/quiz_lines.py): audio = ידעני שואל (ולפעמים מתייעץ קודם עם הרב), audioOk = הרב:
+   "נכון מאוד" והתשובה, אחרי תשובה נכונה (עם התשואות; בקובץ יש שקט קצר בהתחלה, כדי שיתנגן מהלחיצה עצמה, כי טלפון מרשה
+   צליל רק מלחיצה). תשובה לא נכונה: ידעני "אוי, לא... גם אני טעיתי", ועל התשובה המצחיקה "זאת התשובה שאני הייתי בוחר!".
+   כל ההקלטות על אותו רכיב שמע: רכיב שכבר התנגן מותר לנגן שוב בלי לחיצה.
 --------------------------------------------------------------- */
 (function () {
   const LETTERS = ["א", "ב", "ג", "ד"];
   let root = null;
   let card = null;
   let lastFocus = null;
-  let sound = null;
+  let voice = null; // one element for every line of the questions (see above)
+  let voiceKind = null; // "ask" while the question is read, "ok" / "react" for the answers
+  const WRONG = "assets/audio/quiz/yedani-wrong.mp3";
+  const FUNNY = "assets/audio/quiz/yedani-funny.mp3";
   let current = null;
   let clap = null;
   // a right answer (Avraham, 2026-11-05): applause, and confetti falling from the top of the page. The applause is 3.2 s of a
@@ -106,13 +113,31 @@
     }
   }
 
-  function stopSound() {
-    if (sound) {
-      sound.pause();
-      sound = null;
-    }
+  function listenLabel() {
     const b = card && card.querySelector("[data-act='listen']");
-    if (b) b.textContent = "🔊 השמעת השאלה";
+    if (b) b.textContent = voiceKind === "ask" ? "⏸ עצירת השמעה" : "🔊 השמעת השאלה";
+  }
+
+  function stopSound() {
+    if (voice && !voice.paused) voice.pause();
+    voiceKind = null;
+    listenLabel();
+  }
+
+  function playClip(src, kind) {
+    if (!voice) {
+      voice = new Audio();
+      voice.preload = "auto";
+      voice.addEventListener("ended", () => { voiceKind = null; listenLabel(); });
+    }
+    if (window.zkbPauseMain) window.zkbPauseMain(); // the episode stops while the question is read
+    voice.pause();
+    voice.src = src;
+    voiceKind = kind;
+    listenLabel();
+    const p = voice.play();
+    // no sound allowed yet (a phone, the end of an episode, no tap): the "listen" button is there
+    if (p && p.catch) p.catch(() => { if (voiceKind === kind) { voiceKind = null; listenLabel(); } });
   }
 
   function question() {
@@ -122,20 +147,14 @@
   function playSound() {
     const q = question();
     if (!q || !q.audio) return;
-    if (window.zkbPauseMain) window.zkbPauseMain(); // the episode stops while the question is read
-    stopSound();
-    sound = new Audio(q.audio);
-    const b = card.querySelector("[data-act='listen']");
-    if (b) b.textContent = "⏸ עצירת השמעה";
-    sound.addEventListener("ended", stopSound);
-    sound.play().catch(stopSound);
+    playClip(q.audio, "ask");
   }
 
   function open(o) {
     ensure();
     lastFocus = document.activeElement;
     current = { o, list: [].concat(o.quiz), at: 0, done: false };
-    render(o.autoplay);
+    render(true); // read as soon as it appears, from the button and at the end of an episode (Avraham, 2026-11-09)
     root.hidden = false;
     document.body.style.overflow = "hidden";
     if (!clap) {
@@ -189,6 +208,7 @@
       card.querySelectorAll("[data-act='answer']").forEach((b) => { b.disabled = b !== btn; });
       note.textContent = `כל הכבוד! 🎉 ${q.explain || ""}`.trim();
       celebrate();
+      if (q.audioOk) playClip(q.audioOk, "ok"); // the Rav: "נכון מאוד!" and the answer, over the applause
       const after = card.querySelector(".quiz-sheet__after");
       after.hidden = false;
       const first = after.querySelector("button");
@@ -198,6 +218,7 @@
     btn.classList.add("is-wrong");
     btn.disabled = true;
     note.textContent = i === q.funny ? "😂 תשובה מצחיקה, אבל לא נכונה. נסו שוב!" : "לא בדיוק. נסו שוב! 💪";
+    if (q.audio) playClip(i === q.funny ? FUNNY : WRONG, "react"); // Yedani, only on the questions he reads
     const next = card.querySelector("[data-act='answer']:not([disabled])");
     if (next) next.focus();
   }
@@ -206,7 +227,7 @@
     const act = el.dataset.act;
     if (act === "close") close();
     else if (act === "answer") answer(el);
-    else if (act === "listen") (sound ? stopSound() : playSound());
+    else if (act === "listen") (voiceKind === "ask" ? stopSound() : playSound());
     else if (act === "next" && current) {
       stopSound();
       current.at += 1;
