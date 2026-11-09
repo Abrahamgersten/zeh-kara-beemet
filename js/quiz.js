@@ -194,6 +194,7 @@
     voiceKind = kind;
     listenLabel();
     const p = voice.play();
+    if (kind === "ask" && !reading) reading = requestAnimationFrame(trackReading); // also while it is still loading
     // no sound allowed yet (a phone, the end of an episode, no tap): the "listen" button is there
     if (p && p.catch) p.catch(() => {
       if (voiceKind !== kind) return;
