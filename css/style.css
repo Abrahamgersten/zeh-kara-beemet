@@ -1815,6 +1815,26 @@ body.auth-pending { visibility: hidden; }
 .gift-mode #push-optin,
 .gift-mode #install-banner { display: none !important; }
 .gift-mode body { padding-bottom: 4.6rem; }
+/* "מומלץ" on the ברכות folder, for the guests of the gift link (Avraham, 2026-11-10): a gold corner ribbon; the folder
+   clips it (overflow: hidden). */
+.gift-mode #cat-what-to-do-brachot .niche__folder::after {
+  content: "מומלץ";
+  position: absolute;
+  top: 26px;
+  left: -52px;
+  z-index: 2;
+  width: 190px;
+  padding: 0.42rem 0;
+  transform: rotate(-45deg);
+  background: linear-gradient(180deg, var(--gold-300), var(--gold-500));
+  box-shadow: 0 8px 16px -8px rgba(0, 0, 0, 0.6);
+  color: #3a1c05;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  line-height: 1.2;
+  text-align: center;
+  pointer-events: none;
+}
 .gift-bar {
   position: fixed;
   inset-inline: 0;

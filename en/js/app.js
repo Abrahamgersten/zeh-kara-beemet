@@ -134,7 +134,7 @@ const CATEGORIES = [
     episodes: [
       {
         title: "Birkat Hamazon",
-        description: "Why do we say a blessing after we eat? Who really gives us our bread - and what are the four blessings of Birkat Hamazon? A chance to stop, say thank you, and remember that our abundance is never to be taken for granted.",
+        description: "Yedani and his friends finish their sandwiches in the park and run off to play soccer, but the Rav calls to them from the bench: what about Birkat Hamazon? Why we say a blessing after we eat, who really gives us our bread, and what the four blessings are.",
         image: "../assets/images/en/birkat-hamazon.jpeg",
         audio: "../assets/audio/en/birkat-hamazon-sfx6.mp3",
       },
@@ -146,31 +146,31 @@ const CATEGORIES = [
       },
       {
         title: "Why Do We Make a Bracha?",
-        description: "Why do we make a bracha before we eat, do we need one even for a tiny crumb, and can't we just say Shehakol on everything? Everything you need to know about the bracha before eating.",
+        description: "Yedani \"just tastes\" a crumb of a cookie at the bakery, and the Rav sees him. Why do we make a bracha before we eat, do we need one even for a tiny crumb, and can't we just say Shehakol on everything?",
         image: "../assets/images/en/why-we-bless.jpeg",
         audio: "../assets/audio/en/why-we-bless-sfx6.mp3",
       },
       {
         title: "How Long May We Wait Between the Bracha and Eating?",
-        description: "You made a bracha on an apple, and then a friend started talking to you - now what? When do we need to make the bracha again, and when is it okay to pause between the bracha and eating?",
+        description: "Yedani made a bracha on an apple at recess, saw the Rav, and started telling him all about the class trip. Only then did he remember that he hadn't taken a single bite! When do we need to make the bracha again, and when is it okay to pause?",
         image: "../assets/images/en/bracha-to-eating-gap.jpeg",
         audio: "../assets/audio/en/bracha-to-eating-gap-sfx6.mp3",
       },
       {
         title: "What Bracha Do We Make on Medicine?",
-        description: "Do we make a bracha on medicine, or on the water we drink to swallow it? And what do we do if we remember in the middle of eating that we forgot to make a bracha? Everything you need to know, simply explained.",
+        description: "Yedani is sick, and the Rav comes to visit him. Do we make a bracha on medicine? On the water we drink to swallow it? And what do we do if we remember in the middle of a cookie that we forgot to make a bracha?",
         image: "../assets/images/en/bracha-on-medicine.jpeg",
         audio: "../assets/audio/en/bracha-on-medicine-sfx7.mp3",
       },
       {
         title: "The Main Food and the Side Food",
-        description: "Eating tuna on a cracker - do we make a bracha on the cracker too? What ikar and tafel mean, why we don't make a bracha on the water we drink after a hot pepper, and when we do need a bracha on the side food after all.",
+        description: "At his cousin's bar mitzvah kiddush, Yedani builds a tower of tuna on one cracker. Does the cracker need a bracha too? The Rav explains what ikar and tafel mean, and why we don't make a bracha on the water we drink after a hot pepper.",
         image: "../assets/images/en/bracha-ikar-tafel.jpeg",
         audio: "../assets/audio/en/bracha-ikar-tafel-sfx6.mp3",
       },
       {
         title: "Which Bracha Comes First?",
-        description: "A plate of cookies, fruits and vegetables - which bracha do we make first? The memory sign MaGA'Sh, the fruit we love most, the Seven Species and the word \"land\" in the pasuk, and what to do with a whole fruit and a cut one.",
+        description: "Yedani comes to the Rav's housewarming and finds a giant plate: cookies, grapes, dates, apples and cucumbers. Which bracha comes first? The memory sign MaGA'Sh, the fruit we love most, and the Seven Species.",
         image: "../assets/images/en/bracha-precedence.jpeg",
         audio: "../assets/audio/en/bracha-precedence-sfx8.mp3",
       },
@@ -1370,6 +1370,15 @@ function setupContinuousDropdowns() {
   window.addEventListener("resize", () => closeAll());
 }
 
+// The English recordings live in a repo of their own since 2026-11-10 (the site passed GitHub Pages' 1 GB limit):
+// zeh-kara-beemet-audio-en, same file names. On the live site they play from there; on Avraham's computer
+// assets/audio/en is a junction to that repo's folder, so the relative path still works.
+const AUDIO_EN_BASE = "https://abrahamgersten.github.io/zeh-kara-beemet-audio-en/";
+function audioUrl(src) {
+  const m = /^\.\.\/assets\/audio\/en\/([^/]+)$/.exec(src || "");
+  return m && location.hostname.endsWith("github.io") ? AUDIO_EN_BASE + m[1] : src;
+}
+
 function setupPlayers() {
   const players = Array.from(document.querySelectorAll(".player:not(.player--soon)"));
   // "Play in a row" stays inside the section it started in (Avraham, 2026-10-08) - each episode knows its section's
@@ -1468,7 +1477,7 @@ function setupPlayers() {
     }
     active = ep;
     pendingSeek = ep.pos;
-    audio.src = ep.src;
+    audio.src = audioUrl(ep.src);
   }
 
   function start(ep) {

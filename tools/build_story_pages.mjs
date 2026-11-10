@@ -103,6 +103,14 @@ function loadCategories(appJsPath) {
   return vm.runInNewContext(`(${src.slice(start + "const CATEGORIES = ".length, end + 2)})`, {});
 }
 
+// the whole recording, for a page without a link version: the English recordings live in the repo
+// zeh-kara-beemet-audio-en since 2026-11-10 (same rule as audioUrl() in en/js/app.js)
+const AUDIO_EN_SITE = "https://abrahamgersten.github.io/zeh-kara-beemet-audio-en/";
+function fullAudio(up, audioPath) {
+  const m = /^\.\.\/assets\/audio\/en\/([^/]+)$/.exec(audioPath);
+  return m ? AUDIO_EN_SITE + m[1] : up + audioPath;
+}
+
 function slugOf(audioPath) {
   const name = path.posix.basename(audioPath);
   return name.includes("-sfx") ? name.slice(0, name.lastIndexOf("-sfx")) : name.replace(/\.[^.]+$/, "");
@@ -295,7 +303,7 @@ ${MARKER}
           <h1 class="content-card__title">${esc(ep.title)}</h1>
           ${ep.description ? `<p class="content-card__desc"><strong>${esc(L.about)}</strong>${esc(ep.description)}</p>` : ""}
           <div class="player-wrap">
-            <div class="player" data-src="${esc(linkAudio || up + ep.audio)}"${statusAudio ? ` data-src-status="${esc(statusAudio)}"` : ""} data-title="${esc(ep.title)}" data-brand="${esc(L.brand)}" data-label-play="${esc(L.play)}" data-label-pause="${esc(L.pause)}" data-label-resume="${esc(L.resume)}">
+            <div class="player" data-src="${esc(linkAudio || fullAudio(up, ep.audio))}"${statusAudio ? ` data-src-status="${esc(statusAudio)}"` : ""} data-title="${esc(ep.title)}" data-brand="${esc(L.brand)}" data-label-play="${esc(L.play)}" data-label-pause="${esc(L.pause)}" data-label-resume="${esc(L.resume)}">
               <button class="player__btn" type="button" aria-label="${esc(L.play)}">▶</button>
               <div class="player__body">
                 <input class="player__seek" type="range" min="0" max="100" value="0" step="0.1" aria-label="${esc(L.seek)}">

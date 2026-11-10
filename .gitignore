@@ -5,3 +5,6 @@ Thumbs.db
 # work files, background music library) - not part of the deployed site.
 # Finished per-episode audio gets copied into assets/audio/ deliberately.
 יצירת אודיו באנגלית/
+
+# English recordings live in the repo zeh-kara-beemet-audio-en since 2026-11-10; this folder is a junction to its local folder
+/assets/audio/en
