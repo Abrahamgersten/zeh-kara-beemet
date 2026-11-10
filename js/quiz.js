@@ -24,8 +24,10 @@
   let lastFocus = null;
   let voice = null; // one element for every line of the questions (see above)
   let voiceKind = null; // "ask" while the question is read, "ok" / "react" for the answers
-  const WRONG = "assets/audio/quiz/yedani-wrong-2.mp3";
-  const FUNNY = "assets/audio/quiz/yedani-funny-2.mp3";
+  // the site's root, from this file's own address: the same files serve the site and the story pages (s/<slug>/)
+  const ROOT = document.currentScript && document.currentScript.src ? new URL("../", document.currentScript.src).href : "";
+  const WRONG = ROOT + "assets/audio/quiz/yedani-wrong-2.mp3";
+  const FUNNY = ROOT + "assets/audio/quiz/yedani-funny-2.mp3";
   let current = null;
   let clap = null;
   let reading = 0; // requestAnimationFrame id while Yedani reads the answers
@@ -34,7 +36,7 @@
   const NO_OK = 3200; // ms when there is no Rav line (or a phone would not play it): after the applause
   // a right answer (Avraham, 2026-11-05): applause, and confetti falling from the top of the page. The applause is 3.2 s of a
   // public-domain recording, about 7 LU under the narration; with reduced motion only the applause.
-  const CLAP = "assets/audio/quiz/applause.mp3";
+  const CLAP = ROOT + "assets/audio/quiz/applause.mp3";
   const COLORS = ["#ffb347", "#ffd28f", "#0a7681", "#22bcc7", "#f2716b", "#7bc96f", "#b388eb", "#ffffff"];
 
   function confetti() {

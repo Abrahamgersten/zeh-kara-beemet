@@ -116,6 +116,16 @@
   </div>
 
   <div class="admin-card">
+    <h2>🎁 מתנה על סטטוס, ומתעניינים בתוכנית המנויים</h2>
+    <p class="admin-page__sub" style="margin-bottom:1em">מי שהעלה סטטוס מקבל קישור מיוחד לאתר ובוחר פרק אחד (פרק ביום, עד שניים בשבוע). מי שמנסה פרק נוסף יכול להשאיר טלפון, והטלפונים נשמרים כאן.</p>
+    <div class="stats-grid" id="gift-stats"><div class="stat-box">טוען...</div></div>
+    <p class="insights-subhead">ביקשו שנעדכן אותם כשתוכנית המנויים נפתחת</p>
+    <div id="gift-leads" style="overflow-x:auto"></div>
+    <p class="insights-subhead">הפרקים שנבחרו במתנה</p>
+    <div id="gift-top" style="overflow-x:auto"></div>
+  </div>
+
+  <div class="admin-card">
     <h2>🔗 קישורי הסיפורים (דפי השיתוף)</h2>
     <p class="admin-page__sub" style="margin-bottom:1em">כמה פעמים נפתח כל קישור שיצא לקבוצות, וכמה האזינו בפועל. הדפים ציבוריים, והספירה בלי שום פרט מזהה.</p>
     <div class="stats-grid" id="story-link-stats"><div class="stat-box">טוען...</div></div>
@@ -218,6 +228,7 @@
     await loadEngagementOverview(supabase);
     await loadFamilyEngagement(supabase);
     await loadContentEngagement(supabase);
+    await loadGift(supabase);
     await loadStoryLinkStats(supabase);
     await loadDropoff(supabase);
     await loadPushStats(supabase);
@@ -431,6 +442,48 @@
         <div class="weekday-chart__bar" style="height:${Math.max(4, Math.round((n / max) * 100))}%" title="${n}"></div>
         <span class="weekday-chart__label">${labels[i]}</span>
       </div>`).join("");
+  }
+
+  // המתנה על סטטוס (js/gift.js) והטלפונים של המתעניינים בתוכנית המנויים - supabase/migrations/0026_status_gift.sql.
+  async function loadGift(supabase) {
+    const statsHost = document.getElementById("gift-stats");
+    const leadsHost = document.getElementById("gift-leads");
+    const topHost = document.getElementById("gift-top");
+    const { data, error } = await supabase.rpc("admin_gift_overview");
+    if (error) {
+      statsHost.innerHTML = `<p>שגיאה: ${error.message}</p>`;
+      return;
+    }
+    const escapeHtml = (v) => String(v).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+    const titles = {};
+    try {
+      const res = await fetch("s/index.json", { cache: "no-store" });
+      if (res.ok) for (const s of (await res.json()).stories || []) titles[s.slug] = s.title;
+    } catch (e) {
+      // בלי הרשימה מוצג שם הקובץ במקום שם הפרק
+    }
+    const name = (slug) => (slug ? escapeHtml(titles[slug] || slug) : "");
+    const leads = data.leads || [];
+    statsHost.innerHTML = [
+      [data.links || 0, "קיבלו קישור מתנה"],
+      [data.people || 0, "אנשים שהאזינו במתנה"],
+      [data.plays || 0, "פרקים שנבחרו במתנה"],
+      [data.plays_7d || 0, "מהם ב-7 ימים"],
+      [leads.length, "השאירו טלפון"],
+    ].map(([v, l]) => `<div class="stat-box"><span class="stat-box__value">${v}</span><span class="stat-box__label">${l}</span></div>`).join("");
+    leadsHost.innerHTML = leads.length
+      ? `<table class="admin-table">
+          <thead><tr><th scope="col">טלפון</th><th scope="col">מתי</th><th scope="col">הפרק שרצו לשמוע</th></tr></thead>
+          <tbody>${leads.map((l) => `<tr><td dir="ltr" style="text-align:start">${escapeHtml(l.phone)}</td><td>${new Date(l.created_at).toLocaleString("he-IL", { dateStyle: "short", timeStyle: "short" })}</td><td>${name(l.slug)}</td></tr>`).join("")}</tbody>
+        </table>`
+      : `<p class="admin-page__sub">עוד אף אחד לא השאיר טלפון.</p>`;
+    const top = data.top || [];
+    topHost.innerHTML = top.length
+      ? `<table class="admin-table">
+          <thead><tr><th scope="col">פרק</th><th scope="col">כמה בחרו בו</th></tr></thead>
+          <tbody>${top.map((t) => `<tr><td>${name(t.slug)}</td><td>${t.plays}</td></tr>`).join("")}</tbody>
+        </table>`
+      : `<p class="admin-page__sub">עוד לא נבחר פרק במתנה.</p>`;
   }
 
   // מונה דפי השיתוף (s/<slug>/, en/s/<slug>/) - supabase/migrations/0012_story_link_events.sql.

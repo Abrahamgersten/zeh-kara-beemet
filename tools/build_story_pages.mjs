@@ -39,6 +39,7 @@ const LANGS = {
     dir: "rtl",
     fonts: "https://fonts.googleapis.com/css2?family=Suez+One&family=Heebo:wght@300;400;500;600;700;800&display=swap",
     brand: "זה קרה באמת",
+    quiz: "📖 בדוק את עצמך",       // the questions are Hebrew only (js/quiz.js)
     about: "על הפרק: ",
     play: "הפעל הקראה",
     pause: "השהה",
@@ -206,7 +207,12 @@ function pageHTML(L, lang, cat, ep, slug) {
   const kind = cat.id === "tzadikim" ? "story" : "recording";
   // video: a joke is shared as a video (js/share-sheet.js), with the paths of this page
   const video = cat.id === "jokes" && lang === "he" && ep.video ? `${up}${ep.video}` : null;
-  const storyData = JSON.stringify(Object.assign({ slug, lang, kind, shareText: shareMessage(L, lang, cat, ep, slug, pageUrl) }, status ? { status } : {}, video ? { video } : {})).replace(/</g, "\\u003c");
+  // "check yourself" (Avraham, 2026-11-10: also on the single-story page of a Yedani episode): the episode's questions,
+  // with the paths of this page; js/quiz.js shows them from the button and at the end of the recording, as on the site
+  const quiz = L.quiz && ep.quiz
+    ? [].concat(ep.quiz).map((q) => Object.assign({}, q, q.audio ? { audio: up + q.audio } : {}, q.audioOk ? { audioOk: up + q.audioOk } : {}))
+    : null;
+  const storyData = JSON.stringify(Object.assign({ slug, lang, kind, shareText: shareMessage(L, lang, cat, ep, slug, pageUrl) }, status ? { status } : {}, video ? { video } : {}, quiz ? { quiz } : {})).replace(/</g, "\\u003c");
 
   let mediaHTML;
   if (main) {
@@ -300,7 +306,8 @@ ${MARKER}
               </div>
             </div>
             <p class="story-player-error" role="alert" hidden>${esc(L.loadError)}</p>
-          </div>
+          </div>${quiz ? `
+          <div class="content-card__quiz"><button class="btn btn--primary content-card__quiz-btn" type="button" data-quiz>${esc(L.quiz)}</button></div>` : ""}
         </div>
       </article>
 
@@ -330,7 +337,8 @@ ${MARKER}
 </div>
 
 <script type="application/json" id="story-data">${storyData}</script>${status || video ? `
-<script src="${root}js/share-sheet.js" defer></script>` : ""}
+<script src="${root}js/share-sheet.js" defer></script>` : ""}${quiz ? `
+<script src="${root}js/quiz.js" defer></script>` : ""}
 <script src="${root}js/progress.js" defer></script>
 <script src="${root}js/story.js" defer></script>
 </body>

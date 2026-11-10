@@ -1807,3 +1807,67 @@ body.auth-pending { visibility: hidden; }
   .sparkle { animation: none !important; opacity: 0.45; }
   .hero__moon { display: none; }
 }
+
+/* ---------- the gift link (js/gift.js; Avraham, 2026-11-10): one episode for whoever posted a status ---------- */
+.gift-mode .player-continuous,
+.gift-mode .lang-switch,
+.gift-mode #points-widget,
+.gift-mode #push-optin,
+.gift-mode #install-banner { display: none !important; }
+.gift-mode body { padding-bottom: 4.6rem; }
+.gift-bar {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem 0.9rem;
+  flex-wrap: wrap;
+  padding: 0.7rem 1rem calc(0.7rem + env(safe-area-inset-bottom));
+  background: var(--gold-100);
+  border-top: 2px solid var(--gold-400);
+  color: var(--ink);
+  box-shadow: 0 -10px 26px -14px rgba(7, 34, 41, 0.45);
+  font-size: 0.98rem;
+  line-height: 1.45;
+  text-align: center;
+}
+.gift-bar__text { min-width: 0; }
+.gift-bar__btn {
+  flex: none;
+  min-height: 40px;
+  padding: 0.35em 1.2em;
+  border: 2px solid var(--teal-900);
+  border-radius: 999px;
+  background: var(--teal-900);
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.gift-bar__btn:hover { background: var(--teal-950); }
+.gift-bar__btn:focus-visible { outline: 3px solid var(--gold-600); outline-offset: 2px; }
+.content-card--gift { box-shadow: 0 0 0 4px var(--gold-400), var(--shadow-card); }
+.gift-sheet__lead { color: var(--teal-heading); font-size: 1.12rem; }
+.gift-sheet__text { margin: 0 0 0.7rem; line-height: 1.6; }
+.gift-sheet__hint { margin: 1.1rem 0 0; padding-top: 0.8rem; border-top: 1px solid var(--teal-200); font-size: 0.92rem; color: var(--ink-soft); line-height: 1.5; }
+.gift-sheet__ask[hidden], .gift-sheet__form[hidden] { display: none; }
+.gift-sheet__form { margin-top: 0.4rem; }
+.gift-sheet__label { display: block; font-weight: 700; margin-bottom: 0.35rem; color: var(--teal-heading); }
+.gift-sheet__input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.5em 0.8em;
+  border: 2px solid var(--teal-700);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  font-size: 1.1rem; /* 16px and up: an iPhone does not zoom into the field */
+  text-align: left;
+}
+.gift-sheet__input:focus-visible { outline: 3px solid var(--gold-400); outline-offset: 2px; }
+.gift-sheet__input[aria-invalid="true"] { border-color: var(--gold-700); }
+.gift-sheet .gift-sheet__note { min-height: 1.5em; font-size: 0.95rem; }

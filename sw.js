@@ -1,4 +1,4 @@
-const SHELL_CACHE = "zkb-shell-v29";
+const SHELL_CACHE = "zkb-shell-v30";
 const MEDIA_CACHE = "zkb-media-v43";
 
 const SHELL_ASSETS = [
@@ -9,6 +9,7 @@ const SHELL_ASSETS = [
   "./js/parasha-order.js",
   "./js/share-sheet.js",
   "./js/quiz.js",
+  "./js/gift.js",
   "./js/progress.js",
   "./js/push.js",
   "./manifest.json",

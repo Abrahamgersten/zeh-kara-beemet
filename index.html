@@ -22,12 +22,27 @@
 <body class="auth-pending">
 
 <script type="module">
-  import { guardGatedPage } from "./js/auth.js";
+  import { guardGatedPage, getSession, fetchEntitlement, isEntitled, revealPage } from "./js/auth.js";
   import { initPoints } from "./js/points.js";
   import "./js/analytics.js";
-  guardGatedPage({ loginUrl: "login.html", offerUrl: "offer.html" }).then((entitled) => {
-    if (entitled) initPoints();
-  });
+  // The gift link (?g=<code>, js/gift.js - Avraham, 2026-11-10): the site opens without login, for one episode. Only a
+  // logged-in subscriber who opens it gets the full site as usual. Any other link: the usual door, as before.
+  if (/[?&]g=[a-f0-9]{20}(?:&|$)/.test(location.search)) {
+    getSession()
+      .then((session) => (session ? fetchEntitlement() : null))
+      .then((row) => {
+        if (!isEntitled(row)) return;
+        window.zkbGiftOff = true;
+        if (window.ZkbGift) window.ZkbGift.disable();
+        revealPage();
+        initPoints();
+      })
+      .catch(() => {});
+  } else {
+    guardGatedPage({ loginUrl: "login.html", offerUrl: "offer.html" }).then((entitled) => {
+      if (entitled) initPoints();
+    });
+  }
 </script>
 
 <div id="install-banner" class="install-banner" hidden>
@@ -124,6 +139,7 @@
 <script src="js/quiz.js" defer></script>
 <script src="js/progress.js" defer></script>
 <script src="js/push.js" defer></script>
+<script src="js/gift.js" defer></script>
 <script src="js/app.js" defer></script>
 </body>
 </html>

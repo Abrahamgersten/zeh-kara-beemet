@@ -90,6 +90,10 @@
     const audio = new Audio();
     audio.preload = "metadata";
     audio.src = (fromStatus && el.dataset.srcStatus) || el.dataset.src;
+    // the "check yourself" question (js/quiz.js) stops the recording while it is read
+    window.zkbPauseMain = () => {
+      if (!audio.paused) audio.pause();
+    };
 
     // "המשך מאיפה שעצרתם" (אברהם, 2026-10-23) ומדידת ההאזנה לנקודות הנטישה - js/progress.js.
     // אותו מקום שמור כמו באתר המלא, לפי ההקלטה והשפה.
@@ -368,7 +372,18 @@
     }
   }
 
+  // "check yourself" on a Yedani episode's page (Avraham, 2026-11-10), as on the site: from the button the question is
+  // read at once; at the end of the recording it comes instead of the share invitation, and offers the share at its end
+  function openQuiz(autoplay) {
+    if (!STORY.quiz || !window.ZkbQuiz) return false;
+    const title = document.querySelector(".content-card__title");
+    const share = document.querySelector("[data-share]");
+    window.ZkbQuiz.open({ title: title ? title.textContent : "", quiz: STORY.quiz, autoplay, onShare: share ? () => share.click() : null });
+    return true;
+  }
+
   function inviteToStatus() {
+    if (openQuiz(false)) return;
     if (!window.ZkbShareSheet) return;
     if (/^joke-\d/.test(STORY.slug || "") && !jokeInviteDue()) return;
     track("popup");
@@ -382,5 +397,7 @@
     setupShare();
     const join = document.querySelector("[data-join]");
     if (join) join.addEventListener("click", () => track("join"));
+    const quizBtn = document.querySelector("[data-quiz]");
+    if (quizBtn) quizBtn.addEventListener("click", () => openQuiz(true));
   });
 })();
