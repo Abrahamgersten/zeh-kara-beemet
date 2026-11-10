@@ -1550,21 +1550,45 @@ body.auth-pending { visibility: hidden; }
 /* Yedani and the drawings of the question (Avraham, 2026-11-10): the boy of the groups' picture stands on a warm strip at
    the top of every question, with two or three drawings that belong to it (art: [...] on the question, Fluent Emoji, MIT). */
 .quiz-sheet__stage {
+  --stage-h: 118px;
+  --art-size: clamp(40px, 12vw, 52px);
+  position: relative;
+  isolation: isolate;
   display: flex;
   align-items: flex-end;
-  gap: 0.9rem;
-  height: 118px;
+  gap: 0.5rem;
+  height: var(--stage-h);
   margin: 0 0 0.8rem;
-  padding-inline: 0.9rem 2.4rem;
-  border-radius: 18px;
-  background: linear-gradient(180deg, transparent 38%, var(--gold-100) 38%);
+  padding-inline: 0.9rem;
 }
+/* the warm strip is its own layer so all four corners are rounded (the old gradient left the top corners square) */
+.quiz-sheet__stage::before {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 62%;
+  border-radius: 18px;
+  background: var(--gold-100);
+  z-index: -1;
+}
+/* short screens (a phone with the browser bars): a smaller stage, so the question and the next button stay in view */
+@media (max-height: 780px) { .quiz-sheet__stage { --stage-h: 92px; --art-size: 38px; margin-bottom: 0.5rem; } }
+@media (max-height: 700px) {
+  .quiz-sheet__stage { --stage-h: 76px; --art-size: 34px; margin-bottom: 0.3rem; }
+  .quiz-sheet__question { font-size: 1.25rem; margin-block: 0.2rem; }
+  .quiz-sheet__listen { margin: 0 0 0.3rem; }
+  .quiz-sheet__options { gap: 0.4rem; margin-top: 0.3rem; }
+  .quiz-sheet__option { padding: 0.5rem 0.8rem; }
+  .quiz-sheet__note { margin-top: 0.4rem; min-height: 0; }
+}
+@media (max-height: 560px) { .quiz-sheet__stage { --stage-h: 60px; --art-size: 28px; } }
 .quiz-sheet .quiz-sheet__stage img { border-radius: 0; box-shadow: none; } /* undo .lightbox img */
-.quiz-sheet__yedani { flex: none; width: auto; height: 118px; filter: drop-shadow(0 6px 8px rgba(60, 40, 10, 0.18)); }
-.quiz-sheet__art { display: flex; align-items: flex-end; gap: clamp(0.4rem, 2.4vw, 0.7rem); min-width: 0; padding-bottom: 0.55rem; }
+.quiz-sheet__yedani { flex: none; width: auto; height: var(--stage-h); filter: drop-shadow(0 6px 8px rgba(60, 40, 10, 0.18)); }
+/* the drawings are spread evenly over all the empty space between Yedani and the end of the strip */
+.quiz-sheet__art { flex: 1; display: flex; align-items: flex-end; justify-content: space-evenly; min-width: 0; padding-bottom: 0.55rem; }
 .quiz-sheet__art img {
-  width: clamp(40px, 12vw, 52px);
-  height: clamp(40px, 12vw, 52px);
+  width: var(--art-size);
+  height: var(--art-size);
   object-fit: contain;
   rotate: -7deg;
   filter: drop-shadow(0 5px 6px rgba(60, 40, 10, 0.2));
