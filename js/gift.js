@@ -165,7 +165,7 @@
       <p class="share-sheet__lead gift-sheet__lead">${esc(o.title)}</p>
       <p class="gift-sheet__text">במתנה אפשר להאזין היום לפרק אחד. אחרי שבוחרים אי אפשר להחליף, אבל אפשר לשמוע אותו שוב היום כמה שרוצים.</p>
       <div class="share-sheet__actions">
-        <button class="btn btn--primary share-sheet__primary" type="button" data-gift-yes data-gift-first>▶ כן, להאזין לפרק הזה</button>
+        <button class="btn btn--primary share-sheet__primary" type="button" data-gift-yes data-gift-first>כן, להאזין לפרק הזה</button>
         <button class="share-sheet__link" type="button" data-gift-close>רגע, אבחר פרק אחר</button>
       </div>`);
     card.querySelector("[data-gift-yes]").addEventListener("click", () => {
