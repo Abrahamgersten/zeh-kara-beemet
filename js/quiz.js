@@ -239,6 +239,10 @@
     const last = current.at === total - 1;
     card.innerHTML = `
       <button class="share-sheet__close" type="button" data-act="close" aria-label="סגירה">✕</button>
+      <div class="quiz-sheet__stage" aria-hidden="true">
+        <img class="quiz-sheet__yedani" src="${ROOT}assets/images/quiz/yedani.webp" alt="" width="239" height="420">
+        <span class="quiz-sheet__art">${(q.art || []).filter((k) => /^[a-z-]+$/.test(k)).map((k, i) => `<img src="${ROOT}assets/images/quiz/art/${k}.webp" alt="" width="160" height="160" style="--i:${i}">`).join("")}</span>
+      </div>
       <p class="quiz-sheet__eyebrow">📖 בדוק את עצמך${total > 1 ? `<span class="quiz-sheet__step"> · שאלה ${current.at + 1} מתוך ${total}</span>` : ""}</p>
       <h2 class="share-sheet__title quiz-sheet__question" id="quiz-title">${esc(q.question)}</h2>
       ${q.audio ? `<button class="share-sheet__link quiz-sheet__listen" type="button" data-act="listen">🔊 השמעת השאלה</button>` : ""}

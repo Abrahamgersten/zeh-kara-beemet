@@ -143,6 +143,7 @@ const CATEGORIES = [
         niche: "brachot",
         quiz: [
           {
+            art: ["bread", "plate", "sparkles"],
             question: "מכמה ברכות מורכבת ברכת המזון?",
             options: ["משתי ברכות", "מארבע ברכות", "משבע ברכות", "תלוי כמה משולשי פיצה אכלתי 🍕"],
             answer: 1,
@@ -153,6 +154,7 @@ const CATEGORIES = [
             audioOk: "assets/audio/quiz/birkat-hamazon-q1-ok.mp3",
           },
           {
+            art: ["synagogue", "bread", "cake"],
             question: "מה אנחנו מזכירים בברכה השלישית של ברכת המזון?",
             options: ["את ירושלים, ומתפללים על בנייתה", "ארץ ישראל", "את כל הברואים שהשם נותן להם מזון", "את הקינוח, שעוד לא הגיע 🍰"],
             answer: 0,
@@ -163,6 +165,7 @@ const CATEGORIES = [
             audioOk: "assets/audio/quiz/birkat-hamazon-q2-ok.mp3",
           },
           {
+            art: ["wheat", "bread", "sun"],
             question: "מי באמת נותן לנו את הלחם?",
             options: ["האופה שאפה אותו", "החקלאי שגידל את החיטה", "הטוסטר, כמובן 🍞", "השם יתברך"],
             answer: 3,
@@ -189,6 +192,7 @@ const CATEGORIES = [
         niche: "brachot",
         quiz: [
           {
+            art: ["cookie", "magnifier"],
             question: "כמה צריך לאכול כדי שנהיה חייבים לברך לפני האכילה?",
             options: ["לפחות פרוסה שלמה", "אפילו פירור אחד קטן", "רק כשממש ממש רעבים", "רק אם העוגייה ממש טעימה 🍪"],
             answer: 1,
@@ -199,6 +203,7 @@ const CATEGORIES = [
             audioOk: "assets/audio/quiz/why-we-bless-q1-ok.mp3",
           },
           {
+            art: ["candy", "cup", "lollipop"],
             question: "מישהו בירך בטעות 'שהכל' על מאכל שיש לו ברכה אחרת. מה הדין?",
             options: ["צריך לבקש סליחה מהמאכל 🙇", "חייב לברך שוב את הברכה הנכונה", "יצא ידי חובה, אבל רק בדיעבד", "אסור לו לאכול מהמאכל הזה לעולם"],
             answer: 2,
@@ -209,6 +214,7 @@ const CATEGORIES = [
             audioOk: "assets/audio/quiz/why-we-bless-q2-ok.mp3",
           },
           {
+            art: ["cookie", "chocolate", "magnifier"],
             question: "נגיד שאנחנו לא יודעים איזו ברכה מברכים על מאכל, ניסינו לברר ולא הצלחנו. מה עושים?",
             options: ["אוכלים בלי ברכה", "מברכים את כל הברכות שאני מכיר, ליתר ביטחון", "מברכים 'שהכל נהיה בדברו'", "שואלים את המאכל מה הוא מעדיף שנברך עליו 🤔"],
             answer: 2,
@@ -228,6 +234,7 @@ const CATEGORIES = [
         niche: "brachot",
         quiz: [
           {
+            art: ["apple", "speech"],
             question: "בירכתם על תפוח, ואז סיפרתם לחבר מה קרה בהפסקה. מה עושים לפני שאוכלים?",
             options: ["אוכלים בכל זאת, הברכה עדיין בתוקף", "מחכים חמש דקות ואז אוכלים", "מבקשים מהתפוח סליחה יפה 🍎", "מברכים שוב"],
             answer: 3,
@@ -238,6 +245,7 @@ const CATEGORIES = [
             audioOk: "assets/audio/quiz/bracha-to-eating-gap-q1-ok.mp3",
           },
           {
+            art: ["green-apple", "hourglass"],
             question: "בירכתם על תפוח וחיכיתם קצת בשקט, בלי לדבר. צריך לברך שוב?",
             options: ["לא, אין צורך לברך שוב", "כן, תמיד מברכים שוב", "רק אם התפוח התחיל להשתעמם 🍏", "רק אם עברה יותר מדקה"],
             answer: 0,
@@ -248,6 +256,7 @@ const CATEGORIES = [
             audioOk: "assets/audio/quiz/bracha-to-eating-gap-q2-ok.mp3",
           },
           {
+            art: ["apple", "knife"],
             question: "אתם מחזיקים תפוח גדול ורוצים לחתוך אותו לפני שתאכלו אותו. מתי עדיף לברך?",
             options: ["אחרי שחותכים, על החתיכות", "באמצע החיתוך", "רק כשהתפוח מסכים שיחתכו אותו 🍎", "לפני שחותכים, על הפרי השלם"],
             answer: 3,
@@ -266,6 +275,7 @@ const CATEGORIES = [
         niche: "brachot",
         quiz: [
           {
+            art: ["pill", "drop"],
             question: "שתיתם מים רק כדי לבלוע תרופה, ולא כי הייתם צמאים. האם מברכים על המים?",
             options: ["כן, על מים תמיד מברכים", "לא מברכים", "מברכים רק אם המים ממש קרים", "רק אם הכוס מחייכת אליי 🥤"],
             answer: 1,
@@ -276,6 +286,7 @@ const CATEGORIES = [
             audioOk: "assets/audio/quiz/bracha-on-medicine-q1-ok.mp3",
           },
           {
+            art: ["pill", "spoon", "strawberry"],
             question: "יש לי תרופה עם טעם טוב. מה מברכים עליה?",
             options: ["לא מברכים על תרופה אף פעם", "שהכל נהיה בדברו", "בורא פרי העץ", "שואלים את התרופה אם היא טעימה 😋"],
             answer: 1,
@@ -286,6 +297,7 @@ const CATEGORIES = [
             audioOk: "assets/audio/quiz/bracha-on-medicine-q2-ok.mp3",
           },
           {
+            art: ["cookie", "sandwich"],
             question: "נזכרתם באמצע האוכל ששכחתם לברך, והפה שלכם מלא. מה עושים?",
             options: ["מסמנים לאוכל לחכות רגע 🤫", "מברכים עם הפה מלא, העיקר לברך", "יורקים את הכול החוצה", "מזיזים את האוכל לצד של הפה, מברכים וממשיכים"],
             answer: 3,
@@ -305,6 +317,7 @@ const CATEGORIES = [
         niche: "brachot",
         quiz: [
           {
+            art: ["fish", "cracker", "can"],
             question: "אוכלים ממרח טונה על קרקר, ואת הקרקר אוכלים רק כדי שיהיה נוח לאכול את הטונה. על מה מברכים?",
             options: ["'מזונות' על הקרקר וגם 'שהכל' על הטונה", "רק 'שהכל' על הטונה", "רק 'מזונות' על הקרקר", "מברכים את הקרקר שיהיה חזק ולא יישבר 🍘"],
             answer: 1,
@@ -315,6 +328,7 @@ const CATEGORIES = [
             audioOk: "assets/audio/quiz/bracha-ikar-tafel-q1-ok.mp3",
           },
           {
+            art: ["pepper", "fire", "drop"],
             question: "ילד אכל פלפל חריף, ושתה קצת מים רק כדי להקל על החריפות. מברכים על המים?",
             options: ["כן, על מים תמיד מברכים", "רק אם המים קרים מאוד", "לא, המים טפלים לפלפל", "מברכים על הפלפל שיירגע קצת 🌶️"],
             answer: 2,
@@ -325,6 +339,7 @@ const CATEGORIES = [
             audioOk: "assets/audio/quiz/bracha-ikar-tafel-q2-ok.mp3",
           },
           {
+            art: ["can", "cracker"],
             question: "בירכתם 'שהכל' על הטונה, ורק אחר כך החלטתם להוסיף קרקר שלא חשבתם עליו קודם. מה עושים?",
             options: ["מברכים גם על הקרקר", "לא מברכים, הברכה על הטונה פוטרת הכול", "מוותרים ולא אוכלים את הטונה", "מוותרים על הקרקר"],
             answer: 0,
@@ -344,6 +359,7 @@ const CATEGORIES = [
         niche: "brachot",
         quiz: [
           {
+            art: ["cookie", "apple"],
             question: "על השולחן עוגייה ותפוח. על מה מברכים קודם?",
             options: ["על התפוח, כי הוא בריא יותר", "על העוגייה, כי 'מזונות' באה לפני 'העץ'", "על מה שהכי קרוב לצלחת שלי", "על מי שצועק הכי חזק 'תאכל אותי קודם!' 🍪"],
             answer: 1,
@@ -354,6 +370,7 @@ const CATEGORIES = [
             audioOk: "assets/audio/quiz/bracha-precedence-q1-ok.mp3",
           },
           {
+            art: ["apple", "palm"],
             question: "לפניכם תפוח ותמר, ואתם אוהבים את שניהם באותה מידה. על איזה מהם מברכים?",
             options: ["על התמר, כי הוא משבעת המינים", "על התפוח, כי הוא גדול יותר", "מגרילים לפי ספירת גרעינים 🍎", "על מה שנחתך ראשון"],
             answer: 0,
@@ -364,6 +381,7 @@ const CATEGORIES = [
             audioOk: "assets/audio/quiz/bracha-precedence-q2-ok.mp3",
           },
           {
+            art: ["grapes", "palm"],
             question: "לפניכם ענבים ותמרים, ואתם אוהבים את שניהם באותה מידה. על איזה מהם מברכים?",
             options: ["על הענבים", "על מה שמתוק יותר", "על התמרים, כי הם קרובים יותר למילה 'ארץ'", "על מה שאחי עוד לא הספיק לחטוף 😋"],
             answer: 2,
@@ -383,6 +401,7 @@ const CATEGORIES = [
         niche: "brachot",
         quiz: [
           {
+            art: ["milk", "chocolate", "cat"],
             question: "בירכתם 'שהכל' על כוס שוקו, והיא נשפכה לפני ששתיתם. אמא הכינה כוס חדשה. מה עושים?",
             options: ["מברכים שוב על הכוס החדשה", "לא מברכים, הברכה הראשונה עדיין בתוקף", "מבקשים מהחתולה לברך הפעם במקומנו 🐱", "שותים בלי ברכה, כי כבר בירכנו היום"],
             answer: 0,
@@ -393,6 +412,7 @@ const CATEGORIES = [
             audioOk: "assets/audio/quiz/spilled-chocolate-milk-q1-ok.mp3",
           },
           {
+            art: ["milk", "cup"],
             question: "ומה אם הכוס השנייה כבר עמדה לפניכם כשבירכתם על הראשונה?",
             options: ["אז לא צריך לברך עליה", "צריך לברך עליה מחדש, כי בזמן הברכה לא התכוונתם לשתות ממנה", "מברכים רק חצי ברכה", "שותים את שתיהן ביחד, ליתר ביטחון 🥤"],
             answer: 1,
@@ -403,6 +423,7 @@ const CATEGORIES = [
             audioOk: "assets/audio/quiz/spilled-chocolate-milk-q2-ok.mp3",
           },
           {
+            art: ["orange", "sparkles"],
             question: "בירכתם על תפוז, והוא נפל על הרצפה והתלכלך. מה עדיף לעשות?",
             options: ["חייבים לאכול את כולו, גם אם הוא מלוכלך", "לוותר עליו בלי לחשוב פעמיים", "אם אפשר, לטעום ממנו מעט, כדי שהברכה לא תהיה לבטלה", "להגיד לתפוז 'לא נורא, זה קורה לכולם' 🍊"],
             answer: 2,
@@ -422,6 +443,7 @@ const CATEGORIES = [
         niche: "brachot",
         quiz: [
           {
+            art: ["pizza", "cheese"],
             question: "מה נוהגים בני ספרד לברך על משולש אחד של פיצה?",
             options: ["המוציא", "מזונות", "שהכל", "'בורא פרי הגבינה' 🍕"],
             answer: 0,
@@ -432,6 +454,7 @@ const CATEGORIES = [
             audioOk: "assets/audio/quiz/bracha-on-pizza-q1-ok.mp3",
           },
           {
+            art: ["pizza", "tap", "baguette"],
             question: "אשכנזי מתכוון לאכול שני משולשי פיצה או יותר. מה הוא מברך?",
             options: ["מזונות, כמו על משולש אחד", "נוטל ידיים ומברך המוציא", "מזונות פעמיים, פעם לכל משולש", "שואל את שליח הפיצה 🛵"],
             answer: 1,
@@ -442,6 +465,7 @@ const CATEGORIES = [
             audioOk: "assets/audio/quiz/bracha-on-pizza-q2-ok.mp3",
           },
           {
+            art: ["plate", "pizza", "clock"],
             question: "לפי מה קובעים כמה אוכל זו 'ארוחה של ממש'?",
             options: ["לפי גודל הקופסה של הפיצה", "לפי כמה שאני רגיל לאכול", "לפי כמה הבטן שלי מקרקרת 😋", "לפי כמה שאדם ממוצע אוכל בארוחת צהריים או ערב כדי לשבוע"],
             answer: 3,

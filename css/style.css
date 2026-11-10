@@ -1547,6 +1547,35 @@ body.auth-pending { visibility: hidden; }
 /* confetti for a right answer (js/quiz.js), over everything and never in the way */
 .confetti { position: fixed; inset: 0; z-index: 1000; overflow: hidden; pointer-events: none; perspective: 600px; }
 .confetti i { position: absolute; top: -16px; display: block; border-radius: 2px; will-change: transform, opacity; }
+/* Yedani and the drawings of the question (Avraham, 2026-11-10): the boy of the groups' picture stands on a warm strip at
+   the top of every question, with two or three drawings that belong to it (art: [...] on the question, Fluent Emoji, MIT). */
+.quiz-sheet__stage {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.9rem;
+  height: 118px;
+  margin: 0 0 0.8rem;
+  padding-inline: 0.9rem 2.4rem;
+  border-radius: 18px;
+  background: linear-gradient(180deg, transparent 38%, var(--gold-100) 38%);
+}
+.quiz-sheet .quiz-sheet__stage img { border-radius: 0; box-shadow: none; } /* undo .lightbox img */
+.quiz-sheet__yedani { flex: none; width: auto; height: 118px; filter: drop-shadow(0 6px 8px rgba(60, 40, 10, 0.18)); }
+.quiz-sheet__art { display: flex; align-items: flex-end; gap: clamp(0.4rem, 2.4vw, 0.7rem); min-width: 0; padding-bottom: 0.55rem; }
+.quiz-sheet__art img {
+  width: clamp(40px, 12vw, 52px);
+  height: clamp(40px, 12vw, 52px);
+  object-fit: contain;
+  rotate: -7deg;
+  filter: drop-shadow(0 5px 6px rgba(60, 40, 10, 0.2));
+  animation: quiz-art-in 0.32s cubic-bezier(0.23, 1, 0.32, 1) backwards, quiz-art-float 3.2s ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * 70ms + 80ms), calc(var(--i, 0) * -1.1s);
+}
+.quiz-sheet__art img:nth-child(2) { rotate: 6deg; margin-bottom: 0.5rem; }
+.quiz-sheet__art img:nth-child(3) { rotate: -3deg; }
+@keyframes quiz-art-in { from { opacity: 0; scale: 0.6; } }
+@keyframes quiz-art-float { 50% { translate: 0 -5px; } }
+@media (prefers-reduced-motion: reduce) { .quiz-sheet__art img { animation: none; } }
 .quiz-sheet__eyebrow { margin: 0 0 0.3rem; font-weight: 700; color: var(--ink-soft); }
 .quiz-sheet__step { font-weight: 600; }
 .quiz-sheet__question { line-height: 1.5; }
