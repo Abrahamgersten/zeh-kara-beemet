@@ -190,7 +190,7 @@ const CATEGORIES = [
         title: "פרק 7: המשחק שהסתבך",
         description: "פרדינן מצייר על הצד הריק של המפה אדם עם כובע גדול, ואחר כך עולה לו רעיון חדש: להכין ממנה פאזל. ובדיוק אז נשמעים צעדים במסדרון.",
         image: "assets/images/wondrous-map-ch07.jpeg",
-        audio: "assets/audio/wondrous-map-ch07-sfx5.mp3",
+        audio: "assets/audio/wondrous-map-ch07-sfx6.mp3",
       },
       {
         niche: "wondrous-map",
