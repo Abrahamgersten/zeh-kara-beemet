@@ -150,7 +150,7 @@ const CATEGORIES = [
         title: "פרק 2: האורח שלא היה אמור להיכנס",
         description: "עני עייף ורעב עומד בשער הארמון, והשומרים רוצים לגרש אותו. המלך מחליט אחרת, והאורח נפרד ממנו בברכה שהמלך עוד לא יודע כמה היא שווה.",
         image: "assets/images/wondrous-map-ch02.jpeg",
-        audio: "assets/audio/wondrous-map-ch02-sfx4.mp3",
+        audio: "assets/audio/wondrous-map-ch02-sfx5.mp3",
       },
       {
         niche: "wondrous-map",
@@ -166,7 +166,7 @@ const CATEGORIES = [
         title: "פרק 4: ממלכה בלי תמונה ברורה",
         description: "המלך יודע כמה זהב יש באוצר וכמה חיילים יש בצבא, אבל הוא לא יודע איך הממלכה שלו באמת נראית. ואיך מגינים על ממלכה כשלא יודעים איפה הנהר הצפוני?",
         image: "assets/images/wondrous-map-ch04.jpeg",
-        audio: "assets/audio/wondrous-map-ch04-sfx4.mp3",
+        audio: "assets/audio/wondrous-map-ch04-sfx5.mp3",
       },
       {
         niche: "wondrous-map",
@@ -174,7 +174,7 @@ const CATEGORIES = [
         title: "פרק 5: הרעיון המבריק",
         description: "היועץ הזקן, שכמעט אף פעם לא מדבר, קם ומציע רעיון אחד: מפה. שמונה שנים של מדידות בהרים ובנהרות, עד שהמפה הגדולה נתלית מאחורי כס המלכות.",
         image: "assets/images/wondrous-map-ch05.jpeg",
-        audio: "assets/audio/wondrous-map-ch05-sfx4.mp3",
+        audio: "assets/audio/wondrous-map-ch05-sfx5.mp3",
       },
       {
         niche: "wondrous-map",
@@ -182,7 +182,7 @@ const CATEGORIES = [
         title: "פרק 6: משחק קטן, בעיה גדולה",
         description: "שליח פורץ לאולם, המלך והשרים ממהרים לחדר המלחמה, ופרדינן נשאר לבד עם הצבעים שלו. הוא מחפש דף לצייר עליו, ואז מרים את הראש.",
         image: "assets/images/wondrous-map-ch06.jpeg",
-        audio: "assets/audio/wondrous-map-ch06-sfx4.mp3",
+        audio: "assets/audio/wondrous-map-ch06-sfx5.mp3",
       },
       {
         niche: "wondrous-map",
@@ -190,7 +190,7 @@ const CATEGORIES = [
         title: "פרק 7: המשחק שהסתבך",
         description: "פרדינן מצייר על הצד הריק של המפה אדם עם כובע גדול, ואחר כך עולה לו רעיון חדש: להכין ממנה פאזל. ובדיוק אז נשמעים צעדים במסדרון.",
         image: "assets/images/wondrous-map-ch07.jpeg",
-        audio: "assets/audio/wondrous-map-ch07-sfx4.mp3",
+        audio: "assets/audio/wondrous-map-ch07-sfx5.mp3",
       },
       {
         niche: "wondrous-map",
@@ -198,7 +198,7 @@ const CATEGORIES = [
         title: "פרק 8: איפה המפה?",
         description: "המלך חוזר וצריך את המפה מיד, אבל הקיר ריק, ועל הרצפה פזורות עשרות חתיכות קטנות. איך אפשר לחבר מפה שבה הכול נראה אותו דבר?",
         image: "assets/images/wondrous-map-ch08.jpeg",
-        audio: "assets/audio/wondrous-map-ch08-sfx4.mp3",
+        audio: "assets/audio/wondrous-map-ch08-sfx5.mp3",
       },
       {
         niche: "wondrous-map",
@@ -206,7 +206,7 @@ const CATEGORIES = [
         title: "פרק 9: הפתרון המפתיע",
         description: "המלך והיועצים יושבים בלי פתרון, ואז נשמעת דפיקה קלה בדלת. פרדינן נכנס עם יריעה מגולגלת ביד, וסוד קטן שמסתתר בצד השני שלה.",
         image: "assets/images/wondrous-map-ch09.jpeg",
-        audio: "assets/audio/wondrous-map-ch09-sfx4.mp3",
+        audio: "assets/audio/wondrous-map-ch09-sfx5.mp3",
       },
       {
         niche: "wondrous-map",
@@ -214,7 +214,7 @@ const CATEGORIES = [
         title: "פרק 10: איך מתקנים את העולם?",
         description: "מה הסיפור על המלך, על המפה ועל פרדינן מלמד אותנו? המשל והנמשל: איך מתקנים עולם שלם, ומאיפה מתחילים.",
         image: "assets/images/wondrous-map-ch10.jpeg",
-        audio: "assets/audio/wondrous-map-ch10-sfx4.mp3",
+        audio: "assets/audio/wondrous-map-ch10-sfx5.mp3",
       },
     ],
   },
