@@ -182,7 +182,7 @@ const CATEGORIES = [
         title: "פרק 6: משחק קטן, בעיה גדולה",
         description: "שליח פורץ לאולם, המלך והשרים ממהרים לחדר המלחמה, ופרדינן נשאר לבד עם הצבעים שלו. הוא מחפש דף לצייר עליו, ואז מרים את הראש.",
         image: "assets/images/wondrous-map-ch06.jpeg",
-        audio: "assets/audio/wondrous-map-ch06-sfx5.mp3",
+        audio: "assets/audio/wondrous-map-ch06-sfx6.mp3",
       },
       {
         niche: "wondrous-map",
