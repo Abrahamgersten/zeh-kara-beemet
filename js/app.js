@@ -174,7 +174,7 @@ const CATEGORIES = [
         title: "פרק 5: הרעיון המבריק",
         description: "היועץ הזקן, שכמעט אף פעם לא מדבר, קם ומציע רעיון אחד: מפה. שמונה שנים של מדידות בהרים ובנהרות, עד שהמפה הגדולה נתלית מאחורי כס המלכות.",
         image: "assets/images/wondrous-map-ch05.jpeg",
-        audio: "assets/audio/wondrous-map-ch05-sfx5.mp3",
+        audio: "assets/audio/wondrous-map-ch05-sfx6.mp3",
       },
       {
         niche: "wondrous-map",
