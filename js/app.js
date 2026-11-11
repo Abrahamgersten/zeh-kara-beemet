@@ -123,6 +123,102 @@ const CATEGORIES = [
     ],
   },
   {
+    id: "serials",
+    name: "סיפורים בהמשכים",
+    icon: "📜",
+    color: "#c98a2b",
+    type: "audio",
+    tagline: "סיפור אחד ארוך, פרק אחרי פרק. בוחרים סיפור, פותחים אותו, ומאזינים מההתחלה ועד הסוף.",
+    // סיפורים בהמשכים (אברהם, 2026-11-11): serial = הפרקים מוצגים לפי הסדר שבו הם כתובים כאן (פרק 1 ראשון), וכל סיפור הוא
+    // כרטיסייה שנפתחת בלחיצה, כמו הנישות של "יש לי מושג". סיפור חדש = שורה ב-niches (theme = העיצוב שלו ב-css) ופרקים עם niche שלו.
+    serial: true,
+    niches: [
+      { id: "wondrous-map", name: "המפה המופלאה", icon: "🗺️", theme: "map", image: "assets/images/serials/wondrous-map.jpg", blurb: "מלך טוב לב, ילד סקרן בשם פרדינן, ומפה אחת ענקית שנעלמת ברגע אחד. משל של רבי נחמן מברסלב, בעשרה פרקים." },
+    ],
+    episodes: [
+      {
+        niche: "wondrous-map",
+        eyebrow: "המפה המופלאה · פרק 1 מתוך 10",
+        title: "פרק 1: המלך שהיה לו הכול (חוץ מדבר אחד)",
+        description: "למלך טוב הלב יש ארמון, גנים ואוצרות, ורק דבר אחד חסר לו. הרופאים שמגיעים לעזור מביאים איתם עצות מוזרות מאוד, ושום דבר לא עובד.",
+        image: "assets/images/wondrous-map-ch01.jpeg",
+        audio: "assets/audio/wondrous-map-ch01-sfx4.mp3",
+      },
+      {
+        niche: "wondrous-map",
+        eyebrow: "המפה המופלאה · פרק 2 מתוך 10",
+        title: "פרק 2: האורח שלא היה אמור להיכנס",
+        description: "עני עייף ורעב עומד בשער הארמון, והשומרים רוצים לגרש אותו. המלך מחליט אחרת, והאורח נפרד ממנו בברכה שהמלך עוד לא יודע כמה היא שווה.",
+        image: "assets/images/wondrous-map-ch02.jpeg",
+        audio: "assets/audio/wondrous-map-ch02-sfx4.mp3",
+      },
+      {
+        niche: "wondrous-map",
+        eyebrow: "המפה המופלאה · פרק 3 מתוך 10",
+        title: "פרק 3: פרדינן",
+        description: "שמחה גדולה בארמון: למלך נולד בן, ושמו פרדינן. ילד סקרן ותמים שמשחק בקוביות על מדרגות כיסא המלכות ושואל שאלות על הכול.",
+        image: "assets/images/wondrous-map-ch03.jpeg",
+        audio: "assets/audio/wondrous-map-ch03-sfx4.mp3",
+      },
+      {
+        niche: "wondrous-map",
+        eyebrow: "המפה המופלאה · פרק 4 מתוך 10",
+        title: "פרק 4: ממלכה בלי תמונה ברורה",
+        description: "המלך יודע כמה זהב יש באוצר וכמה חיילים יש בצבא, אבל הוא לא יודע איך הממלכה שלו באמת נראית. ואיך מגינים על ממלכה כשלא יודעים איפה הנהר הצפוני?",
+        image: "assets/images/wondrous-map-ch04.jpeg",
+        audio: "assets/audio/wondrous-map-ch04-sfx4.mp3",
+      },
+      {
+        niche: "wondrous-map",
+        eyebrow: "המפה המופלאה · פרק 5 מתוך 10",
+        title: "פרק 5: הרעיון המבריק",
+        description: "היועץ הזקן, שכמעט אף פעם לא מדבר, קם ומציע רעיון אחד: מפה. שמונה שנים של מדידות בהרים ובנהרות, עד שהמפה הגדולה נתלית מאחורי כס המלכות.",
+        image: "assets/images/wondrous-map-ch05.jpeg",
+        audio: "assets/audio/wondrous-map-ch05-sfx4.mp3",
+      },
+      {
+        niche: "wondrous-map",
+        eyebrow: "המפה המופלאה · פרק 6 מתוך 10",
+        title: "פרק 6: משחק קטן, בעיה גדולה",
+        description: "שליח פורץ לאולם, המלך והשרים ממהרים לחדר המלחמה, ופרדינן נשאר לבד עם הצבעים שלו. הוא מחפש דף לצייר עליו, ואז מרים את הראש.",
+        image: "assets/images/wondrous-map-ch06.jpeg",
+        audio: "assets/audio/wondrous-map-ch06-sfx4.mp3",
+      },
+      {
+        niche: "wondrous-map",
+        eyebrow: "המפה המופלאה · פרק 7 מתוך 10",
+        title: "פרק 7: המשחק שהסתבך",
+        description: "פרדינן מצייר על הצד הריק של המפה אדם עם כובע גדול, ואחר כך עולה לו רעיון חדש: להכין ממנה פאזל. ובדיוק אז נשמעים צעדים במסדרון.",
+        image: "assets/images/wondrous-map-ch07.jpeg",
+        audio: "assets/audio/wondrous-map-ch07-sfx4.mp3",
+      },
+      {
+        niche: "wondrous-map",
+        eyebrow: "המפה המופלאה · פרק 8 מתוך 10",
+        title: "פרק 8: איפה המפה?",
+        description: "המלך חוזר וצריך את המפה מיד, אבל הקיר ריק, ועל הרצפה פזורות עשרות חתיכות קטנות. איך אפשר לחבר מפה שבה הכול נראה אותו דבר?",
+        image: "assets/images/wondrous-map-ch08.jpeg",
+        audio: "assets/audio/wondrous-map-ch08-sfx4.mp3",
+      },
+      {
+        niche: "wondrous-map",
+        eyebrow: "המפה המופלאה · פרק 9 מתוך 10",
+        title: "פרק 9: הפתרון המפתיע",
+        description: "המלך והיועצים יושבים בלי פתרון, ואז נשמעת דפיקה קלה בדלת. פרדינן נכנס עם יריעה מגולגלת ביד, וסוד קטן שמסתתר בצד השני שלה.",
+        image: "assets/images/wondrous-map-ch09.jpeg",
+        audio: "assets/audio/wondrous-map-ch09-sfx4.mp3",
+      },
+      {
+        niche: "wondrous-map",
+        eyebrow: "המפה המופלאה · פרק 10 מתוך 10",
+        title: "פרק 10: איך מתקנים את העולם?",
+        description: "מה הסיפור על המלך, על המפה ועל פרדינן מלמד אותנו? המשל והנמשל: איך מתקנים עולם שלם, ומאיפה מתחילים.",
+        image: "assets/images/wondrous-map-ch10.jpeg",
+        audio: "assets/audio/wondrous-map-ch10-sfx4.mp3",
+      },
+    ],
+  },
+  {
     id: "what-to-do",
     name: "יש לי מושג",
     icon: "🙋‍♂️",
@@ -1192,7 +1288,7 @@ function audioCardHTML(cat, ep, idx, audioIdx, audioTotal) {
   <article class="content-card${reverseClass}">
     ${mediaHTML(cat, ep, idx)}
     <div class="content-card__body">
-      <span class="content-card__eyebrow">${cat.name}</span>
+      <span class="content-card__eyebrow">${ep.eyebrow || cat.name}</span>
       <h3 class="content-card__title">${ep.title}</h3>
       ${ep.description ? `<p class="content-card__desc"><strong>על הפרק: </strong>${ep.description}</p>` : ""}
       ${playerHTML(ep, audioIdx, audioTotal)}
@@ -1257,12 +1353,12 @@ function storySlug(audioPath) {
 
 function shareButtonHTML(cat, ep) {
   if (!ep.audio) return "";
-  const label = cat.id === "tzadikim" ? "שיתוף הסיפור" : cat.id === "jokes" ? "שיתוף הבדיחה" : "שיתוף ההקלטה";
+  const label = cat.id === "tzadikim" ? "שיתוף הסיפור" : cat.serial ? "שיתוף הפרק" : cat.id === "jokes" ? "שיתוף הבדיחה" : "שיתוף ההקלטה";
   // a joke is shared as a video (its picture with its recording, Avraham 2026-11-03): data-share-video
   const video = ep.video ? ` data-share-video="${ep.video}"` : "";
   return `
       <div class="content-card__share">
-        <button class="btn btn--outline content-card__share-btn" type="button" data-share-slug="${storySlug(ep.audio)}" data-share-kind="${cat.id === "tzadikim" ? "story" : "recording"}"${video} aria-label="שיתוף בוואטסאפ: ${ep.title}">📤 ${label}</button>
+        <button class="btn btn--outline content-card__share-btn" type="button" data-share-slug="${storySlug(ep.audio)}" data-share-kind="${cat.id === "tzadikim" || cat.serial ? "story" : "recording"}"${video} aria-label="שיתוף בוואטסאפ: ${ep.title}">📤 ${label}</button>
       </div>`;
 }
 
@@ -1472,7 +1568,8 @@ function renderCategorySections() {
   const host = document.getElementById("category-sections");
   host.innerHTML = CATEGORIES.map((cat) => {
     // הפרק שנוסף אחרון מוצג ראשון, בלי קשר לסדר בו הוא נוסף למערך הנתונים.
-    let episodesNewestFirst = [...cat.episodes].reverse();
+    // a serial story (cat.serial, "סיפורים בהמשכים", Avraham 2026-11-11) is listed from chapter 1 on, as written
+    let episodesNewestFirst = cat.serial ? [...cat.episodes] : [...cat.episodes].reverse();
     // מדורי הפרשה: הפרשה של השבת הקרובה בראש, ואחריה הבאות בתור (js/parasha-order.js).
     if (PARASHA_CATEGORY_IDS.includes(cat.id) && typeof orderEpisodesByParasha === "function") {
       episodesNewestFirst = orderEpisodesByParasha(episodesNewestFirst);
@@ -1533,11 +1630,12 @@ function nicheSectionHTML(cat, groups) {
   const audioEpisodes = groups.flatMap((g) => g.episodes).filter((ep) => ep.audio);
   const groupsHTML = groups.map((g) => {
     const cards = g.episodes.map((ep, idx) => {
-      const hiddenAttr = idx >= INITIAL_VISIBLE_EPISODES ? ' hidden data-overflow-card="true"' : "";
+      // the chapters of a serial story are all shown once its folder is open
+      const hiddenAttr = !cat.serial && idx >= INITIAL_VISIBLE_EPISODES ? ' hidden data-overflow-card="true"' : "";
       const audioIdx = ep.audio ? audioEpisodes.indexOf(ep) : -1;
       return audioCardHTML(cat, ep, idx, audioIdx, audioEpisodes.length).replace("<article ", `<article${hiddenAttr} `);
     }).join("");
-    const more = g.episodes.length > INITIAL_VISIBLE_EPISODES
+    const more = !cat.serial && g.episodes.length > INITIAL_VISIBLE_EPISODES
       ? `<button class="btn btn--ghost category-section__more" type="button" data-show-more="cat-${cat.id}-${g.id}">הצג עוד פרקים</button>`
       : "";
     if (g.id === "other") {
@@ -1553,7 +1651,7 @@ function nicheSectionHTML(cat, groups) {
     // one image of its own (niche.image: "one picture, made from the WhatsApp profile picture"), not a mosaic of the episodes
     const mosaic = g.image ? `<span class="niche__pic" aria-hidden="true"><img src="${g.image}" alt="" width="512" height="512" loading="lazy"></span>` : "";
     return `
-        <div class="niche niche--folder" id="cat-${cat.id}-${g.id}">
+        <div class="niche niche--folder${g.theme ? ` niche--${g.theme}` : ""}" id="cat-${cat.id}-${g.id}">
           <h3 class="niche__heading">
             <button class="niche__folder${g.image ? "" : " niche__folder--plain"}" type="button" aria-expanded="false" aria-controls="niche-body-${cat.id}-${g.id}" data-niche-toggle>
               ${mosaic}
@@ -1561,6 +1659,7 @@ function nicheSectionHTML(cat, groups) {
                 <span class="niche__name"><span class="niche__icon" aria-hidden="true">${g.icon}</span>${g.name}</span>
                 ${g.blurb ? `<span class="niche__blurb">${g.blurb}</span>` : ""}
                 <span class="niche__count">${count}</span>
+                ${cat.serial ? `<span class="niche__trail" aria-hidden="true">${g.episodes.map(() => "<i></i>").join("")}</span>` : ""}
                 <span class="niche__cta"><span class="niche__cta-open">לפרקים</span><span class="niche__cta-close">סגירה</span><span class="niche__chevron" aria-hidden="true"></span></span>
               </span>
             </button>

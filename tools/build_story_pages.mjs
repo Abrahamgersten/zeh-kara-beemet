@@ -50,7 +50,7 @@ const LANGS = {
     close: "סגירה",
     loadError: "לא הצלחנו לטעון את ההקלטה. בדקו את החיבור לאינטרנט ונסו שוב.",
     share: (catId) =>
-      catId === "tzadikim"
+      catId === "tzadikim" || catId === "serials"
         ? { text: "אהבתם את הסיפור? שתפו אותו עם משפחה וחברים ❤️", button: "שיתוף הסיפור" }
         : catId === "jokes"
           ? { text: "רוצים להעלות חיוך על הפנים של עוד מישהו? שתפו איתו את הבדיחה! 😊", button: "שיתוף הבדיחה" }
@@ -212,7 +212,7 @@ function pageHTML(L, lang, cat, ep, slug) {
   const linkAudio = endingAudio(L, slug, "link");
   const statusAudio = endingAudio(L, slug, "status");
   // kind: the end-of-recording invitation says "the story" for the tzadikim stories, "the recording" for the rest
-  const kind = cat.id === "tzadikim" ? "story" : "recording";
+  const kind = cat.id === "tzadikim" || cat.serial ? "story" : "recording";
   // video: a joke is shared as a video (js/share-sheet.js), with the paths of this page
   const video = cat.id === "jokes" && lang === "he" && ep.video ? `${up}${ep.video}` : null;
   // "check yourself" (Avraham, 2026-11-10: also on the single-story page of a Yedani episode): the episode's questions,

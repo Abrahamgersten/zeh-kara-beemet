@@ -1544,6 +1544,38 @@ body.auth-pending { visibility: hidden; }
   .niche__chevron { transition: none; }
 }
 @keyframes niche-fade { from { opacity: 0; } to { opacity: 1; } }
+
+/* "סיפורים בהמשכים" (Avraham, 2026-11-11): every serial story is a folder like the niches, in its own colors (niche--<theme>).
+   "map" = המפה המופלאה: the warm brown of candle-lit parchment instead of the night-blue, and under the count the story's
+   road: one stop per chapter on a dashed route, like the route drawn on the map itself. */
+.niche--map .niche__folder {
+  --niche-night: #3b2413;
+  background: radial-gradient(130% 100% at 100% 0%, #7a4c1f 0%, var(--niche-night) 58%, #2a180b 100%);
+  box-shadow: 0 22px 44px -24px rgba(42, 24, 11, 0.8);
+}
+.niche--map .niche__folder[aria-expanded="true"] { box-shadow: 0 0 0 3px var(--gold-300), 0 22px 44px -24px rgba(42, 24, 11, 0.8); }
+.niche--map .niche__name { text-shadow: 0 2px 14px rgba(30, 16, 6, 0.6); }
+.niche__trail {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 100%;
+  padding-block: 0.2rem;
+  background: linear-gradient(to right, rgba(255, 210, 143, 0.65) 55%, transparent 0) center / 9px 2px repeat-x;
+}
+.niche__trail i {
+  flex: 0 0 auto;
+  width: 0.72rem;
+  height: 0.72rem;
+  border: 2px solid var(--gold-300);
+  border-radius: 50%;
+  background: #3b2413;
+}
+.niche__trail i:first-child { background: var(--gold-300); }
+.niche__trail i:last-child { width: 0.95rem; height: 0.95rem; background: #c0392b; border-color: #ffe7bc; }
+@media (hover: hover) {
+  .niche--map .niche__folder:hover { box-shadow: 0 30px 54px -26px rgba(42, 24, 11, 0.85); }
+}
 /* confetti for a right answer (js/quiz.js), over everything and never in the way */
 .confetti { position: fixed; inset: 0; z-index: 1000; overflow: hidden; pointer-events: none; perspective: 600px; }
 .confetti i { position: absolute; top: -16px; display: block; border-radius: 2px; will-change: transform, opacity; }
