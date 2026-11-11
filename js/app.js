@@ -198,7 +198,7 @@ const CATEGORIES = [
         title: "פרק 8: איפה המפה?",
         description: "המלך חוזר וצריך את המפה מיד, אבל הקיר ריק, ועל הרצפה פזורות עשרות חתיכות קטנות. איך אפשר לחבר מפה שבה הכול נראה אותו דבר?",
         image: "assets/images/wondrous-map-ch08.jpeg",
-        audio: "assets/audio/wondrous-map-ch08-sfx5.mp3",
+        audio: "assets/audio/wondrous-map-ch08-sfx6.mp3",
       },
       {
         niche: "wondrous-map",
