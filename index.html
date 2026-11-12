@@ -27,7 +27,9 @@
   import "./js/analytics.js";
   // The gift link (?g=<code>, js/gift.js - Avraham, 2026-11-10): the site opens without login, for one episode. Only a
   // logged-in subscriber who opens it gets the full site as usual. Any other link: the usual door, as before.
-  if (/[?&]g=[a-f0-9]{20}(?:&|$)/.test(location.search)) {
+  if (/[?&](?:g=[a-f0-9]{20}|s=a6a38437ec003e0652ee)(?:&|$)/.test(location.search)) {
+    // s=... is the status link (js/guest.js): same door; a logged-in subscriber still gets the full site
+    if (/[?&]s=a6a38437ec003e0652ee(?:&|$)/.test(location.search)) document.body.classList.remove("auth-pending");
     getSession()
       .then((session) => (session ? fetchEntitlement() : null))
       .then((row) => {

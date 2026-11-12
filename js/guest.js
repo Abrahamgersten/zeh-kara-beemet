@@ -20,6 +20,10 @@
   // and calls enable(true): from then on this file runs everything, with the count kept on each device.
   let GIFT = /[?&]g=[a-f0-9]{20}(?:&|$)/.test(location.search);
   const GIFT_SHARED = "zkb_gift_shared";
+  // Avraham, 2026-11-12 (late): a second link, for people who already posted the status (they wrote that they did, and got
+  // this link). Same site, one episode a day (two a week) per device, but the whole episode plays at once: no taste and
+  // no request to post the status again. The gift link above stays as it was. index.html opens the door for this code.
+  const STATUS = /[?&]s=a6a38437ec003e0652ee(?:&|$)/.test(location.search);
 
   const API = "https://nuadpewhrhpdgznbbqbs.supabase.co/rest/v1/rpc/";
   const KEY = "sb_publishable_AcpmlZnxKM4yJxr1OsoSjw_CG6Kt2pz"; // the public key of js/supabase-config.js
@@ -188,7 +192,9 @@
     } else if (s.reason === "week") {
       bar.innerHTML = `<span class="gift-bar__text">${L(`🎧 השבוע כבר האזנתם לשני פרקים. נתראה בשבוע הבא!`, `🎧 You've already heard two episodes this week. See you next week!`)}</span>${login}`;
     } else {
-      bar.innerHTML = `<span class="gift-bar__text">${L(`🎧 <strong>ברוכים הבאים!</strong> בחרו פרק ולחצו ▶`, `🎧 <strong>Welcome!</strong> Pick an episode and press ▶`)}</span>${login}`;
+      bar.innerHTML = STATUS
+        ? `<span class="gift-bar__text">${L(`🎧 <strong>תודה שהעליתם את הסטטוס!</strong> בחרו פרק אחד להאזנה ולחצו ▶`, `🎧 <strong>Thanks for posting the status!</strong> Pick one episode to listen to and press ▶`)}</span>${login}`
+        : `<span class="gift-bar__text">${L(`🎧 <strong>ברוכים הבאים!</strong> בחרו פרק ולחצו ▶`, `🎧 <strong>Welcome!</strong> Pick an episode and press ▶`)}</span>${login}`;
     }
   }
 
@@ -562,6 +568,14 @@
     card.querySelector("[data-guest-yes]").addEventListener("click", () => {
       close();
       remember(o.slug);
+      if (STATUS) { // already posted the status: the whole episode, no taste and no request
+        markShared();
+        track("unlock", o.slug);
+        showBar();
+        teaser = null;
+        o.start(); // from the tap itself
+        return;
+      }
       showBar();
       taste(o); // from the tap itself (a phone plays only from a tap)
     });
@@ -632,8 +646,8 @@
     window.ZkbGift = api;
     document.documentElement.classList.add("gift-mode", "guest-mode");
     loadPixel();
-    if (!weekly) loadWeekly();
-    track("enter");
+    if (!weekly && !STATUS) loadWeekly();
+    track("enter", STATUS ? "via-status" : null); // the entry through the status link is told apart by this slug
     showBar();
     footerLogin();
     window.addEventListener("load", showBar); // by now js/app.js has built the cards
@@ -652,5 +666,6 @@
   if (GIFT) loadWeekly();
   // taste / shared: for js/gift.js, the chosen episode of the gift
   window.ZkbGuest = { enable, taste, shared: giftShared };
-  if (window.zkbGuestOn) enable(); // index.html decided before this file ran
+  if (STATUS && !window.zkbGiftOff) enable(); // the status link: the guest mode, without the request
+  else if (window.zkbGuestOn) enable(); // index.html decided before this file ran
 })();
