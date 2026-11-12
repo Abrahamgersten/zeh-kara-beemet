@@ -219,8 +219,46 @@
     .catch(() => {});
   // the status picture of the episode itself; an episode without one (a joke, a serial chapter) shares a story's picture
   function statusOf(slug) {
+    if (weekly) return weekly;
     const s = statuses && statuses[slug] ? { slug, ...statuses[slug] } : fallbackStatus;
     return s ? { ...s, text: s.text.replace(/([?&]c=)site-status/g, "$1app-status") } : null;
+  }
+  // Avraham, 2026-11-12: the status asked for is the one of the "סטטוס" bot, whatever episode was tasted. Thursday and
+  // Friday: the "מה בפרשה" banner video with the caption of its bot; the other days: Bezalel's trailer of the week's
+  // story (or the story's banner video) with the caption of the listening bot. guest_status() picks (migration 0028);
+  // the material is written every hour by Tools/wa_cloud_bot/sync_recording.py. Hebrew only: the bots speak Hebrew.
+  // Nothing came back: the status picture of the episode, as before.
+  let weekly = null;
+  const media = {}; // address -> the file, fetched once (the video starts downloading when the taste starts)
+  function mediaFile(st) {
+    const url = st.video || st.image;
+    if (!canShareFiles) return Promise.resolve(null);
+    if (!media[url]) {
+      const name = `${st.slug}-status.${st.video ? "mp4" : "jpg"}`;
+      media[url] = fetch(url)
+        .then((r) => (r.ok ? r.blob() : null))
+        .then((blob) => {
+          if (!blob) return null;
+          const f = new File([blob], name, { type: st.video ? "video/mp4" : blob.type || "image/jpeg" });
+          return navigator.canShare({ files: [f] }) ? f : null;
+        })
+        .catch(() => null);
+      media[url].then((f) => { if (!f) delete media[url]; }); // a failed download is tried again next time
+    }
+    return media[url];
+  }
+  function loadWeekly() {
+    if (EN) return;
+    rpc("guest_status", {})
+      .then((m) => {
+        if (!m || !m.text || !m.slug) return;
+        const arm = /[89ab]/i.test((visitor() || "0").slice(-1)) ? "b" : "a"; // his two banner designs, a steady one per device
+        const video = m.video || (m.videos || {})[arm] || null;
+        const image = (m.images || {})[arm] || m.image || null;
+        if (!video && !image) return;
+        weekly = { slug: m.slug, video, image, text: m.text };
+      })
+      .catch(() => {});
   }
 
   function copyText(text) {
@@ -242,36 +280,32 @@
     }
     asking = true;
     track("ask", o.slug);
-    const name = `${st.slug}-status.jpg`;
+    const name = `${st.slug}-status.${st.video ? "mp4" : "jpg"}`;
+    const src = st.video || st.image;
+    const what = st.video ? L("הסרטון", "the video") : L("התמונה", "the picture");
     let ready = null;
-    const file = !canShareFiles ? Promise.resolve(null)
-      : fetch(st.image)
-        .then((r) => (r.ok ? r.blob() : null))
-        .then((blob) => {
-          if (!blob) return null;
-          const f = new File([blob], name, { type: blob.type || "image/jpeg" });
-          return navigator.canShare({ files: [f] }) ? f : null;
-        })
-        .catch(() => null);
+    const file = mediaFile(st);
     const steps = EN
       ? (canShareFiles
         ? ["Tap \"Post to status\" and choose WhatsApp.", "Choose \"My status\" at the top of the list.",
           isApple ? "Paste the text with the link into the caption. It's already copied." : "The text with the link is attached for you."]
-        : ["Download the picture.", "Send it to your phone and post it to your WhatsApp status.", "Paste the text with the link into the caption. It's already copied."])
+        : [`Download ${what}.`, "Send it to your phone and post it to your WhatsApp status.", "Paste the text with the link into the caption. It's already copied."])
       : canShareFiles
       ? ["לוחצים \"להעלות לסטטוס\" ובוחרים וואטסאפ.", "בוחרים \"הסטטוס שלי\" בראש הרשימה.",
         isApple ? "מדביקים בכיתוב את המלל עם הקישור. הוא כבר הועתק." : "המלל עם הקישור מצורף לבד."]
-      : ["מורידים את התמונה.", "מעבירים אותה לטלפון ומעלים לסטטוס בוואטסאפ.", "מדביקים בכיתוב את המלל עם הקישור. הוא כבר הועתק."];
-    const download = `<a class="btn btn--primary share-sheet__primary" href="${esc(st.image)}" download="${esc(name)}" data-guest-download data-gift-first${L(`>הורדת התמונה<`, `>Download the picture<`)}/a>`;
+      : [`מורידים את ${what}.`, "מעבירים לטלפון ומעלים לסטטוס בוואטסאפ.", "מדביקים בכיתוב את המלל עם הקישור. הוא כבר הועתק."];
+    const download = `<a class="btn btn--primary share-sheet__primary" href="${esc(src)}" download="${esc(name)}" data-guest-download data-gift-first>${L(`הורדת ${what}`, `Download ${what}`)}</a>`;
     show(`
       <h2 class="share-sheet__title" id="gift-title">${L(`איזה כיף שאתם מקשיבים! 💛`, `So glad you're listening! 💛`)}</h2>
       <!-- the wording is Avraham's own, 2026-11-12 --><p class="gift-sheet__text">${L(`אנחנו לא מפרסמים. הסיפורים עוברים מבית לבית, מהורה להורה. <strong>העלו אותו לסטטוס שלכם</strong>, ועוד ילד ילך לישון הלילה עם סיפור טוב. מיד אחר כך ממשיכים בדיוק מאיפה שעצרנו.`, `We don't advertise. The stories pass from home to home, from parent to parent. <strong>Post it to your WhatsApp status</strong>, and one more child will go to sleep tonight with a good story. Right after that we pick up exactly where we stopped.`)}</p>
       <div class="share-sheet__status">
-        <img class="share-sheet__preview" src="${esc(st.image)}" ${L(`alt="תמונת הסטטוס"`, `alt="The status picture"`)} width="1080" height="1920">
+        ${st.video && !st.image
+          ? `<video class="share-sheet__preview" src="${esc(st.video)}" muted autoplay loop playsinline preload="metadata" ${L(`aria-label="סרטון הסטטוס"`, `aria-label="The status video"`)} width="1080" height="1920"></video>`
+          : `<img class="share-sheet__preview" src="${esc(st.image)}" ${L(`alt="תמונת הסטטוס"`, `alt="The status picture"`)} width="1080" height="1920">`}
         <ol class="share-sheet__steps">${steps.map((s) => `<li>${esc(s)}</li>`).join("")}</ol>
       </div>
       <div class="share-sheet__actions" data-guest-share>
-        ${canShareFiles ? `<button class="btn btn--primary share-sheet__primary" type="button" data-guest-go data-gift-first disabled>${L(`רגע, מכינים את התמונה…`, `One moment, getting the picture ready…`)}</button>` : download}
+        ${canShareFiles ? `<button class="btn btn--primary share-sheet__primary" type="button" data-guest-go data-gift-first disabled>${L(`רגע, מכינים את ${what}…`, `One moment, getting ${what} ready…`)}</button>` : download}
       </div>
       <div class="share-sheet__actions guest-sheet__after" data-guest-after hidden>
         <button class="btn btn--primary share-sheet__primary" type="button" data-guest-continue>${L(`העליתי, ממשיכים לסיפור`, `I posted it, on with the story`)}</button>
@@ -438,6 +472,8 @@
     watch(o.audio);
     o.start(); // the taste
     teaser = { o, src: o.audio ? o.audio.src : "" };
+    const st = statusOf(o.slug);
+    if (st) mediaFile(st); // ready by the time the request comes up
     track("teaser", o.slug);
   }
 
@@ -449,6 +485,7 @@
     window.ZkbGift = api;
     document.documentElement.classList.add("gift-mode", "guest-mode");
     loadPixel();
+    loadWeekly();
     track("enter");
     showBar();
     window.addEventListener("load", showBar); // by now js/app.js has built the cards
