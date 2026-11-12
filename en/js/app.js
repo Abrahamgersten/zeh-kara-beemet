@@ -454,7 +454,7 @@ const CATEGORIES = [
         title: "Which Bracha Comes First?",
         description: "Yedani comes to the Rav's housewarming and finds a giant plate: cookies, grapes, dates, apples and cucumbers. Which bracha comes first? The memory sign MaGA'Sh, the fruit we love most, and the Seven Species.",
         image: "../assets/images/en/bracha-precedence.jpeg",
-        audio: "../assets/audio/en/bracha-precedence-sfx8.mp3",
+        audio: "../assets/audio/en/bracha-precedence-sfx9.mp3",
         niche: "brachot",
         quiz: [
           {
