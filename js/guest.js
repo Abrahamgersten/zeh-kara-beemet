@@ -627,7 +627,7 @@
   const css = document.createElement("style");
   css.textContent = `
     .share-sheet .guest-sheet__status--banner { grid-template-columns: 1fr; justify-items: center; }
-    .share-sheet .guest-sheet__status--banner .share-sheet__preview { width: min(100%, 250px); aspect-ratio: auto; object-fit: contain; }
+    .share-sheet .guest-sheet__status--banner .share-sheet__preview { width: min(100%, 250px); aspect-ratio: 1 / 1; object-fit: contain; }
     .share-sheet .guest-sheet__status--banner .share-sheet__steps { justify-self: stretch; }
     .site-footer__login { display: inline-block; margin-top: 0.9rem; padding: 0.45rem 0.2rem; color: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }`;
   document.head.appendChild(css);
