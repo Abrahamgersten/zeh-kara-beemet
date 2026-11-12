@@ -16,7 +16,9 @@
   // Avraham, 2026-11-12 (night): the regular link is the login door again, and all of this (the taste, the status
   // request, the fades) works on the gift link only. There js/gift.js keeps the rules (one episode a day, two a week,
   // on the server) and calls taste() here; whether today's status was posted is kept in this browser (on trust).
-  const GIFT = /[?&]g=[a-f0-9]{20}(?:&|$)/.test(location.search);
+  // Later that night: the link he sends in the group is one shared gift link (gift_tokens.shared). js/gift.js sees it
+  // and calls enable(true): from then on this file runs everything, with the count kept on each device.
+  let GIFT = /[?&]g=[a-f0-9]{20}(?:&|$)/.test(location.search);
   const GIFT_SHARED = "zkb_gift_shared";
 
   const API = "https://nuadpewhrhpdgznbbqbs.supabase.co/rest/v1/rpc/";
@@ -607,15 +609,30 @@
     box.appendChild(a);
   }
 
-  const api = { active: () => on, play, disable() {} };
+  const api = {
+    active: () => on,
+    play,
+    // a logged-in subscriber opened the link: the full site
+    disable() {
+      on = false;
+      teaser = null;
+      document.documentElement.classList.remove("gift-mode", "guest-mode");
+      if (bar) bar.remove();
+      bar = null;
+      document.querySelectorAll(".content-card--gift").forEach((c) => c.classList.remove("content-card--gift"));
+      const f = document.querySelector(".site-footer__login");
+      if (f) f.remove();
+    },
+  };
 
-  function enable() {
-    if (on || GIFT) return;
+  function enable(shared) {
+    if (on || (GIFT && shared !== true)) return;
+    GIFT = false;
     on = true;
     window.ZkbGift = api;
     document.documentElement.classList.add("gift-mode", "guest-mode");
     loadPixel();
-    loadWeekly();
+    if (!weekly) loadWeekly();
     track("enter");
     showBar();
     footerLogin();

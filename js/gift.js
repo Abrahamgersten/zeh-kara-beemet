@@ -10,6 +10,10 @@
    הכללים נאכפים בשרת (supabase/migrations/0026_status_gift.sql: gift_state, gift_pick, gift_lead), לא כאן.
    מנוי מחובר שפותח את הקישור רואה את האתר כרגיל (index.html קורא ל-ZkbGift.disable()).
 
+   קישור משותף (אברהם, 2026-11-12 בלילה: "אנשים לא מגיעים למתנה דרך הבוט, אני אשלח את הקישור בקבוצה"): קוד שמסומן
+   shared ב-gift_tokens הוא קישור אחד לכולם. אין בו תנאי של הבוט: gift_state מחזיר shared, והקובץ הזה מעביר את
+   הניהול ל-js/guest.js (פרק אחד ביום ושניים בשבוע לכל מכשיר, טעימה, ובקשת הסטטוס באתר).
+
    window.ZkbGift.active()                      האם האתר במצב מתנה
    window.ZkbGift.play({ slug, title, start, stop })   נקרא מכפתור הנגן (js/app.js) במקום ניגון ישיר
 --------------------------------------------------------------- */
@@ -51,11 +55,21 @@
       .then((s) => {
         state = s;
         if (on && s && s.valid === false) location.replace("login.html"); // not a gift link: the site's usual door
+        if (on && s && s.shared) handOver();
       })
       .catch(() => {
         failed = true;
       })
       .then(showBar);
+  }
+  // the link of the group: js/guest.js runs it (the count is kept on each device)
+  function handOver() {
+    const G = window.ZkbGuest;
+    if (!G || !G.enable || window.zkbGiftOff) return;
+    on = false;
+    if (bar) bar.remove();
+    bar = null;
+    G.enable(true); // puts its own window.ZkbGift in place
   }
   const ready = loadState();
 
@@ -263,6 +277,13 @@
   }
 
   function play(o) {
+    if (!on) {
+      // handed over (or switched off) while a tap was waiting for the server
+      const g = window.ZkbGift;
+      if (g && g.play !== play && g.active()) g.play(o);
+      else o.start();
+      return;
+    }
     if (!state) {
       // the gift is still being checked (or the check failed): once it is known, the same tap goes on
       (failed ? loadState() : ready).then(() => {
@@ -311,13 +332,13 @@
   // by them), and at the end of an episode only the "check yourself" question still comes up, not the share invite.
   if (on) {
     const css = document.createElement("style");
-    css.textContent = ".gift-mode:not(.guest-mode) .content-card__share-btn { display: none !important; }";
+    css.textContent = ".gift-mode .content-card__share-btn { display: none !important; }";
     document.head.appendChild(css);
     window.addEventListener("load", () => {
       const invite = window.zkbInviteShare;
       window.zkbInviteShare = (el) => {
         const root = document.documentElement.classList;
-        if (!root.contains("gift-mode") || root.contains("guest-mode")) return invite && invite(el);
+        if (!root.contains("gift-mode")) return invite && invite(el);
         const c = el && el.closest(".content-card");
         if (c && c.querySelector("[data-quiz-slug]") && invite) invite(el);
       };
