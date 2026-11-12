@@ -18,7 +18,10 @@
    בתוך קובץ השאלה (Tools/brachot_quiz/quiz_lines.py, quiz_cues.json).
 --------------------------------------------------------------- */
 (function () {
-  const LETTERS = ["א", "ב", "ג", "ד"];
+  const EN = document.documentElement.lang === "en";
+  const T = EN ? { stop: "⏸ Stop", listen: "🔊 Play the question", close: "Close", title: "📖 Check yourself", step: (a, b) => `Question ${a} of ${b}`, answers: "The answers", share: "📤 Share the recording", next: "Next question", yes: "Well done! 🎉", funny: "😂 A funny answer, but not the right one. Try again!", no: "Not quite. Try again! 💪" }
+    : { stop: "⏸ עצירת השמעה", listen: "🔊 השמעת השאלה", close: "סגירה", title: "📖 בדוק את עצמך", step: (a, b) => `שאלה ${a} מתוך ${b}`, answers: "התשובות", share: "📤 שיתוף ההקלטה", next: "לשאלה הבאה", yes: "כל הכבוד! 🎉", funny: "😂 תשובה מצחיקה, אבל לא נכונה. נסו שוב!", no: "לא בדיוק. נסו שוב! 💪" };
+  const LETTERS = EN ? ["A", "B", "C", "D"] : ["א", "ב", "ג", "ד"];
   let root = null;
   let card = null;
   let lastFocus = null;
@@ -124,7 +127,7 @@
 
   function listenLabel() {
     const b = card && card.querySelector("[data-act='listen']");
-    if (b) b.textContent = voiceKind === "ask" ? "⏸ עצירת השמעה" : "🔊 השמעת השאלה";
+    if (b) b.textContent = voiceKind === "ask" ? T.stop : T.listen;
   }
 
   function stopSound() {
@@ -238,22 +241,22 @@
     const total = current.list.length;
     const last = current.at === total - 1;
     card.innerHTML = `
-      <button class="share-sheet__close" type="button" data-act="close" aria-label="סגירה">✕</button>
+      <button class="share-sheet__close" type="button" data-act="close" aria-label="${T.close}">✕</button>
       <div class="quiz-sheet__stage" aria-hidden="true">
         <img class="quiz-sheet__yedani" src="${ROOT}assets/images/quiz/yedani.webp" alt="" width="239" height="420">
         <span class="quiz-sheet__art">${(q.art || []).filter((k) => /^[a-z-]+$/.test(k)).map((k, i) => `<img src="${ROOT}assets/images/quiz/art/${k}.webp" alt="" width="160" height="160" style="--i:${i}">`).join("")}</span>
       </div>
-      <p class="quiz-sheet__eyebrow">📖 בדוק את עצמך${total > 1 ? `<span class="quiz-sheet__step"> · שאלה ${current.at + 1} מתוך ${total}</span>` : ""}</p>
+      <p class="quiz-sheet__eyebrow">${T.title}${total > 1 ? `<span class="quiz-sheet__step"> · ${T.step(current.at + 1, total)}</span>` : ""}</p>
       <h2 class="share-sheet__title quiz-sheet__question" id="quiz-title">${esc(q.question)}</h2>
-      ${q.audio ? `<button class="share-sheet__link quiz-sheet__listen" type="button" data-act="listen">🔊 השמעת השאלה</button>` : ""}
-      <div class="quiz-sheet__options" role="group" aria-label="התשובות">
+      ${q.audio ? `<button class="share-sheet__link quiz-sheet__listen" type="button" data-act="listen">${T.listen}</button>` : ""}
+      <div class="quiz-sheet__options" role="group" aria-label="${T.answers}">
         ${q.options.map((t, i) => `<button class="quiz-sheet__option" type="button" data-act="answer" data-i="${i}"><span class="quiz-sheet__letter" aria-hidden="true">${LETTERS[i]}</span><span>${esc(t)}</span></button>`).join("")}
       </div>
       <p class="quiz-sheet__note" role="status" aria-live="polite"></p>
       <div class="share-sheet__actions quiz-sheet__after" hidden>
-        ${last ? (o.onShare ? `<button class="btn btn--primary share-sheet__primary" type="button" data-act="share">📤 שיתוף ההקלטה</button>` : "")
-               : `<button class="btn btn--primary share-sheet__primary" type="button" data-act="next">לשאלה הבאה</button>`}
-        <button class="share-sheet__link" type="button" data-act="close">סגירה</button>
+        ${last ? (o.onShare ? `<button class="btn btn--primary share-sheet__primary" type="button" data-act="share">${T.share}</button>` : "")
+               : `<button class="btn btn--primary share-sheet__primary" type="button" data-act="next">${T.next}</button>`}
+        <button class="share-sheet__link" type="button" data-act="close">${T.close}</button>
       </div>`;
     current.done = false;
     current.waitOk = false;
@@ -281,7 +284,7 @@
       stopSound();
       btn.classList.add("is-right");
       card.querySelectorAll("[data-act='answer']").forEach((b) => { b.disabled = b !== btn; });
-      note.textContent = `כל הכבוד! 🎉 ${q.explain || ""}`.trim();
+      note.textContent = `${T.yes} ${q.explain || ""}`.trim();
       celebrate();
       const more = current.at < current.list.length - 1;
       cancelAutoNext();
@@ -296,7 +299,7 @@
     }
     btn.classList.add("is-wrong");
     btn.disabled = true;
-    note.textContent = i === q.funny ? "😂 תשובה מצחיקה, אבל לא נכונה. נסו שוב!" : "לא בדיוק. נסו שוב! 💪";
+    note.textContent = i === q.funny ? T.funny : T.no;
     if (q.audio) playClip(i === q.funny ? FUNNY : WRONG, "react"); // Yedani, only on the questions he reads
     const next = card.querySelector("[data-act='answer']:not([disabled])");
     if (next) next.focus();

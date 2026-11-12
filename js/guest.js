@@ -17,6 +17,8 @@
 
   const API = "https://nuadpewhrhpdgznbbqbs.supabase.co/rest/v1/rpc/";
   const KEY = "sb_publishable_AcpmlZnxKM4yJxr1OsoSjw_CG6Kt2pz"; // the public key of js/supabase-config.js
+  const EN = document.documentElement.lang === "en"; // the English site (en/index.html) loads this same file
+  const L = (he, en) => (EN ? en : he);
   const STORE = "zkb_guest_plays";
   const TEASER = 45; // seconds of an episode before the request
   const LIVE = location.hostname === "abrahamgersten.github.io" && new URLSearchParams(location.search).get("t") !== "1";
@@ -145,16 +147,16 @@
     }
     document.querySelectorAll(".content-card--gift").forEach((c) => c.classList.remove("content-card--gift"));
     const s = state();
-    const login = `<a class="gift-bar__btn gift-bar__btn--quiet" href="login.html">כניסת מנויים</a>`;
+    const login = `<a class="gift-bar__btn gift-bar__btn--quiet" href="login.html"${L(`>כניסת מנויים<`, `>Subscriber login<`)}/a>`;
     if (s.today) {
       const c = cardOf(s.today);
       if (c) c.classList.add("content-card--gift");
       const t = titleOf(s.today);
-      bar.innerHTML = `<span class="gift-bar__text">🎧 הפרק שלכם היום${t ? `: <strong>${esc(t)}</strong>` : ""}</span><button class="gift-bar__btn" type="button" data-gift-go>לפרק</button>`;
+      bar.innerHTML = `<span class="gift-bar__text">${L(`🎧 הפרק שלכם היום`, `🎧 Your episode for today`)}${t ? `: <strong>${esc(t)}</strong>` : ""}</span><button class="gift-bar__btn" type="button" ${L(`data-gift-go>לפרק<`, `data-gift-go>Go to episode<`)}/button>`;
     } else if (s.reason === "week") {
-      bar.innerHTML = `<span class="gift-bar__text">🎧 השבוע כבר האזנתם לשני פרקים. נתראה בשבוע הבא!</span>${login}`;
+      bar.innerHTML = `<span class="gift-bar__text">${L(`🎧 השבוע כבר האזנתם לשני פרקים. נתראה בשבוע הבא!`, `🎧 You've already heard two episodes this week. See you next week!`)}</span>${login}`;
     } else {
-      bar.innerHTML = `<span class="gift-bar__text">🎧 <strong>ברוכים הבאים!</strong> בחרו פרק ולחצו ▶</span>${login}`;
+      bar.innerHTML = `<span class="gift-bar__text">${L(`🎧 <strong>ברוכים הבאים!</strong> בחרו פרק ולחצו ▶`, `🎧 <strong>Welcome!</strong> Pick an episode and press ▶`)}</span>${login}`;
     }
   }
 
@@ -191,7 +193,7 @@
   function show(html) {
     ensure();
     if (root.hidden) lastFocus = document.activeElement;
-    card.innerHTML = `<button class="share-sheet__close" type="button" data-gift-close aria-label="סגירה">✕</button>${html}`;
+    card.innerHTML = `<button class="share-sheet__close" type="button" data-gift-close ${L(`aria-label="סגירה"`, `aria-label="Close"`)}>✕</button>${html}`;
     card.querySelectorAll("[data-gift-close]").forEach((b) => b.addEventListener("click", close));
     root.hidden = false;
     document.body.style.overflow = "hidden";
@@ -251,26 +253,31 @@
           return navigator.canShare({ files: [f] }) ? f : null;
         })
         .catch(() => null);
-    const steps = canShareFiles
+    const steps = EN
+      ? (canShareFiles
+        ? ["Tap \"Post to status\" and choose WhatsApp.", "Choose \"My status\" at the top of the list.",
+          isApple ? "Paste the text with the link into the caption. It's already copied." : "The text with the link is attached for you."]
+        : ["Download the picture.", "Send it to your phone and post it to your WhatsApp status.", "Paste the text with the link into the caption. It's already copied."])
+      : canShareFiles
       ? ["לוחצים \"להעלות לסטטוס\" ובוחרים וואטסאפ.", "בוחרים \"הסטטוס שלי\" בראש הרשימה.",
         isApple ? "מדביקים בכיתוב את המלל עם הקישור. הוא כבר הועתק." : "המלל עם הקישור מצורף לבד."]
       : ["מורידים את התמונה.", "מעבירים אותה לטלפון ומעלים לסטטוס בוואטסאפ.", "מדביקים בכיתוב את המלל עם הקישור. הוא כבר הועתק."];
-    const download = `<a class="btn btn--primary share-sheet__primary" href="${esc(st.image)}" download="${esc(name)}" data-guest-download data-gift-first>הורדת התמונה</a>`;
+    const download = `<a class="btn btn--primary share-sheet__primary" href="${esc(st.image)}" download="${esc(name)}" data-guest-download data-gift-first${L(`>הורדת התמונה<`, `>Download the picture<`)}/a>`;
     show(`
-      <h2 class="share-sheet__title" id="gift-title">נהנים מהסיפור? 💛</h2>
-      <p class="gift-sheet__text">הסיפורים כאן מגיעים לעוד בתים בזכות הורים שמספרים עליהם. <strong>העלו את הסיפור לסטטוס שלכם</strong>, כדי שעוד ילדים ישמעו סיפור טוב לפני השינה, והמשיכו להאזין.</p>
+      <h2 class="share-sheet__title" id="gift-title">${L(`נהנים מהסיפור? 💛`, `Enjoying the story? 💛`)}</h2>
+      <p class="gift-sheet__text">${L(`הסיפורים כאן מגיעים לעוד בתים בזכות הורים שמספרים עליהם. <strong>העלו את הסיפור לסטטוס שלכם</strong>, כדי שעוד ילדים ישמעו סיפור טוב לפני השינה, והמשיכו להאזין.`, `These stories reach more homes thanks to parents who tell others about them. <strong>Post the story to your WhatsApp status</strong>, so more kids can hear a good story before bed, and keep listening.`)}</p>
       <div class="share-sheet__status">
-        <img class="share-sheet__preview" src="${esc(st.image)}" alt="תמונת הסטטוס" width="1080" height="1920">
+        <img class="share-sheet__preview" src="${esc(st.image)}" ${L(`alt="תמונת הסטטוס"`, `alt="The status picture"`)} width="1080" height="1920">
         <ol class="share-sheet__steps">${steps.map((s) => `<li>${esc(s)}</li>`).join("")}</ol>
       </div>
       <div class="share-sheet__actions" data-guest-share>
-        ${canShareFiles ? `<button class="btn btn--primary share-sheet__primary" type="button" data-guest-go data-gift-first disabled>רגע, מכינים את התמונה…</button>` : download}
+        ${canShareFiles ? `<button class="btn btn--primary share-sheet__primary" type="button" data-guest-go data-gift-first disabled>${L(`רגע, מכינים את התמונה…`, `One moment, getting the picture ready…`)}</button>` : download}
       </div>
       <div class="share-sheet__actions guest-sheet__after" data-guest-after hidden>
-        <button class="btn btn--primary share-sheet__primary" type="button" data-guest-continue>העליתי, ממשיכים לסיפור</button>
+        <button class="btn btn--primary share-sheet__primary" type="button" data-guest-continue>${L(`העליתי, ממשיכים לסיפור`, `I posted it, on with the story`)}</button>
       </div>
       <p class="share-sheet__note" role="status" aria-live="polite"></p>
-      <p class="gift-sheet__hint">הפרק הזה יהיה הפרק שלכם להיום, ואפשר לשמוע אותו שוב כמה שרוצים.</p>`);
+      <p class="gift-sheet__hint">${L(`הפרק הזה יהיה הפרק שלכם להיום, ואפשר לשמוע אותו שוב כמה שרוצים.`, `This will be your episode for today, and you can listen to it again as many times as you like.`)}</p>`);
     const note = card.querySelector(".share-sheet__note");
     const after = card.querySelector("[data-guest-after]");
     const shareBox = card.querySelector("[data-guest-share]");
@@ -279,7 +286,7 @@
     const shared = () => {
       track("share", o.slug);
       after.hidden = false;
-      note.textContent = "תודה ששיתפתם! ❤️";
+      note.textContent = L("תודה ששיתפתם! ❤️", "Thank you for sharing! ❤️");
       after.querySelector("button").focus();
     };
     const toDownload = () => {
@@ -301,7 +308,7 @@
         ready = f;
         if (f) {
           go.disabled = false;
-          go.textContent = "להעלות לסטטוס";
+          go.textContent = L("להעלות לסטטוס", "Post to status");
         } else toDownload(); // the picture did not come, or this phone does not share files
       });
       go.addEventListener("click", async () => {
@@ -320,7 +327,7 @@
         tries += 1;
         await copied;
         if (tries >= 2) toDownload(); // the share menu will not open on this phone: the picture can be saved instead
-        else note.textContent = "השיתוף לא נפתח. נסו ללחוץ שוב.";
+        else note.textContent = L("השיתוף לא נפתח. נסו ללחוץ שוב.", "Sharing didn't open. Try tapping again.");
       });
     }
     card.querySelector("[data-guest-continue]").addEventListener("click", () => unlock(o));
@@ -359,23 +366,23 @@
     track("offer", o.slug);
     const t = s.today ? titleOf(s.today) : "";
     const hint = s.reason === "day"
-      ? `היום כבר בחרתם פרק${t ? `: "${esc(t)}"` : ""}. אפשר לשמוע אותו שוב כמה שרוצים, ומחר לבחור פרק חדש.`
-      : "השבוע כבר האזנתם לשני פרקים. בשבוע הבא אפשר לבחור שוב.";
+      ? `${L(`היום כבר בחרתם פרק${t ? `: "${esc(t)}"` : ""}. אפשר לשמוע אותו שוב כמה שרוצים, ומחר לבחור פרק חדש.`, `You already picked an episode today${t ? `: "${esc(t)}"` : ""}. You can listen to it again as many times as you like, and pick a new one tomorrow.`)}`
+      : L("השבוע כבר האזנתם לשני פרקים. בשבוע הבא אפשר לבחור שוב.", "You've already heard two episodes this week. You can pick again next week.");
     show(`
-      <h2 class="share-sheet__title" id="gift-title">רוצים להאזין גם לפרק הזה?</h2>
-      <p class="gift-sheet__text">כדי להאזין לפרק הזה ולכל הפרקים באתר, עומדת להיפתח <strong>תוכנית מנויים</strong>.</p>
-      <p class="gift-sheet__text"><strong>רוצים שנפנה אליכם כשהיא תהיה זמינה לציבור?</strong></p>
+      <h2 class="share-sheet__title" id="gift-title">${L(`רוצים להאזין גם לפרק הזה?`, `Want to hear this episode too?`)}</h2>
+      <p class="gift-sheet__text">${L(`כדי להאזין לפרק הזה ולכל הפרקים באתר, עומדת להיפתח <strong>תוכנית מנויים</strong>.`, `To hear this episode and every episode on the site, a <strong>subscription plan</strong> is about to open.`)}</p>
+      <p class="gift-sheet__text">${L(`<strong>רוצים שנפנה אליכם כשהיא תהיה זמינה לציבור?</strong>`, `<strong>Would you like us to let you know when it opens to the public?</strong>`)}</p>
       <div class="share-sheet__actions gift-sheet__ask">
-        <button class="btn btn--primary share-sheet__primary" type="button" data-gift-want data-gift-first>כן, עדכנו אותי</button>
-        <button class="share-sheet__link" type="button" data-gift-close>לא עכשיו</button>
+        <button class="btn btn--primary share-sheet__primary" type="button" data-gift-want data-gift-first>${L(`כן, עדכנו אותי`, `Yes, let me know`)}</button>
+        <button class="share-sheet__link" type="button" data-gift-close>${L(`לא עכשיו`, `Not now`)}</button>
       </div>
       <form class="gift-sheet__form" hidden novalidate>
-        <label class="gift-sheet__label" for="gift-phone">מספר הטלפון שלכם</label>
-        <input class="gift-sheet__input" id="gift-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" dir="ltr" placeholder="050-1234567" aria-describedby="gift-phone-note">
+        <label class="gift-sheet__label" for="gift-phone">${L(`מספר הטלפון שלכם`, `Your phone number`)}</label>
+        <input class="gift-sheet__input" id="gift-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" dir="ltr" placeholder="${L(`050-1234567`, `(555) 123-4567`)}" aria-describedby="gift-phone-note">
         <p class="share-sheet__note gift-sheet__note" id="gift-phone-note" role="status" aria-live="polite"></p>
         <div class="share-sheet__actions">
-          <button class="btn btn--primary share-sheet__primary" type="submit">שמירה</button>
-          <button class="share-sheet__link" type="button" data-gift-close>ביטול</button>
+          <button class="btn btn--primary share-sheet__primary" type="submit"${L(`>שמירה<`, `>Save<`)}/button>
+          <button class="share-sheet__link" type="button" data-gift-close${L(`>ביטול<`, `>Cancel<`)}/button>
         </div>
       </form>
       <p class="gift-sheet__hint">${hint}</p>`);
@@ -391,7 +398,7 @@
       e.preventDefault();
       const phone = input.value.replace(/[^0-9+]/g, "");
       if (!/^\+?[0-9]{9,15}$/.test(phone)) {
-        note.textContent = "נראה שחסרות ספרות במספר. בדקו ונסו שוב.";
+        note.textContent = L("נראה שחסרות ספרות במספר. בדקו ונסו שוב.", "It looks like some digits are missing. Please check and try again.");
         input.setAttribute("aria-invalid", "true");
         input.focus();
         return;
@@ -399,19 +406,19 @@
       input.removeAttribute("aria-invalid");
       const submit = form.querySelector("[type='submit']");
       submit.disabled = true;
-      note.textContent = "שומרים…";
+      note.textContent = L("שומרים…", "Saving…");
       rpc("guest_lead", { p_phone: phone, p_slug: o.slug, p_visitor: visitor() })
         .then((r) => {
           if (!r || !r.ok) throw new Error("lead");
           if (PIXEL_ID && typeof window.fbq === "function") window.fbq("track", "Lead");
           show(`
-            <h2 class="share-sheet__title" id="gift-title">תודה! רשמנו 🎧</h2>
-            <p class="gift-sheet__text">נעדכן אתכם ברגע שתוכנית המנויים תיפתח.</p>
-            <div class="share-sheet__actions"><button class="btn btn--primary share-sheet__primary" type="button" data-gift-close data-gift-first>סגירה</button></div>`);
+            <h2 class="share-sheet__title" id="gift-title">${L(`תודה! רשמנו 🎧`, `Thank you! Got it 🎧`)}</h2>
+            <p class="gift-sheet__text">${L(`נעדכן אתכם ברגע שתוכנית המנויים תיפתח.`, `We'll let you know as soon as the subscription plan opens.`)}</p>
+            <div class="share-sheet__actions"><button class="btn btn--primary share-sheet__primary" type="button" data-gift-close ${L(`data-gift-first>סגירה<`, `data-gift-first>Close<`)}/button></div>`);
         })
         .catch(() => {
           submit.disabled = false;
-          note.textContent = "לא הצלחנו לשמור. בדקו את החיבור לאינטרנט ונסו שוב.";
+          note.textContent = L("לא הצלחנו לשמור. בדקו את החיבור לאינטרנט ונסו שוב.", "We couldn't save it. Please check your internet connection and try again.");
         });
     });
   }

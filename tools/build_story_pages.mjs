@@ -39,7 +39,7 @@ const LANGS = {
     dir: "rtl",
     fonts: "https://fonts.googleapis.com/css2?family=Suez+One&family=Heebo:wght@300;400;500;600;700;800&display=swap",
     brand: "זה קרה באמת",
-    quiz: "📖 בדוק את עצמך",       // the questions are Hebrew only (js/quiz.js)
+    quiz: "📖 בדוק את עצמך",
     about: "על הפרק: ",
     play: "הפעל הקראה",
     pause: "השהה",
@@ -71,6 +71,7 @@ const LANGS = {
     dir: "ltr",
     fonts: "https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Heebo:wght@300;400;500;600;700;800&display=swap",
     brand: "It Really Happened",
+    quiz: "📖 Check yourself",      // the English questions (en/js/app.js), 2026-11-12
     about: "About this episode: ",
     play: "Play narration",
     pause: "Pause",

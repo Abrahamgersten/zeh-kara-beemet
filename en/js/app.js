@@ -131,60 +131,305 @@ const CATEGORIES = [
     color: "#22bcc7",
     type: "audio",
     tagline: "A halachic question for kids, with the answer - all read together in one recording.",
+    // halachic niches (as in the Hebrew js/app.js): an episode with niche: "<id>" sits in that niche's folder
+    niches: [
+      { id: "brachot", name: "Brachos", icon: "🍎", image: "../assets/images/niches/brachot.jpg", blurb: "Why we make a bracha, which bracha comes first, the main food and the side food, what bracha we make on pizza, and what to do when the chocolate milk spills. And in every episode you can check yourself 📖" },
+    ],
     episodes: [
       {
         title: "Birkat Hamazon",
         description: "Yedani and his friends finish their sandwiches in the park and run off to play soccer, but the Rav calls to them from the bench: what about Birkat Hamazon? Why we say a blessing after we eat, who really gives us our bread, and what the four blessings are.",
         image: "../assets/images/en/birkat-hamazon.jpeg",
         audio: "../assets/audio/en/birkat-hamazon-sfx6.mp3",
+        niche: "brachot",
+        quiz: [
+          {
+            art: ["bread", "plate", "sparkles"],
+            question: "How many blessings make up Birkat Hamazon?",
+            options: ["Two blessings", "Four blessings", "Seven blessings", "Depends how many slices of pizza I ate 🍕"],
+            answer: 1,
+            funny: 3,
+            explain: "Birkat Hazan, Birkat Haaretz, Bonei Yerushalayim, and Hatov Vehametiv.",
+            audio: null,
+          },
+          {
+            art: ["synagogue", "bread", "cake"],
+            question: "What do we mention in the third blessing of Birkat Hamazon?",
+            options: ["Jerusalem, and we pray for its rebuilding", "The Land of Israel", "All the creatures Hashem gives food to", "Dessert, which still hasn't arrived 🍰"],
+            answer: 0,
+            funny: 3,
+            explain: "The third blessing is Bonei Yerushalayim: we mention Jerusalem and pray for its rebuilding.",
+            audio: null,
+          },
+          {
+            art: ["wheat", "bread", "sun"],
+            question: "Who really gives us our bread?",
+            options: ["The baker who baked it", "The farmer who grew the wheat", "The toaster, of course 🍞", "Hashem"],
+            answer: 3,
+            funny: 2,
+            explain: "Many people worked hard for our bread, but Hashem gave us the earth, the rain and the sun.",
+            audio: null,
+          },
+        ],
       },
       {
         title: "The Weekly Torah Portion",
         description: "Why do we read a different portion of the Torah every Shabbat, and what does it have to do with us thousands of years later? How to listen to the Torah reading and ask: what does this portion want to teach me?",
         image: "../assets/images/en/parasha-of-the-week.jpeg",
         audio: "../assets/audio/en/parasha-of-the-week-sfx4.mp3",
+        hidden: true,   // as in Hebrew (Avraham, 2026-11-10): the only episode outside the niche; delete this line to bring it back
       },
       {
         title: "Why Do We Make a Bracha?",
         description: "Yedani \"just tastes\" a crumb of a cookie at the bakery, and the Rav sees him. Why do we make a bracha before we eat, do we need one even for a tiny crumb, and can't we just say Shehakol on everything?",
         image: "../assets/images/en/why-we-bless.jpeg",
         audio: "../assets/audio/en/why-we-bless-sfx6.mp3",
+        niche: "brachot",
+        quiz: [
+          {
+            art: ["cookie", "magnifier"],
+            question: "How much do we have to eat before we need to make a bracha?",
+            options: ["At least a whole slice", "Even one tiny crumb", "Only when we're really, really hungry", "Only if the cookie is really yummy 🍪"],
+            answer: 1,
+            funny: 3,
+            explain: "No amount is too small for a bracha, not even a single grain.",
+            audio: null,
+          },
+          {
+            art: ["candy", "cup", "lollipop"],
+            question: "Someone said Shehakol by mistake on a food that has a different bracha. What's the halacha?",
+            options: ["He has to say sorry to the food 🙇", "He must make the right bracha again", "It counts, but only after the fact", "He may never eat that food again"],
+            answer: 2,
+            funny: 0,
+            explain: "It counts after the fact, but from the start we learn which bracha fits each food.",
+            audio: null,
+          },
+          {
+            art: ["cookie", "chocolate", "magnifier"],
+            question: "Let's say we don't know which bracha to make on a food. We tried to find out and couldn't. What do we do?",
+            options: ["Eat it without a bracha", "Say every bracha I know, just to be safe", "Say Shehakol", "Ask the food which bracha it likes best 🤔"],
+            answer: 2,
+            funny: 3,
+            explain: "When we really tried to find out and couldn't, we say Shehakol. But it's even better to eat it during a meal, where we already made a bracha on the bread.",
+            audio: null,
+          },
+        ],
       },
       {
         title: "How Long May We Wait Between the Bracha and Eating?",
         description: "Yedani made a bracha on an apple at recess, saw the Rav, and started telling him all about the class trip. Only then did he remember that he hadn't taken a single bite! When do we need to make the bracha again, and when is it okay to pause?",
         image: "../assets/images/en/bracha-to-eating-gap.jpeg",
         audio: "../assets/audio/en/bracha-to-eating-gap-sfx6.mp3",
+        niche: "brachot",
+        quiz: [
+          {
+            art: ["apple", "speech"],
+            question: "You made a bracha on an apple, and then told a friend what happened at recess. What do you do before you eat?",
+            options: ["Eat anyway, the bracha still counts", "Wait five minutes and then eat", "Ask the apple nicely to forgive you 🍎", "Make the bracha again"],
+            answer: 3,
+            funny: 2,
+            explain: "We talked about something that has nothing to do with the food, so we make the bracha again.",
+            audio: null,
+          },
+          {
+            art: ["green-apple", "hourglass"],
+            question: "You made a bracha on an apple and waited a little, quietly, without talking. Do you need to make the bracha again?",
+            options: ["No, there's no need to make it again", "Yes, we always make it again", "Only if the apple started to get bored 🍏", "Only if more than a minute went by"],
+            answer: 0,
+            funny: 2,
+            explain: "If we didn't talk, there's no need to make the bracha again. But ideally, we eat right after the bracha.",
+            audio: null,
+          },
+          {
+            art: ["apple", "knife"],
+            question: "You're holding a big apple and want to cut it up before you eat it. When is it better to make the bracha?",
+            options: ["After cutting, on the pieces", "In the middle of cutting", "Only when the apple agrees to be cut 🍎", "Before cutting, on the whole fruit"],
+            answer: 3,
+            funny: 2,
+            explain: "It's better to make the bracha on the whole fruit, because that shows more respect for the bracha. We may cut it after the bracha, because that's part of getting the food ready.",
+            audio: null,
+          },
+        ],
       },
       {
         title: "What Bracha Do We Make on Medicine?",
         description: "Yedani is sick, and the Rav comes to visit him. Do we make a bracha on medicine? On the water we drink to swallow it? And what do we do if we remember in the middle of a cookie that we forgot to make a bracha?",
         image: "../assets/images/en/bracha-on-medicine.jpeg",
         audio: "../assets/audio/en/bracha-on-medicine-sfx7.mp3",
+        niche: "brachot",
+        quiz: [
+          {
+            art: ["pill", "drop"],
+            question: "You drank water only to swallow medicine, not because you were thirsty. Do you make a bracha on the water?",
+            options: ["Yes, we always make a bracha on water", "No, we don't make a bracha", "Only if the water is really cold", "Only if the cup smiles at me 🥤"],
+            answer: 1,
+            funny: 3,
+            explain: "We don't make a bracha on water we drink only to swallow medicine, because we're not drinking it out of thirst.",
+            audio: null,
+          },
+          {
+            art: ["pill", "spoon", "strawberry"],
+            question: "I have medicine that tastes good. Which bracha do I make on it?",
+            options: ["We never make a bracha on medicine", "Shehakol", "Borei pri ha'etz", "Ask the medicine if it's yummy 😋"],
+            answer: 1,
+            funny: 3,
+            explain: "On medicine that tastes good we say Shehakol. On medicine that doesn't taste good, we don't make a bracha.",
+            audio: null,
+          },
+          {
+            art: ["cookie", "sandwich"],
+            question: "In the middle of eating you remember that you forgot to make a bracha, and your mouth is full. What do you do?",
+            options: ["Signal the food to wait a second 🤫", "Make the bracha with a full mouth, the main thing is to say it", "Spit everything out", "Move the food to the side of your mouth, make the bracha, and keep eating"],
+            answer: 3,
+            funny: 0,
+            explain: "We may not make a bracha with a full mouth. We move the food to the side of the mouth, make the bracha, and keep eating.",
+            audio: null,
+          },
+        ],
       },
       {
         title: "The Main Food and the Side Food",
         description: "At his cousin's bar mitzvah kiddush, Yedani builds a tower of tuna on one cracker. Does the cracker need a bracha too? The Rav explains what ikar and tafel mean, and why we don't make a bracha on the water we drink after a hot pepper.",
         image: "../assets/images/en/bracha-ikar-tafel.jpeg",
         audio: "../assets/audio/en/bracha-ikar-tafel-sfx6.mp3",
+        niche: "brachot",
+        quiz: [
+          {
+            art: ["fish", "cracker", "can"],
+            question: "You're eating tuna spread on a cracker, and the cracker is only there to make the tuna easier to eat. Which bracha do you make?",
+            options: ["Mezonos on the cracker and also Shehakol on the tuna", "Only Shehakol on the tuna", "Only Mezonos on the cracker", "Bless the cracker to be strong and not break 🍘"],
+            answer: 1,
+            funny: 3,
+            explain: "The tuna is the main food and the cracker is the side food, so the bracha on the tuna covers the cracker too.",
+            audio: null,
+          },
+          {
+            art: ["pepper", "fire", "drop"],
+            question: "A boy ate a hot pepper, and drank a little water just to cool the burning. Does he make a bracha on the water?",
+            options: ["Yes, we always make a bracha on water", "Only if the water is very cold", "No, the water is a side food to the pepper", "Make a bracha on the pepper so it calms down a little 🌶️"],
+            answer: 2,
+            funny: 3,
+            explain: "The water was only there to take away the spiciness, so it's a side food to the pepper and needs no bracha. The same goes for bread we eat only to take away the spiciness.",
+            audio: null,
+          },
+          {
+            art: ["can", "cracker"],
+            question: "You made Shehakol on the tuna, and only afterward decided to add a cracker you hadn't thought of before. What do you do?",
+            options: ["Make a bracha on the cracker too", "No bracha, the bracha on the tuna covers everything", "Give up and don't eat the tuna", "Give up on the cracker"],
+            answer: 0,
+            funny: null,
+            explain: "The side food is covered only if we already planned to eat it with the main food when we made the bracha, or if we're always used to eating them together.",
+            audio: null,
+          },
+        ],
       },
       {
         title: "Which Bracha Comes First?",
         description: "Yedani comes to the Rav's housewarming and finds a giant plate: cookies, grapes, dates, apples and cucumbers. Which bracha comes first? The memory sign MaGA'Sh, the fruit we love most, and the Seven Species.",
         image: "../assets/images/en/bracha-precedence.jpeg",
         audio: "../assets/audio/en/bracha-precedence-sfx8.mp3",
+        niche: "brachot",
+        quiz: [
+          {
+            art: ["cookie", "apple"],
+            question: "There's a cookie and an apple on the table. Which bracha comes first?",
+            options: ["The apple, because it's healthier", "The cookie, because Mezonos comes before Ha'etz", "Whatever is closest to my plate", "Whichever one shouts the loudest, 'Eat me first!' 🍪"],
+            answer: 1,
+            funny: 3,
+            explain: "By the memory sign MaGA'Sh: Mezonos, Hagafen, Ha'etz, Ha'adamah, Shehakol. So Mezonos comes before Ha'etz.",
+            audio: null,
+          },
+          {
+            art: ["apple", "palm"],
+            question: "You have an apple and a date in front of you, and you love them both the same. Which one do you make the bracha on?",
+            options: ["The date, because it's one of the Seven Species", "The apple, because it's bigger", "Count the seeds and let them decide 🍎", "Whichever was cut first"],
+            answer: 0,
+            funny: 2,
+            explain: "When we love them both the same, the fruit from the Seven Species comes first.",
+            audio: null,
+          },
+          {
+            art: ["grapes", "palm"],
+            question: "You have grapes and dates in front of you, and you love them both the same. Which one do you make the bracha on?",
+            options: ["The grapes", "Whichever is sweeter", "The dates, because they're closer to the word 'land'", "Whichever my brother hasn't grabbed yet 😋"],
+            answer: 2,
+            funny: 3,
+            explain: "The dates are mentioned second after the second 'land', and the grapes third after the first 'land'.",
+            audio: null,
+          },
+        ],
       },
       {
         title: "What If the Chocolate Milk Spills?",
         description: "Yedani made a bracha on a cup of chocolate milk, and the cat spilled it. Does he need a new bracha on the next cup? And what about an orange that fell on the floor right after the bracha? A conversation between Yedani and the Rav.",
         image: "../assets/images/en/spilled-chocolate-milk.jpeg",
         audio: "../assets/audio/en/spilled-chocolate-milk-sfx7.mp3",
+        niche: "brachot",
+        quiz: [
+          {
+            art: ["milk", "chocolate", "cat"],
+            question: "You made Shehakol on a cup of chocolate milk, and it spilled before you drank. Mommy made a new cup. What do you do?",
+            options: ["Make the bracha again on the new cup", "No bracha, the first one still counts", "Ask the cat to make the bracha for us this time 🐱", "Drink without a bracha, since we already made one today"],
+            answer: 0,
+            funny: 2,
+            explain: "The bracha was on the cup that spilled, so we make a new bracha on the new cup.",
+            audio: null,
+          },
+          {
+            art: ["milk", "cup"],
+            question: "And what if the second cup was already in front of you when you made the bracha on the first one?",
+            options: ["Then it doesn't need a bracha", "It needs a new bracha, because when you made the bracha you didn't plan to drink from it", "We make only half a bracha", "Drink both at once, just to be safe 🥤"],
+            answer: 1,
+            funny: 3,
+            explain: "When you made the bracha you meant to drink only from the first cup, so the bracha doesn't cover the second one.",
+            audio: null,
+          },
+          {
+            art: ["orange", "sparkles"],
+            question: "You made a bracha on an orange, and it fell on the floor and got dirty. What's the best thing to do?",
+            options: ["You must eat all of it, even if it's dirty", "Skip it without a second thought", "If you can, taste a little of it, so the bracha won't be for nothing", "Tell the orange, 'It's okay, it happens to everyone' 🍊"],
+            answer: 2,
+            funny: 3,
+            explain: "We don't have to force ourselves to eat food that doesn't taste good to us, but if we can, it's better to taste a little, so the bracha won't be for nothing.",
+            audio: null,
+          },
+        ],
       },
       {
         title: "What Bracha Do We Make on Pizza?",
         description: "Yedani goes up to the Rav with a question: is it true that one slice of pizza is Mezonos and two slices are HaMotzi? What Sephardim and Ashkenazim do, and why the amount we eat can change the bracha.",
         image: "../assets/images/en/bracha-on-pizza.jpeg",
         audio: "../assets/audio/en/bracha-on-pizza-sfx7.mp3",
+        niche: "brachot",
+        quiz: [
+          {
+            art: ["pizza", "cheese"],
+            question: "Which bracha do Sephardim make on one slice of pizza?",
+            options: ["HaMotzi", "Mezonos", "Shehakol", "'Borei pri ha-cheese' 🍕"],
+            answer: 0,
+            funny: 3,
+            explain: "Sephardim make HaMotzi even on one slice of pizza.",
+            audio: null,
+          },
+          {
+            art: ["pizza", "tap", "baguette"],
+            question: "An Ashkenazi plans to eat two or more slices of pizza. Which bracha does he make?",
+            options: ["Mezonos, just like on one slice", "He washes his hands and makes HaMotzi", "Mezonos twice, once for each slice", "He asks the pizza delivery guy 🛵"],
+            answer: 1,
+            funny: 3,
+            explain: "When we eat an amount that a regular person would make a real, filling meal of, the food counts like bread: we wash our hands and make HaMotzi.",
+            audio: null,
+          },
+          {
+            art: ["plate", "pizza", "clock"],
+            question: "How do we decide how much food is 'a real meal'?",
+            options: ["By the size of the pizza box", "By how much I'm used to eating", "By how loudly my tummy is growling 😋", "By how much an average person eats at lunch or supper to feel full"],
+            answer: 3,
+            funny: 2,
+            explain: "Not by what each of us is used to eating, but by the amount an average person eats at a meal to feel full.",
+            audio: null,
+          },
+        ],
       },
     ],
   },
@@ -715,6 +960,9 @@ const CATEGORIES = [
   },
 ];
 
+// an episode with hidden: true is not shown on the site (its story page under s/ stays, so links already sent keep working)
+CATEGORIES.forEach((cat) => { cat.episodes = cat.episodes.filter((ep) => !ep.hidden); });
+
 /* ---------------------------------------------------------------
    Utilities
 --------------------------------------------------------------- */
@@ -874,10 +1122,11 @@ function audioCardHTML(cat, ep, idx, audioIdx, audioTotal) {
   <article class="content-card${reverseClass}">
     ${mediaHTML(cat, ep, idx)}
     <div class="content-card__body">
-      <span class="content-card__eyebrow">${cat.name}</span>
+      <span class="content-card__eyebrow">${ep.eyebrow || cat.name}</span>
       <h3 class="content-card__title">${ep.title}</h3>
       ${ep.description ? `<p class="content-card__desc"><strong>About this episode: </strong>${ep.description}</p>` : ""}
       ${playerHTML(ep, audioIdx, audioTotal)}
+      ${ep.quiz ? `<div class="content-card__quiz"><button class="btn btn--primary content-card__quiz-btn" type="button" data-quiz-slug="${storySlug(ep.audio)}">📖 Check yourself</button></div>` : ""}
       ${shareButtonHTML(cat, ep)}
       ${pdfReportHTML(ep)}
     </div>
@@ -938,10 +1187,10 @@ function storySlug(audioPath) {
 
 function shareButtonHTML(cat, ep) {
   if (!ep.audio) return "";
-  const label = cat.id === "tzadikim" ? "Share the story" : "Share this recording";
+  const label = cat.id === "tzadikim" ? "Share the story" : cat.serial ? "Share this chapter" : cat.id === "jokes" ? "Share the joke" : "Share this recording";
   return `
       <div class="content-card__share">
-        <button class="btn btn--outline content-card__share-btn" type="button" data-share-slug="${storySlug(ep.audio)}" data-share-kind="${cat.id === "tzadikim" ? "story" : "recording"}" aria-label="Share on WhatsApp: ${ep.title}">📤 ${label}</button>
+        <button class="btn btn--outline content-card__share-btn" type="button" data-share-slug="${storySlug(ep.audio)}" data-share-kind="${cat.id === "tzadikim" || cat.serial ? "story" : "recording"}" aria-label="Share on WhatsApp: ${ep.title}">📤 ${label}</button>
       </div>`;
 }
 
@@ -1039,11 +1288,30 @@ function setupStoryShare() {
 
   // the popup at the end of an episode (called by the player): the same two choices, after EVERY playback - Avraham,
   // 2026-10-21: "I want it to pop up after every listen" (no once-per-load, no skipping what was already shared)
+  // "check yourself" (Avraham, 2026-11-04): the question of the episode, from its card or at its end; after a right
+  // answer the dialog offers to share the recording, so the end-of-episode share stays one tap away
+  const quizzes = {};
+  // up to three questions an episode (2026-11-05): quiz is a list; one question alone still works
+  CATEGORIES.forEach((c) => c.episodes.forEach((ep) => { if (ep.quiz && ep.audio) quizzes[storySlug(ep.audio)] = [].concat(ep.quiz); }));
+  window.zkbOpenQuiz = (card, autoplay) => {
+    const btn = card && card.querySelector("[data-quiz-slug]");
+    if (!btn || !window.ZkbQuiz) return;
+    const titleEl = card.querySelector(".content-card__title");
+    const share = card.querySelector("[data-share-slug]");
+    window.ZkbQuiz.open({ title: titleEl ? titleEl.textContent : "", quiz: quizzes[btn.dataset.quizSlug], autoplay,
+      onShare: share ? () => share.click() : null });
+  };
+  host.addEventListener("click", (e) => {
+    const q = e.target.closest("[data-quiz-slug]");
+    if (q) window.zkbOpenQuiz(q.closest(".content-card"), true);
+  });
+
   window.zkbInviteShare = (playerEl) => {
     const card = playerEl && playerEl.closest(".content-card");
     const btn = card && card.querySelector("[data-share-slug]");
     if (!btn || !window.ZkbShareSheet) return;
     if (card.closest("#cat-jokes") && !zkbJokeInviteDue()) return; // a joke: once in 10 jokes
+    if (card.querySelector("[data-quiz-slug]") && window.zkbOpenQuiz) { window.zkbOpenQuiz(card, false); return; }
     const slug = btn.dataset.shareSlug;
     const titleEl = card.querySelector(".content-card__title");
     if (statuses[slug]) trackStatus(slug, "popup");
@@ -1098,6 +1366,7 @@ function setupEpisodeLink() {
     const btn = document.querySelector(`[data-share-slug="${m[1]}"]`);
     const card = btn && btn.closest(".content-card");
     if (!card) return;
+    openNiche(card.closest(".niche__body"));
     card.hidden = false;
     card.removeAttribute("data-overflow-card");
     card.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -1119,19 +1388,20 @@ const PARASHA_CATEGORY_IDS = ["parasha-what", "parasha-idea", "spot-diff"];
 function renderCategorySections() {
   const host = document.getElementById("category-sections");
   host.innerHTML = CATEGORIES.map((cat) => {
-    // Newest-added episode first, regardless of the order it was pushed into
-    // the data array - keeps the freshest content most discoverable without
-    // needing to remember to unshift instead of push when adding one.
-    let episodesNewestFirst = [...cat.episodes].reverse();
+    // הפרק שנוסף אחרון מוצג ראשון, בלי קשר לסדר בו הוא נוסף למערך הנתונים.
+    // a serial story (cat.serial, "סיפורים בהמשכים", Avraham 2026-11-11) is listed from chapter 1 on, as written
+    let episodesNewestFirst = cat.serial ? [...cat.episodes] : [...cat.episodes].reverse();
     // מדורי הפרשה: הפרשה של השבת הקרובה בראש, ואחריה הבאות בתור (js/parasha-order.js).
     if (PARASHA_CATEGORY_IDS.includes(cat.id) && typeof orderEpisodesByParasha === "function") {
       episodesNewestFirst = orderEpisodesByParasha(episodesNewestFirst);
     }
     const hasSample = cat.episodes.some((ep) => ep.sample);
     const overflowCount = Math.max(0, episodesNewestFirst.length - INITIAL_VISIBLE_EPISODES);
-    // Only episodes with real audio count for "play in a row" - a "coming soon" episode can't be chained to.
+    // רק פרקים עם אודיו בפועל נספרים לצורך "נגן ברצף" - פרק "תעלה בקרוב" לא בר-המשך.
     const audioEpisodes = episodesNewestFirst.filter((ep) => ep.audio);
 
+    const groups = nicheGroups(cat, episodesNewestFirst);
+    if (groups) return nicheSectionHTML(cat, groups);
     const cardsHTML = episodesNewestFirst
       .map((ep, idx) => {
         const hiddenAttr = idx >= INITIAL_VISIBLE_EPISODES ? ' hidden data-overflow-card="true"' : "";
@@ -1164,8 +1434,91 @@ function renderCategorySections() {
   }).join("");
 }
 
+/* Halachic niches inside a category (Avraham, 2026-11-04): each niche is a folder of its own (2026-11-05: "a tab or a
+   library of its own, and when you tap it the episodes of that topic come in"), with its own "show more"; the episodes
+   without a niche follow, open, under "More questions". "Play in a row" goes in this order and opens a folder it plays from. */
+function nicheGroups(cat, episodes) {
+  if (!cat.niches || !cat.niches.length) return null;
+  const groups = cat.niches
+    .map((n) => ({ ...n, episodes: episodes.filter((ep) => ep.niche === n.id) }))
+    .filter((g) => g.episodes.length);
+  const rest = episodes.filter((ep) => !cat.niches.some((n) => n.id === ep.niche));
+  if (rest.length) groups.push({ id: "other", name: "More questions", icon: "💡", episodes: rest });
+  return groups;
+}
+
+function nicheSectionHTML(cat, groups) {
+  const audioEpisodes = groups.flatMap((g) => g.episodes).filter((ep) => ep.audio);
+  const groupsHTML = groups.map((g) => {
+    const cards = g.episodes.map((ep, idx) => {
+      // the chapters of a serial story are all shown once its folder is open
+      const hiddenAttr = !cat.serial && idx >= INITIAL_VISIBLE_EPISODES ? ' hidden data-overflow-card="true"' : "";
+      const audioIdx = ep.audio ? audioEpisodes.indexOf(ep) : -1;
+      return audioCardHTML(cat, ep, idx, audioIdx, audioEpisodes.length).replace("<article ", `<article${hiddenAttr} `);
+    }).join("");
+    const more = !cat.serial && g.episodes.length > INITIAL_VISIBLE_EPISODES
+      ? `<button class="btn btn--ghost category-section__more" type="button" data-show-more="cat-${cat.id}-${g.id}">Show more episodes</button>`
+      : "";
+    if (g.id === "other") {
+      return `
+        <div class="niche" id="cat-${cat.id}-${g.id}">
+          <h3 class="niche__title"><span class="niche__icon" aria-hidden="true">${g.icon}</span>${g.name}</h3>
+          <div class="cards-list">${cards}</div>
+          ${more}
+        </div>`;
+    }
+    const count = g.episodes.length === 1 ? "1 episode" : `${g.episodes.length} episodes`;
+    // the folder as an inviting tile (Avraham, 2026-11-05: "bigger and more inviting, maybe with a picture"); its picture is
+    // one image of its own (niche.image: "one picture, made from the WhatsApp profile picture"), not a mosaic of the episodes
+    const mosaic = g.image ? `<span class="niche__pic" aria-hidden="true"><img src="${g.image}" alt="" width="512" height="512" loading="lazy"></span>` : "";
+    return `
+        <div class="niche niche--folder${g.theme ? ` niche--${g.theme}` : ""}" id="cat-${cat.id}-${g.id}">
+          <h3 class="niche__heading">
+            <button class="niche__folder${g.image ? "" : " niche__folder--plain"}" type="button" aria-expanded="false" aria-controls="niche-body-${cat.id}-${g.id}" data-niche-toggle>
+              ${mosaic}
+              <span class="niche__text">
+                <span class="niche__name"><span class="niche__icon" aria-hidden="true">${g.icon}</span>${g.name}</span>
+                ${g.blurb ? `<span class="niche__blurb">${g.blurb}</span>` : ""}
+                <span class="niche__count">${count}</span>
+                ${cat.serial ? `<span class="niche__trail" aria-hidden="true">${g.episodes.map(() => "<i></i>").join("")}</span>` : ""}
+                <span class="niche__cta"><span class="niche__cta-open">Episodes</span><span class="niche__cta-close">Close</span><span class="niche__chevron" aria-hidden="true"></span></span>
+              </span>
+            </button>
+          </h3>
+          <div class="niche__body" id="niche-body-${cat.id}-${g.id}" hidden>
+            <div class="cards-list">${cards}</div>
+            ${more}
+          </div>
+        </div>`;
+  }).join("");
+  return `
+    <section class="category-section" id="cat-${cat.id}">
+      <div class="category-section__inner">
+        <div class="category-section__head">
+          <span class="category-section__icon" aria-hidden="true" style="background:${cat.color}">${cat.icon}</span>
+          <h2 class="category-section__title">${cat.name}</h2>
+        </div>
+        <p class="category-section__tagline">${cat.tagline}</p>
+        ${groupsHTML}
+      </div>
+    </section>`;
+}
+
+// opens (or with toggle, flips) the folder of a niche; used by its button, by "play in a row" and by #ep- links
+function openNiche(body, toggle) {
+  const btn = body && document.querySelector(`[aria-controls="${body.id}"]`);
+  if (!btn) return;
+  const open = toggle ? body.hidden : true;
+  body.hidden = !open;
+  btn.setAttribute("aria-expanded", String(open));
+}
+
 function setupShowMore() {
   const host = document.getElementById("category-sections");
+  host.addEventListener("click", (e) => {
+    const folder = e.target.closest("[data-niche-toggle]");
+    if (folder) openNiche(document.getElementById(folder.getAttribute("aria-controls")), true);
+  });
   host.addEventListener("click", (e) => {
     const btn = e.target.closest("[data-show-more]");
     if (!btn) return;
@@ -1392,6 +1745,11 @@ function setupPlayers() {
   //    that is already playing is allowed.
   const audio = new Audio();
   audio.preload = "none";
+  // the "check yourself" question (js/quiz.js) stops the episode while it is read, and a chain with it
+  window.zkbPauseMain = () => {
+    continuousPlan = null;
+    if (!audio.paused) audio.pause();
+  };
   let active = null; // the episode whose file is loaded in the shared element
   let pendingSeek = 0; // where to start an episode that was resumed or scrubbed before its file loaded
   let continuousPlan = null; // { remaining } while a chain is in progress
@@ -1520,6 +1878,7 @@ function setupPlayers() {
     setMediaSession(active);
     if (!active.session && window.ZkbListen) active.session = window.ZkbListen.session(active.slug, lang, "site");
     if (window.ZkbNew) window.ZkbNew.seen(lang, active.slug);
+    openNiche(active.el.closest(".niche__body")); // "play in a row" reached an episode inside a closed folder
     const newTag = active.el.closest(".content-card")?.querySelector(".content-card__new");
     if (newTag) newTag.remove();
     // usage tracking (non-blocking, see js/analytics.js) - only on the first play of an episode in a page load
@@ -1567,6 +1926,20 @@ function setupPlayers() {
         audio.pause();
         return;
       }
+      // the gift link (js/gift.js, Avraham 2026-11-10) and the open site for guests (js/guest.js, 2026-11-12):
+      // one episode, chosen once a day - no chain, and the gift decides
+      if (window.ZkbGift && window.ZkbGift.active()) {
+        continuousPlan = null;
+        const titleEl = ep.el.closest(".content-card")?.querySelector(".content-card__title");
+        window.ZkbGift.play({
+          slug: ep.slug,
+          title: titleEl ? titleEl.textContent : "",
+          start: () => start(ep),
+          stop: () => { if (active === ep) audio.pause(); },
+          audio, // js/guest.js stops the taste on it
+        });
+        return;
+      }
       const choice = ep.dd ? ep.dd.dataset.value : "1";
       continuousPlan = choice === "1" ? null : { remaining: choice === "all" ? Infinity : Number(choice) - 1 };
       start(ep);
@@ -1586,6 +1959,7 @@ function setupPlayers() {
   });
 
   function continueChainFrom(ep) {
+    if (window.ZkbGift && window.ZkbGift.active()) continuousPlan = null; // the gift is one episode
     if (!continuousPlan || continuousPlan.remaining <= 0) { continuousPlan = null; return; }
     const next = ep.list[ep.posInList + 1];
     if (!next) { continuousPlan = null; return; }

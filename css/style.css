@@ -1895,7 +1895,7 @@ body.auth-pending { visibility: hidden; }
 
 /* ---------- the gift link (js/gift.js; Avraham, 2026-11-10): one episode for whoever posted a status ---------- */
 .gift-mode .player-continuous,
-.gift-mode .lang-switch,
+.gift-mode:not(.guest-mode) .lang-switch, /* a guest may switch language: both sites are open (2026-11-12) */
 .gift-mode #points-widget,
 .gift-mode #push-optin,
 .gift-mode #install-banner { display: none !important; }
@@ -1920,6 +1920,7 @@ body.auth-pending { visibility: hidden; }
   text-align: center;
   pointer-events: none;
 }
+html[lang="en"].gift-mode #cat-what-to-do-brachot .niche__folder::after { content: "Top pick"; }
 .gift-bar {
   position: fixed;
   inset-inline: 0;

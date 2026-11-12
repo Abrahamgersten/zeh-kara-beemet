@@ -22,12 +22,42 @@
 <body class="auth-pending">
 
 <script type="module">
-  import { guardGatedPage } from "../js/auth.js";
+  import { getSession, fetchEntitlement, isEntitled, isSupabaseConfigured, revealPage } from "../js/auth.js";
   import { initPoints } from "../js/points.js";
   import "../js/analytics.js";
-  guardGatedPage({ loginUrl: "login.html", offerUrl: "offer.html" }).then((entitled) => {
-    if (entitled) initPoints();
-  });
+  // The gift link (?g=<code>, js/gift.js - Avraham, 2026-11-10): the site opens without login, for one episode. Only a
+  // logged-in subscriber who opens it gets the full site as usual. Any other link: the usual door, as before.
+  if (/[?&]g=[a-f0-9]{20}(?:&|$)/.test(location.search)) {
+    getSession()
+      .then((session) => (session ? fetchEntitlement() : null))
+      .then((row) => {
+        if (!isEntitled(row)) return;
+        window.zkbGiftOff = true;
+        if (window.ZkbGift) window.ZkbGift.disable();
+        revealPage();
+        initPoints();
+      })
+      .catch(() => {});
+  } else {
+    // The site is open to everyone (Avraham, 2026-11-12): a subscriber gets the site as always; anyone else comes in as
+    // a guest (js/guest.js: a taste of an episode, then "put the story on your status", one episode a day).
+    const guest = () => {
+      window.zkbGuestOn = true;
+      if (window.ZkbGuest) window.ZkbGuest.enable();
+      revealPage();
+    };
+    if (!isSupabaseConfigured()) revealPage();
+    else {
+      getSession()
+        .then((session) => (session ? fetchEntitlement() : null))
+        .then((row) => {
+          if (!isEntitled(row)) return guest();
+          revealPage();
+          initPoints();
+        })
+        .catch(guest);
+    }
+  }
 </script>
 
 <div id="install-banner" class="install-banner" hidden>
@@ -123,8 +153,11 @@
 
 <script src="../js/parasha-order.js" defer></script>
 <script src="../js/share-sheet.js" defer></script>
+<script src="../js/quiz.js" defer></script>
 <script src="../js/progress.js" defer></script>
 <script src="../js/push.js" defer></script>
+<script src="../js/gift.js" defer></script>
+<script src="../js/guest.js" defer></script>
 <script src="js/app.js" defer></script>
 </body>
 </html>
