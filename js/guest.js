@@ -264,8 +264,8 @@
       : ["מורידים את התמונה.", "מעבירים אותה לטלפון ומעלים לסטטוס בוואטסאפ.", "מדביקים בכיתוב את המלל עם הקישור. הוא כבר הועתק."];
     const download = `<a class="btn btn--primary share-sheet__primary" href="${esc(st.image)}" download="${esc(name)}" data-guest-download data-gift-first${L(`>הורדת התמונה<`, `>Download the picture<`)}/a>`;
     show(`
-      <h2 class="share-sheet__title" id="gift-title">${L(`נהנים מהסיפור? 💛`, `Enjoying the story? 💛`)}</h2>
-      <p class="gift-sheet__text">${L(`הסיפורים כאן מגיעים לעוד בתים בזכות הורים שמספרים עליהם. <strong>העלו את הסיפור לסטטוס שלכם</strong>, כדי שעוד ילדים ישמעו סיפור טוב לפני השינה, והמשיכו להאזין.`, `These stories reach more homes thanks to parents who tell others about them. <strong>Post the story to your WhatsApp status</strong>, so more kids can hear a good story before bed, and keep listening.`)}</p>
+      <h2 class="share-sheet__title" id="gift-title">${L(`איזה כיף שאתם מקשיבים! 💛`, `So glad you're listening! 💛`)}</h2>
+      <!-- the wording is Avraham's own, 2026-11-12 --><p class="gift-sheet__text">${L(`אנחנו לא מפרסמים. הסיפורים עוברים מבית לבית, מהורה להורה. <strong>העלו אותו לסטטוס שלכם</strong>, ועוד ילד ילך לישון הלילה עם סיפור טוב. מיד אחר כך ממשיכים בדיוק מאיפה שעצרנו.`, `We don't advertise. The stories pass from home to home, from parent to parent. <strong>Post it to your WhatsApp status</strong>, and one more child will go to sleep tonight with a good story. Right after that we pick up exactly where we stopped.`)}</p>
       <div class="share-sheet__status">
         <img class="share-sheet__preview" src="${esc(st.image)}" ${L(`alt="תמונת הסטטוס"`, `alt="The status picture"`)} width="1080" height="1920">
         <ol class="share-sheet__steps">${steps.map((s) => `<li>${esc(s)}</li>`).join("")}</ol>
