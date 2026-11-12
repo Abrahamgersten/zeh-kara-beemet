@@ -1953,6 +1953,12 @@ body.auth-pending { visibility: hidden; }
   cursor: pointer;
 }
 .gift-bar__btn:hover { background: var(--teal-950); }
+/* the open site (js/guest.js, Avraham 2026-11-12): the subscribers' way in, quieter than an action; and the way on
+   that appears only after the status was shared */
+a.gift-bar__btn { text-decoration: none; }
+.gift-bar__btn--quiet { background: transparent; color: var(--teal-950); box-shadow: inset 0 0 0 2px var(--teal-950); }
+.gift-bar__btn--quiet:hover { background: var(--teal-950); color: #fff; }
+.gift-sheet .guest-sheet__after[hidden] { display: none; }
 .gift-bar__btn:focus-visible { outline: 3px solid var(--gold-600); outline-offset: 2px; }
 .content-card--gift { box-shadow: 0 0 0 4px var(--gold-400), var(--shadow-card); }
 .gift-sheet__lead { color: var(--teal-heading); font-size: 1.12rem; }

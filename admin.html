@@ -470,11 +470,12 @@
       [data.plays || 0, "פרקים שנבחרו במתנה"],
       [data.plays_7d || 0, "מהם ב-7 ימים"],
       [leads.length, "השאירו טלפון"],
-    ].map(([v, l]) => `<div class="stat-box"><span class="stat-box__value">${v}</span><span class="stat-box__label">${l}</span></div>`).join("");
+    ].concat([["enter", "נכנסו לאתר הפתוח (7 ימים)"], ["teaser", "התחילו להאזין לפרק"], ["ask", "התבקשו להעלות סטטוס"], ["share", "לחצו ושיתפו"], ["unlock", "המשיכו להאזין"], ["offer", "ראו את הודעת המנויים"]]
+      .map(([k, l]) => [((data.guest || {})[k] || {}).week || 0, l])).map(([v, l]) => `<div class="stat-box"><span class="stat-box__value">${v}</span><span class="stat-box__label">${l}</span></div>`).join("");
     leadsHost.innerHTML = leads.length
       ? `<table class="admin-table">
-          <thead><tr><th scope="col">טלפון</th><th scope="col">מתי</th><th scope="col">הפרק שרצו לשמוע</th></tr></thead>
-          <tbody>${leads.map((l) => `<tr><td dir="ltr" style="text-align:start">${escapeHtml(l.phone)}</td><td>${new Date(l.created_at).toLocaleString("he-IL", { dateStyle: "short", timeStyle: "short" })}</td><td>${name(l.slug)}</td></tr>`).join("")}</tbody>
+          <thead><tr><th scope="col">טלפון</th><th scope="col">מתי</th><th scope="col">הפרק שרצו לשמוע</th><th scope="col">מאיפה</th></tr></thead>
+          <tbody>${leads.map((l) => `<tr><td dir="ltr" style="text-align:start">${escapeHtml(l.phone)}</td><td>${new Date(l.created_at).toLocaleString("he-IL", { dateStyle: "short", timeStyle: "short" })}</td><td>${name(l.slug)}</td><td>${l.source === "guest" ? "האתר הפתוח" : "קישור מתנה"}</td></tr>`).join("")}</tbody>
         </table>`
       : `<p class="admin-page__sub">עוד אף אחד לא השאיר טלפון.</p>`;
     const top = data.top || [];

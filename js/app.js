@@ -2105,6 +2105,7 @@ function setupPlayers() {
           title: titleEl ? titleEl.textContent : "",
           start: () => start(ep),
           stop: () => { if (active === ep) audio.pause(); },
+          audio, // js/guest.js stops the taste on it
         });
         return;
       }
