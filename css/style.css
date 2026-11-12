@@ -1511,6 +1511,11 @@ body.auth-pending { visibility: hidden; }
     mask-image: linear-gradient(to left, #000 55%, transparent 100%);
   }
   .niche__pic img { position: absolute; inset: 0; object-position: 50% 18%; }
+  /* the English site (left to right): the picture is on the left, so it fades toward the right */
+  [dir="ltr"] .niche__pic {
+    -webkit-mask-image: linear-gradient(to right, #000 55%, transparent 100%);
+    mask-image: linear-gradient(to right, #000 55%, transparent 100%);
+  }
   .niche__text { margin: 0; margin-inline-start: -2.5rem; padding: 2.2rem 2.6rem; gap: 0.7rem; }
   .niche__name { font-size: 2.6rem; }
   .niche__folder .niche__icon { font-size: 2.1rem; }
@@ -1920,7 +1925,7 @@ body.auth-pending { visibility: hidden; }
   text-align: center;
   pointer-events: none;
 }
-html[lang="en"].gift-mode #cat-what-to-do-brachot .niche__folder::after { content: "Top pick"; }
+html[lang="en"].gift-mode #cat-what-to-do-brachot .niche__folder::after { content: "Top pick"; left: auto; right: -52px; transform: rotate(45deg); }
 .gift-bar {
   position: fixed;
   inset-inline: 0;

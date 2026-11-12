@@ -29,8 +29,8 @@
   let voiceKind = null; // "ask" while the question is read, "ok" / "react" for the answers
   // the site's root, from this file's own address: the same files serve the site and the story pages (s/<slug>/)
   const ROOT = document.currentScript && document.currentScript.src ? new URL("../", document.currentScript.src).href : "";
-  const WRONG = ROOT + "assets/audio/quiz/yedani-wrong-2.mp3";
-  const FUNNY = ROOT + "assets/audio/quiz/yedani-funny-2.mp3";
+  const WRONG = ROOT + (EN ? "assets/audio/quiz/en/yedani-wrong.mp3" : "assets/audio/quiz/yedani-wrong-2.mp3");
+  const FUNNY = ROOT + (EN ? "assets/audio/quiz/en/yedani-funny.mp3" : "assets/audio/quiz/yedani-funny-2.mp3");
   let current = null;
   let clap = null;
   let reading = 0; // requestAnimationFrame id while Yedani reads the answers
