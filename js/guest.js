@@ -13,7 +13,11 @@
    window.ZkbGuest.enable()   נקרא מ-index.html כשאין מנוי מחובר
 --------------------------------------------------------------- */
 (function () {
-  if (/[?&]g=[a-f0-9]{20}(?:&|$)/.test(location.search)) return; // the gift link has its own rules (js/gift.js)
+  // Avraham, 2026-11-12 (night): the regular link is the login door again, and all of this (the taste, the status
+  // request, the fades) works on the gift link only. There js/gift.js keeps the rules (one episode a day, two a week,
+  // on the server) and calls taste() here; whether today's status was posted is kept in this browser (on trust).
+  const GIFT = /[?&]g=[a-f0-9]{20}(?:&|$)/.test(location.search);
+  const GIFT_SHARED = "zkb_gift_shared";
 
   const API = "https://nuadpewhrhpdgznbbqbs.supabase.co/rest/v1/rpc/";
   const KEY = "sb_publishable_AcpmlZnxKM4yJxr1OsoSjw_CG6Kt2pz"; // the public key of js/supabase-config.js
@@ -79,6 +83,24 @@
   }
   function markShared() {
     save(plays().map((p) => (p.day === today() ? { ...p, shared: true } : p)));
+  }
+  let giftSharedNow = null; // when the browser keeps nothing
+  function giftShared(slug) {
+    const key = today() + ":" + slug;
+    if (giftSharedNow === key) return true;
+    try {
+      return localStorage.getItem(GIFT_SHARED) === key;
+    } catch (e) {
+      return false;
+    }
+  }
+  function setGiftShared(slug) {
+    giftSharedNow = today() + ":" + slug;
+    try {
+      localStorage.setItem(GIFT_SHARED, giftSharedNow);
+    } catch (e) {
+      // kept in memory
+    }
   }
 
   function visitor() {
@@ -415,11 +437,12 @@
   }
 
   function unlock(o) {
-    markShared();
+    if (GIFT) setGiftShared(o.slug);
+    else markShared();
     track("unlock", o.slug);
     teaser = null;
     close();
-    showBar();
+    if (!GIFT) showBar();
     if (o.audio) {
       ramp(o.audio, 0, fullVolume, null);
       o.audio.play().catch(() => {}); // from the tap on "continue"
@@ -430,7 +453,7 @@
   let fading = false;
   // the taste ends here: the sound fades, the episode waits, and the request comes up
   function onTime(e) {
-    if (!on || !teaser || fading) return;
+    if ((!on && !GIFT) || !teaser || fading) return;
     const a = e.target;
     if (a.src !== teaser.src) return;
     const limit = limitOf(a);
@@ -587,7 +610,7 @@
   const api = { active: () => on, play, disable() {} };
 
   function enable() {
-    if (on) return;
+    if (on || GIFT) return;
     on = true;
     window.ZkbGift = api;
     document.documentElement.classList.add("gift-mode", "guest-mode");
@@ -609,6 +632,8 @@
     .site-footer__login { display: inline-block; margin-top: 0.9rem; padding: 0.45rem 0.2rem; color: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }`;
   document.head.appendChild(css);
 
-  window.ZkbGuest = { enable };
+  if (GIFT) loadWeekly();
+  // taste / shared: for js/gift.js, the chosen episode of the gift
+  window.ZkbGuest = { enable, taste, shared: giftShared };
   if (window.zkbGuestOn) enable(); // index.html decided before this file ran
 })();

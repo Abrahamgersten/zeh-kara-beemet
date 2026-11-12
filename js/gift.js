@@ -160,6 +160,14 @@
     if (lastFocus && typeof lastFocus.focus === "function") lastFocus.focus();
   }
 
+  // Avraham, 2026-11-12 (night): the gift's episode plays as a taste, then asks for the status (js/guest.js: his
+  // wording, the week's video, the fades); once the status was posted today it plays whole.
+  function begin(o) {
+    const G = window.ZkbGuest;
+    if (G && G.taste && !G.shared(o.slug)) G.taste(o);
+    else o.start();
+  }
+
   // "is this the episode you choose?" - a slip of the finger must not use up the gift
   function confirmPick(o) {
     show(`
@@ -172,7 +180,7 @@
       </div>`);
     card.querySelector("[data-gift-yes]").addEventListener("click", () => {
       close();
-      o.start(); // from the tap itself (a phone plays only from a tap); the server's answer follows
+      begin(o); // from the tap itself (a phone plays only from a tap); the server's answer follows
       rpc("gift_pick", { p_token: TOKEN, p_slug: o.slug })
         .then((r) => {
           if (r && r.ok) {
@@ -263,7 +271,7 @@
       return;
     }
     if (state.today === o.slug) {
-      o.start();
+      begin(o);
       // the day may have changed since the page was opened: the server decides
       rpc("gift_pick", { p_token: TOKEN, p_slug: o.slug })
         .then((r) => {

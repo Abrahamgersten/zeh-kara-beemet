@@ -22,7 +22,7 @@
 <body class="auth-pending">
 
 <script type="module">
-  import { getSession, fetchEntitlement, isEntitled, isSupabaseConfigured, revealPage } from "../js/auth.js";
+  import { guardGatedPage, getSession, fetchEntitlement, isEntitled, revealPage } from "../js/auth.js";
   import { initPoints } from "../js/points.js";
   import "../js/analytics.js";
   // The gift link (?g=<code>, js/gift.js - Avraham, 2026-11-10): the site opens without login, for one episode. Only a
@@ -39,24 +39,11 @@
       })
       .catch(() => {});
   } else {
-    // The site is open to everyone (Avraham, 2026-11-12): a subscriber gets the site as always; anyone else comes in as
-    // a guest (js/guest.js: a taste of an episode, then "put the story on your status", one episode a day).
-    const guest = () => {
-      window.zkbGuestOn = true;
-      if (window.ZkbGuest) window.ZkbGuest.enable();
-      revealPage();
-    };
-    if (!isSupabaseConfigured()) revealPage();
-    else {
-      getSession()
-        .then((session) => (session ? fetchEntitlement() : null))
-        .then((row) => {
-          if (!isEntitled(row)) return guest();
-          revealPage();
-          initPoints();
-        })
-        .catch(guest);
-    }
+    // Avraham, 2026-11-12 (night): the regular link is the usual door again (login / subscription). The taste, the status
+    // request and one episode a day belong to the gift link only (js/gift.js + js/guest.js).
+    guardGatedPage({ loginUrl: "login.html", offerUrl: "offer.html" }).then((entitled) => {
+      if (entitled) initPoints();
+    });
   }
 </script>
 
