@@ -82,7 +82,7 @@ const LANGS = {
     close: "Close",
     loadError: "We couldn't load the recording. Check your internet connection and try again.",
     share: (catId) =>
-      catId === "tzadikim"
+      catId === "tzadikim" || catId === "serials"
         ? { text: "Enjoyed the story? Share it with family and friends ❤️", button: "Share the story" }
         : { text: "Enjoyed it? Share it with family and friends ❤️", button: "Share this recording" },
     join: null,                      // there is no English group link yet
