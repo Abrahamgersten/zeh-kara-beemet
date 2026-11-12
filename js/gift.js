@@ -298,4 +298,21 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", reveal);
   else reveal();
   window.addEventListener("load", showBar); // by now js/app.js has built the cards: the chosen episode's name and mark
+  // Avraham, 2026-11-12: with the gift link there is no sharing of episodes (a shared story page plays the whole
+  // recording, so the gift would open everything). The buttons are hidden (they stay in the page: the cards are found
+  // by them), and at the end of an episode only the "check yourself" question still comes up, not the share invite.
+  if (on) {
+    const css = document.createElement("style");
+    css.textContent = ".gift-mode:not(.guest-mode) .content-card__share-btn { display: none !important; }";
+    document.head.appendChild(css);
+    window.addEventListener("load", () => {
+      const invite = window.zkbInviteShare;
+      window.zkbInviteShare = (el) => {
+        const root = document.documentElement.classList;
+        if (!root.contains("gift-mode") || root.contains("guest-mode")) return invite && invite(el);
+        const c = el && el.closest(".content-card");
+        if (c && c.querySelector("[data-quiz-slug]") && invite) invite(el);
+      };
+    });
+  }
 })();

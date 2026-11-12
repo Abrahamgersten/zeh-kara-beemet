@@ -61,16 +61,24 @@
     const list = plays();
     const t = list.find((p) => p.day === today());
     const reason = t ? "day" : list.length >= 2 ? "week" : null;
-    return { today: t ? t.slug : null, can_pick: !reason, reason };
+    return { today: t ? t.slug : null, shared: !!(t && t.shared !== false), can_pick: !reason, reason };
   }
-  function remember(slug) {
-    const list = plays().concat([{ slug, day: today() }]);
+  function save(list) {
     memory = list;
     try {
       localStorage.setItem(STORE, JSON.stringify(list));
     } catch (e) {
       // kept in memory
     }
+  }
+  // Avraham, 2026-11-12 (evening): the episode of the day is fixed when it is chosen, before any listening, so nobody
+  // tastes one episode after another; "shared" opens the rest of it. One a day, two in seven days.
+  function remember(slug) {
+    const list = plays();
+    if (!list.some((p) => p.day === today())) save(list.concat([{ slug, day: today(), shared: false }]));
+  }
+  function markShared() {
+    save(plays().map((p) => (p.day === today() ? { ...p, shared: true } : p)));
   }
 
   function visitor() {
@@ -147,7 +155,7 @@
     }
     document.querySelectorAll(".content-card--gift").forEach((c) => c.classList.remove("content-card--gift"));
     const s = state();
-    const login = `<a class="gift-bar__btn gift-bar__btn--quiet" href="login.html"${L(`>כניסת מנויים<`, `>Subscriber login<`)}/a>`;
+    const login = ""; // "כניסת מנויים" sits at the bottom of the page (footerLogin), not in the bar (Avraham, 2026-11-12)
     if (s.today) {
       const c = cardOf(s.today);
       if (c) c.classList.add("content-card--gift");
@@ -287,18 +295,18 @@
     const file = mediaFile(st);
     const steps = EN
       ? (canShareFiles
-        ? ["Tap \"Post to status\" and choose WhatsApp.", "Choose \"My status\" at the top of the list.",
+        ? ["Tap \"Share to status\" and choose WhatsApp.", "Choose \"My status\" at the top of the list.",
           isApple ? "Paste the text with the link into the caption. It's already copied." : "The text with the link is attached for you."]
-        : [`Download ${what}.`, "Send it to your phone and post it to your WhatsApp status.", "Paste the text with the link into the caption. It's already copied."])
+        : [`Tap "Share to status": ${what} is saved to this computer and the text is copied.`, "Post it to your WhatsApp status (from your phone, or from WhatsApp on the computer).", "Paste the text with the link into the caption."])
       : canShareFiles
-      ? ["לוחצים \"להעלות לסטטוס\" ובוחרים וואטסאפ.", "בוחרים \"הסטטוס שלי\" בראש הרשימה.",
+      ? ["לוחצים \"שיתוף הסטטוס\" ובוחרים וואטסאפ.", "בוחרים \"הסטטוס שלי\" בראש הרשימה.",
         isApple ? "מדביקים בכיתוב את המלל עם הקישור. הוא כבר הועתק." : "המלל עם הקישור מצורף לבד."]
-      : [`מורידים את ${what}.`, "מעבירים לטלפון ומעלים לסטטוס בוואטסאפ.", "מדביקים בכיתוב את המלל עם הקישור. הוא כבר הועתק."];
-    const download = `<a class="btn btn--primary share-sheet__primary" href="${esc(src)}" download="${esc(name)}" data-guest-download data-gift-first>${L(`הורדת ${what}`, `Download ${what}`)}</a>`;
+      : [`לוחצים "שיתוף הסטטוס": ${what} נשמר במחשב והמלל מועתק.`, "מעלים לסטטוס בוואטסאפ (מהטלפון, או מוואטסאפ במחשב).", "מדביקים בכיתוב את המלל עם הקישור."];
+    const download = `<a class="btn btn--primary share-sheet__primary" href="${esc(src)}" download="${esc(name)}" data-guest-download data-gift-first>${L(`שיתוף הסטטוס`, `Share to status`)}</a>`;
     show(`
       <h2 class="share-sheet__title" id="gift-title">${L(`איזה כיף שאתם מקשיבים! 💛`, `So glad you're listening! 💛`)}</h2>
       <!-- the wording is Avraham's own, 2026-11-12 --><p class="gift-sheet__text">${L(`אנחנו לא מפרסמים. הסיפורים עוברים מבית לבית, מהורה להורה. <strong>העלו אותו לסטטוס שלכם</strong>, ועוד ילד ילך לישון הלילה עם סיפור טוב. מיד אחר כך ממשיכים בדיוק מאיפה שעצרנו.`, `We don't advertise. The stories pass from home to home, from parent to parent. <strong>Post it to your WhatsApp status</strong>, and one more child will go to sleep tonight with a good story. Right after that we pick up exactly where we stopped.`)}</p>
-      <div class="share-sheet__status">
+      <div class="share-sheet__status${weekly ? " guest-sheet__status--banner" : ""}">
         ${st.video && !st.image
           ? `<video class="share-sheet__preview" src="${esc(st.video)}" muted autoplay loop playsinline preload="metadata" ${L(`aria-label="סרטון הסטטוס"`, `aria-label="The status video"`)} width="1080" height="1920"></video>`
           : `<img class="share-sheet__preview" src="${esc(st.image)}" ${L(`alt="תמונת הסטטוס"`, `alt="The status picture"`)} width="1080" height="1920">`}
@@ -329,9 +337,27 @@
     };
     function wireDownload() {
       const a = shareBox.querySelector("[data-guest-download]");
-      if (a) a.addEventListener("click", () => {
+      if (a) a.addEventListener("click", (e) => {
+        e.preventDefault();
         copyText(st.text);
-        setTimeout(shared, 600);
+        note.textContent = L("רגע…", "One moment…");
+        fetch(src)
+          .then((r) => (r.ok ? r.blob() : Promise.reject(new Error("file"))))
+          .then((blob) => {
+            const u = URL.createObjectURL(blob);
+            const t = document.createElement("a");
+            t.href = u;
+            t.download = name;
+            document.body.appendChild(t);
+            t.click();
+            t.remove();
+            setTimeout(() => URL.revokeObjectURL(u), 60000);
+            shared();
+            note.textContent = L(`${what} נשמר והמלל הועתק. העלו לסטטוס בוואטסאפ והדביקו את המלל. תודה! ❤️`, `Saved, and the text is copied. Post it to your WhatsApp status and paste the text. Thank you! ❤️`);
+          })
+          .catch(() => {
+            note.textContent = L("לא הצלחנו להכין את הקובץ. בדקו את החיבור לאינטרנט ונסו שוב.", "We couldn't get the file ready. Please check your internet connection and try again.");
+          });
       });
     }
     wireDownload();
@@ -342,7 +368,7 @@
         ready = f;
         if (f) {
           go.disabled = false;
-          go.textContent = L("להעלות לסטטוס", "Post to status");
+          go.textContent = L("שיתוף הסטטוס", "Share to status");
         } else toDownload(); // the picture did not come, or this phone does not share files
       });
       go.addEventListener("click", async () => {
@@ -367,25 +393,65 @@
     card.querySelector("[data-guest-continue]").addEventListener("click", () => unlock(o));
   }
 
+  // Avraham, 2026-11-12: the sound goes down over one second before the request, and comes up over one second after it.
+  // (An iPhone does not let a page change the volume: there the episode simply stops and starts.)
+  const FADE = 1; // seconds
+  let fadeTimer = null;
+  let fullVolume = 1;
+  function ramp(a, from, to, done) {
+    clearInterval(fadeTimer);
+    const t0 = performance.now();
+    const set = (v) => { try { a.volume = Math.min(1, Math.max(0, v)); } catch (e) { /* no volume control here */ } };
+    set(from);
+    fadeTimer = setInterval(() => {
+      const k = Math.min(1, (performance.now() - t0) / (FADE * 1000));
+      set(from + (to - from) * k);
+      if (k >= 1) {
+        clearInterval(fadeTimer);
+        fadeTimer = null;
+        if (done) done();
+      }
+    }, 40);
+  }
+
   function unlock(o) {
-    remember(o.slug);
+    markShared();
     track("unlock", o.slug);
     teaser = null;
     close();
     showBar();
-    if (o.audio) o.audio.play().catch(() => {}); // from the tap on "continue"
+    if (o.audio) {
+      ramp(o.audio, 0, fullVolume, null);
+      o.audio.play().catch(() => {}); // from the tap on "continue"
+    }
   }
 
-  // the taste ends here: the episode waits, and the request comes up
+  const limitOf = (a) => (a.duration > 0 ? Math.min(TEASER, a.duration * 0.4) : TEASER);
+  let fading = false;
+  // the taste ends here: the sound fades, the episode waits, and the request comes up
   function onTime(e) {
-    if (!on || !teaser) return;
+    if (!on || !teaser || fading) return;
     const a = e.target;
     if (a.src !== teaser.src) return;
-    const limit = a.duration > 0 ? Math.min(TEASER, a.duration * 0.4) : TEASER;
-    if (a.currentTime < limit) return;
-    a.pause();
-    if (a.currentTime > limit + 1) a.currentTime = limit;
-    ask(teaser.o);
+    const limit = limitOf(a);
+    if (a.currentTime < limit - FADE) return;
+    const o = teaser.o;
+    const stop = () => {
+      fading = false;
+      a.pause();
+      if (a.currentTime > limit + 0.5) a.currentTime = limit;
+      try { a.volume = fullVolume; } catch (err) { /* no volume control here */ }
+      if (teaser && teaser.o === o) ask(o);
+    };
+    if (a.currentTime >= limit) { // dragged past the taste, or came back to an episode that is waiting
+      clearInterval(fadeTimer);
+      stop();
+      return;
+    }
+    if (a.paused) return;
+    fading = true;
+    fullVolume = a.volume > 0 ? a.volume : 1;
+    ramp(a, fullVolume, 0, stop);
   }
   const wired = new WeakSet();
   function watch(audio) {
@@ -457,24 +523,65 @@
     });
   }
 
+  // "is this the episode you choose?" (the wording of the gift link, js/gift.js): said before any listening, so it is
+  // clear that there is one episode a day (Avraham, 2026-11-12: "it made clear, before I listened, that I get one")
+  function confirmPick(o) {
+    show(`
+      <h2 class="share-sheet__title" id="gift-title">${L(`🎧 זה הפרק שבחרתם?`, `🎧 Is this the episode you want?`)}</h2>
+      <p class="share-sheet__lead gift-sheet__lead">${esc(o.title || titleOf(o.slug))}</p>
+      <p class="gift-sheet__text">${L(`אפשר להאזין כאן לפרק אחד ביום, ועד שני פרקים בשבוע. אחרי שבוחרים אי אפשר להחליף, אבל אפשר לשמוע אותו שוב היום כמה שרוצים.`, `You can listen to one episode a day here, and up to two a week. Once you choose, you can't switch, but you can listen to it again today as many times as you like.`)}</p>
+      <div class="share-sheet__actions">
+        <button class="btn btn--primary share-sheet__primary" type="button" data-guest-yes data-gift-first>${L(`כן, להאזין לפרק הזה`, `Yes, play this episode`)}</button>
+        <button class="share-sheet__link" type="button" data-gift-close>${L(`רגע, אבחר פרק אחר`, `Wait, I'll pick a different one`)}</button>
+      </div>`);
+    card.querySelector("[data-guest-yes]").addEventListener("click", () => {
+      close();
+      remember(o.slug);
+      showBar();
+      taste(o); // from the tap itself (a phone plays only from a tap)
+    });
+  }
+
+  // the chosen episode until its status is posted: it plays up to the taste, then the request
+  function taste(o) {
+    watch(o.audio);
+    if (teaser && teaser.o.slug === o.slug && o.audio && o.audio.src === teaser.src && o.audio.currentTime >= limitOf(o.audio) - 0.3) {
+      teaser.o = o;
+      ask(o); // already waiting at the end of the taste
+      return;
+    }
+    o.start();
+    teaser = { o, src: o.audio ? o.audio.src : "" };
+    const st = statusOf(o.slug);
+    if (st) mediaFile(st); // ready by the time the request comes up
+    track("teaser", o.slug);
+  }
+
   // called by the player's button (js/app.js) instead of playing straight away
   function play(o) {
     const s = state();
     if (s.today === o.slug) {
-      teaser = null;
-      o.start();
+      if (s.shared) {
+        teaser = null;
+        o.start();
+      } else taste(o);
       return;
     }
     if (!s.can_pick) {
       offer(o, s);
       return;
     }
-    watch(o.audio);
-    o.start(); // the taste
-    teaser = { o, src: o.audio ? o.audio.src : "" };
-    const st = statusOf(o.slug);
-    if (st) mediaFile(st); // ready by the time the request comes up
-    track("teaser", o.slug);
+    confirmPick(o);
+  }
+
+  function footerLogin() {
+    const box = document.querySelector(".site-footer__inner");
+    if (!on || !box || box.querySelector(".site-footer__login")) return;
+    const a = document.createElement("a");
+    a.className = "site-footer__login";
+    a.href = "login.html";
+    a.textContent = L("כניסת מנויים", "Subscriber login");
+    box.appendChild(a);
   }
 
   const api = { active: () => on, play, disable() {} };
@@ -488,8 +595,19 @@
     loadWeekly();
     track("enter");
     showBar();
+    footerLogin();
     window.addEventListener("load", showBar); // by now js/app.js has built the cards
+    window.addEventListener("load", footerLogin);
   }
+
+  // the look of what this file adds (kept here: css/style.css is shared with work in progress)
+  const css = document.createElement("style");
+  css.textContent = `
+    .share-sheet .guest-sheet__status--banner { grid-template-columns: 1fr; justify-items: center; }
+    .share-sheet .guest-sheet__status--banner .share-sheet__preview { width: min(100%, 250px); aspect-ratio: auto; object-fit: contain; }
+    .share-sheet .guest-sheet__status--banner .share-sheet__steps { justify-self: stretch; }
+    .site-footer__login { display: inline-block; margin-top: 0.9rem; padding: 0.45rem 0.2rem; color: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }`;
+  document.head.appendChild(css);
 
   window.ZkbGuest = { enable };
   if (window.zkbGuestOn) enable(); // index.html decided before this file ran
