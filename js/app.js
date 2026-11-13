@@ -100,7 +100,7 @@ const CATEGORIES = [
         title: "השם לא חייב לנו כלום",
         description: "סיפור אמיתי שסיפרה אישה שחיכתה שנים רבות לילדים, ועל הברכה שקיבלה מגדול הדור - רבי שלמה זלמן אויערבך. מה הוא אמר לה שליווה אותה מאז בכל יום מחדש?",
         image: "assets/images/hashem-not-obligated.jpeg",
-        audio: "assets/audio/hashem-not-obligated-sfx4.mp3",
+        audio: "assets/audio/hashem-not-obligated-sfx5.mp3",
       },
       {
         title: "כוחה של מצווה אחת",
