@@ -126,6 +126,12 @@ const CATEGORIES = [
         image: "assets/images/ktav-sofer-lost-coin.jpeg",
         audio: "assets/audio/ktav-sofer-lost-coin-sfx4.mp3",
       },
+      {
+        title: "חסד בלי גבולות",
+        description: "שלושה סיפורים אמיתיים על רבי אריה לוין, הצדיק הירושלמי: למה הקפיד לבקר אלמנות דווקא בחול המועד, איך הפך ל'קרוב משפחה' של חולה בודד שאף אחד לא שמר עליו, ולמה סירב בזקנותו למכונית שתסיע אותו לביקור חולים.",
+        image: "assets/images/chesed-without-limits.jpeg",
+        audio: "assets/audio/chesed-without-limits-sfx4.mp3",
+      },
     ],
   },
   {
