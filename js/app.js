@@ -155,7 +155,7 @@ const CATEGORIES = [
         title: "פרק 1: ברוך העצלן",
         description: "יעקב האיכר קם כל בוקר לפני התרנגולים, ואילו הבן שלו, ברוך, היה זוכה במקום הראשון בתחרות עולמית בעצלנות. ערב אחד יעקב אומר לו שמחר הם צריכים לדבר על משהו חשוב מאוד.",
         image: "assets/images/lazy-sleeper-ch01.jpeg",
-        audio: "assets/audio/lazy-sleeper-ch01-sfx4.mp3",
+        audio: "assets/audio/lazy-sleeper-ch01-sfx5.mp3",
       },
       {
         niche: "lazy-sleeper",
@@ -163,7 +163,7 @@ const CATEGORIES = [
         title: "פרק 2: העסקה הגדולה",
         description: "יעקב מציע לברוך עסקה: השדה והרווחים יהיו שלו. יש רק דבר אחד קטן, הוא יצטרך לעבוד. ברוך חורש, זורע, משקה ומתלונן, עד שהשדה כולו הופך לים זהוב.",
         image: "assets/images/lazy-sleeper-ch02.jpeg",
-        audio: "assets/audio/lazy-sleeper-ch02-sfx4.mp3",
+        audio: "assets/audio/lazy-sleeper-ch02-sfx5.mp3",
       },
       {
         niche: "lazy-sleeper",
@@ -171,7 +171,7 @@ const CATEGORIES = [
         title: "פרק 3: המאמץ האחרון",
         description: "הגיע היום הגדול, ונשאר רק לקצור. אבל ברוך שוכב במיטה ומודיע שהוא גמר עם השדה: אם החיטים רוצות להיקצר, שיקצרו את עצמן לבד.",
         image: "assets/images/lazy-sleeper-ch03.jpeg",
-        audio: "assets/audio/lazy-sleeper-ch03-sfx4.mp3",
+        audio: "assets/audio/lazy-sleeper-ch03-sfx5.mp3",
       },
       {
         niche: "lazy-sleeper",
@@ -179,7 +179,7 @@ const CATEGORIES = [
         title: "פרק 4: הקציר שלא נקצר",
         description: "יעקב יוצא לבדו לשדה, קוצר, אוסף ומוכר, וחוזר עם שק מלא מטבעות. ומה עם ברוך, שעבד כל השנה? סוף הסיפור והנמשל: מה צריך לעשות כדי לא להפסיד את כל מה שלמדנו.",
         image: "assets/images/lazy-sleeper-ch04.jpeg",
-        audio: "assets/audio/lazy-sleeper-ch04-sfx4.mp3",
+        audio: "assets/audio/lazy-sleeper-ch04-sfx5.mp3",
       },
       {
         niche: "wondrous-map",
