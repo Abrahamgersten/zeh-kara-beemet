@@ -124,7 +124,7 @@ const CATEGORIES = [
         title: "הכתב סופר והמטבע שנעלמה",
         description: "סיפור אמיתי על הכתב סופר: בכינוס חגיגי של גדולי הונגריה הוא מעביר בין המסובים מטבע נדיר מזמן בית המקדש, ופתאום המטבע נעלם. מדוע תלמיד חכם זקן מבקש שוב ושוב לחכות עוד רבע שעה, ומה למדו כולם על לדון לכף זכות?",
         image: "assets/images/ktav-sofer-lost-coin.jpeg",
-        audio: "assets/audio/ktav-sofer-lost-coin-sfx4.mp3",
+        audio: "assets/audio/ktav-sofer-lost-coin-sfx5.mp3",
       },
       {
         title: "חסד בלי גבולות",
