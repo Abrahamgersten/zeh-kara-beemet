@@ -163,7 +163,7 @@ const CATEGORIES = [
         title: "פרק 2: העסקה הגדולה",
         description: "יעקב מציע לברוך עסקה: השדה והרווחים יהיו שלו. יש רק דבר אחד קטן, הוא יצטרך לעבוד. ברוך חורש, זורע, משקה ומתלונן, עד שהשדה כולו הופך לים זהוב.",
         image: "assets/images/lazy-sleeper-ch02.jpeg",
-        audio: "assets/audio/lazy-sleeper-ch02-sfx5.mp3",
+        audio: "assets/audio/lazy-sleeper-ch02-sfx6.mp3",
       },
       {
         niche: "lazy-sleeper",
