@@ -122,6 +122,18 @@ const CATEGORIES = [
         image: "../assets/images/en/honor-torah-scholars.jpeg",
         audio: "../assets/audio/en/honor-torah-scholars-sfx3.mp3",
       },
+      {
+        title: "The Ksav Sofer and the Coin That Disappeared",
+        description: "A true story about the Ksav Sofer: at a festive gathering of the great rabbis of Hungary he passes around a rare coin from the time of the Beis Hamikdash, and suddenly the coin is gone. Why does an old Torah scholar keep asking to wait another quarter of an hour, and what did everyone learn about judging others favorably?",
+        image: "../assets/images/en/ktav-sofer-lost-coin.jpeg",
+        audio: "../assets/audio/en/ktav-sofer-lost-coin-sfx3.mp3",
+      },
+      {
+        title: "Kindness Without Limits",
+        description: "Three true stories about Rabbi Aryeh Levin, the tzaddik of Jerusalem: why he made a point of visiting widows on Chol Hamoed, how he became the 'relative' of a lonely patient nobody was looking out for, and why, in his old age, he refused a car that would drive him to visit the sick.",
+        image: "../assets/images/en/chesed-without-limits.jpeg",
+        audio: "../assets/audio/en/chesed-without-limits-sfx3.mp3",
+      },
     ],
   },
   {
