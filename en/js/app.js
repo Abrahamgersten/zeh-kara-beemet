@@ -135,9 +135,42 @@ const CATEGORIES = [
     // here (chapter 1 first), and every story is a folder that opens on a tap (a row in niches + chapters with its niche)
     serial: true,
     niches: [
+      { id: "lazy-sleeper", name: "The Lazy Boy Who Only Wanted to Sleep", icon: "😴", theme: "field", image: "../assets/images/serials/lazy-sleeper.jpg", blurb: "Baruch loves resting more than anything else, until his father offers him a deal: a whole field of wheat, all his own. A funny story in four chapters, about the one who planted and did not harvest." },
       { id: "wondrous-map", name: "The Wondrous Map", icon: "🗺️", theme: "map", image: "../assets/images/serials/wondrous-map.jpg", blurb: "A kindhearted king, a curious boy named Ferdinand, and one giant map that disappears in a single moment. A parable of Rabbi Nachman of Breslov, in ten chapters." },
     ],
     episodes: [
+      {
+        niche: "lazy-sleeper",
+        eyebrow: "The Lazy Boy Who Only Wanted to Sleep · Chapter 1 of 4",
+        title: "Chapter 1: Baruch the Lazy One",
+        description: "Yaakov the farmer gets up every morning before the roosters, while his son Baruch would win first place in a world championship of laziness. One evening Yaakov tells him that tomorrow they need to talk about something very important.",
+        image: "../assets/images/lazy-sleeper-ch01.jpeg",
+        audio: "../assets/audio/en/lazy-sleeper-ch01-sfx3.mp3",
+      },
+      {
+        niche: "lazy-sleeper",
+        eyebrow: "The Lazy Boy Who Only Wanted to Sleep · Chapter 2 of 4",
+        title: "Chapter 2: The Big Deal",
+        description: "Yaakov offers Baruch a deal: the field and everything it earns will be his. There's just one small thing - he will have to work. Baruch plows, plants, waters and complains, until the whole field turns into a golden sea.",
+        image: "../assets/images/lazy-sleeper-ch02.jpeg",
+        audio: "../assets/audio/en/lazy-sleeper-ch02-sfx3.mp3",
+      },
+      {
+        niche: "lazy-sleeper",
+        eyebrow: "The Lazy Boy Who Only Wanted to Sleep · Chapter 3 of 4",
+        title: "Chapter 3: The Last Effort",
+        description: "The big day is here, and all that's left is the harvest. But Baruch lies in bed and announces that he is done with the field: if the wheat wants to be harvested, let it harvest itself.",
+        image: "../assets/images/lazy-sleeper-ch03.jpeg",
+        audio: "../assets/audio/en/lazy-sleeper-ch03-sfx3.mp3",
+      },
+      {
+        niche: "lazy-sleeper",
+        eyebrow: "The Lazy Boy Who Only Wanted to Sleep · Chapter 4 of 4",
+        title: "Chapter 4: The Harvest That Was Not Harvested",
+        description: "Yaakov goes out to the field alone, harvests, gathers and sells, and comes back with a sack full of coins. And what about Baruch, who worked all year? The end of the story and its lesson: what we need to do so we don't lose everything we learned.",
+        image: "../assets/images/lazy-sleeper-ch04.jpeg",
+        audio: "../assets/audio/en/lazy-sleeper-ch04-sfx3.mp3",
+      },
       {
         niche: "wondrous-map",
         eyebrow: "The Wondrous Map · Chapter 1 of 10",
