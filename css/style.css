@@ -1581,6 +1581,20 @@ body.auth-pending { visibility: hidden; }
 @media (hover: hover) {
   .niche--map .niche__folder:hover { box-shadow: 0 30px 54px -26px rgba(42, 24, 11, 0.85); }
 }
+/* "field" = העצלן שרצה רק לישון (2026-11-14): the deep green of a field at evening, and the road ends in a ripe ear-of-wheat gold */
+.niche--field .niche__folder {
+  --niche-night: #24361a;
+  background: radial-gradient(130% 100% at 100% 0%, #5b7a2a 0%, var(--niche-night) 58%, #17240f 100%);
+  box-shadow: 0 22px 44px -24px rgba(18, 30, 10, 0.8);
+}
+.niche--field .niche__folder[aria-expanded="true"] { box-shadow: 0 0 0 3px var(--gold-300), 0 22px 44px -24px rgba(18, 30, 10, 0.8); }
+.niche--field .niche__name { text-shadow: 0 2px 14px rgba(12, 22, 6, 0.6); }
+.niche--field .niche__trail i { background: #24361a; }
+.niche--field .niche__trail i:first-child { background: var(--gold-300); }
+.niche--field .niche__trail i:last-child { background: #f2c230; border-color: #fff3c4; }
+@media (hover: hover) {
+  .niche--field .niche__folder:hover { box-shadow: 0 30px 54px -26px rgba(18, 30, 10, 0.85); }
+}
 /* confetti for a right answer (js/quiz.js), over everything and never in the way */
 .confetti { position: fixed; inset: 0; z-index: 1000; overflow: hidden; pointer-events: none; perspective: 600px; }
 .confetti i { position: absolute; top: -16px; display: block; border-radius: 2px; will-change: transform, opacity; }

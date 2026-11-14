@@ -133,9 +133,42 @@ const CATEGORIES = [
     // כרטיסייה שנפתחת בלחיצה, כמו הנישות של "יש לי מושג". סיפור חדש = שורה ב-niches (theme = העיצוב שלו ב-css) ופרקים עם niche שלו.
     serial: true,
     niches: [
+      { id: "lazy-sleeper", name: "העצלן שרצה רק לישון", icon: "😴", theme: "field", image: "assets/images/serials/lazy-sleeper.jpg", blurb: "ברוך אוהב לנוח יותר מכל דבר אחר, עד שאבא שלו מציע לו עסקה: שדה חיטה שלם, שכולו שלו. סיפור מצחיק בארבעה פרקים, על מי שזרע ולא קצר." },
       { id: "wondrous-map", name: "המפה המופלאה", icon: "🗺️", theme: "map", image: "assets/images/serials/wondrous-map.jpg", blurb: "מלך טוב לב, ילד סקרן בשם פרדינן, ומפה אחת ענקית שנעלמת ברגע אחד. משל של רבי נחמן מברסלב, בעשרה פרקים." },
     ],
     episodes: [
+      {
+        niche: "lazy-sleeper",
+        eyebrow: "העצלן שרצה רק לישון · פרק 1 מתוך 4",
+        title: "פרק 1: ברוך העצלן",
+        description: "יעקב האיכר קם כל בוקר לפני התרנגולים, ואילו הבן שלו, ברוך, היה זוכה במקום הראשון בתחרות עולמית בעצלנות. ערב אחד יעקב אומר לו שמחר הם צריכים לדבר על משהו חשוב מאוד.",
+        image: "assets/images/lazy-sleeper-ch01.jpeg",
+        audio: "assets/audio/lazy-sleeper-ch01-sfx4.mp3",
+      },
+      {
+        niche: "lazy-sleeper",
+        eyebrow: "העצלן שרצה רק לישון · פרק 2 מתוך 4",
+        title: "פרק 2: העסקה הגדולה",
+        description: "יעקב מציע לברוך עסקה: השדה והרווחים יהיו שלו. יש רק דבר אחד קטן, הוא יצטרך לעבוד. ברוך חורש, זורע, משקה ומתלונן, עד שהשדה כולו הופך לים זהוב.",
+        image: "assets/images/lazy-sleeper-ch02.jpeg",
+        audio: "assets/audio/lazy-sleeper-ch02-sfx4.mp3",
+      },
+      {
+        niche: "lazy-sleeper",
+        eyebrow: "העצלן שרצה רק לישון · פרק 3 מתוך 4",
+        title: "פרק 3: המאמץ האחרון",
+        description: "הגיע היום הגדול, ונשאר רק לקצור. אבל ברוך שוכב במיטה ומודיע שהוא גמר עם השדה: אם החיטים רוצות להיקצר, שיקצרו את עצמן לבד.",
+        image: "assets/images/lazy-sleeper-ch03.jpeg",
+        audio: "assets/audio/lazy-sleeper-ch03-sfx4.mp3",
+      },
+      {
+        niche: "lazy-sleeper",
+        eyebrow: "העצלן שרצה רק לישון · פרק 4 מתוך 4",
+        title: "פרק 4: הקציר שלא נקצר",
+        description: "יעקב יוצא לבדו לשדה, קוצר, אוסף ומוכר, וחוזר עם שק מלא מטבעות. ומה עם ברוך, שעבד כל השנה? סוף הסיפור והנמשל: מה צריך לעשות כדי לא להפסיד את כל מה שלמדנו.",
+        image: "assets/images/lazy-sleeper-ch04.jpeg",
+        audio: "assets/audio/lazy-sleeper-ch04-sfx4.mp3",
+      },
       {
         niche: "wondrous-map",
         eyebrow: "המפה המופלאה · פרק 1 מתוך 10",
