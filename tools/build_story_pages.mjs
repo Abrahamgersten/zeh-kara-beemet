@@ -188,11 +188,36 @@ function statusOf(lang, slug, pageUrl, prefix) {
 // wording (2026-11-03), with the joke's name.
 // 2026-11-15: new wording by Avraham. The join URL here is the generic page = the fallback; at share time
 // js/share-sheet.js swaps exactly this URL for the current group's direct link (get_join_target).
-const JOKE_SHARE = (title) => `*חיוך יומי 😄*\n[${title}]\n\nפותחים את היום עם *חיוך קטן!* 😊\n\nבקבוצה שלנו מחכים לכם *סיפורים מרתקים לילדים:*\n🎧 *בכל יום שני* - סיפור צדיקים.\n📖 *בכל יום חמישי* - מה בפרשה.\n\nובנוסף, בכל יום גם *בדיחה שמעלה חיוך!*\n\n*להצטרפות לקבוצה* 👇🏻\nhttps://abrahamgersten.github.io/zeh-kara-beemet/whatsapp/\n\nרוצים להעלות חיוך על פנים של מישהו נוסף? *שתפו!* 😊`;
+// 2026-11-15 (second pass, his exact bold marks): the second line is a question that makes one curious about one
+// of the jokes in the file, not the file's name. A joke without a question here falls back to its name.
+const JOKE_QUESTIONS = {
+  "joke-01": "למה האבא הרביעי ברח מחדר היולדות?",
+  "joke-02": "למה פרה אחת התחילה פתאום לקרוא קוקוריקו?",
+  "joke-03": "כמה עולה להריח לחם טרי במאפייה?",
+  "joke-04": "מה אומר הווייז לחילזון?",
+  "joke-05": "האם זה סימן רע כשחתול שחור עובר לידך?",
+  "joke-07": "ממתי האיש הזה מרגיש שהוא כלב?",
+  "joke-08": "מה עושה קמצן כשממש ממש קר לו?",
+  "joke-09": "כמה נמלות יכולות להיכנס למעלית?",
+  "joke-10": "למה איש מבוגר עולה לאוטובוס עם כרטיסיית ילדים?",
+  "joke-11": "מי מסוגל לאכול שמונים פלפלים חריפים בלי למצמץ?",
+  "joke-12": "איך ניצל שמעון משבעה זאבים רעבים?",
+  "joke-13": "מה ההבדל בין הפרה הלבנה לפרה השחורה?",
+  "joke-14": "למה יעקב מניח כל לילה כוס ריקה ליד המיטה?",
+  "joke-15": "מה עושים עם פינגווין שפגשתם ברחוב?",
+  "joke-16": "איך יוסי נשאר בן שמונה גם אחרי שנה?",
+  "joke-17": "למה חתול מפחד להיכנס למקפיא?",
+  "joke-18": "למה הנחש הקטן רוצה לדעת אם הוא ארסי?",
+  "joke-19": "למה האיש הזה מדבר לעצמו ברחוב?",
+  "joke-20": "מה עונה תלמיד כששואלים אותו איפה נמצאת יפן?",
+  "joke-21": "למה מנחם הקטן בוכה, אם דוד רק עזר לו?",
+  "joke-22": "למה לקחת דלת של מכונית לטיול במדבר?",
+};
+const JOKE_SHARE = (title, slug) => `*חיוך יומי 😄*\n${JOKE_QUESTIONS[slug] || title}\n\n*פותחים את היום עם חיוך קטן! 😊*\n\nבקבוצה שלנו מחכים לכם סיפורים מרתקים לילדים:\n🎧 *בכל יום שני* - סיפור צדיקים.\n📖 *בכל יום חמישי* - מה בפרשה.\n\nובנוסף, *בכל יום* גם בדיחה שמעלה חיוך!\n\n*להצטרפות לקבוצה* 👇🏻\nhttps://abrahamgersten.github.io/zeh-kara-beemet/whatsapp/\n\nרוצים להעלות חיוך על פנים של מישהו נוסף? שתפו! 😊`;
 
 // The same order as his caption: teaser -> listening link -> share line -> (cta) -> group invitation.
 function shareMessage(L, lang, cat, ep, slug, pageUrl) {
-  if (cat.id === "jokes" && lang === "he" && ep.video) return JOKE_SHARE(ep.title);
+  if (cat.id === "jokes" && lang === "he" && ep.video) return JOKE_SHARE(ep.title, slug);
   const kind = cat.id === (PACKAGE.story_category || "tzadikim") ? "story" : cat.id === (PACKAGE.parasha_category || "parasha-what") ? "parasha" : null;
   const parts = [
     (((TEASERS || {})[slug] || {})[lang] || `*${ep.title}*\n\n${ep.description}\n\n${L.teaserClosing}`) + `\n${L.listenPrefix} ${pageUrl}`,
