@@ -314,7 +314,7 @@
         track("share");
         const title = document.querySelector(".content-card__title");
         window.ZkbShareSheet.shareVideo({ title: title ? title.textContent : "", slug: STORY.slug, video: STORY.video, poster: img ? img.currentSrc || img.src : "",
-          text, onFallback: () => window.open("https://wa.me/?text=" + encodeURIComponent(`${text}\n\n${location.href.split(/[?#]/)[0]}`), "_blank", "noopener") });
+          text, onFallback: () => window.open("https://wa.me/?text=" + encodeURIComponent(`${window.ZkbShareSheet.withGroupLink(text)}\n\n${location.href.split(/[?#]/)[0]}`), "_blank", "noopener") });
         return;
       }
       if (STORY.status && window.ZkbShareSheet) {

@@ -186,7 +186,9 @@ function statusOf(lang, slug, pageUrl, prefix) {
 
 // A joke goes as a video (its picture with its recording), so its text has no listening link: Avraham's own
 // wording (2026-11-03), with the joke's name.
-const JOKE_SHARE = (title) => `*מילתא דבדיחותא 😄*\n${title}\n\nרוצים לקבל בדיחה כזו כל יום? הצטרפו לקבוצה שלנו 🎧\nhttps://abrahamgersten.github.io/zeh-kara-beemet/whatsapp/\n\nרוצים להעלות חיוך על הפנים של עוד מישהו?\nשתפו איתו את הבדיחה!😊`;
+// 2026-11-15: new wording by Avraham. The join URL here is the generic page = the fallback; at share time
+// js/share-sheet.js swaps exactly this URL for the current group's direct link (get_join_target).
+const JOKE_SHARE = (title) => `*חיוך יומי 😄*\n[${title}]\n\nפותחים את היום עם *חיוך קטן!* 😊\n\nבקבוצה שלנו מחכים לכם *סיפורים מרתקים לילדים:*\n🎧 *בכל יום שני* - סיפור צדיקים.\n📖 *בכל יום חמישי* - מה בפרשה.\n\nובנוסף, בכל יום גם *בדיחה שמעלה חיוך!*\n\n*להצטרפות לקבוצה* 👇🏻\nhttps://abrahamgersten.github.io/zeh-kara-beemet/whatsapp/\n\nרוצים להעלות חיוך על פנים של מישהו נוסף? *שתפו!* 😊`;
 
 // The same order as his caption: teaser -> listening link -> share line -> (cta) -> group invitation.
 function shareMessage(L, lang, cat, ep, slug, pageUrl) {

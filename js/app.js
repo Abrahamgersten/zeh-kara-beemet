@@ -1711,7 +1711,7 @@ function setupStoryShare() {
       // a joke: the video with his text (js/share-sheet.js). A computer cannot attach it: the text and a listening link.
       const img = card.querySelector(".content-card__main-img");
       window.ZkbShareSheet.shareVideo({ title, slug, video: videoBtn.dataset.shareVideo, poster: img ? img.currentSrc || img.src : "", text,
-        onFallback: () => window.open("https://wa.me/?text=" + encodeURIComponent(`${text}\n\nלהאזנה לבדיחה: ${STORY_PAGE_BASE}${slug}/`), "_blank", "noopener") });
+        onFallback: () => window.open("https://wa.me/?text=" + encodeURIComponent(`${window.ZkbShareSheet.withGroupLink(text)}\n\nלהאזנה לבדיחה: ${STORY_PAGE_BASE}${slug}/`), "_blank", "noopener") });
       return;
     }
     const whatsappUrl = "https://wa.me/?text=" + encodeURIComponent(text);

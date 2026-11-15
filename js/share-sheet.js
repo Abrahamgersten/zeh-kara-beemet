@@ -381,7 +381,29 @@
     return videos[url];
   }
 
+  // A joke's text carries the generic join page; at share time it becomes the CURRENT group's direct link
+  // (Avraham, 2026-11-15). Fetched ahead (page load / warmVideo) so the tap stays synchronous; if the
+  // server has not answered, the generic page stays (it redirects to the same group).
+  const JOIN_PAGE = "https://abrahamgersten.github.io/zeh-kara-beemet/whatsapp/";
+  let groupLink = null, groupLinkAt = 0;
+  function fetchGroupLink() {
+    if (Date.now() - groupLinkAt < 60000) return;
+    groupLinkAt = Date.now();
+    const key = "sb_publishable_AcpmlZnxKM4yJxr1OsoSjw_CG6Kt2pz";
+    fetch("https://nuadpewhrhpdgznbbqbs.supabase.co/rest/v1/rpc/get_join_target", {
+      method: "POST", headers: { apikey: key, Authorization: "Bearer " + key, "Content-Type": "application/json" }, body: "{}", cache: "no-store",
+    }).then((r) => (r.ok ? r.json() : null))
+      .then((u) => { if (typeof u === "string" && /^https:\/\/chat\.whatsapp\.com\/[A-Za-z0-9]+$/.test(u)) groupLink = u; })
+      .catch(() => {});
+  }
+  function withGroupLink(text) {
+    return groupLink && typeof text === "string" ? text.split(JOIN_PAGE + "\n").join(groupLink + "\n").replace(new RegExp(JOIN_PAGE.replace(/[.*+?^${}()|[\]\\\/]/g, "\\$&") + "$"), groupLink) : text;
+  }
+  fetchGroupLink();
+
   function shareVideo(o) {
+    fetchGroupLink();
+    if (o && o.text) o.text = withGroupLink(o.text);
     const v = videoOf(o.video, o.slug);
     if (!v) {
       if (typeof o.onFallback === "function") o.onFallback(); // a computer: WhatsApp with the text
@@ -466,7 +488,9 @@ ${text}`));
       open(o, "invite");
     },
     shareVideo,
+    withGroupLink,
     warmVideo(url, slug) {
+      fetchGroupLink();
       videoOf(url, slug);
     },
     // מי ששיתף כבר בסטטוס את הסיפור הזה לא יקבל שוב את ההזמנה בסוף ההקלטה
