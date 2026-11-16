@@ -1595,6 +1595,20 @@ body.auth-pending { visibility: hidden; }
 @media (hover: hover) {
   .niche--field .niche__folder:hover { box-shadow: 0 30px 54px -26px rgba(18, 30, 10, 0.85); }
 }
+/* "power" = הכוח הנסתר (2026-11-16): a deep night blue with a glow of hidden strength, and the road ends in a bright spark */
+.niche--power .niche__folder {
+  --niche-night: #1b2550;
+  background: radial-gradient(130% 100% at 100% 0%, #4a5fc4 0%, var(--niche-night) 58%, #101633 100%);
+  box-shadow: 0 22px 44px -24px rgba(12, 18, 48, 0.8);
+}
+.niche--power .niche__folder[aria-expanded="true"] { box-shadow: 0 0 0 3px var(--gold-300), 0 22px 44px -24px rgba(12, 18, 48, 0.8); }
+.niche--power .niche__name { text-shadow: 0 2px 14px rgba(8, 12, 36, 0.6); }
+.niche--power .niche__trail i { background: #1b2550; }
+.niche--power .niche__trail i:first-child { background: var(--gold-300); }
+.niche--power .niche__trail i:last-child { background: #ffd23f; border-color: #fff3c4; }
+@media (hover: hover) {
+  .niche--power .niche__folder:hover { box-shadow: 0 30px 54px -26px rgba(12, 18, 48, 0.85); }
+}
 /* confetti for a right answer (js/quiz.js), over everything and never in the way */
 .confetti { position: fixed; inset: 0; z-index: 1000; overflow: hidden; pointer-events: none; perspective: 600px; }
 .confetti i { position: absolute; top: -16px; display: block; border-radius: 2px; will-change: transform, opacity; }
