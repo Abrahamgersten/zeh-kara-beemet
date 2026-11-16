@@ -147,7 +147,7 @@ const CATEGORIES = [
     // here (chapter 1 first), and every story is a folder that opens on a tap (a row in niches + chapters with its niche)
     serial: true,
     niches: [
-      { id: "hidden-power", name: "The Hidden Power", icon: "💪", theme: "power", image: "../assets/images/serials/hidden-power.jpg", blurb: "Moshe and Tzila waited years for a child. When Amitz was born he looked like any other baby, until a metal rattle got bent in his hands. A funny, surprising story about a boy with enormous strength. The first four chapters, with more on the way." },
+      { id: "hidden-power", name: "The Hidden Power", icon: "💪", theme: "power", image: "../assets/images/serials/hidden-power-v2.jpg", blurb: "Moshe and Tzila waited years for a child. When Amitz was born he looked like any other baby, until a metal rattle got bent in his hands. A funny, surprising story about a boy with enormous strength. The first four chapters, with more on the way." },
       { id: "lazy-sleeper", name: "The Lazy Boy Who Only Wanted to Sleep", icon: "😴", theme: "field", image: "../assets/images/serials/lazy-sleeper.jpg", blurb: "Baruch loves resting more than anything else, until his father offers him a deal: a whole field of wheat, all his own. A funny story in four chapters, about the one who planted and did not harvest." },
       { id: "wondrous-map", name: "The Wondrous Map", icon: "🗺️", theme: "map", image: "../assets/images/serials/wondrous-map.jpg", blurb: "A kindhearted king, a curious boy named Ferdinand, and one giant map that disappears in a single moment. A parable of Rabbi Nachman of Breslov, in ten chapters." },
     ],
@@ -157,7 +157,7 @@ const CATEGORIES = [
         eyebrow: "The Hidden Power · Chapter 1",
         title: "Chapter 1: The Child They Waited For",
         description: "Moshe and Tzila waited years for a child, and the doctors said it would never happen. They never stopped davening, and one day a son was born to them: Amitzur, whom everyone calls Amitz. He looks like any other baby, but a secret is hiding inside his little body.",
-        image: "../assets/images/hidden-power-ch01.jpeg",
+        image: "../assets/images/hidden-power-ch01-v2.jpeg",
         audio: "../assets/audio/en/hidden-power-ch01-sfx3.mp3",
       },
       {
@@ -165,7 +165,7 @@ const CATEGORIES = [
         eyebrow: "The Hidden Power · Chapter 2",
         title: "Chapter 2: The Strange Toy",
         description: "A metal rattle gets completely bent, and a hard rubber teething ring comes back with a bite missing. The shopkeeper can't understand how it happened, and Moshe and Tzila begin to wonder: both toys were ruined right after Amitz played with them.",
-        image: "../assets/images/hidden-power-ch02.jpeg",
+        image: "../assets/images/hidden-power-ch02-v2.jpeg",
         audio: "../assets/audio/en/hidden-power-ch02-sfx3.mp3",
       },
       {
@@ -173,7 +173,7 @@ const CATEGORIES = [
         eyebrow: "The Hidden Power · Chapter 3",
         title: "Chapter 3: Taking Amitz to the Doctor",
         description: "Amitz gets out of his playpen through bent metal bars, and his parents take him to Doctor Vladimir, a well-known children's doctor. The checkup ends with a snapped wooden stick, a bent metal instrument and one very angry doctor.",
-        image: "../assets/images/hidden-power-ch03.jpeg",
+        image: "../assets/images/hidden-power-ch03-v2.jpeg",
         audio: "../assets/audio/en/hidden-power-ch03-sfx3.mp3",
       },
       {
@@ -181,7 +181,7 @@ const CATEGORIES = [
         eyebrow: "The Hidden Power · Chapter 4",
         title: "Chapter 4: The Strongest Boy in the World",
         description: "Amitz grows up and only wants to play like everyone else. But a pat on the shoulder sends Yossi flying onto a pile of sand, one kick sends the ball up into the clouds, and a whole tree sinks into the ground. His parents understand they must find someone to teach him to be gentle.",
-        image: "../assets/images/hidden-power-ch04.jpeg",
+        image: "../assets/images/hidden-power-ch04-v2.jpeg",
         audio: "../assets/audio/en/hidden-power-ch04-sfx3.mp3",
       },
       {

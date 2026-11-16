@@ -145,7 +145,7 @@ const CATEGORIES = [
     // כרטיסייה שנפתחת בלחיצה, כמו הנישות של "יש לי מושג". סיפור חדש = שורה ב-niches (theme = העיצוב שלו ב-css) ופרקים עם niche שלו.
     serial: true,
     niches: [
-      { id: "hidden-power", name: "הכוח הנסתר", icon: "💪", theme: "power", image: "assets/images/serials/hidden-power.jpg", blurb: "משה וצילה חיכו שנים לילד. כשאמיץ נולד, הוא נראה כמו כל תינוק, עד שרעשן ממתכת התעקם לו בידיים. סיפור מצחיק ומפתיע על ילד עם כוח עצום. ארבעת הפרקים הראשונים, וההמשך בדרך." },
+      { id: "hidden-power", name: "הכוח הנסתר", icon: "💪", theme: "power", image: "assets/images/serials/hidden-power-v2.jpg", blurb: "משה וצילה חיכו שנים לילד. כשאמיץ נולד, הוא נראה כמו כל תינוק, עד שרעשן ממתכת התעקם לו בידיים. סיפור מצחיק ומפתיע על ילד עם כוח עצום. ארבעת הפרקים הראשונים, וההמשך בדרך." },
       { id: "lazy-sleeper", name: "העצלן שרצה רק לישון", icon: "😴", theme: "field", image: "assets/images/serials/lazy-sleeper.jpg", blurb: "ברוך אוהב לנוח יותר מכל דבר אחר, עד שאבא שלו מציע לו עסקה: שדה חיטה שלם, שכולו שלו. סיפור מצחיק בארבעה פרקים, על מי שזרע ולא קצר." },
       { id: "wondrous-map", name: "המפה המופלאה", icon: "🗺️", theme: "map", image: "assets/images/serials/wondrous-map.jpg", blurb: "מלך טוב לב, ילד סקרן בשם פרדינן, ומפה אחת ענקית שנעלמת ברגע אחד. משל של רבי נחמן מברסלב, בעשרה פרקים." },
     ],
@@ -155,7 +155,7 @@ const CATEGORIES = [
         eyebrow: "הכוח הנסתר · פרק 1",
         title: "פרק 1: הילד שחיכו לו",
         description: "משה וצילה חיכו שנים לילד, והרופאים אמרו שזה לא יקרה. הם לא הפסיקו להתפלל, ויום אחד נולד להם בן: אמיצור, שכולם קוראים לו אמיץ. הוא נראה כמו כל תינוק, אבל בגוף הקטן שלו מסתתר סוד.",
-        image: "assets/images/hidden-power-ch01.jpeg",
+        image: "assets/images/hidden-power-ch01-v2.jpeg",
         audio: "assets/audio/hidden-power-ch01-sfx4.mp3",
       },
       {
@@ -163,7 +163,7 @@ const CATEGORIES = [
         eyebrow: "הכוח הנסתר · פרק 2",
         title: "פרק 2: הצעצוע המוזר",
         description: "רעשן ממתכת מתעקם לגמרי, ונשכן מגומי קשה חוזר עם ביס חסר. המוכר בחנות לא מבין איך זה קרה, ומשה וצילה מתחילים לחשוד: שני הצעצועים התקלקלו בדיוק אחרי שאמיץ שיחק בהם.",
-        image: "assets/images/hidden-power-ch02.jpeg",
+        image: "assets/images/hidden-power-ch02-v2.jpeg",
         audio: "assets/audio/hidden-power-ch02-sfx4.mp3",
       },
       {
@@ -171,7 +171,7 @@ const CATEGORIES = [
         eyebrow: "הכוח הנסתר · פרק 3",
         title: "פרק 3: לוקחים את אמיץ לרופא",
         description: "אמיץ יוצא מהלול דרך סורגי מתכת עקומים, וההורים לוקחים אותו לד\"ר ולדימיר, רופא ילדים ידוע. הבדיקה מסתיימת במקלון שבור, בכלי מתכת מעוקם וברופא כועס אחד.",
-        image: "assets/images/hidden-power-ch03.jpeg",
+        image: "assets/images/hidden-power-ch03-v2.jpeg",
         audio: "assets/audio/hidden-power-ch03-sfx4.mp3",
       },
       {
@@ -179,7 +179,7 @@ const CATEGORIES = [
         eyebrow: "הכוח הנסתר · פרק 4",
         title: "פרק 4: הילד החזק בעולם",
         description: "אמיץ גדל, ורק רוצה לשחק כמו כולם. אבל טפיחה על הכתף מעיפה את יוסי לערמת חול, בעיטה אחת שולחת את הכדור אל העננים, ועץ שלם שוקע באדמה. ההורים מבינים שצריך למצוא מי שילמד אותו להיות עדין.",
-        image: "assets/images/hidden-power-ch04.jpeg",
+        image: "assets/images/hidden-power-ch04-v2.jpeg",
         audio: "assets/audio/hidden-power-ch04-sfx4.mp3",
       },
       {
