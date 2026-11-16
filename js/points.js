@@ -66,12 +66,13 @@ const T = isEn
       pointsLabel: "Your points",
       of: "of",
       nextReward: "Next reward",
-      hintLocked: (n) => `${n} points to go and the new story unlocks!`,
+      hintLocked: (n) => `${n} points to go and the comic booklet is yours!`,
       noRewardHint: "Your points are waiting for the next surprise 🤫",
       ctaLocked: (n) => `${n} points to go 🔒`,
       noRewardTitle: "A new surprise, coming soon 🤫",
       noRewardText:
-        "There's no new story queued up as a surprise just yet - but we hope there will be soon! In the meantime, keep collecting points, and the moment a new surprise is ready, it'll be waiting for you.",
+        "You've won every comic booklet there is for now, well done! Keep collecting points, and the moment a new surprise is ready, it'll be waiting for you.",
+      claimedTitle: "Your prizes",
       cheers: [
         "Amazing!", "You're a champion!", "Way to go!", "Fantastic!", "Awesome job!",
         "So proud of you!", "You're a star!", "Keep it up!", "Wonderful!", "Nailed it!",
@@ -110,12 +111,13 @@ const T = isEn
       pointsLabel: "הנקודות שלכם",
       of: "מתוך",
       nextReward: "הפרס הבא",
-      hintLocked: (n) => `עוד ${n} נקודות והסיפור החדש נפתח!`,
+      hintLocked: (n) => `עוד ${n} נקודות וחוברת הקומיקס שלכם!`,
       noRewardHint: "הנקודות ממתינות להפתעה הבאה 🤫",
       ctaLocked: (n) => `עוד ${n} נקודות 🔒`,
       noRewardTitle: "בקרוב, הפתעה חדשה 🤫",
       noRewardText:
-        "טרם עלה סיפור בהמשכים חדש שיוכל לשמש הפתעה - אך אנחנו מקווים שזה יקרה בקרוב! בינתיים אפשר להמשיך לצבור נקודות, וברגע שתהיה הפתעה חדשה, היא תחכה לכם.",
+        "קיבלתם את כל חוברות הקומיקס שיש כרגע, כל הכבוד! אפשר להמשיך לצבור נקודות, וברגע שתהיה הפתעה חדשה, היא תחכה לכם.",
+      claimedTitle: "הפרסים שקיבלתם",
       cheers: [
         "כל הכבוד!", "אליפות!", "אין עליך בעולם!", "מדהים!", "איזה יופי!",
         "וואו, ישר כוח!", "פשוט מושלם!", "איזה כיף!", "כל הכבוד לך!", "מעולה!",
@@ -320,6 +322,22 @@ function rewardHTML() {
     </div>`;
 }
 
+// the prizes this family already won (get_my_points_state.claimed_rewards, migration 0031, 2026-11-16): a booklet
+// every week, so a booklet that was won can be opened again after the celebration window closed
+function claimedHTML() {
+  const list = state.claimed_rewards || [];
+  if (!list.length) return "";
+  return `
+    <div class="points-claimed">
+      <h4 class="points-claimed__title">${T.claimedTitle}</h4>
+      <ul class="points-claimed__list">
+        ${list.map((r) => `<li><a class="points-claimed__item" href="${esc(linkUrl(r))}" target="_blank" rel="noopener">${r.image_url
+          ? `<img src="${esc(r.image_url)}" alt="" width="42" height="59" loading="lazy">`
+          : `<span class="points-claimed__icon" aria-hidden="true">🎁</span>`}<span>${esc(title(r))}</span></a></li>`).join("")}
+      </ul>
+    </div>`;
+}
+
 function renderWidget() {
   if (!widgetEl) return;
   if (!state.children.length) {
@@ -335,7 +353,7 @@ function renderWidget() {
     ${removeChildRowHTML()}
     ${checklistHTML()}
     <div class="points-progress-host">${progressHTML()}</div>
-    <div class="points-reward-host">${rewardHTML()}</div>`;
+    <div class="points-reward-host">${rewardHTML()}${claimedHTML()}</div>`;
 }
 
 function parashaPrepHTML() {
@@ -756,7 +774,7 @@ async function handleChecklistToggle(li, isReport) {
 
   if (result.newly_claimed_reward) {
     // מימוש פרס מאפס את המחזור ומחליף את הפרס הבא - שולפים מצב מלא מחדש
-    // במקום לנחש מקומית (זה נדיר, קורה לכל היותר פעם בחודש, לא בכל קליק).
+    // במקום לנחש מקומית (קורה לכל היותר פעם בשבוע, מאז 2026-11-16, לא בכל קליק).
     const freshState = await fetchState();
     if (freshState) state = freshState;
   } else {
