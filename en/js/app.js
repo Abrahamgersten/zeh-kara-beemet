@@ -1543,14 +1543,14 @@ function spotDiffCardHTML(cat, ep, idx) {
         <div class="spot-card__item">
           <span class="spot-card__label">Image A</span>
           <div class="spot-card__frame">
-          <img src="${ep.imageA}" alt="Image A for comparison">
+          <img src="${ep.imageA}" alt="Image A for comparison" width="1264" height="848" loading="lazy" decoding="async">
           ${markers}
           </div>
         </div>
         <div class="spot-card__item">
           <span class="spot-card__label">Image B</span>
           <div class="spot-card__frame">
-          <img src="${ep.imageB}" alt="Image B for comparison">
+          <img src="${ep.imageB}" alt="Image B for comparison" width="1264" height="848" loading="lazy" decoding="async">
           ${markers}
           </div>
         </div>
