@@ -64,7 +64,12 @@
     } catch (e) {
       // private browsing: the count lives until the page is closed
     }
-    const from = dayOf(new Date(Date.now() - 6 * 864e5));
+    // Avraham, 2026-11-16: "the week" is the calendar week (Sunday to Saturday, Israel), not the last 7 days, so a new
+    // week starts clean. Earlier picks from this week still count.
+    const wd = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(
+      new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Jerusalem", weekday: "short" }).format(new Date())
+    );
+    const from = dayOf(new Date(Date.now() - Math.max(0, wd) * 864e5));
     return (Array.isArray(list) ? list : []).filter((p) => p && typeof p.slug === "string" && typeof p.day === "string" && p.day >= from);
   }
   function state() {
