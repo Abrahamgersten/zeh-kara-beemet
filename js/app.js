@@ -1191,6 +1191,41 @@ const CATEGORIES = [
     tagline: "בדיחה טובה לכל המשפחה, עם חיוך גדול בסוף.",
     episodes: [
       {
+        title: "נמלה עם כפכפים · קו 53 · הכפית בתה · הכיתה כמו גן חיות · שתי נקניקיות",
+        description: "",
+        image: "assets/images/jokes/joke-27.jpg",
+        audio: "assets/audio/jokes/joke-27.mp3",
+        video: "assets/video/jokes/joke-27.mp4",
+      },
+      {
+        title: "השאלה בכיתה · שוב דרכתי על חיפושית · שני אפסים ושמונה",
+        description: "",
+        image: "assets/images/jokes/joke-26.jpg",
+        audio: "assets/audio/jokes/joke-26.mp3",
+        video: "assets/video/jokes/joke-26.mp4",
+      },
+      {
+        title: "האויב המר · משחה על המדרגה · הבא בתור",
+        description: "",
+        image: "assets/images/jokes/joke-25.jpg",
+        audio: "assets/audio/jokes/joke-25.mp3",
+        video: "assets/video/jokes/joke-25.mp4",
+      },
+      {
+        title: "שמן תינוקות · מתנה ליום הולדת",
+        description: "",
+        image: "assets/images/jokes/joke-24.jpg",
+        audio: "assets/audio/jokes/joke-24.mp3",
+        video: "assets/video/jokes/joke-24.mp4",
+      },
+      {
+        title: "צב בלי שריון · גלידה של קמצן · קריית שמונה · אסיר תודה",
+        description: "",
+        image: "assets/images/jokes/joke-23.jpg",
+        audio: "assets/audio/jokes/joke-23.mp3",
+        video: "assets/video/jokes/joke-23.mp4",
+      },
+      {
         title: "הדלת במדבר · השכנה מנופפת · טוב בלישון",
         description: "",
         image: "assets/images/jokes/joke-22.jpg",
