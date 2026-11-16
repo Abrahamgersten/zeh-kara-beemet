@@ -66,9 +66,9 @@ const T = isEn
       pointsLabel: "Your points",
       of: "of",
       nextReward: "Next reward",
-      hintLocked: (n) => `${n} points to go and the comic booklet is yours!`,
+      hintLocked: (n) => (n > 0 ? `${n} points to go and the comic booklet is yours!` : "You made it! Your next check-in opens the booklet 🎁"),
       noRewardHint: "Your points are waiting for the next surprise 🤫",
-      ctaLocked: (n) => `${n} points to go 🔒`,
+      ctaLocked: (n) => (n > 0 ? `${n} points to go 🔒` : "Your next check-in opens it 🎁"),
       noRewardTitle: "A new surprise, coming soon 🤫",
       noRewardText:
         "You've won every comic booklet there is for now, well done! Keep collecting points, and the moment a new surprise is ready, it'll be waiting for you.",
@@ -111,9 +111,9 @@ const T = isEn
       pointsLabel: "הנקודות שלכם",
       of: "מתוך",
       nextReward: "הפרס הבא",
-      hintLocked: (n) => `עוד ${n} נקודות וחוברת הקומיקס שלכם!`,
+      hintLocked: (n) => (n > 0 ? `עוד ${n} נקודות וחוברת הקומיקס שלכם!` : "הגעתם לסף! הסימון הבא פותח את החוברת 🎁"),
       noRewardHint: "הנקודות ממתינות להפתעה הבאה 🤫",
-      ctaLocked: (n) => `עוד ${n} נקודות 🔒`,
+      ctaLocked: (n) => (n > 0 ? `עוד ${n} נקודות 🔒` : "הסימון הבא פותח אותה 🎁"),
       noRewardTitle: "בקרוב, הפתעה חדשה 🤫",
       noRewardText:
         "קיבלתם את כל חוברות הקומיקס שיש כרגע, כל הכבוד! אפשר להמשיך לצבור נקודות, וברגע שתהיה הפתעה חדשה, היא תחכה לכם.",
