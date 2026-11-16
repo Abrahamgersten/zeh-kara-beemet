@@ -308,12 +308,24 @@
     return Promise.resolve(false);
   }
 
-  function ask(o) {
+  // early = the request comes at the moment of choosing (Avraham, 2026-11-16): one message with the status button and a
+  // small "skip"; the episode starts only after "I posted the status", and "skip" goes on to the taste as before
+  function startFull(o) {
+    remember(o.slug);
+    markShared();
+    track("unlock", o.slug);
+    teaser = null;
+    close();
+    showBar();
+    o.start(); // from the tap itself
+  }
+  function ask(o, early) {
     if (asking) return;
     const st = statusOf(o.slug);
     if (!st) {
       // the pictures did not load (no network?): nothing to share, so nothing is asked
-      unlock(o);
+      if (early) startFull(o);
+      else unlock(o);
       return;
     }
     asking = true;
@@ -333,23 +345,27 @@
         isApple ? "מדביקים בכיתוב את המלל עם הקישור. הוא כבר הועתק." : "המלל עם הקישור מצורף לבד."]
       : [`לוחצים "שיתוף הסטטוס": ${what} נשמר במחשב והמלל מועתק.`, "מעלים לסטטוס בוואטסאפ (מהטלפון, או מוואטסאפ במחשב).", "מדביקים בכיתוב את המלל עם הקישור."];
     const download = `<a class="btn btn--primary share-sheet__primary" href="${esc(src)}" download="${esc(name)}" data-guest-download data-gift-first>${L(`שיתוף הסטטוס`, `Share to status`)}</a>`;
-    show(`
-      <h2 class="share-sheet__title" id="gift-title">${L(`איזה כיף שאתם מקשיבים! 💛`, `So glad you're listening! 💛`)}</h2>
-      <!-- the wording is Avraham's own, 2026-11-12 --><p class="gift-sheet__text">${L(`אנחנו לא מפרסמים. הסיפורים עוברים מבית לבית, מהורה להורה. <strong>העלו אותו לסטטוס שלכם</strong>, ועוד ילד ילך לישון הלילה עם סיפור טוב. מיד אחר כך ממשיכים בדיוק מאיפה שעצרנו.`, `We don't advertise. The stories pass from home to home, from parent to parent. <strong>Post it to your WhatsApp status</strong>, and one more child will go to sleep tonight with a good story. Right after that we pick up exactly where we stopped.`)}</p>
-      <div class="share-sheet__status${weekly ? " guest-sheet__status--banner" : ""}">
+    const statusBlock = `<div class="share-sheet__status${weekly ? " guest-sheet__status--banner" : ""}">
         ${st.video && !st.image
           ? `<video class="share-sheet__preview" src="${esc(st.video)}" muted autoplay loop playsinline preload="metadata" ${L(`aria-label="סרטון הסטטוס"`, `aria-label="The status video"`)} width="1080" height="1920"></video>`
           : `<img class="share-sheet__preview" src="${esc(st.image)}" ${L(`alt="תמונת הסטטוס"`, `alt="The status picture"`)} width="1080" height="1920">`}
         <ol class="share-sheet__steps">${steps.map((s) => `<li>${esc(s)}</li>`).join("")}</ol>
-      </div>
+      </div>`;
+    show(`
+      ${early ? `<h2 class="share-sheet__title" id="gift-title">${L(`להאזנה לפרק "${esc(o.title || titleOf(o.slug))}" במתנה 🎁`, `Listen to "${esc(o.title || titleOf(o.slug))}" as a gift 🎁`)}</h2>
+      <p class="gift-sheet__text">${L(`הפרק הזה יהיה פרק המתנה שלכם להיום. אחרי שתבחרו אותו לא אפשר לבחור פרק נוסף היום. כדי שנוכל להמשיך לתת פרקים במתנה, נשמח שתעלו את הסטטוס שלנו של הסיפור השבועי. זה לוקח רגע ועוזר לנו מאוד 🙏`, `This will be your gift episode for today. Once you choose it you can't pick another episode today. So that we can keep giving episodes as gifts, we'd love you to post our status of the weekly story. It takes a moment and helps us a lot 🙏`)}</p>` : `<h2 class="share-sheet__title" id="gift-title">${L(`איזה כיף שאתם מקשיבים! 💛`, `So glad you're listening! 💛`)}</h2>
+      <!-- the wording is Avraham's own, 2026-11-12 --><p class="gift-sheet__text">${L(`אנחנו לא מפרסמים. הסיפורים עוברים מבית לבית, מהורה להורה. <strong>העלו אותו לסטטוס שלכם</strong>, ועוד ילד ילך לישון הלילה עם סיפור טוב. מיד אחר כך ממשיכים בדיוק מאיפה שעצרנו.`, `We don't advertise. The stories pass from home to home, from parent to parent. <strong>Post it to your WhatsApp status</strong>, and one more child will go to sleep tonight with a good story. Right after that we pick up exactly where we stopped.`)}</p>`}
+      ${early ? "" : statusBlock}
       <div class="share-sheet__actions" data-guest-share>
         ${canShareFiles ? `<button class="btn btn--primary share-sheet__primary" type="button" data-guest-go data-gift-first disabled>${L(`רגע, מכינים את ${what}…`, `One moment, getting ${what} ready…`)}</button>` : download}
       </div>
       <div class="share-sheet__actions guest-sheet__after" data-guest-after hidden>
-        <button class="btn btn--primary share-sheet__primary" type="button" data-guest-continue>${L(`העליתי, ממשיכים לסיפור`, `I posted it, on with the story`)}</button>
+        <button class="btn btn--primary share-sheet__primary" type="button" data-guest-continue>${early ? L(`✅ העליתי את הסטטוס`, `✅ I posted the status`) : L(`העליתי, ממשיכים לסיפור`, `I posted it, on with the story`)}</button>
       </div>
+      ${early ? `<div class="share-sheet__actions"><button class="share-sheet__link" type="button" data-guest-skip>${L(`דלג`, `Skip`)}</button></div>` : ""}
       <p class="share-sheet__note" role="status" aria-live="polite"></p>
-      <p class="gift-sheet__hint">${L(`הפרק הזה יהיה הפרק שלכם להיום, ואפשר לשמוע אותו שוב כמה שרוצים.`, `This will be your episode for today, and you can listen to it again as many times as you like.`)}</p>`);
+      ${early ? statusBlock : ""}
+      ${early ? "" : `<p class="gift-sheet__hint">${L(`הפרק הזה יהיה הפרק שלכם להיום, ואפשר לשמוע אותו שוב כמה שרוצים.`, `This will be your episode for today, and you can listen to it again as many times as you like.`)}</p>`}`);
     const note = card.querySelector(".share-sheet__note");
     const after = card.querySelector("[data-guest-after]");
     const shareBox = card.querySelector("[data-guest-share]");
@@ -358,6 +374,8 @@
     const shared = () => {
       track("share", o.slug);
       after.hidden = false;
+      const sk = card.querySelector("[data-guest-skip]");
+      if (sk) sk.parentElement.style.display = "none"; // shared: the way on is "I posted the status"
       note.textContent = L("תודה ששיתפתם! ❤️", "Thank you for sharing! ❤️");
       after.querySelector("button").focus();
     };
@@ -420,7 +438,14 @@
         else note.textContent = L("השיתוף לא נפתח. נסו ללחוץ שוב.", "Sharing didn't open. Try tapping again.");
       });
     }
-    card.querySelector("[data-guest-continue]").addEventListener("click", () => unlock(o));
+    card.querySelector("[data-guest-continue]").addEventListener("click", () => (early ? startFull(o) : unlock(o)));
+    const skip = card.querySelector("[data-guest-skip]");
+    if (skip) skip.addEventListener("click", () => {
+      close();
+      remember(o.slug);
+      showBar();
+      taste(o); // from the tap itself; the request comes back after the taste, as before
+    });
   }
 
   // Avraham, 2026-11-12: the sound goes down over one second before the request, and comes up over one second after it.
@@ -557,28 +582,16 @@
   // "is this the episode you choose?" (the wording of the gift link, js/gift.js): said before any listening, so it is
   // clear that there is one episode a day (Avraham, 2026-11-12: "it made clear, before I listened, that I get one")
   function confirmPick(o) {
-    show(`
-      <h2 class="share-sheet__title" id="gift-title">${L(`🎧 זה הפרק שבחרתם?`, `🎧 Is this the episode you want?`)}</h2>
-      <p class="share-sheet__lead gift-sheet__lead">${esc(o.title || titleOf(o.slug))}</p>
-      <p class="gift-sheet__text">${L(`אפשר להאזין כאן לפרק אחד ביום, ועד שני פרקים בשבוע. אחרי שבוחרים אי אפשר להחליף, אבל אפשר לשמוע אותו שוב היום כמה שרוצים.`, `You can listen to one episode a day here, and up to two a week. Once you choose, you can't switch, but you can listen to it again today as many times as you like.`)}</p>
-      <div class="share-sheet__actions">
-        <button class="btn btn--primary share-sheet__primary" type="button" data-guest-yes data-gift-first>${L(`כן, להאזין לפרק הזה`, `Yes, play this episode`)}</button>
-        <button class="share-sheet__link" type="button" data-gift-close>${L(`רגע, אבחר פרק אחר`, `Wait, I'll pick a different one`)}</button>
-      </div>`);
-    card.querySelector("[data-guest-yes]").addEventListener("click", () => {
-      close();
+    if (STATUS) { // already posted the status: the whole episode, no taste and no request
       remember(o.slug);
-      if (STATUS) { // already posted the status: the whole episode, no taste and no request
-        markShared();
-        track("unlock", o.slug);
-        showBar();
-        teaser = null;
-        o.start(); // from the tap itself
-        return;
-      }
+      markShared();
+      track("unlock", o.slug);
       showBar();
-      taste(o); // from the tap itself (a phone plays only from a tap)
-    });
+      teaser = null;
+      o.start(); // from the tap itself
+      return;
+    }
+    ask(o, true);
   }
 
   // the chosen episode until its status is posted: it plays up to the taste, then the request
