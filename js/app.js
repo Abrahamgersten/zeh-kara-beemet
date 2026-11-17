@@ -1039,6 +1039,20 @@ const CATEGORIES = [
         image: "assets/images/parasha-vayetze.jpeg",
         audio: "assets/audio/parasha-vayetze-sfx4.mp3",
       },
+      {
+        title: "פרשת וישלח",
+        parasha: "וישלח",
+        description: "יעקב חוזר לארץ ישראל ונערך לפגישה עם עשו: תפילה, הכנה למלחמה ומתנות. הפגישה שמסתיימת בחיבוק, המעשה בשכם, השם החדש ישראל, ופטירת רחל בדרך אפרתה.",
+        image: "assets/images/parasha-vayishlach.jpeg",
+        audio: "assets/audio/parasha-vayishlach-sfx4.mp3",
+      },
+      {
+        title: "פרשת וישב",
+        parasha: "וישב",
+        description: "יוסף וכתונת הפסים, החלומות וקנאת האחים, המכירה למצרים, הניסיון בבית פוטיפר, ובית הסוהר עם שר המשקים ושר האופים. ומה יוסף הצדיק מלמד אותנו על המבחן האמיתי של האדם.",
+        image: "assets/images/parasha-vayeshev.jpeg",
+        audio: "assets/audio/parasha-vayeshev-sfx4.mp3",
+      },
     ],
   },
   {
