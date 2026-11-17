@@ -1047,14 +1047,14 @@ const CATEGORIES = [
         title: "Parashat Vayishlach",
         parasha: "וישלח",
         description: "Yaakov returns to Eretz Yisrael and prepares to meet Esav: prayer, getting ready for war, and gifts. The meeting that ends in a hug, what happened in Shechem, the new name Yisrael, and the passing of Rachel on the way to Efras.",
-        image: "../assets/images/en/parasha-vayishlach.jpeg",
+        image: "../assets/images/en/parasha-vayishlach-v2.jpeg",
         audio: "../assets/audio/en/parasha-vayishlach-sfx3.mp3",
       },
       {
         title: "Parashat Vayeshev",
         parasha: "וישב",
         description: "Yosef and the striped coat, the dreams and the brothers' jealousy, the sale to Egypt, the test in Potifar's house, and the prison with the chief wine butler and the chief baker. And what Yosef Hatzaddik teaches us about the real test of a person.",
-        image: "../assets/images/en/parasha-vayeshev.jpeg",
+        image: "../assets/images/en/parasha-vayeshev-v2.jpeg",
         audio: "../assets/audio/en/parasha-vayeshev-sfx3.mp3",
       },
     ],
@@ -1942,7 +1942,7 @@ function renderCategorySections() {
       ? `<span class="category-section__note">🧩 The items below are structural examples only - they'll be replaced with real recordings and content</span>`
       : "";
     const showMoreHTML = overflowCount > 0
-      ? `<button class="btn btn--ghost category-section__more" type="button" data-show-more="cat-${cat.id}">Show more episodes</button>`
+      ? showMoreButtonHTML(`cat-${cat.id}`, overflowCount)
       : "";
 
     return `
@@ -1984,7 +1984,7 @@ function nicheSectionHTML(cat, groups) {
       return audioCardHTML(cat, ep, idx, audioIdx, audioEpisodes.length).replace("<article ", `<article${hiddenAttr} `);
     }).join("");
     const more = !cat.serial && g.episodes.length > INITIAL_VISIBLE_EPISODES
-      ? `<button class="btn btn--ghost category-section__more" type="button" data-show-more="cat-${cat.id}-${g.id}">Show more episodes</button>`
+      ? showMoreButtonHTML(`cat-${cat.id}-${g.id}`, g.episodes.length - INITIAL_VISIBLE_EPISODES)
       : "";
     if (g.id === "other") {
       return `
@@ -2040,6 +2040,15 @@ function openNiche(body, toggle) {
   btn.setAttribute("aria-expanded", String(open));
 }
 
+// "הצג עוד פרקים" (Avraham, 2026-11-17: "much more prominent, and maybe a small animation"): the gold of the site's main
+// buttons, with how many episodes are behind it and a down arrow that nudges twice when the button first comes into view
+function showMoreButtonHTML(target, n) {
+  const text = n === 1 ? "Show 1 more episode" : `Show ${n} more episodes`;
+  return `<button class="btn category-section__more" type="button" data-show-more="${target}"><span>${text}</span>` +
+    `<span class="category-section__more-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" focusable="false">` +
+    `<path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>`;
+}
+
 function setupShowMore() {
   const host = document.getElementById("category-sections");
   host.addEventListener("click", (e) => {
@@ -2050,11 +2059,31 @@ function setupShowMore() {
     const btn = e.target.closest("[data-show-more]");
     if (!btn) return;
     const section = document.getElementById(btn.dataset.showMore);
-    section.querySelectorAll('[data-overflow-card="true"]').forEach((card) => {
+    const cards = [...section.querySelectorAll('[data-overflow-card="true"]')];
+    cards.forEach((card, i) => {
       card.hidden = false;
+      card.style.animationDelay = `${Math.min(i, 5) * 60}ms`; // one after another, the first six; the rest together
+      card.classList.add("is-revealing");
+      card.addEventListener("animationend", () => { card.classList.remove("is-revealing"); card.style.animationDelay = ""; }, { once: true });
     });
     btn.remove();
+    // the button is gone: keyboard and screen-reader users continue at the first new episode
+    if (cards[0]) {
+      cards[0].setAttribute("tabindex", "-1");
+      cards[0].focus({ preventScroll: true });
+    }
   });
+  // the arrow nudges twice, once, when a button first comes into view (no endless motion; none with reduced motion, in css)
+  if ("IntersectionObserver" in window) {
+    const seen = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (!en.isIntersecting) return;
+        en.target.classList.add("is-seen");
+        seen.unobserve(en.target);
+      });
+    }, { threshold: 0.8 });
+    host.querySelectorAll(".category-section__more").forEach((b) => seen.observe(b));
+  }
 }
 
 /* ---------------------------------------------------------------
