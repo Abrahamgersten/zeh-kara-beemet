@@ -1043,6 +1043,20 @@ const CATEGORIES = [
         image: "../assets/images/en/parasha-vayetze.jpeg",
         audio: "../assets/audio/en/parasha-vayetze-sfx3.mp3",
       },
+      {
+        title: "Parashat Vayishlach",
+        parasha: "וישלח",
+        description: "Yaakov returns to Eretz Yisrael and prepares to meet Esav: prayer, getting ready for war, and gifts. The meeting that ends in a hug, what happened in Shechem, the new name Yisrael, and the passing of Rachel on the way to Efras.",
+        image: "../assets/images/en/parasha-vayishlach.jpeg",
+        audio: "../assets/audio/en/parasha-vayishlach-sfx3.mp3",
+      },
+      {
+        title: "Parashat Vayeshev",
+        parasha: "וישב",
+        description: "Yosef and the striped coat, the dreams and the brothers' jealousy, the sale to Egypt, the test in Potifar's house, and the prison with the chief wine butler and the chief baker. And what Yosef Hatzaddik teaches us about the real test of a person.",
+        image: "../assets/images/en/parasha-vayeshev.jpeg",
+        audio: "../assets/audio/en/parasha-vayeshev-sfx3.mp3",
+      },
     ],
   },
   {
