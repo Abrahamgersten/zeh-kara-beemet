@@ -231,7 +231,9 @@ const JOKE_QUESTIONS = {
   "joke-26": "על איזו שאלה רק ילד אחד בכיתה ידע לענות?",
   "joke-27": "מה קטן, עם שש רגליים, ועושה המון רעש?",
 };
-const JOKE_SHARE = (title, slug) => `*חיוך יומי 😄*\n${JOKE_QUESTIONS[slug] || title}\n\n*פותחים את היום עם חיוך קטן! 😊*\n\nבקבוצה שלנו מחכים לכם סיפורים מרתקים לילדים:\n🎧 *בכל יום שני* - סיפור צדיקים.\n📖 *בכל יום חמישי* - מה בפרשה.\n\nובנוסף, *בכל יום* גם בדיחה שמעלה חיוך!\n\n*להצטרפות לקבוצה* 👇🏻\nhttps://abrahamgersten.github.io/zeh-kara-beemet/whatsapp/\n\nרוצים להעלות חיוך על פנים של מישהו נוסף? שתפו! 😊`;
+// 2026-11-17: his new wording. No group link any more: it ends with the SHARED gift link (gift_tokens.shared, group-link-1),
+// not his personal test token that he pasted (that one is one quota for everybody).
+const JOKE_SHARE = (title, slug) => `*חיוך יומי 😄*\n${JOKE_QUESTIONS[slug] || title}\n\n*המטרה של הקבוצה שלנו:* להכניס עוד תורה וערכים לכמה שיותר בתים.\n\nבקבוצה מחכים לכם סיפורים מרתקים לילדים:\n*🎧 בכל יום שני* - סיפור צדיקים.\n*📖 בכל יום חמישי* - מה בפרשה.\n\nובנוסף, *בכל יום* גם בדיחה שמעלה חיוך!\n\n\n*🎁 רוצים לקבל כבר עכשיו סיפור להאזנה?*\n\n1️⃣ *כנסו לאתר* ובחרו סיפור שאהבתם מתוך מגוון התכנים המרתקים שמחכים לכם שם.\n\n2️⃣ *שתפו את הקישור בסטטוס שלכם* באמצעות כפתור השיתוף באתר.\n\n3️⃣ *קבלו סיפור נוסף במתנה!* 🎁\n(ניתן לקבל עד שתי סיפורים במתנה לשבוע)\n\nלבחירת פרק במתנה כנסו לקישור 👇🏻\nhttps://abrahamgersten.github.io/zeh-kara-beemet/?g=aa5d1a7cd121b39b29e0`;
 
 // The same order as his caption: teaser -> listening link -> share line -> (cta) -> group invitation.
 function shareMessage(L, lang, cat, ep, slug, pageUrl) {
