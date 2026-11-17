@@ -272,6 +272,8 @@
     document.body.style.overflow = "";
     current = null;
     if (lastFocus && typeof lastFocus.focus === "function") lastFocus.focus();
+    // the invitation that waits for the questions to end (js/story.js, js/guest.js; Avraham, 2026-11-17)
+    try { document.dispatchEvent(new CustomEvent("zkb-quiz-close")); } catch (e) { /* an old browser: nothing waits */ }
   }
 
   function answer(btn) {

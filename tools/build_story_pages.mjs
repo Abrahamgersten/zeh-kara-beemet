@@ -165,6 +165,19 @@ function endingAudio(L, slug, kind) {
   const file = path.join(AUDIO_REPO, rel);
   return fs.existsSync(file) ? `${AUDIO_SITE}${rel}?v=${fileHash(file)}` : null;
 }
+// The gift invitation (Avraham, 2026-11-17): on the Hebrew story pages (not the jokes), a visitor who did not come from
+// a status hears his invitation to a gift story before the story (a) or after it (b) - an A/B test, js/story.js. The
+// two invitations are short recordings of their own (רוני המתכנת/Tools/invites-2026-11-17/build_invites.py), played
+// on the page's player around the site's own recording, so the "<slug>-link.mp3" version (the "spread it" ending) is
+// no longer played on these pages. The window at the end of the story links to the group's gift link (gift_tokens,
+// wa_id group-link-1). A rebuilt invitation gets a new number in its name (the site keeps audio cache-first).
+const INVITE = { before: "assets/audio/invites/gift-before-1.mp3", after: "assets/audio/invites/gift-after-1.mp3",
+  link: `${SITE_URL}?g=aa5d1a7cd121b39b29e0&from=story` };
+function inviteOf(L, cat, ep, root, up) {
+  if (L.langRoot || cat.id === "jokes") return null;
+  for (const f of [INVITE.before, INVITE.after]) if (!fs.existsSync(path.join(REPO, f))) throw new Error(`missing ${f} - run build_invites.py`);
+  return { before: root + INVITE.before, after: root + INVITE.after, plain: fullAudio(up, ep.audio), link: INVITE.link };
+}
 // Status links carry the campaign "site-status" (Avraham, 2026-10-25), so campaigns.html shows how many came from
 // statuses shared from the site - to listen (story page ?c=, migration 0016) and to join the group.
 const STATUS_CAMPAIGN = "site-status";
@@ -253,7 +266,8 @@ function pageHTML(L, lang, cat, ep, slug) {
   const quiz = L.quiz && ep.quiz
     ? [].concat(ep.quiz).map((q) => Object.assign({}, q, q.audio ? { audio: up + q.audio } : {}, q.audioOk ? { audioOk: up + q.audioOk } : {}))
     : null;
-  const storyData = JSON.stringify(Object.assign({ slug, lang, kind, shareText: shareMessage(L, lang, cat, ep, slug, pageUrl) }, status ? { status } : {}, video ? { video } : {}, quiz ? { quiz } : {})).replace(/</g, "\\u003c");
+  const invite = inviteOf(L, cat, ep, root, up);
+  const storyData = JSON.stringify(Object.assign({ slug, lang, kind, shareText: shareMessage(L, lang, cat, ep, slug, pageUrl) }, status ? { status } : {}, video ? { video } : {}, quiz ? { quiz } : {}, invite ? { invite } : {})).replace(/</g, "\\u003c");
 
   let mediaHTML;
   if (main) {

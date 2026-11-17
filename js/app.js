@@ -2408,9 +2408,62 @@ function setupPlayers() {
   }
 
   function start(ep) {
+    if (clip) { // another episode starts while an invitation plays: the invitation is dropped
+      clip.ep.seek.disabled = false;
+      showPlaying(clip.ep, false);
+      clip = null;
+    }
     load(ep);
     audio.play().catch(() => showPlaying(ep, false));
   }
+
+  /* The gift link's A/B (Avraham, 2026-11-17; js/guest.js decides): his invitation to the subscription is a short
+     recording of its own, played on this same element before the gift episode (a) or after it (b). While it plays no
+     episode is "active", so the bar, the saved place and the listening measure stay the episode's own. */
+  let clip = null; // { kind: "intro" | "outro", ep }
+  function playClip(kind, ep, src) {
+    if (active) {
+      active.pos = audio.currentTime || active.pos;
+      showPlaying(active, false);
+      savePlace(active, true);
+      closeSession(active);
+      active = null;
+    }
+    clip = { kind, ep };
+    ep.seek.disabled = true;
+    audio.src = src;
+    audio.play().catch((e) => {
+      if (e && e.name !== "AbortError") endClip(false);
+    });
+  }
+  function endClip(played) {
+    if (!clip) return;
+    const c = clip;
+    clip = null;
+    c.ep.seek.disabled = false;
+    showPlaying(c.ep, false);
+    const G = window.ZkbGift;
+    if (G && G.clipDone) G.clipDone(c.kind, c.ep.slug, played);
+    if (c.kind === "intro") start(c.ep);
+    else if (c.ep.afterClip) {
+      const f = c.ep.afterClip;
+      c.ep.afterClip = null;
+      f();
+    }
+  }
+  function giftStart(ep) {
+    const G = window.ZkbGift;
+    const src = !ep.introPlayed && !(ep.pos > 0) && G && G.clip ? G.clip("intro", ep.slug) : null;
+    if (!src) {
+      start(ep);
+      return;
+    }
+    ep.introPlayed = true; // once in a visit; an episode that was already started goes on from its place
+    playClip("intro", ep, src);
+  }
+  audio.addEventListener("error", () => {
+    if (clip) endClip(false); // the invitation did not load: on with the episode
+  });
 
   function setMediaSession(ep) {
     if (!("mediaSession" in navigator) || typeof MediaMetadata !== "function") return;
@@ -2442,6 +2495,7 @@ function setupPlayers() {
     if (active.session) active.session.time(audio.currentTime, audio.duration);
   });
   audio.addEventListener("play", () => {
+    if (clip) showPlaying(clip.ep, true);
     if (!active) return;
     showPlaying(active, true);
     setMediaSession(active);
@@ -2464,6 +2518,7 @@ function setupPlayers() {
   });
   audio.addEventListener("pause", () => {
     // no plan change here: this also fires for pauses the user did not make (notifications, calls, lock screen)
+    if (clip && !audio.ended) showPlaying(clip.ep, false);
     if (active && !audio.ended) {
       active.pos = audio.currentTime;
       showPlaying(active, false);
@@ -2472,6 +2527,10 @@ function setupPlayers() {
     }
   });
   audio.addEventListener("ended", () => {
+    if (clip) {
+      endClip(true);
+      return;
+    }
     if (!active) return;
     const ep = active;
     ep.pos = 0;
@@ -2486,6 +2545,25 @@ function setupPlayers() {
     ep.seek.value = 0;
     ep.current.textContent = "0:00";
     continueChainFrom(ep);
+    // the gift link (Avraham, 2026-11-17): b hears the invitation to the subscription now, and js/guest.js brings up
+    // its window ("leave your details"). An episode with "check yourself": the question first - after the invitation,
+    // so they do not talk over each other - and the window when the questions are closed.
+    const G = window.ZkbGift;
+    if (G && G.active() && G.ended) {
+      const out = G.clip ? G.clip("outro", ep.slug) : null;
+      const hasQuiz = !!ep.el.closest(".content-card")?.querySelector("[data-quiz-slug]") && !!window.zkbOpenQuiz;
+      const windows = () => {
+        if (hasQuiz && window.zkbInviteShare) window.zkbInviteShare(ep.el);
+        G.ended({ slug: ep.slug, quiz: hasQuiz });
+      };
+      if (out) {
+        if (hasQuiz) ep.afterClip = windows;
+        active = null;
+        playClip("outro", ep, out);
+        if (!hasQuiz) windows();
+      } else windows();
+      return;
+    }
     // at the end of every episode: "enjoyed it? share it" - as a message or to status (Avraham, 2026-10-21);
     // a continuing chain keeps playing underneath
     if (window.zkbInviteShare) window.zkbInviteShare(ep.el);
@@ -2493,6 +2571,11 @@ function setupPlayers() {
 
   episodes.forEach((ep) => {
     ep.btn.addEventListener("click", () => {
+      if (clip && clip.ep === ep) { // the invitation of this episode is playing (or paused): the button stops and resumes it
+        if (audio.paused) audio.play().catch(() => {});
+        else audio.pause();
+        return;
+      }
       if (active === ep && !audio.paused) {
         continuousPlan = null; // the user's own pause: the chain stops here
         audio.pause();
@@ -2505,9 +2588,10 @@ function setupPlayers() {
         window.ZkbGift.play({
           slug: ep.slug,
           title: titleEl ? titleEl.textContent : "",
-          start: () => start(ep),
-          stop: () => { if (active === ep) audio.pause(); },
+          start: () => giftStart(ep),
+          stop: () => { if (active === ep || (clip && clip.ep === ep)) audio.pause(); },
           audio, // js/guest.js stops the taste on it
+          src: new URL(ep.src, document.baseURI).href, // the episode's own file (the element may be playing the invitation)
         });
         return;
       }

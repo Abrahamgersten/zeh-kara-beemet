@@ -2427,6 +2427,16 @@ function setupPlayers() {
     ep.seek.value = 0;
     ep.current.textContent = "0:00";
     continueChainFrom(ep);
+    // the gift link (Avraham, 2026-11-17, as on the Hebrew site): js/guest.js brings up its window ("leave your
+    // details") at the end of the gift episode; with "check yourself", when the questions are closed. His recorded
+    // invitations are Hebrew, so nothing is played before or after the episode here.
+    const G = window.ZkbGift;
+    if (G && G.active() && G.ended) {
+      const hasQuiz = !!ep.el.closest(".content-card")?.querySelector("[data-quiz-slug]") && !!window.zkbOpenQuiz;
+      if (hasQuiz && window.zkbInviteShare) window.zkbInviteShare(ep.el);
+      G.ended({ slug: ep.slug, quiz: hasQuiz });
+      return;
+    }
     // at the end of every episode: "enjoyed it? share it" - as a message or to status (Avraham, 2026-10-21);
     // a continuing chain keeps playing underneath
     if (window.zkbInviteShare) window.zkbInviteShare(ep.el);

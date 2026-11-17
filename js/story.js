@@ -66,6 +66,45 @@
     }
   }
 
+  /* A/B on the invitation to a gift story (Avraham, 2026-11-17). On the page that goes out to the WhatsApp groups (not
+     the one opened from a status: that one keeps its "join the group" ending), half of the browsers hear his invitation
+     BEFORE the story (a) and half AFTER it (b). The invitation is a short recording of its own, played on the same player
+     before or after the story, so no story file is duplicated. STORY.invite = { before, after, plain, link } comes from
+     tools/build_story_pages.mjs. What is measured: who goes on to the gift link (the "enter" step is counted there, by
+     js/guest.js, with the letter kept here). ?ab=a / ?ab=b shows one of them, for looking at it. */
+  const FROM_STATUS = new URLSearchParams(location.search).get("from") === "status";
+  const INVITE = !FROM_STATUS && STORY.invite && STORY.invite.plain ? STORY.invite : null;
+  const ARM = INVITE ? (() => {
+    const forced = new URLSearchParams(location.search).get("ab");
+    if (forced === "a" || forced === "b") return forced;
+    const pick = () => (Math.random() < 0.5 ? "a" : "b");
+    try {
+      let v = localStorage.getItem("zkb_ab_story");
+      if (v !== "a" && v !== "b") {
+        v = pick();
+        localStorage.setItem("zkb_ab_story", v);
+      }
+      return v;
+    } catch (e) {
+      return pick(); // private browsing: a letter for this visit
+    }
+  })() : null;
+  const abSent = new Set();
+  function ab(event) {
+    if (!ARM || TEST || abSent.has(event) || location.hostname !== "abrahamgersten.github.io") return;
+    abSent.add(event);
+    try {
+      fetch(COUNTER_URL.replace("log_story_event", "ab_event"), {
+        method: "POST",
+        keepalive: true, // "click" goes out as the page changes
+        headers: { apikey: COUNTER_KEY, Authorization: "Bearer " + COUNTER_KEY, "Content-Type": "application/json" },
+        body: JSON.stringify({ p_test: "story", p_variant: ARM, p_event: event, p_slug: STORY.slug, p_visitor: visitorId() }),
+      }).catch(() => {});
+    } catch (e) {
+      // never affects the page
+    }
+  }
+
   function formatTime(sec) {
     if (!isFinite(sec) || sec < 0) return "0:00";
     const m = Math.floor(sec / 60);
@@ -86,10 +125,47 @@
     // metadata בלבד: אורך ההקלטה מוצג מיד, וההקלטה עצמה יורדת רק בלחיצה על "נגן".
     // סיומות (אברהם, 2026-10-20): מי שהגיע מהקישור שבסטטוס (?from=status) שומע את ההזמנה לקבוצה;
     // כל השאר - את ההזמנה להפיץ (data-src). באתר המלא אין סיומות.
-    const fromStatus = new URLSearchParams(location.search).get("from") === "status";
+    const fromStatus = FROM_STATUS;
     const audio = new Audio();
     audio.preload = "metadata";
-    audio.src = (fromStatus && el.dataset.srcStatus) || el.dataset.src;
+    // with the gift invitation (INVITE) the story plays as it is on the site, and the invitation comes before or after it
+    audio.src = (fromStatus && el.dataset.srcStatus) || (INVITE ? INVITE.plain : el.dataset.src);
+    // the invitation that is playing now on this same element: "intro" (before the story) or "outro" (after it). One
+    // element for all of it, so a phone with its screen locked goes from one file to the next (as "play in a row" does).
+    let clip = null;
+    let introDone = false;
+    let afterClip = null; // what waits for the invitation after the story to end (the "check yourself" question)
+    function startClip(kind) {
+      clip = kind;
+      seek.disabled = true;
+      audio.src = kind === "intro" ? INVITE.before : INVITE.after;
+      audio.play().catch((e) => {
+        if (e && e.name !== "AbortError") endClip(false);
+      });
+    }
+    function endClip(played) {
+      if (!clip) return;
+      const kind = clip;
+      clip = null;
+      seek.disabled = false;
+      if (played) ab("invite");
+      audio.src = INVITE.plain;
+      if (kind === "intro") {
+        introDone = true;
+        audio.play().catch((e) => {
+          if (e && e.name !== "AbortError") showError();
+        });
+      } else {
+        btn.textContent = "▶";
+        btn.classList.remove("is-playing");
+        btn.setAttribute("aria-label", el.dataset.labelPlay);
+        if (afterClip) {
+          const f = afterClip;
+          afterClip = null;
+          f();
+        }
+      }
+    }
     // the "check yourself" question (js/quiz.js) stops the recording while it is read
     window.zkbPauseMain = () => {
       if (!audio.paused) audio.pause();
@@ -127,13 +203,14 @@
     });
 
     audio.addEventListener("loadedmetadata", () => {
+      if (clip) return; // the bar and the times belong to the story
       seek.max = audio.duration || 0;
       duration.textContent = formatTime(audio.duration);
       if (resumeAt > 0 && resumeAt < audio.duration) audio.currentTime = resumeAt;
       resumeAt = 0;
     });
     audio.addEventListener("timeupdate", () => {
-      if (seeking) return;
+      if (seeking || clip) return;
       seek.value = audio.currentTime;
       current.textContent = formatTime(audio.currentTime);
       if (!audio.paused) {
@@ -148,6 +225,8 @@
       if (errorEl) errorEl.hidden = true;
       setMediaSession();
       track("play");
+      ab("start");
+      if (clip) return; // the invitation: the story's listening is measured from the story itself
       warmStatusPicture();
       if (STORY.video && window.ZkbShareSheet && window.ZkbShareSheet.warmVideo) window.ZkbShareSheet.warmVideo(STORY.video, STORY.slug);
       if (!session && window.ZkbListen && STORY.slug) session = window.ZkbListen.session(STORY.slug, lang, fromStatus ? "status" : "link");
@@ -157,12 +236,17 @@
       btn.textContent = "▶";
       btn.classList.remove("is-playing");
       btn.setAttribute("aria-label", el.dataset.labelResume);
+      if (clip) return;
       if (!audio.ended) {
         savePlace(true);
         if (session) session.flush();
       }
     });
     audio.addEventListener("ended", () => {
+      if (clip) {
+        endClip(true);
+        return;
+      }
       btn.textContent = "▶";
       btn.classList.remove("is-playing");
       btn.setAttribute("aria-label", el.dataset.labelPlay);
@@ -176,9 +260,29 @@
       }
       if (window.ZkbResume && STORY.slug) window.ZkbResume.clear(lang, STORY.slug);
       track("finish");
-      inviteToStatus();
+      if (!INVITE) {
+        inviteToStatus();
+        return;
+      }
+      // the gift invitation (Avraham, 2026-11-17): b hears it now, and the window that invites to the gift story comes
+      // up for both. An episode with "check yourself": the question first (after the invitation, so they do not talk
+      // over each other), and the window when the questions are closed.
+      ab("finish");
+      const hasQuiz = !!(STORY.quiz && window.ZkbQuiz);
+      const windows = () => {
+        if (hasQuiz && openQuiz(false)) document.addEventListener("zkb-quiz-close", () => inviteToGift(), { once: true });
+        else inviteToGift();
+      };
+      if (ARM === "b") {
+        if (hasQuiz) afterClip = windows;
+        startClip("outro");
+        if (!hasQuiz) windows();
+      } else windows();
     });
-    audio.addEventListener("error", showError);
+    audio.addEventListener("error", () => {
+      if (clip) endClip(false); // the invitation did not load: on with the story
+      else showError();
+    });
 
     function showError() {
       btn.textContent = "▶";
@@ -187,6 +291,11 @@
     }
 
     btn.addEventListener("click", () => {
+      // a: the first press on a story that was not started yet plays the invitation, and the story follows by itself
+      if (!clip && audio.paused && INVITE && ARM === "a" && !introDone && !(audio.currentTime > 0) && !(resumeAt > 0) && !el.classList.contains("player--resume")) {
+        startClip("intro");
+        return;
+      }
       if (audio.paused) {
         // אחרי שגיאת רשת הדפדפן לא מנסה שוב לבד - טוענים מחדש לפני הניגון.
         if (audio.error) audio.load();
@@ -388,6 +497,50 @@
     if (/^joke-\d/.test(STORY.slug || "") && !jokeInviteDue()) return;
     track("popup");
     window.ZkbShareSheet.invite(statusOptions({ isStory: STORY.kind !== "recording", onMessage: () => shareMessageFn && shareMessageFn() }));
+  }
+
+  /* The window at the end of the story on the page that goes out to the groups (Avraham, 2026-11-17, his wording):
+     an invitation to the gift story, and a button to the site's gift link. It replaces the "share it" window there. */
+  let giftRoot = null;
+  function inviteToGift() {
+    if (!INVITE) return;
+    track("popup");
+    ab("popup");
+    if (!giftRoot) {
+      giftRoot = document.createElement("div");
+      giftRoot.className = "lightbox share-sheet gift-sheet";
+      giftRoot.hidden = true;
+      document.body.appendChild(giftRoot);
+      giftRoot.addEventListener("click", (e) => {
+        if (e.target === giftRoot || e.target.closest("[data-gift-close]")) closeGift();
+        if (e.target.closest("[data-gift-go]")) ab("click");
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && !giftRoot.hidden) closeGift();
+      });
+    }
+    const href = INVITE.link + (TEST ? "&t=1" : "");
+    giftRoot.innerHTML = `<div class="share-sheet__card" role="dialog" aria-modal="true" aria-labelledby="gift-invite-title">
+      <button class="share-sheet__close" type="button" data-gift-close aria-label="סגירה">✕</button>
+      <h2 class="share-sheet__title" id="gift-invite-title">נהניתם מהסיפור? רוצים לקבל סיפור נוסף במתנה?</h2>
+      <p class="gift-sheet__text"><strong>זה פשוט מאוד!</strong> היכנסו לקישור המצורף בהודעה, לחצו על כפתור השיתוף באתר ושתפו את הסיפור שזה עתה שמעתם בסטטוס שלכם.</p>
+      <p class="gift-sheet__text">לאחר השיתוף תוכלו לקבל מאיתנו סיפור נוסף במתנה!</p>
+      <div class="share-sheet__actions">
+        <a class="btn btn--primary share-sheet__primary" href="${href}" data-gift-go>לקבלת הסיפור במתנה</a>
+        <button class="share-sheet__link" type="button" data-gift-close>אולי אחר כך</button>
+      </div>
+    </div>`;
+    giftLastFocus = document.activeElement;
+    giftRoot.hidden = false;
+    document.body.style.overflow = "hidden";
+    giftRoot.querySelector("[data-gift-go]").focus();
+  }
+  let giftLastFocus = null;
+  function closeGift() {
+    if (!giftRoot || giftRoot.hidden) return;
+    giftRoot.hidden = true;
+    document.body.style.overflow = "";
+    if (giftLastFocus && typeof giftLastFocus.focus === "function") giftLastFocus.focus();
   }
 
   document.addEventListener("DOMContentLoaded", () => {

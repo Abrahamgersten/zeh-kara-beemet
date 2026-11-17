@@ -146,6 +146,54 @@
     if (PIXEL_ID && typeof window.fbq === "function" && event !== "enter") window.fbq("trackCustom", "zkb_" + event, { slug: slug || "" });
   }
 
+  /* A/B on the invitation to the subscription (Avraham, 2026-11-17). On the gift link half of the browsers hear his
+     recorded invitation BEFORE the gift episode (a) and half AFTER it (b); js/app.js plays the recording on its player
+     and asks here which one (clip). What is measured: who leaves a phone number ("lead"). Hebrew only: the recordings
+     are his. ?ab=a / ?ab=b shows one of them, for looking at it. The same counter holds the other test, of the story
+     pages (js/story.js): whoever arrives here with that test's letter is its "enter" step. */
+  const CLIPS = { intro: "assets/audio/invites/sub-before-1.mp3", outro: "assets/audio/invites/sub-after-1.mp3" };
+  const storedArm = (key) => {
+    try {
+      const v = localStorage.getItem(key);
+      return v === "a" || v === "b" ? v : null;
+    } catch (e) {
+      return null;
+    }
+  };
+  let giftArm = null;
+  function chooseArm() {
+    if (EN || giftArm) return;
+    const forced = new URLSearchParams(location.search).get("ab");
+    giftArm = forced === "a" || forced === "b" ? forced : storedArm("zkb_ab_gift");
+    if (giftArm) return;
+    giftArm = Math.random() < 0.5 ? "a" : "b";
+    try {
+      localStorage.setItem("zkb_ab_gift", giftArm);
+    } catch (e) {
+      // private browsing: a letter for this visit
+    }
+  }
+  const abSent = {};
+  function ab(test, variant, event, slug) {
+    const k = test + ":" + event + ":" + (slug || "");
+    if (!LIVE || !variant || abSent[k]) return;
+    abSent[k] = true;
+    rpc("ab_event", { p_test: test, p_variant: variant, p_event: event, p_slug: slug || null, p_visitor: visitor() }).catch(() => {});
+  }
+  const LEAD_LEFT = "zkb_lead_left";
+  function leadLeft() {
+    try {
+      return !!localStorage.getItem(LEAD_LEFT);
+    } catch (e) {
+      return false;
+    }
+  }
+  // the episode starts (js/app.js plays the invitation first when this browser is "a")
+  function go(o) {
+    ab("gift", giftArm, "start", o.slug);
+    o.start();
+  }
+
   function loadPixel() {
     if (!PIXEL_ID || !LIVE || window.fbq) return;
     const n = (window.fbq = function () { n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments); });
@@ -322,7 +370,7 @@
     teaser = null;
     close();
     showBar();
-    o.start(); // from the tap itself
+    go(o); // from the tap itself
   }
   function ask(o, early) {
     if (asking) return;
@@ -514,6 +562,19 @@
     fullVolume = a.volume > 0 ? a.volume : 1;
     ramp(a, fullVolume, 0, stop);
   }
+  // The gift episode played to its end (called by js/app.js; Avraham, 2026-11-17): the window that invites to leave
+  // details for the subscription, in his wording. An episode with "check yourself": when the questions are closed.
+  // Not shown to a browser that already left a phone number.
+  function ended(o) {
+    if (!on) return;
+    ab("gift", giftArm, "finish", o.slug);
+    if (leadLeft()) return;
+    const open = () => {
+      if (on && (!root || root.hidden)) offer(o, state(), true);
+    };
+    if (o.quiz) document.addEventListener("zkb-quiz-close", open, { once: true });
+    else setTimeout(open, 600);
+  }
   const wired = new WeakSet();
   function watch(audio) {
     if (!audio || wired.has(audio)) return;
@@ -523,30 +584,37 @@
   }
 
   /* ---------- another episode: the subscription plan (the wording of js/gift.js, Avraham 2026-11-10) ---------- */
-  function offer(o, s) {
+  function offer(o, s, atEnd) {
     track("offer", o.slug);
+    if (atEnd) ab("gift", giftArm, "popup", o.slug);
     const t = s.today ? titleOf(s.today) : "";
-    const hint = s.reason === "day"
+    const hint = atEnd ? "" : s.reason === "day"
       ? `${L(`היום כבר בחרתם פרק${t ? `: "${esc(t)}"` : ""}. אפשר לשמוע אותו שוב כמה שרוצים, ומחר לבחור פרק חדש.`, `You already picked an episode today${t ? `: "${esc(t)}"` : ""}. You can listen to it again as many times as you like, and pick a new one tomorrow.`)}`
       : L("השבוע כבר האזנתם לשני פרקים. בשבוע הבא אפשר לבחור שוב.", "You've already heard two episodes this week. You can pick again next week.");
-    show(`
-      <h2 class="share-sheet__title" id="gift-title">${L(`רוצים להאזין גם לפרק הזה?`, `Want to hear this episode too?`)}</h2>
+    // at the end of the gift episode: Avraham's own wording (2026-11-17), and the phone field is there at once
+    const head = atEnd
+      ? `<h2 class="share-sheet__title" id="gift-title">${L(`נהניתם מהסיפור? דמיינו שבכל יום מחכה לכם סיפור חדש!`, `Enjoyed the story? Imagine a new story waiting for you every day!`)}</h2>
+      <p class="gift-sheet__text">${L(`אנחנו עובדים על אפשרות להצטרף למנוי מיוחד, שבמסגרתו תקבלו בכל יום סיפור חדש ממדור אחר: סיפורי צדיקים, סיפורי פרשת השבוע, סיפורי הרפתקאות ועוד מגוון סיפורים מרתקים עם מסרים לחיים.`, `We're working on a special subscription that brings you a new story every day, from a different section each time: stories of tzaddikim, stories of the weekly parsha, adventure stories and many more fascinating stories with lessons for life.`)}</p>
+      <p class="gift-sheet__text">${L(`<strong>רוצים להיות הראשונים לקבל את המנוי כשהוא ייפתח?</strong><br>השאירו פרטים. אנחנו נעדכן אתכם ברגע שהאפשרות תהיה זמינה!`, `<strong>Want to be the first to get the subscription when it opens?</strong><br>Leave your details. We'll let you know the moment it's available!`)}</p>`
+      : `<h2 class="share-sheet__title" id="gift-title">${L(`רוצים להאזין גם לפרק הזה?`, `Want to hear this episode too?`)}</h2>
       <p class="gift-sheet__text">${L(`כדי להאזין לפרק הזה ולכל הפרקים באתר, עומדת להיפתח <strong>תוכנית מנויים</strong>.`, `To hear this episode and every episode on the site, a <strong>subscription plan</strong> is about to open.`)}</p>
-      <p class="gift-sheet__text">${L(`<strong>רוצים שנפנה אליכם כשהיא תהיה זמינה לציבור?</strong>`, `<strong>Would you like us to let you know when it opens to the public?</strong>`)}</p>
-      <div class="share-sheet__actions gift-sheet__ask">
-        <button class="btn btn--primary share-sheet__primary" type="button" data-gift-want data-gift-first>${L(`כן, עדכנו אותי`, `Yes, let me know`)}</button>
+      <p class="gift-sheet__text">${L(`<strong>רוצים שנפנה אליכם כשהיא תהיה זמינה לציבור?</strong>`, `<strong>Would you like us to let you know when it opens to the public?</strong>`)}</p>`;
+    show(`
+      ${head}
+      <div class="share-sheet__actions gift-sheet__ask"${atEnd ? " hidden" : ""}>
+        <button class="btn btn--primary share-sheet__primary" type="button" data-gift-want${atEnd ? "" : " data-gift-first"}>${L(`כן, עדכנו אותי`, `Yes, let me know`)}</button>
         <button class="share-sheet__link" type="button" data-gift-close>${L(`לא עכשיו`, `Not now`)}</button>
       </div>
-      <form class="gift-sheet__form" hidden novalidate>
+      <form class="gift-sheet__form"${atEnd ? "" : " hidden"} novalidate>
         <label class="gift-sheet__label" for="gift-phone">${L(`מספר הטלפון שלכם`, `Your phone number`)}</label>
         <input class="gift-sheet__input" id="gift-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" dir="ltr" placeholder="${L(`050-1234567`, `(555) 123-4567`)}" aria-describedby="gift-phone-note">
         <p class="share-sheet__note gift-sheet__note" id="gift-phone-note" role="status" aria-live="polite"></p>
         <div class="share-sheet__actions">
-          <button class="btn btn--primary share-sheet__primary" type="submit"${L(`>שמירה<`, `>Save<`)}/button>
-          <button class="share-sheet__link" type="button" data-gift-close${L(`>ביטול<`, `>Cancel<`)}/button>
+          <button class="btn btn--primary share-sheet__primary" type="submit"${atEnd ? " data-gift-first" : ""}>${atEnd ? L(`עדכנו אותי`, `Let me know`) : L(`שמירה`, `Save`)}</button>
+          <button class="share-sheet__link" type="button" data-gift-close>${atEnd ? L(`לא עכשיו`, `Not now`) : L(`ביטול`, `Cancel`)}</button>
         </div>
       </form>
-      <p class="gift-sheet__hint">${hint}</p>`);
+      ${hint ? `<p class="gift-sheet__hint">${hint}</p>` : ""}`);
     const form = card.querySelector(".gift-sheet__form");
     const input = card.querySelector("#gift-phone");
     const note = card.querySelector(".gift-sheet__note");
@@ -571,6 +639,12 @@
       rpc("guest_lead", { p_phone: phone, p_slug: o.slug, p_visitor: visitor() })
         .then((r) => {
           if (!r || !r.ok) throw new Error("lead");
+          ab("gift", giftArm, "lead", null); // the step the A/B is judged by, from either window
+          try {
+            localStorage.setItem(LEAD_LEFT, "1");
+          } catch (err) {
+            // private browsing
+          }
           if (PIXEL_ID && typeof window.fbq === "function") window.fbq("track", "Lead");
           show(`
             <h2 class="share-sheet__title" id="gift-title">${L(`תודה! רשמנו 🎧`, `Thank you! Got it 🎧`)}</h2>
@@ -593,7 +667,7 @@
       track("unlock", o.slug);
       showBar();
       teaser = null;
-      o.start(); // from the tap itself
+      go(o); // from the tap itself
       return;
     }
     ask(o, true);
@@ -607,8 +681,9 @@
       ask(o); // already waiting at the end of the taste
       return;
     }
-    o.start();
-    teaser = { o, src: o.audio ? o.audio.src : "" };
+    go(o);
+    // o.src = the episode's own file: the element may be playing the invitation that comes before it (A/B, 2026-11-17)
+    teaser = { o, src: o.src || (o.audio ? o.audio.src : "") };
     const st = statusOf(o.slug);
     if (st) mediaFile(st); // ready by the time the request comes up
     track("teaser", o.slug);
@@ -620,7 +695,7 @@
     if (s.today === o.slug) {
       if (s.shared) {
         teaser = null;
-        o.start();
+        go(o);
       } else taste(o);
       return;
     }
@@ -644,6 +719,10 @@
   const api = {
     active: () => on,
     play,
+    // for js/app.js: the invitation to play before ("intro") or after ("outro") the gift episode, or nothing
+    clip: (kind) => (on && giftArm === (kind === "intro" ? "a" : "b") ? CLIPS[kind] : null),
+    clipDone: (kind, slug, played) => { if (played) ab("gift", giftArm, "invite", slug); },
+    ended,
     // a logged-in subscriber opened the link: the full site
     disable() {
       on = false;
@@ -666,6 +745,9 @@
     loadPixel();
     if (!weekly && !STATUS) loadWeekly();
     track("enter", STATUS ? "via-status" : null); // the entry through the status link is told apart by this slug
+    chooseArm();
+    // came after a story page's invitation to the gift (js/story.js): the step that test is judged by
+    if (!STATUS) ab("story", storedArm("zkb_ab_story"), "enter", null);
     showBar();
     footerLogin();
     window.addEventListener("load", showBar); // by now js/app.js has built the cards
