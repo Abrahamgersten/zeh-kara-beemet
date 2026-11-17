@@ -2064,7 +2064,13 @@ function setupShowMore() {
       card.hidden = false;
       card.style.animationDelay = `${Math.min(i, 5) * 60}ms`; // one after another, the first six; the rest together
       card.classList.add("is-revealing");
-      card.addEventListener("animationend", () => { card.classList.remove("is-revealing"); card.style.animationDelay = ""; }, { once: true });
+      const done = (e) => { // only the card's own animation (a badge inside it has its own animationend, which bubbles)
+        if (e.target !== card) return;
+        card.classList.remove("is-revealing");
+        card.style.animationDelay = "";
+        card.removeEventListener("animationend", done);
+      };
+      card.addEventListener("animationend", done);
     });
     btn.remove();
     // the button is gone: keyboard and screen-reader users continue at the first new episode
