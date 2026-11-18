@@ -233,7 +233,7 @@ const JOKE_QUESTIONS = {
 };
 // 2026-11-17: his new wording. No group link any more: it ends with the SHARED gift link (gift_tokens.shared, group-link-1),
 // not his personal test token that he pasted (that one is one quota for everybody).
-const JOKE_SHARE = (title, slug) => `*חיוך יומי 😄*\n${JOKE_QUESTIONS[slug] || title}\n\n*המטרה של הקבוצה שלנו:* להכניס עוד תורה וערכים לכמה שיותר בתים.\n\nבקבוצה מחכים לכם סיפורים מרתקים לילדים:\n*🎧 בכל יום שני* - סיפור צדיקים.\n*📖 בכל יום חמישי* - מה בפרשה.\n\nובנוסף, *בכל יום* גם בדיחה שמעלה חיוך!\n\n\n*🎁 רוצים לקבל כבר עכשיו סיפור להאזנה?*\n\n1️⃣ *כנסו לאתר* ובחרו סיפור שאהבתם מתוך מגוון התכנים המרתקים שמחכים לכם שם.\n\n2️⃣ *שתפו את הקישור בסטטוס שלכם* באמצעות כפתור השיתוף באתר.\n\n3️⃣ *קבלו סיפור נוסף במתנה!* 🎁\n(ניתן לקבל עד שתי סיפורים במתנה לשבוע)\n\nלבחירת פרק במתנה כנסו לקישור 👇🏻\nhttps://abrahamgersten.github.io/zeh-kara-beemet/?g=aa5d1a7cd121b39b29e0`;
+const JOKE_SHARE = (title, slug) => `*חיוך יומי 😄*\n${JOKE_QUESTIONS[slug] || title}\n\n*המטרה של הקבוצה שלנו:* להכניס עוד תורה וערכים לכמה שיותר בתים.\n\nבקבוצה מחכים לכם סיפורים מרתקים לילדים:\n*🎧 בכל יום שני* - סיפור צדיקים.\n*📖 בכל יום חמישי* - מה בפרשה.\n\nובנוסף, *בכל יום* גם בדיחה שמעלה חיוך!\n\n\n*🎁 רוצים לקבל כבר עכשיו סיפור להאזנה?*\n\n1️⃣ *כנסו לאתר* ובחרו סיפור שאהבתם מתוך מגוון התכנים המרתקים שמחכים לכם שם.\n\n2️⃣ *שתפו את הקישור בסטטוס שלכם* באמצעות כפתור השיתוף באתר.\n\n3️⃣ *קבלו סיפור נוסף במתנה!* 🎁\n(ניתן לקבל עד שני סיפורים במתנה לשבוע)\n\nלבחירת פרק במתנה כנסו לקישור 👇🏻\nhttps://abrahamgersten.github.io/zeh-kara-beemet/?g=aa5d1a7cd121b39b29e0`;
 
 // The same order as his caption: teaser -> listening link -> share line -> (cta) -> group invitation.
 function shareMessage(L, lang, cat, ep, slug, pageUrl) {
