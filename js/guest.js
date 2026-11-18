@@ -363,23 +363,62 @@
   // the material is written every hour by Tools/wa_cloud_bot/sync_recording.py. Hebrew only: the bots speak Hebrew.
   // Nothing came back: the status picture of the episode, as before.
   let weekly = null;
-  const media = {}; // address -> the file, fetched once (the video starts downloading when the taste starts)
-  function mediaFile(st) {
-    const url = st.video || st.image;
-    if (!canShareFiles) return Promise.resolve(null);
+  // Avraham, 2026-11-18: "it takes too long to load the status at the button, I am losing conversions". The weekly video
+  // was 15 MB, and since 16.11 the request comes at the moment of choosing, with no taste to hide the download. Now
+  // (1) the site's copy is light (3.5 MB, Tools/wa_cloud_bot/sync_recording.py light_copy), (2) on a phone that will be
+  // asked it starts downloading as soon as it is known (warmWeekly), (3) the waiting button shows how far it got, and
+  // (4) a slow connection waits no more than PICTURE_AFTER: the status picture of the same story opens the button, and the
+  // video takes its place if it arrives before the tap.
+  const PICTURE_AFTER = 6000; // counted from the start of the download, which often began before the tap
+  const media = {}; // address -> { file: Promise<File|null>, ready, loaded, total }, fetched once
+  function download(url, rec) {
+    return fetch(url).then((r) => {
+      if (!r.ok) return null;
+      rec.total = Number(r.headers.get("content-length")) || 0;
+      if (!rec.total || !r.body || typeof r.body.getReader !== "function") return r.blob();
+      const reader = r.body.getReader();
+      const parts = [];
+      const pump = () => reader.read().then(({ done, value }) => {
+        if (done) return new Blob(parts, { type: r.headers.get("content-type") || "" });
+        parts.push(value);
+        rec.loaded += value.length;
+        return pump();
+      });
+      return pump();
+    });
+  }
+  function mediaOf(url, name, video) {
+    if (!canShareFiles || !url) return null;
     if (!media[url]) {
-      const name = `${st.slug}-status.${st.video ? "mp4" : "jpg"}`;
-      media[url] = fetch(url)
-        .then((r) => (r.ok ? r.blob() : null))
+      const rec = { ready: null, loaded: 0, total: 0, started: Date.now() };
+      rec.file = download(url, rec)
         .then((blob) => {
           if (!blob) return null;
-          const f = new File([blob], name, { type: st.video ? "video/mp4" : blob.type || "image/jpeg" });
+          const f = new File([blob], name, { type: video ? "video/mp4" : blob.type || "image/jpeg" });
           return navigator.canShare({ files: [f] }) ? f : null;
         })
         .catch(() => null);
-      media[url].then((f) => { if (!f) delete media[url]; }); // a failed download is tried again next time
+      rec.file.then((f) => {
+        rec.ready = f;
+        if (!f && media[url] === rec) delete media[url]; // a failed download is tried again next time
+      });
+      media[url] = rec;
     }
     return media[url];
+  }
+  const videoOf = (st) => (st.video ? mediaOf(st.video, `${st.slug}-status.mp4`, true) : null);
+  const pictureOf = (st) => (st.image ? mediaOf(st.image, `${st.slug}-status.jpg`, false) : null);
+  function mediaFile(st) {
+    const m = videoOf(st) || pictureOf(st);
+    return m ? m.file : Promise.resolve(null);
+  }
+  // the gift link on a phone that can still be asked today: the status starts downloading right away (picture first, it is small)
+  function warmWeekly() {
+    if (!weekly || !canShareFiles || STATUS || !(on || GIFT)) return;
+    const s = state();
+    if (!(s.can_pick || (s.today && !s.shared))) return;
+    pictureOf(weekly);
+    videoOf(weekly);
   }
   function loadWeekly() {
     if (EN) return;
@@ -391,6 +430,7 @@
         const image = (m.images || {})[arm] || m.image || null;
         if (!video && !image) return;
         weekly = { slug: m.slug, video, image, text: m.text };
+        warmWeekly();
       })
       .catch(() => {});
   }
@@ -430,7 +470,10 @@
     const src = st.video || st.image;
     const what = st.video ? L("הסרטון", "the video") : L("התמונה", "the picture");
     let ready = null;
-    const file = mediaFile(st);
+    const vid = videoOf(st);
+    const pic = pictureOf(st);
+    const main = vid || pic;
+    const file = main ? main.file : Promise.resolve(null);
     const steps = EN
       ? (canShareFiles
         ? ["Tap \"Share to status\" and choose WhatsApp.", "Choose \"My status\" at the top of the list.",
@@ -507,14 +550,33 @@
     wireDownload();
     const go = card.querySelector("[data-guest-go]");
     if (go) {
+      const wait = go.textContent;
+      const enable = (f) => {
+        if (!go.isConnected) return;
+        ready = f; // the video replaces the picture if it arrives before the tap
+        if (!go.disabled) return;
+        go.disabled = false;
+        go.textContent = L("שיתוף הסטטוס", "Share to status");
+      };
+      if (main && main.ready) enable(main.ready); // already downloaded (warmWeekly): open at once
+      // how far the download got, so nobody thinks it is stuck
+      const tick = setInterval(() => {
+        if (!go.isConnected || !go.disabled) return clearInterval(tick);
+        const p = main && main.total ? Math.min(99, Math.floor((main.loaded * 100) / main.total)) : 0;
+        if (p > 0) go.textContent = `${wait} ${p}%`;
+      }, 250);
       file.then((f) => {
         if (!go.isConnected) return;
-        ready = f;
-        if (f) {
-          go.disabled = false;
-          go.textContent = L("שיתוף הסטטוס", "Share to status");
-        } else toDownload(); // the picture did not come, or this phone does not share files
+        if (f) enable(f);
+        else if (pic && main !== pic) pic.file.then((pf) => (pf ? enable(pf) : !ready && go.isConnected && toDownload()));
+        else if (!ready) toDownload(); // the picture did not come, or this phone does not share files
       });
+      // a slow connection: the picture of the same status after PICTURE_AFTER
+      if (vid && pic) {
+        setTimeout(() => {
+          if (go.isConnected && !ready) pic.file.then((pf) => { if (pf && !ready) enable(pf); });
+        }, Math.max(1500, vid.started + PICTURE_AFTER - Date.now()));
+      }
       go.addEventListener("click", async () => {
         const copied = copyText(st.text); // on this tap, before the share menu (an iPhone drops the text that comes with a file)
         const attempts = isApple ? [{ files: [ready] }] : [{ files: [ready], text: st.text }, { files: [ready] }];
@@ -793,6 +855,7 @@
     document.documentElement.classList.add("gift-mode", "guest-mode");
     loadPixel();
     if (!weekly && !STATUS) loadWeekly();
+    else warmWeekly();
     track("enter", STATUS ? "via-status" : null); // the entry through the status link is told apart by this slug
     chooseArm();
     // came after a story page's invitation to the gift (js/story.js): the step that test is judged by

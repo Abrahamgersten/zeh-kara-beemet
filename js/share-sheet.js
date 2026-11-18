@@ -50,6 +50,7 @@
     ],
     shareStatus: "לשיתוף בסטטוס",
     preparing: "רגע, מכינים את התמונה…",
+    preparingStatusVideo: "רגע, מכינים את הסרטון…",
     download: "הורדת התמונה",
     copy: "העתקת המלל",
     copied: "המלל הועתק ✓",
@@ -93,6 +94,7 @@
     ],
     shareStatus: "Share to status",
     preparing: "One moment, preparing the picture…",
+    preparingStatusVideo: "One moment, preparing the video…",
     download: "Download the picture",
     copy: "Copy the text",
     copied: "Text copied ✓",
@@ -171,6 +173,7 @@
         const video = m.video || (m.videos || {})[arm] || null;
         const image = (m.images || {})[arm] || m.image || null;
         if (video || image) weekly = { slug: m.slug, video, image, text: m.text };
+        if (warmWanted) warm();
       })
       .catch(() => {});
   }
@@ -183,25 +186,81 @@
   }
 
   // התמונה יורדת כבר כשהחלון נפתח: navigator.share חייב לרוץ מיד עם הלחיצה.
-  function loadFile(o) {
-    if (!canShareFiles || !o.status) return Promise.resolve(null);
+  // Avraham, 2026-11-18: "it takes too long to load the status at the button, I am losing conversions". The weekly video
+  // was 15 MB and the button stayed closed until all of it was on the phone. Now (1) the site's copy is light (3.5 MB,
+  // Tools/wa_cloud_bot/sync_recording.py light_copy), (2) it starts downloading before the share window (warm, below),
+  // once per page, (3) the waiting button shows how far it got, and (4) a slow connection does not wait more than
+  // PICTURE_AFTER from the start of its download: the status picture of the same story opens the button, and the video takes
+  // its place if it arrives first.
+  const PICTURE_AFTER = 6000; // counted from the start of the download, which often began before the tap
+  const media = {}; // address -> { file: Promise<File|null>, ready, loaded, total }
+  function download(url, rec) {
+    return fetch(url).then((r) => {
+      if (!r.ok) return null;
+      rec.total = Number(r.headers.get("content-length")) || 0;
+      if (!rec.total || !r.body || typeof r.body.getReader !== "function") return r.blob();
+      const reader = r.body.getReader();
+      const parts = [];
+      const pump = () => reader.read().then(({ done, value }) => {
+        if (done) return new Blob(parts, { type: r.headers.get("content-type") || "" });
+        parts.push(value);
+        rec.loaded += value.length;
+        return pump();
+      });
+      return pump();
+    });
+  }
+  function mediaOf(url, name, video) {
+    if (!canShareFiles || !url) return null;
+    if (!media[url]) {
+      const rec = { ready: null, loaded: 0, total: 0, started: Date.now() };
+      rec.file = download(url, rec)
+        .then((blob) => {
+          if (!blob) return null;
+          const file = new File([blob], name, { type: video ? "video/mp4" : blob.type || "image/jpeg" });
+          return navigator.canShare({ files: [file] }) ? file : null;
+        })
+        .catch(() => null);
+      rec.file.then((f) => {
+        rec.ready = f;
+        if (!f && media[url] === rec) delete media[url]; // a failed download is tried again next time
+      });
+      media[url] = rec;
+    }
+    return media[url];
+  }
+  function filesOf(o) {
     const st = o.status;
-    return fetch(mediaUrl(st))
-      .then((r) => (r.ok ? r.blob() : null))
-      .then((blob) => {
-        if (!blob) return null;
-        const file = new File([blob], mediaName(o, st), { type: st.video ? "video/mp4" : blob.type || "image/jpeg" });
-        return navigator.canShare({ files: [file] }) ? file : null;
-      })
-      .catch(() => null);
+    if (!st) return { vid: null, pic: null };
+    return {
+      vid: st.video ? mediaOf(st.video, mediaName(o, { slug: st.slug, video: st.video }), true) : null,
+      pic: st.image ? mediaOf(st.image, mediaName(o, { slug: st.slug }), false) : null,
+    };
+  }
+  // the weekly status starts downloading once something plays on the page (the share invitation comes at its end) or a
+  // finger touches a share button; a computer downloads nothing ahead (it saves the file only when asked)
+  let warmWanted = false;
+  function warm() {
+    warmWanted = true;
+    if (weekly && canShareFiles) filesOf({ status: weekly, slug: weekly.slug });
+  }
+  if (canShareFiles) {
+    document.addEventListener("play", warm, { capture: true, once: true });
+    document.addEventListener("pointerdown", (e) => {
+      if (e.target && e.target.closest && e.target.closest("[data-share-slug], [data-share]")) warm();
+    }, { capture: true, passive: true });
   }
 
   function open(o, mode) {
     ensure();
     if (weekly) o = { ...o, status: weekly };
     lastFocus = document.activeElement;
-    current = { o, mode, file: loadFile(o), ready: null };
-    current.file.then((f) => { if (current && current.o === o) current.ready = f; });
+    const { vid, pic } = filesOf(o);
+    const main = vid || pic;
+    current = { o, mode, vid, pic, main, file: main ? main.file : Promise.resolve(null), ready: main ? main.ready : null };
+    const cur = current;
+    // only a file that arrived replaces what is ready (a video that failed after the picture opened the button keeps the picture)
+    if (main) main.file.then((f) => { if (f && current === cur) cur.ready = f; });
     render("choose");
     root.hidden = false;
     document.body.style.overflow = "hidden";
@@ -302,19 +361,42 @@
     // בטלפון: הכפתור נפתח רק כשהתמונה כבר ירדה. כך הלחיצה פותחת את תפריט השיתוף מיד; באייפון
     // המתנה להורדה אחרי הלחיצה מבטלת את ההרשאה לפתוח אותו.
     if (canShareFiles && !current.ready) {
+      const cur = current;
+      const label = o.status.video ? T.preparingStatusVideo : T.preparing;
       btn.disabled = true;
-      btn.textContent = T.preparing;
-      current.file.then((f) => {
-        if (!current || current.o !== o || !btn.isConnected) return;
-        if (f) {
-          btn.disabled = false;
-          btn.textContent = T.shareStatus;
-          if (document.activeElement === document.body || document.activeElement === btn) btn.focus();
-        } else {
-          // התמונה לא ירדה או שהמכשיר לא משתף קבצים: הורדה במקום שיתוף
-          btn.outerHTML = `<a class="btn btn--primary share-sheet__primary" href="${esc(mediaUrl(o.status))}" download="${esc(mediaName(o, o.status))}" data-act="download">${esc(T.download)}</a>`;
-        }
+      btn.textContent = label;
+      const live = () => current === cur && btn.isConnected;
+      const enable = (f) => {
+        if (current !== cur) return;
+        cur.ready = f;
+        if (!btn.isConnected || !btn.disabled) return;
+        btn.disabled = false;
+        btn.textContent = T.shareStatus;
+        if (document.activeElement === document.body || document.activeElement === btn) btn.focus();
+      };
+      // how far the download got, so nobody thinks it is stuck
+      const tick = setInterval(() => {
+        if (!live() || !btn.disabled) return clearInterval(tick);
+        const m = cur.main;
+        const p = m && m.total ? Math.min(99, Math.floor((m.loaded * 100) / m.total)) : 0;
+        if (p > 0) btn.textContent = `${label} ${p}%`;
+      }, 250);
+      const toDownload = () => {
+        // התמונה לא ירדה או שהמכשיר לא משתף קבצים: הורדה במקום שיתוף
+        if (live() && !cur.ready) btn.outerHTML = `<a class="btn btn--primary share-sheet__primary" href="${esc(mediaUrl(o.status))}" download="${esc(mediaName(o, o.status))}" data-act="download">${esc(T.download)}</a>`;
+      };
+      cur.file.then((f) => {
+        if (current !== cur) return;
+        if (f) enable(f);
+        else if (cur.pic && cur.main !== cur.pic) cur.pic.file.then((pf) => (pf ? enable(pf) : toDownload()));
+        else toDownload();
       });
+      // a slow connection: the picture of the same status after PICTURE_AFTER (the video still wins if it comes first)
+      if (cur.vid && cur.pic) {
+        setTimeout(() => {
+          if (live() && !cur.ready) cur.pic.file.then((pf) => { if (pf && !cur.ready) enable(pf); });
+        }, Math.max(1500, cur.vid.started + PICTURE_AFTER - Date.now()));
+      }
     }
   }
 
