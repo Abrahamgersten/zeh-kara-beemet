@@ -283,6 +283,7 @@
   }
   function show(html) {
     ensure();
+    pendingGroup = false;
     if (root.hidden) lastFocus = document.activeElement;
     card.innerHTML = `<button class="share-sheet__close" type="button" data-gift-close ${L(`aria-label="סגירה"`, `aria-label="Close"`)}>✕</button>${html}`;
     card.querySelectorAll("[data-gift-close]").forEach((b) => b.addEventListener("click", close));
@@ -293,10 +294,52 @@
   }
   function close() {
     if (!root || root.hidden) return;
+    const group = pendingGroup;
+    pendingGroup = false;
     root.hidden = true;
     asking = false;
     document.body.style.overflow = "";
     if (lastFocus && typeof lastFocus.focus === "function") lastFocus.focus();
+    if (group) groupInvite();
+  }
+
+  /* ---------- the WhatsApp group, only AFTER the subscription window (Avraham, 2026-11-18) ----------
+     The site leads to the subscription plan, so the group never stands beside it. It is offered in two places only:
+     to whoever closed the subscription window without leaving a phone (once a day per browser), and inside the
+     "thank you" of whoever left one. Hebrew only (the group is in Hebrew). The link is the join page with its own
+     campaign code, so campaigns.html counts who came from here (migration 0033). */
+  const GROUP_URL = "https://abrahamgersten.github.io/zeh-kara-beemet/whatsapp/?c=gift-site";
+  const GROUP_SEEN = "zkb_guest_group_day";
+  let pendingGroup = false;
+  let groupShown = false;
+  const groupLink = (first) => `<a class="btn btn--primary share-sheet__primary" href="${GROUP_URL}" target="_blank" rel="noopener" data-gift-group${first ? " data-gift-first" : ""}>להצטרפות לקבוצה</a>`;
+  function wireGroup() {
+    card.querySelectorAll("[data-gift-group]").forEach((a) => a.addEventListener("click", () => setTimeout(close, 0)));
+  }
+  function groupSeen() {
+    groupShown = true;
+    try {
+      localStorage.setItem(GROUP_SEEN, dayOf(new Date()));
+    } catch (e) {
+      // private browsing: once for this visit
+    }
+  }
+  function groupInvite() {
+    if (EN || !on || groupShown) return;
+    try {
+      if (localStorage.getItem(GROUP_SEEN) === dayOf(new Date())) return;
+    } catch (e) {
+      // private browsing
+    }
+    groupSeen();
+    show(`
+      <h2 class="share-sheet__title" id="gift-title">רוצים לקבל סיפור כזה פעמיים בשבוע, בחינם?</h2>
+      <p class="gift-sheet__text">בקבוצת הוואטסאפ שלנו מחכים לכם סיפורים מרתקים לילדים:<br>🎧 <strong>בכל יום שני</strong> - סיפור צדיקים.<br>📖 <strong>בכל יום חמישי</strong> - מה בפרשה.</p>
+      <div class="share-sheet__actions">
+        ${groupLink(true)}
+        <button class="share-sheet__link" type="button" data-gift-close>לא עכשיו</button>
+      </div>`);
+    wireGroup();
   }
 
   /* ---------- the request after the taste: put the story on your status ---------- */
@@ -615,6 +658,7 @@
         </div>
       </form>
       ${hint ? `<p class="gift-sheet__hint">${hint}</p>` : ""}`);
+    pendingGroup = true; // closed without a phone number: the group is offered next (groupInvite)
     const form = card.querySelector(".gift-sheet__form");
     const input = card.querySelector("#gift-phone");
     const note = card.querySelector(".gift-sheet__note");
@@ -649,7 +693,12 @@
           show(`
             <h2 class="share-sheet__title" id="gift-title">${L(`תודה! רשמנו 🎧`, `Thank you! Got it 🎧`)}</h2>
             <p class="gift-sheet__text">${L(`נעדכן אתכם ברגע שתוכנית המנויים תיפתח.`, `We'll let you know as soon as the subscription plan opens.`)}</p>
-            <div class="share-sheet__actions"><button class="btn btn--primary share-sheet__primary" type="button" data-gift-close ${L(`data-gift-first>סגירה<`, `data-gift-first>Close<`)}/button></div>`);
+            ${EN ? "" : `<p class="gift-sheet__text">ובינתיים, רוצים לקבל סיפור פעמיים בשבוע, בחינם? הצטרפו לקבוצת הוואטסאפ שלנו.</p>`}
+            <div class="share-sheet__actions">${EN ? "" : groupLink(true)}<button class="${EN ? "btn btn--primary share-sheet__primary" : "share-sheet__link"}" type="button" data-gift-close ${L(`>סגירה<`, `data-gift-first>Close<`)}/button></div>`);
+          if (!EN) {
+            groupSeen();
+            wireGroup();
+          }
         })
         .catch(() => {
           submit.disabled = false;
