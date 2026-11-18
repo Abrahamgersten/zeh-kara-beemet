@@ -31,6 +31,16 @@
   const L = (he, en) => (EN ? en : he);
   const STORE = "zkb_guest_plays";
   const TEASER = 45; // seconds of an episode before the request
+  // Avraham, 2026-11-18: for his own testing, "&reset=1" on the link forgets what this device listened to, so the
+  // "you already got today's episode" message never blocks him. Local to the device only.
+  if (/[?&]reset=1(?:&|$)/.test(location.search)) {
+    try {
+      localStorage.removeItem(STORE);
+      localStorage.removeItem(GIFT_SHARED);
+    } catch (e) {
+      // nothing kept
+    }
+  }
   const LIVE = location.hostname === "abrahamgersten.github.io" && new URLSearchParams(location.search).get("t") !== "1";
 
   // Remarketing (Avraham, 2026-11-12: "to colour whoever comes into my site"): a Meta Pixel id goes here once he has
