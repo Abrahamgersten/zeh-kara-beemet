@@ -1833,12 +1833,15 @@ function setupStoryShare() {
     if (q) window.zkbOpenQuiz(q.closest(".content-card"), true);
   });
 
-  window.zkbInviteShare = (playerEl) => {
+  // chained = "play in a row" already started the next episode (Avraham, 2026-11-18, as on the Hebrew site): the
+  // question is read aloud and stops the episode under it, so in a row it waits on its card's button and opens at the
+  // end of the last episode of the row; the share invite, which makes no sound, still shows.
+  window.zkbInviteShare = (playerEl, chained) => {
     const card = playerEl && playerEl.closest(".content-card");
     const btn = card && card.querySelector("[data-share-slug]");
     if (!btn || !window.ZkbShareSheet) return;
     if (card.closest("#cat-jokes") && !zkbJokeInviteDue()) return; // a joke: once in 10 jokes
-    if (card.querySelector("[data-quiz-slug]") && window.zkbOpenQuiz) { window.zkbOpenQuiz(card, false); return; }
+    if (!chained && card.querySelector("[data-quiz-slug]") && window.zkbOpenQuiz) { window.zkbOpenQuiz(card, false); return; }
     const slug = btn.dataset.shareSlug;
     const titleEl = card.querySelector(".content-card__title");
     if (statuses[slug]) trackStatus(slug, "popup");
@@ -2420,6 +2423,27 @@ function setupPlayers() {
     }
   }
 
+  // a file that did not load or broke off (a phone that lost its connection for a moment; Avraham, 2026-11-18, "play
+  // in a row" stopping): twice more from the same place, then a row goes on to the next episode instead of stopping
+  audio.addEventListener("error", () => {
+    const ep = active;
+    if (!ep || !audio.error || audio.error.code === 1) return; // 1: aborted, another file was set
+    ep.retries = (ep.retries || 0) + 1;
+    const at = audio.currentTime || ep.pos;
+    if (ep.retries <= 2) {
+      setTimeout(() => {
+        if (active !== ep) return;
+        pendingSeek = at;
+        audio.src = ep.src;
+        audio.play().catch(() => showPlaying(ep, false));
+      }, 1500 * ep.retries);
+      return;
+    }
+    ep.retries = 0;
+    showPlaying(ep, false);
+    continueChainFrom(ep);
+  });
+
   audio.addEventListener("loadedmetadata", () => {
     if (!active) return;
     active.seek.max = audio.duration || 0;
@@ -2466,6 +2490,7 @@ function setupPlayers() {
     const ep = active;
     ep.pos = 0;
     ep.savedAt = -1;
+    ep.retries = 0;
     ep.el.classList.remove("player--resume");
     if (ep.session) {
       ep.session.end();
@@ -2475,7 +2500,7 @@ function setupPlayers() {
     showPlaying(ep, false);
     ep.seek.value = 0;
     ep.current.textContent = "0:00";
-    continueChainFrom(ep);
+    const chained = continueChainFrom(ep);
     // the gift link (Avraham, 2026-11-17, as on the Hebrew site): js/guest.js brings up its window ("leave your
     // details") at the end of the gift episode; with "check yourself", when the questions are closed. His recorded
     // invitations are Hebrew, so nothing is played before or after the episode here.
@@ -2488,7 +2513,7 @@ function setupPlayers() {
     }
     // at the end of every episode: "enjoyed it? share it" - as a message or to status (Avraham, 2026-10-21);
     // a continuing chain keeps playing underneath
-    if (window.zkbInviteShare) window.zkbInviteShare(ep.el);
+    if (window.zkbInviteShare) window.zkbInviteShare(ep.el, chained);
   });
 
   episodes.forEach((ep) => {
@@ -2530,11 +2555,12 @@ function setupPlayers() {
     });
   });
 
+  // true when the row goes on (the next episode is starting)
   function continueChainFrom(ep) {
     if (window.ZkbGift && window.ZkbGift.active()) continuousPlan = null; // the gift is one episode
-    if (!continuousPlan || continuousPlan.remaining <= 0) { continuousPlan = null; return; }
+    if (!continuousPlan || continuousPlan.remaining <= 0) { continuousPlan = null; return false; }
     const next = ep.list[ep.posInList + 1];
-    if (!next) { continuousPlan = null; return; }
+    if (!next) { continuousPlan = null; return false; }
     continuousPlan.remaining -= 1;
     // if the next episode is still under "show more", reveal it - otherwise the audio plays with no card on screen
     const hiddenCard = next.el.closest(".content-card[hidden]");
@@ -2542,6 +2568,7 @@ function setupPlayers() {
     next.pos = 0;
     start(next);
     (next.el.closest(".content-card") || next.el).scrollIntoView({ behavior: "smooth", block: "center" });
+    return true;
   }
 }
 
