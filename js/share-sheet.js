@@ -154,14 +154,43 @@
     }
   }
 
+  // Avraham, 2026-11-18: the status shared from a story card / story page is the same as the "סטטוס" bot's:
+  // Thursday and Friday the "מה בפרשה" banner video with its caption, the other days Bezalel's weekly trailer with the
+  // caption of the listening bot (guest_status, migration 0028, written hourly by sync_recording.py). Hebrew only.
+  // Nothing came back: the status picture of the story, as before.
+  let weekly = null;
+  if (document.documentElement.lang !== "en") {
+    const key = "sb_publishable_AcpmlZnxKM4yJxr1OsoSjw_CG6Kt2pz";
+    fetch("https://nuadpewhrhpdgznbbqbs.supabase.co/rest/v1/rpc/guest_status", {
+      method: "POST", headers: { apikey: key, Authorization: "Bearer " + key, "Content-Type": "application/json" }, body: "{}",
+    }).then((r) => (r.ok ? r.json() : null))
+      .then((m) => {
+        if (!m || !m.text || !m.slug) return;
+        let arm = "a";
+        try { arm = /[89ab]/i.test((localStorage.getItem("zkb_story_visitor") || "0").slice(-1)) ? "b" : "a"; } catch (e) { /* a */ }
+        const video = m.video || (m.videos || {})[arm] || null;
+        const image = (m.images || {})[arm] || m.image || null;
+        if (video || image) weekly = { slug: m.slug, video, image, text: m.text };
+      })
+      .catch(() => {});
+  }
+  const mediaUrl = (st) => st.video || st.image;
+  const mediaName = (o, st) => `${st.slug || o.slug || "story"}-status.${st.video ? "mp4" : "jpg"}`;
+  function previewTag(st, cls, alt, w, h) {
+    return st.image
+      ? `<img class="${cls}" src="${esc(st.image)}" alt="${esc(alt)}" width="${w}" height="${h}">`
+      : `<video class="${cls}" src="${esc(st.video)}" muted autoplay loop playsinline preload="metadata" aria-label="${esc(alt)}" width="${w}" height="${h}"></video>`;
+  }
+
   // התמונה יורדת כבר כשהחלון נפתח: navigator.share חייב לרוץ מיד עם הלחיצה.
   function loadFile(o) {
     if (!canShareFiles || !o.status) return Promise.resolve(null);
-    return fetch(o.status.image)
+    const st = o.status;
+    return fetch(mediaUrl(st))
       .then((r) => (r.ok ? r.blob() : null))
       .then((blob) => {
         if (!blob) return null;
-        const file = new File([blob], `${o.slug || "story"}-status.jpg`, { type: blob.type || "image/jpeg" });
+        const file = new File([blob], mediaName(o, st), { type: st.video ? "video/mp4" : blob.type || "image/jpeg" });
         return navigator.canShare({ files: [file] }) ? file : null;
       })
       .catch(() => null);
@@ -169,6 +198,7 @@
 
   function open(o, mode) {
     ensure();
+    if (weekly) o = { ...o, status: weekly };
     lastFocus = document.activeElement;
     current = { o, mode, file: loadFile(o), ready: null };
     current.file.then((f) => { if (current && current.o === o) current.ready = f; });
@@ -234,7 +264,7 @@
         : `<h2 class="share-sheet__title" id="share-sheet-title">${esc(T.chooseTitle)}</h2>`;
       const statusOption = o.status
         ? `<button class="share-sheet__option" type="button" data-act="status">
-            <img class="share-sheet__thumb" src="${esc(o.status.image)}" alt="" width="1080" height="1920">
+            ${previewTag(o.status, "share-sheet__thumb", "", 1080, 1920)}
             <span class="share-sheet__option-text"><strong>${esc(T.status)}</strong><small>${esc(T.statusSub)}</small></span>
           </button>`
         : "";
@@ -254,11 +284,11 @@
     const steps = canShareFiles ? T.stepsPhone : T.stepsDesktop;
     const primary = canShareFiles
       ? `<button class="btn btn--primary share-sheet__primary" type="button" data-act="share-status">${esc(T.shareStatus)}</button>`
-      : `<a class="btn btn--primary share-sheet__primary" href="${esc(o.status.image)}" download="${esc((o.slug || "story") + "-status.jpg")}" data-act="download">${esc(T.download)}</a>`;
+      : `<a class="btn btn--primary share-sheet__primary" href="${esc(mediaUrl(o.status))}" download="${esc(mediaName(o, o.status))}" data-act="download">${esc(T.download)}</a>`;
     card.innerHTML = `${closeButton()}
       <h2 class="share-sheet__title" id="share-sheet-title">${esc(T.statusTitle)}</h2>
       <div class="share-sheet__status">
-        <img class="share-sheet__preview" src="${esc(o.status.image)}" alt="${esc(T.preview(o.title || ""))}" width="1080" height="1920">
+        ${previewTag(o.status, "share-sheet__preview", T.preview(o.title || ""), 1080, 1920)}
         <ol class="share-sheet__steps">${steps.map((s) => `<li>${esc(s)}</li>`).join("")}</ol>
       </div>
       <div class="share-sheet__actions">
@@ -282,7 +312,7 @@
           if (document.activeElement === document.body || document.activeElement === btn) btn.focus();
         } else {
           // התמונה לא ירדה או שהמכשיר לא משתף קבצים: הורדה במקום שיתוף
-          btn.outerHTML = `<a class="btn btn--primary share-sheet__primary" href="${esc(o.status.image)}" download="${esc((o.slug || "story") + "-status.jpg")}" data-act="download">${esc(T.download)}</a>`;
+          btn.outerHTML = `<a class="btn btn--primary share-sheet__primary" href="${esc(mediaUrl(o.status))}" download="${esc(mediaName(o, o.status))}" data-act="download">${esc(T.download)}</a>`;
         }
       });
     }
