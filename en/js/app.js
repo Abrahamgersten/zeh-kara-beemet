@@ -1090,7 +1090,7 @@ const CATEGORIES = [
         parasha: "לך לך",
         description: "Avraham Avinu and Lot both face an important choice. One chooses based on what looks good, and the other chooses based on what's right. Which kind of choice do we make, every single day?",
         image: "../assets/images/en/parasha-idea-lechlecha.jpeg",
-        audio: "../assets/audio/en/parasha-idea-lechlecha-sfx5.mp3",
+        audio: "../assets/audio/en/parasha-idea-lechlecha-sfx7.mp3",
         pdf: "../assets/pdf/parasha-idea-lechlecha-en.pdf",
         pointsItemKey: "parasha-report-weekly",
       },
