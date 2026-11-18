@@ -1086,7 +1086,7 @@ const CATEGORIES = [
         parasha: "לך לך",
         description: "אברהם אבינו ולוט עומדים שניהם בפני בחירה. אחד בוחר לפי מה שנראה טוב ונוח, והשני בוחר לפי מה שנכון. איזו בחירה אנחנו עושים בעצמנו, כל יום מחדש?",
         image: "assets/images/parasha-idea-lechlecha.jpeg",
-        audio: "assets/audio/parasha-idea-lechlecha-sfx8.mp3",
+        audio: "assets/audio/parasha-idea-lechlecha-sfx10.mp3",
         pdf: "assets/pdf/parasha-idea-lechlecha.pdf",
         pointsItemKey: "parasha-report-weekly",
       },
