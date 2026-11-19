@@ -1,4 +1,4 @@
-const SHELL_CACHE = "zkb-shell-v68";
+const SHELL_CACHE = "zkb-shell-v69";
 const MEDIA_CACHE = "zkb-media-v43";
 
 const SHELL_ASSETS = [
@@ -19,6 +19,9 @@ const SHELL_ASSETS = [
   "./en/index.html",
   "./en/js/app.js",
   "./en/manifest.json",
+  "./fr/index.html",
+  "./fr/js/app.js",
+  "./fr/manifest.json",
 ];
 
 self.addEventListener("install", (event) => {

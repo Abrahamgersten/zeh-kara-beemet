@@ -209,6 +209,13 @@ h1, h2, h3 {
   opacity: 1;
 }
 .site-nav a.lang-switch:hover { border-color: var(--gold-300); }
+/* Three languages since 2026-11-19: two language buttons in the header. On a phone the links sit closer and the
+   buttons are a little smaller, so the row still fits and the header keeps the height it had with one button. */
+@media (max-width: 520px) {
+  .site-nav { gap: 0.6rem; }
+  .site-nav a { font-size: 0.9rem; }
+  .site-nav a.lang-switch { padding: 0.2em 0.6em; font-size: 0.8rem; }
+}
 
 /* ---------- Install banner ---------- */
 .install-banner {

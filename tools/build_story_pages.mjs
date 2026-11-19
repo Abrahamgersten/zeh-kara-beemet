@@ -422,7 +422,7 @@ function emit(file, content) {
 
 // sitemap.xml (8.11, for Google Search Console): the public pages and every story page. No <lastmod>, so the file only
 // changes when a page is added or removed. Admin pages are left out (and carry noindex).
-const sitemap = ["", "about.html", "sipur/", "en/"].map((p) => new URL(p, SITE_URL).href);
+const sitemap = ["", "about.html", "sipur/", "en/", "fr/"].map((p) => new URL(p, SITE_URL).href);
 
 for (const [lang, L] of Object.entries(LANGS)) {
   const outDir = path.join(REPO, L.langRoot, "s");
