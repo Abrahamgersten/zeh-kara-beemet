@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Connexion - C'est vraiment arrivé</title>
+<meta name="description" content="Connectez-vous à C'est vraiment arrivé avec l'adresse e-mail de votre abonnement.">
+<meta name="theme-color" content="#0f8793">
+<meta name="robots" content="noindex">
+<link rel="icon" href="../icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../icons/favicon-16.png" sizes="16x16" type="image/png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="../css/style.css">
+<style>.content-card__share-btn { display: none !important; }</style>
+</head>
+<body class="auth-pending">
+
+<div id="install-banner" class="install-banner" hidden>
+  <div class="install-banner__icon">
+    <img src="../icons/icon-192.png" alt="" width="44" height="44">
+  </div>
+  <div class="install-banner__text">
+    <strong id="install-banner-title">Installer l'application</strong>
+    <span id="install-banner-sub">Tout est à portée de main, directement depuis votre écran d'accueil</span>
+  </div>
+  <button id="install-banner-action" class="install-banner__btn" type="button">Installer</button>
+  <button id="install-banner-close" class="install-banner__close" type="button" aria-label="Fermer">✕</button>
+</div>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a href="index.html" class="brand">
+      <img class="brand__mark" src="../icons/brand-mark.png" alt="" width="40" height="40">
+      <span class="brand__name">C'est vraiment arrivé</span>
+    </a>
+    <nav class="site-nav" aria-label="Navigation">
+    </nav>
+  </div>
+</header>
+
+<main class="auth-page">
+  <div class="auth-card">
+    <h1 class="auth-card__title" id="auth-title">Connexion</h1>
+    <p class="auth-card__note" id="auth-paid-note" hidden>Paiement reçu ! Il ne reste qu'à vous connecter, <strong>avec la même adresse e-mail</strong> que celle du paiement.</p>
+    <p class="auth-card__sub">Connectez-vous avec l'adresse e-mail de votre abonnement.</p>
+
+    <button id="google-btn" class="btn btn--primary auth-card__google" type="button">
+      <span aria-hidden="true">🔑</span> Sign in with Google
+    </button>
+
+    <div class="auth-card__divider"><span>or</span></div>
+
+    <form id="magic-form" class="auth-card__form">
+      <label for="magic-email" class="auth-card__label">E-mail</label>
+      <input id="magic-email" name="email" type="email" required placeholder="vous@exemple.com" class="auth-card__input" autocomplete="email">
+      <button type="submit" class="btn btn--outline">Envoyer le lien de connexion</button>
+    </form>
+
+    <p id="auth-status" class="auth-card__status" role="status" aria-live="polite"></p>
+
+    <p class="auth-card__footer">Pas encore abonné ? <a href="offer.html">Rejoignez-nous</a></p>
+  </div>
+</main>
+
+<script type="module">
+  import { isSupabaseConfigured, getSession, onAuthStateChange, signInWithGoogle, signInWithMagicLink, fetchEntitlement, isEntitled, revealPage } from "../js/auth.js";
+
+  const INDEX_URL = "index.html";
+  const statusEl = document.getElementById("auth-status");
+  const paidNote = document.getElementById("auth-paid-note");
+
+  if (new URLSearchParams(location.search).get("paid") === "1") paidNote.hidden = false;
+
+  if (!isSupabaseConfigured()) {
+    statusEl.textContent = "Le système n'est pas encore en place : cette page est seulement un aperçu.";
+    revealPage();
+  } else {
+    // An expired/already-used/other-device sign-in link comes back here as
+    // #error=...&error_description=... (Supabase), with no session - without
+    // this check the user just sees the empty form again with no explanation.
+    const linkError = new URLSearchParams(location.hash.slice(1)).get("error_description");
+    if (linkError) {
+      history.replaceState(null, "", location.pathname + location.search);
+      statusEl.textContent = "Ce lien ne fonctionne plus (" + decodeURIComponent(linkError.replace(/\+/g, " ")) + "). Un lien de connexion ne sert qu'une fois et expire vite : cliquez sur « Envoyer le lien de connexion » pour en recevoir un nouveau, et ouvrez-le une seule fois, directement dans votre navigateur (pas dans votre application de messagerie).";
+      revealPage();
+    }
+    async function checkAndMaybeRedirect() {
+      const session = await getSession();
+      if (!session) { if (!linkError) revealPage(); return; }
+      statusEl.textContent = "Vérification de votre abonnement...";
+      const row = await fetchEntitlement();
+      if (isEntitled(row)) {
+        window.location.replace(INDEX_URL);
+      } else {
+        statusEl.textContent = "Nous n'avons pas trouvé d'abonnement actif pour " + (row ? row.email : session.user.email) + ". Si vous avez payé avec une autre adresse, contactez-nous.";
+        revealPage();
+      }
+    }
+    checkAndMaybeRedirect();
+    onAuthStateChange(() => checkAndMaybeRedirect());
+  }
+
+  // Listeners are always attached (even before the system is configured) so
+  // the form/button never fall through to a native browser submit (a reload
+  // with ?email=... in the URL).
+  document.getElementById("google-btn").addEventListener("click", async () => {
+    if (!isSupabaseConfigured()) return;
+    statusEl.textContent = "Redirection vers Google...";
+    const { error } = await signInWithGoogle(location.href.split("?")[0]);
+    if (error) statusEl.textContent = "Erreur : " + error.message;
+  });
+
+  document.getElementById("magic-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!isSupabaseConfigured()) return;
+    const email = document.getElementById("magic-email").value.trim();
+    statusEl.textContent = "Envoi du lien...";
+    const { error } = await signInWithMagicLink(email, location.href.split("?")[0]);
+    statusEl.textContent = error ? "Erreur : " + error.message : "Nous avons envoyé un lien de connexion à " + email + " : vérifiez votre boîte de réception.";
+  });
+</script>
+<script src="./js/install-banner.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Rejoignez-nous - C'est vraiment arrivé</title>
+<meta name="description" content="Rejoignez C'est vraiment arrivé : premier mois à 1 $, puis 5,99 $ par mois. Des histoires vraies de tsadikim, les merveilles de la Création, la paracha de la semaine, et plus encore.">
+<meta name="theme-color" content="#0f8793">
+<link rel="icon" href="../icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="../icons/favicon-16.png" sizes="16x16" type="image/png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="../css/style.css">
+<style>.content-card__share-btn { display: none !important; }</style>
+</head>
+<body class="auth-pending">
+
+<div id="install-banner" class="install-banner" hidden>
+  <div class="install-banner__icon">
+    <img src="../icons/icon-192.png" alt="" width="44" height="44">
+  </div>
+  <div class="install-banner__text">
+    <strong id="install-banner-title">Installer l'application</strong>
+    <span id="install-banner-sub">Tout est à portée de main, directement depuis votre écran d'accueil</span>
+  </div>
+  <button id="install-banner-action" class="install-banner__btn" type="button">Installer</button>
+  <button id="install-banner-close" class="install-banner__close" type="button" aria-label="Fermer">✕</button>
+</div>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a href="offer.html" class="brand">
+      <img class="brand__mark" src="../icons/brand-mark.png" alt="" width="40" height="40">
+      <span class="brand__name">C'est vraiment arrivé</span>
+    </a>
+    <nav class="site-nav" aria-label="Navigation">
+      <a href="login.html">Déjà abonné ? Connexion</a>
+    </nav>
+  </div>
+</header>
+
+<main class="offer-page">
+  <section class="offer-hero">
+    <img class="offer-hero__illustration" src="../icons/icon-512.png" alt="Un garçon qui lit des histoires de tsadikim avant de dormir" width="128" height="128">
+    <p class="hero__eyebrow">Un moment magique avant de dormir, chaque soir</p>
+    <h1 class="offer-hero__title">C'est vraiment arrivé</h1>
+    <p class="offer-hero__sub">Rejoignez les familles pour qui l'écoute ensemble est déjà le meilleur moment de la journée : des histoires vraies de tsadikim, les merveilles de la Création, la paracha de la semaine, et plus encore, sans écran et sans publicité</p>
+    <div class="offer-hero__benefits">
+      <span>🎧 Du nouveau chaque semaine</span>
+      <span>👨‍👩‍👧‍👦 Pour toute la famille</span>
+      <span>📵 Un vrai moment ensemble, sans écran</span>
+    </div>
+  </section>
+
+  <section class="offer-price-card">
+    <div class="offer-price-card__hero">
+      <span class="offer-price-card__hero-label">Premier mois</span>
+      <span class="offer-price-card__hero-amount">$1</span>
+    </div>
+    <p class="offer-price-card__then">Puis seulement 5,99 $ par mois, résiliable à tout moment</p>
+    <p class="offer-price-card__fine-print">Un abonnement mensuel, renouvelé automatiquement jusqu'à sa résiliation.</p>
+
+    <form id="offer-form" class="offer-form">
+      <label for="offer-email" class="auth-card__label">E-mail pour s'inscrire</label>
+      <input id="offer-email" name="email" type="email" required placeholder="vous@exemple.com" class="auth-card__input" autocomplete="email">
+      <button type="submit" class="btn btn--primary offer-form__cta">Je m'inscris - 1 $ 🔒</button>
+      <p id="offer-status" class="auth-card__status" role="status" aria-live="polite"></p>
+    </form>
+  </section>
+
+  <section class="about offer-about">
+    <div class="about__inner">
+      <span class="section-eyebrow">Qu'est-ce qui est inclus ?</span>
+      <h2 class="section-title">Toutes les histoires, sans limite</h2>
+      <p class="about__text">Un accès complet à toutes les histoires et à tous les enregistrements du site : des histoires vraies de tsadikim, les merveilles de la Création, la paracha de la semaine, et plus encore. De nouveaux contenus sont ajoutés régulièrement.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <img class="brand__mark" src="../icons/brand-mark.png" alt="" width="40" height="40">
+      <span>C'est vraiment arrivé</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module">
+  import { isSupabaseConfigured, getSession, fetchEntitlement, isEntitled, revealPage } from "../js/auth.js";
+
+  const INDEX_URL = "index.html";
+  const CHECKOUT_URL = ""; // ⚠️ fill in after Avraham approves + connects a payment provider - see the protocol doc
+
+  (async function init() {
+    if (isSupabaseConfigured()) {
+      const session = await getSession();
+      if (session) {
+        const row = await fetchEntitlement();
+        if (isEntitled(row)) { window.location.replace(INDEX_URL); return; }
+      }
+    }
+    revealPage();
+  })();
+
+  document.getElementById("offer-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const statusEl = document.getElementById("offer-status");
+    if (!CHECKOUT_URL) {
+      statusEl.textContent = "L'inscription est encore en préparation : nous mettrons cette page à jour dès qu'elle sera prête. Merci de votre patience !";
+      return;
+    }
+    const email = document.getElementById("offer-email").value.trim();
+    window.location.href = CHECKOUT_URL + "?email=" + encodeURIComponent(email);
+  });
+</script>
+<script src="./js/install-banner.js" defer></script>
+</body>
+</html>

@@ -8,3 +8,4 @@ Thumbs.db
 
 # English recordings live in the repo zeh-kara-beemet-audio-en since 2026-11-10; this folder is a junction to its local folder
 /assets/audio/en
+/assets/audio/fr
