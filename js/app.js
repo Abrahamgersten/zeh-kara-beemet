@@ -980,6 +980,30 @@ const CATEGORIES = [
         image: "assets/images/berele-come-out.jpeg",
         audio: "assets/audio/berele-come-out-sfx7.mp3",
       },
+      {
+        title: "איך עף יונק הדבש?",
+        description: "ציפור זעירה שמנפנפת בכנפיה עשרות פעמים בשנייה, עפה קדימה, אחורה, לצדדים ואפילו מרחפת במקום, ואוכלת כל יום יותר ממשקל גופה. ויונק הדבש בעצמו קופץ לפרק, אם רק יהיה לו רגע פנוי.",
+        image: "assets/images/hummingbird.jpeg",
+        audio: "assets/audio/hummingbird-sfx4.mp3",
+      },
+      {
+        title: "התמנון החכם",
+        description: "שלושה לבבות, תשעה מוחות, דם כחול, ויכולת להחליף צבע וצורה בשבריר שנייה. מאיפה בא השם תמנון, איך הוא מתחבא כמעט בכל מקום, ומה התמנון עצמו חושב על כל זה?",
+        image: "assets/images/octopus.jpeg",
+        audio: "assets/audio/octopus-sfx4.mp3",
+      },
+      {
+        title: "שורדים בכל מצב: דובוני המים",
+        description: "יצורים באורך מילימטר שנראים כמו דובונים קטנים, אבל שורדים בפסגות ההימלאיה, בקרקעית האוקיינוס, בקור קיצוני, בחום לוהט ואפילו בחלל. ודובון המים בעצמו בא להגיד לכם שזה ממש לא מרשים אותו.",
+        image: "assets/images/tardigrades.jpeg",
+        audio: "assets/audio/tardigrades-sfx4.mp3",
+      },
+      {
+        title: "המדוזה שלא מתה לעולם",
+        description: "כל בעלי החיים נולדים, מתבגרים ובסוף מתים. כמעט כולם. מדוזה זעירה, בגודל חצי סנטימטר, שכשהיא נפצעת או מזדקנת חוזרת להיות צעירה ומתחילה את חייה מחדש. ומתושלח המדוזה מצטרף לפרק כדי לספר על זה בעצמו.",
+        image: "assets/images/immortal-jellyfish.jpeg",
+        audio: "assets/audio/immortal-jellyfish-sfx4.mp3",
+      },
     ],
   },
   {
