@@ -1200,6 +1200,24 @@ const CATEGORIES = [
         image: "assets/images/who-moved-the-clock.jpeg",
         audio: "assets/audio/who-moved-the-clock-sfx6.mp3",
       },
+      {
+        title: "איך עובדים הטריקים של הקוסמים?",
+        description: "קוסם גורם למטבע להיעלם, ואתם שואלים: איך הוא עשה את זה? קסמים הם לא כוחות על-טבעיים, אלא אמנות של אשליה: הסחת דעת, זריזות ידיים וחשיבה יצירתית. ופייבל הקוסם מצטרף לפרק, עם טריקים שלא תמיד מצליחים לו.",
+        image: "assets/images/how-magic-tricks-work.jpeg",
+        audio: "assets/audio/how-magic-tricks-work-sfx4.mp3",
+      },
+      {
+        title: "סיפורה של נורת החשמל: מאדיסון ועד היום",
+        description: "לוחצים על המתג, והחדר מתמלא באור. איך תומס אדיסון הצליח ב-1879 ליצור נורה שדולקת שעות, איך הנורות החליפו את הנרות ואת פנסי הגז, ומה מיוחד בנורות הלד של היום? ולייזר החשמלאי מצטרף לפרק.",
+        image: "assets/images/light-bulb-story.jpeg",
+        audio: "assets/audio/light-bulb-story-sfx4.mp3",
+      },
+      {
+        title: "המהפכה התעשייתית",
+        description: "במשך רוב ההיסטוריה בני האדם יצרו הכול בידיים. ואז, באנגליה, הגיעו נול האריגה, מנועי הקיטור והרכבות, ושינו את הדרך שבה אנשים חיים, עובדים ומייצרים. והרשל החייט, שתופר הכול ביד, מצטרף לפרק.",
+        image: "assets/images/industrial-revolution.jpeg",
+        audio: "assets/audio/industrial-revolution-sfx4.mp3",
+      },
     ],
   },
   {
