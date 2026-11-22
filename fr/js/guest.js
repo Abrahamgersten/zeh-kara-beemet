@@ -497,7 +497,7 @@
     const download = `<a class="btn btn--primary share-sheet__primary" href="${esc(src)}" download="${esc(name)}" data-guest-download data-gift-first>${L(`שיתוף הסטטוס`, `Partager en statut`)}</a>`;
     const statusBlock = `<div class="share-sheet__status${weekly ? " guest-sheet__status--banner" : ""}">
         ${st.video && !st.image
-          ? `<video class="share-sheet__preview" src="${esc(st.video)}" muted autoplay loop playsinline preload="metadata" ${L(`aria-label="סרטון הסטטוס"`, `aria-label="La vidéo du statut"`)} width="1080" height="1920"></video>`
+          ? `<video class="share-sheet__preview" src="${esc(st.video)}"${st.poster ? ` poster="${esc(st.poster)}"` : ""} muted autoplay loop playsinline preload="metadata" ${L(`aria-label="סרטון הסטטוס"`, `aria-label="La vidéo du statut"`)} width="1080" height="1920"></video>`
           : `<img class="share-sheet__preview" src="${esc(st.image)}" ${L(`alt="תמונת הסטטוס"`, `alt="L'image du statut"`)} width="1080" height="1920">`}
         <ol class="share-sheet__steps">${steps.map((s) => `<li>${esc(s)}</li>`).join("")}</ol>
       </div>`;
