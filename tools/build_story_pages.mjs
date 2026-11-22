@@ -317,8 +317,8 @@ function pageHTML(L, lang, cat, ep, slug) {
 <link rel="canonical" href="${pageUrl}">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="${esc(L.brand)}">
-<meta property="og:title" content="${esc(ep.title)}">
-<meta property="og:description" content="${esc(ep.description)}">${ogImage}
+<meta property="og:title" content="${esc(ep.social_title || ep.title)}">
+<meta property="og:description" content="${esc(ep.social_description || ep.description)}">${ogImage}
 <meta property="og:url" content="${pageUrl}">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="${root}icons/favicon-32.png" sizes="32x32" type="image/png">
