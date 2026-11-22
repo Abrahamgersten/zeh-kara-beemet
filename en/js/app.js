@@ -100,6 +100,7 @@ const CATEGORIES = [
       },
       {
         title: "Hashem Doesn't Owe Us Anything",
+        social_title: "What did Rabbi Shlomo Zalman say? A true story",
         description: "A true story told by a woman who waited many years for children, and about the blessing she received from a leading rabbi of the generation - Rabbi Shlomo Zalman Auerbach. What did he tell her that stayed with her every single day since?",
         image: "../assets/images/en/hashem-not-obligated.jpeg",
         audio: "../assets/audio/en/hashem-not-obligated-sfx3.mp3",
