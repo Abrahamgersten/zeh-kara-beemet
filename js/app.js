@@ -2553,10 +2553,71 @@ function setupPlayers() {
       showPlaying(active, false);
       savePlace(active, true);
       closeSession(active);
+      release(active);
     }
     active = ep;
     pendingSeek = ep.pos;
-    audio.src = ep.src;
+    audio.src = ep.ready || ep.src;
+  }
+
+  /* "Play in a row" with the screen off (Avraham, 2026-11-23: "it still often stops after a few episodes, especially
+     when the screen is off"). Until now the next file started downloading only when the episode ended: with the screen
+     off the phone puts a page that plays nothing to sleep within moments, so the download stalled and the row died in
+     the silence between two episodes. Now the next episode of a row is downloaded whole WHILE the current one plays
+     (the page is awake then) and is started from memory the instant the episode ends: no network, no silence.
+     "?row=1": sw.js leaves these requests alone. If the download is not ready in time, the old way (ep.src) is used. */
+  function release(ep) {
+    if (ep.ready) URL.revokeObjectURL(ep.ready);
+    ep.ready = null;
+  }
+  function prepareNext() {
+    if (!continuousPlan || continuousPlan.remaining <= 0 || !active) return;
+    const next = active.list[active.posInList + 1];
+    if (!next || next.ready || next.fetching || Date.now() - (next.failedAt || 0) < 20000) return;
+    next.fetching = true;
+    const u = new URL(next.src, document.baseURI);
+    u.searchParams.set("row", "1");
+    fetch(u.href)
+      .then((r) => (r.ok ? r.blob() : Promise.reject(new Error("http " + r.status))))
+      .then((b) => {
+        next.fetching = false;
+        next.ready = URL.createObjectURL(/^audio\//.test(b.type) ? b : new Blob([b], { type: "audio/mpeg" }));
+      })
+      .catch(() => {
+        next.fetching = false;
+        next.failedAt = Date.now();
+      });
+  }
+  // a row whose next episode the phone refused to start in the background goes on when the page is seen again
+  let heldBack = null;
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState !== "visible" || !heldBack) return;
+    const ep = heldBack;
+    heldBack = null;
+    if (ep === active && audio.paused && continuousPlan) audio.play().catch(() => showPlaying(ep, false));
+  });
+  // the lock screen's own buttons: play, pause, and the next or previous episode of the section
+  if ("mediaSession" in navigator) {
+    const on = (action, f) => {
+      try {
+        navigator.mediaSession.setActionHandler(action, f);
+      } catch (e) {
+        // an action this phone does not know
+      }
+    };
+    const jump = (d) => {
+      if (!active || clip || (window.ZkbGift && window.ZkbGift.active())) return;
+      const to = active.list[active.posInList + d];
+      if (!to) return;
+      to.pos = 0;
+      start(to);
+    };
+    on("play", () => {
+      if (active || clip) audio.play().catch(() => {});
+    });
+    on("pause", () => audio.pause());
+    on("nexttrack", () => jump(1));
+    on("previoustrack", () => jump(-1));
   }
 
   function start(ep) {
@@ -2566,7 +2627,11 @@ function setupPlayers() {
       clip = null;
     }
     load(ep);
-    audio.play().catch(() => showPlaying(ep, false));
+    heldBack = null;
+    audio.play().catch((e) => {
+      showPlaying(ep, false);
+      if (continuousPlan && e && e.name === "NotAllowedError") heldBack = ep;
+    });
   }
 
   /* The gift link's A/B (Avraham, 2026-11-17; js/guest.js decides): his invitation to the subscription is a short
@@ -2666,6 +2731,7 @@ function setupPlayers() {
     active.current.textContent = formatTime(audio.currentTime);
     savePlace(active, false);
     if (active.session) active.session.time(audio.currentTime, audio.duration);
+    if (audio.currentTime > 8) prepareNext(); // the next episode of a row, once this one is well on its way
   });
   audio.addEventListener("play", () => {
     if (clip) showPlaying(clip.ep, true);

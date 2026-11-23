@@ -1,4 +1,4 @@
-const SHELL_CACHE = "zkb-shell-v74";
+const SHELL_CACHE = "zkb-shell-v75";
 const MEDIA_CACHE = "zkb-media-v43";
 
 const SHELL_ASSETS = [
@@ -45,6 +45,8 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
   if (event.request.method !== "GET" || url.origin !== self.location.origin) return;
+  // the next episode of "play in a row", downloaded whole by js/app.js while the current one plays: not ours to cache
+  if (url.searchParams.has("row")) return;
 
   const isMedia = url.pathname.includes("/assets/images/") || url.pathname.includes("/assets/audio/") || url.pathname.includes("/assets/video/");
 
