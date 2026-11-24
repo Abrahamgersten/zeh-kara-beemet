@@ -531,6 +531,12 @@
     // "only after they tap the button and WhatsApp" (Avraham): the way on appears once the share went out
     const shared = () => {
       track("share", o.slug);
+      // Avraham, 2026-11-25: the share is kept on the device the moment it goes out. Before this it lived only in this
+      // window: whoever came back from WhatsApp to a page that the phone had reloaded was asked for the status again
+      // (12 of 71 people who shared never got their episode). Now the episode is theirs, and a tap on it plays it.
+      if (GIFT) setGiftShared(o.slug);
+      else save(plays().filter((p) => p.day !== today()).concat([{ slug: o.slug, day: today(), shared: true }]));
+      if (!GIFT) showBar();
       after.hidden = false;
       const sk = card.querySelector("[data-guest-skip]");
       if (sk) sk.parentElement.style.display = "none"; // shared: the way on is "I posted the status"
@@ -824,6 +830,8 @@
     const s = state();
     if (s.today === o.slug && s.shared) {
       teaser = null;
+      close(); // the request may still be open behind (came back after sharing)
+      track("unlock", o.slug); // also counts whoever came back to a reloaded page after sharing
       go(o);
       return;
     }
