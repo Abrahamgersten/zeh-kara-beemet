@@ -82,11 +82,20 @@
     const from = dayOf(new Date(Date.now() - Math.max(0, wd) * 864e5));
     return (Array.isArray(list) ? list : []).filter((p) => p && typeof p.slug === "string" && typeof p.day === "string" && p.day >= from);
   }
+  // Avraham, 2026-11-25 ("it blocks them before they get the benefit twice a week"): only an episode that was really
+  // received (its status posted) counts. Before this, choosing an episode and pressing "skip" used up one of the
+  // week's two, and the whole day, without the episode ever being heard (55 such days in the counter).
+  //   today + shared  : today's episode was received. Another episode today: the subscription window ("day").
+  //   today, !shared  : chosen and tasted only ("open"). It does not count for the week, and another episode can
+  //                     still be received today by posting the status for it (play()); only a second taste is refused.
+  //   "week"          : two episodes were received on earlier days of this week.
   function state() {
     const list = plays();
     const t = list.find((p) => p.day === today());
-    const reason = t ? "day" : list.length >= 2 ? "week" : null;
-    return { today: t ? t.slug : null, shared: !!(t && t.shared !== false), can_pick: !reason, reason };
+    const shared = !!(t && t.shared !== false);
+    const got = list.filter((p) => p.shared !== false && p.day !== today()).length;
+    const reason = shared ? "day" : got >= 2 ? "week" : null;
+    return { today: t ? t.slug : null, shared, open: !!t && !shared, can_pick: !t && !reason, reason };
   }
   function save(list) {
     memory = list;
@@ -247,7 +256,7 @@
     document.querySelectorAll(".content-card--gift").forEach((c) => c.classList.remove("content-card--gift"));
     const s = state();
     const login = ""; // "כניסת מנויים" sits at the bottom of the page (footerLogin), not in the bar (Avraham, 2026-11-12)
-    if (s.today) {
+    if (s.today && s.shared) {
       const c = cardOf(s.today);
       if (c) c.classList.add("content-card--gift");
       const t = titleOf(s.today);
@@ -457,8 +466,8 @@
   // early = the request comes at the moment of choosing (Avraham, 2026-11-16): one message with the status button and a
   // small "skip"; the episode starts only after "I posted the status", and "skip" goes on to the taste as before
   function startFull(o) {
-    remember(o.slug);
-    markShared();
+    // the status was posted for this episode: it is today's episode, also when another one was only tasted before
+    save(plays().filter((p) => p.day !== today()).concat([{ slug: o.slug, day: today(), shared: true }]));
     track("unlock", o.slug);
     teaser = null;
     close();
@@ -511,7 +520,7 @@
       <div class="share-sheet__actions guest-sheet__after" data-guest-after hidden>
         <button class="btn btn--primary share-sheet__primary" type="button" data-guest-continue>${early ? L(`✅ העליתי את הסטטוס`, `✅ I posted the status`) : L(`העליתי, ממשיכים לסיפור`, `I posted it, on with the story`)}</button>
       </div>
-      ${early ? `<div class="share-sheet__actions"><button class="share-sheet__link" type="button" data-guest-skip>${L(`דלג`, `Skip`)}</button></div>` : ""}
+      ${early && !state().open ? `<div class="share-sheet__actions"><button class="share-sheet__link" type="button" data-guest-skip>${L(`דלג`, `Skip`)}</button></div>` : ""}
       <p class="share-sheet__note" role="status" aria-live="polite"></p>
       ${early ? statusBlock : ""}
       ${early ? "" : `<p class="gift-sheet__hint">${L(`הפרק הזה יהיה הפרק שלכם להיום, ואפשר לשמוע אותו שוב כמה שרוצים.`, `This will be your episode for today, and you can listen to it again as many times as you like.`)}</p>`}`);
@@ -813,17 +822,21 @@
   // called by the player's button (js/app.js) instead of playing straight away
   function play(o) {
     const s = state();
-    if (s.today === o.slug) {
-      if (s.shared) {
-        teaser = null;
-        go(o);
-      } else taste(o);
+    if (s.today === o.slug && s.shared) {
+      teaser = null;
+      go(o);
       return;
     }
-    if (!s.can_pick) {
+    if (s.reason) {
       offer(o, s);
       return;
     }
+    if (s.today === o.slug) {
+      taste(o);
+      return;
+    }
+    // s.open: another episode was tasted today and its status was not posted. This one can still be received, by
+    // posting the status (the request comes without "skip", so there is no second taste).
     confirmPick(o);
   }
 
