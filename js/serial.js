@@ -76,8 +76,11 @@
     error: el.parentElement.querySelector(".story-player-error"),
     card: el.closest(".serial-chapter"),
     known: null, // the chapter's length, once known
+    order: Number(el.dataset.order) || 0,
   }));
   if (!players.length) return;
+  // the playing order is the page order, unless the page shows the chapters in another order (data-order, s/wondrous-map/)
+  if (players.every((p) => p.order > 0)) players.sort((a, b) => a.order - b.order);
 
   const audio = new Audio();
   audio.preload = "none";
@@ -251,4 +254,14 @@
   }
 
   paint();
+
+  // "play in a row" from the first chapter (the button of s/wondrous-map/)
+  window.ZkbSerial = {
+    playAll() {
+      const first = players[0];
+      if (active === first) audio.currentTime = 0;
+      play(first, true);
+      if (first.card) first.card.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+    },
+  };
 })();

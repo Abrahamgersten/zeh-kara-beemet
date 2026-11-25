@@ -27,15 +27,17 @@
 <style>
 /* only for this page (inline, so the site's cached style.css does not need a new version) */
 .serial-page .category-section__inner { display: grid; gap: 1.6rem; }
-.serial-hero .content-card__media { align-self: center; }
-.serial-hero .content-card__main-img { aspect-ratio: 1 / 1; height: auto; cursor: default; }
-.serial-hero .content-card__title { font-size: clamp(1.55rem, 4.6vw, 2.1rem); }
-.serial-chapter .content-card__media { min-height: 0; }
-.serial-chapter .content-card__main-img { aspect-ratio: 16 / 10; height: auto; cursor: default; }
-@media (min-width: 820px) {
-  .serial-chapter .content-card__main-img { aspect-ratio: auto; height: 100%; }
-}
+.map-head { text-align: center; margin: 0; }
+.map-head__name { margin: 0; font-size: clamp(1.7rem, 6vw, 2.4rem); color: var(--teal-heading); line-height: 1.2; }
+.map-head__sub { margin: 0.2rem 0 0; color: var(--ink-soft); text-wrap: balance; }
+.serial-chapter .content-card__main-img { cursor: default; }
 .serial-chapter.is-current { box-shadow: var(--shadow-card), 0 0 0 3px var(--gold-400); }
+.serial-now { box-shadow: var(--shadow-card), 0 0 0 3px var(--gold-400); }
+.serial-now .content-card__title { font-size: clamp(1.45rem, 4.6vw, 2rem); }
+.serial-now .content-card__eyebrow { font-weight: 800; }
+.map-row { margin-top: 1rem; }
+.map-row .btn { width: 100%; min-height: 3.1rem; }
+.map-earlier { margin: 0.6rem 0 -0.4rem; font-size: 1.25rem; color: var(--teal-heading); text-align: center; }
 .map-box {
   background: var(--sand-100);
   border: 2px solid var(--gold-400);
@@ -45,20 +47,13 @@
 }
 .map-box__title { margin: 0 0 0.4rem; font-size: 1.25rem; color: var(--ink); text-wrap: balance; }
 .map-box__text { margin: 0 0 1rem; color: var(--ink-soft); line-height: 1.65; text-wrap: balance; }
-.map-box__text:last-child { margin-bottom: 0; }
-.map-count { font-family: "Suez One", serif; font-size: clamp(2.2rem, 9vw, 3.2rem); line-height: 1.1; color: var(--ink); margin: 0.1rem 0 0.2rem; font-variant-numeric: tabular-nums; }
-.map-bar { height: 14px; border-radius: 999px; background: rgba(0, 0, 0, 0.1); overflow: hidden; margin: 0.9rem auto 0.7rem; max-width: 30rem; }
+.map-count { font-family: "Suez One", serif; font-size: clamp(2rem, 8vw, 2.9rem); line-height: 1.1; color: var(--ink); margin: 0.1rem 0 0.4rem; font-variant-numeric: tabular-nums; }
+.map-bar { height: 14px; border-radius: 999px; background: rgba(0, 0, 0, 0.1); overflow: hidden; margin: 0.4rem auto 0.9rem; max-width: 30rem; }
 .map-bar__fill { height: 100%; width: 0; border-radius: inherit; background: var(--gold-400); transition: width 0.8s ease-out; }
 @media (prefers-reduced-motion: reduce) { .map-bar__fill { transition: none; } }
 .map-actions { display: grid; gap: 0.7rem; max-width: 30rem; margin: 0 auto; }
 @media (min-width: 620px) { .map-actions { grid-template-columns: 1fr 1fr; } }
 .map-actions .btn { width: 100%; min-height: 3.1rem; }
-.map-actions .btn[disabled] { opacity: 0.75; cursor: progress; }
-.map-actions .btn.is-called { outline: 3px solid var(--ink); outline-offset: 3px; }
-.map-note { min-height: 1.5em; margin: 0.8rem 0 0; color: var(--ink); font-weight: 600; line-height: 1.6; white-space: pre-line; }
-.map-locked { border: 2px dashed var(--gold-400); border-radius: var(--radius-lg); padding: 1.2rem 1.3rem; text-align: center; color: var(--ink-soft); line-height: 1.65; }
-.map-locked strong { display: block; color: var(--ink); font-size: 1.1rem; margin-bottom: 0.2rem; }
-.serial-note { margin: 0; text-align: center; color: var(--ink-soft); font-size: 0.95rem; }
 .serial-page .story-share { margin-top: 1rem; }
 </style>
 </head>
@@ -77,38 +72,25 @@
 <main>
   <section class="category-section story-page serial-page">
     <div class="category-section__inner">
-      <article class="content-card is-visible serial-hero">
-        <div class="content-card__media">
-          <img class="content-card__main-img" src="../../assets/images/serials/wondrous-map.jpg" alt="המפה המופלאה" fetchpriority="high">
-        </div>
-        <div class="content-card__body">
-          <span class="content-card__eyebrow">סיפור בהמשכים · 10 פרקים</span>
-          <h1 class="content-card__title">המפה המופלאה</h1>
-          <p class="content-card__desc">מלך טוב לב, ילד סקרן בשם פרדינן, ומפה אחת ענקית שנעלמת ברגע אחד. משל של רבי נחמן מברסלב, בעשרה פרקים.</p>
-        </div>
-      </article>
+      <header class="map-head">
+        <h1 class="map-head__name">המפה המופלאה</h1>
+        <p class="map-head__sub">סיפור בהמשכים, 10 פרקים. כל 100 משפחות חדשות בקבוצות פותחות עוד פרק.</p>
+      </header>
+
+      <div id="map-now"></div>
+      <h2 class="map-earlier" id="map-earlier" hidden>הפרקים הקודמים</h2>
+      <div id="map-chapters" style="display:grid;gap:1.6rem" hidden></div>
 
       <div class="map-box" id="map-goal">
-        <h2 class="map-box__title">כל 100 משפחות חדשות בקבוצות פותחות פרק חדש</h2>
+        <h2 class="map-box__title">היעד של כולנו: 3,500 משפחות, וכל הסיפור פתוח</h2>
         <p class="map-count" id="map-count" aria-live="polite"></p>
-        <p class="map-box__text" id="map-left">הפרקים נפתחים כאן אחד אחרי השני, לכל המשפחות ביחד.</p>
         <div class="map-bar" id="map-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="כמה התקדמנו אל הפרק הבא" hidden><div class="map-bar__fill"></div></div>
-        <p class="map-box__text">וגם אם זה ייקח זמן: פרק חדש נפתח לפחות פעם בשבוע.</p>
-      </div>
-
-      <div class="map-box" id="map-share">
-        <h2 class="map-box__title">רוצים לקרב את הפרק הבא? הזמינו עוד משפחה אחת 💛</h2>
-        <p class="map-box__text">לחיצה אחת, והסרטון כבר מוכן אצלכם לשליחה. נשאר רק לבחור למי.</p>
+        <p class="map-box__text" id="map-left">הפרקים נפתחים כאן אחד אחרי השני, לכל המשפחות ביחד.</p>
         <div class="map-actions">
-          <button class="btn btn--primary" type="button" data-map-share="groups">שליחת הזמנה לחברים ולקבוצות</button>
-          <button class="btn btn--outline" type="button" data-map-share="status">העלאה לסטטוס</button>
+          <a class="btn btn--primary" href="../../share/">להזמין עוד משפחה</a>
+          <a class="btn btn--outline" href="../../status/">להעלות לסטטוס</a>
         </div>
-        <p class="map-note" id="map-note" role="status" aria-live="polite"></p>
       </div>
-
-      <p class="serial-note" id="map-hint">לוחצים על כפתור ההפעלה של פרק 1. בסוף כל פרק, הפרק הבא שכבר נפתח מתחיל לבד.</p>
-      <div id="map-chapters" style="display:grid;gap:1.6rem"></div>
-      <div class="map-locked" id="map-locked" hidden></div>
 
       <div class="story-share story-share--two">
         <div class="story-share__item">
@@ -134,9 +116,9 @@
   </div>
 </footer>
 
-<script type="application/json" id="map-config">{"serial":"wondrous-map","lang":"he","total":10,"state":"https://abrahamgersten.github.io/zeh-kara-beemet-audio/map/state.json","invite":{"video":"https://abrahamgersten.github.io/zeh-kara-beemet-audio/map/group-invite-lite.mp4","text":"*🌙 אבא אימא רק עוד סיפור אחד לפני השינה...*\n\n*😴 מכירים את הערבים האלה* שבהם אתם כבר  *עייפים ורוצים לסיים את היום, אבל לילדים יש תוכניות אחרות?*\n\n*הכירו את זה קרה באמת!*\n\n *סיפורי צדיקים לילדים בהקלטות קצרות מרתקות ונעימות*\n\n*📖 בכל שבוע סיפור חדש שמחכה לכם בקבוצה!*\n\n*🔕 קהילת whatsapp שקטה לחלוטין וחינמית*\n\nמבית *תלמוד תורה 'מעוז חיים' בירושלים*\n\n*להצטרפות לקבוצת הwhatsapp לחצו: 👇🏻*\n\nhttps://abrahamgersten.github.io/zeh-kara-beemet/whatsapp/?c=map-share"},"statusFallback":{"image":"https://abrahamgersten.github.io/zeh-kara-beemet/assets/images/serials/wondrous-map.jpg","text":"🌙 סיפור לפני השינה: סיפורי צדיקים לילדים, בהקלטות קצרות ונעימות\nלהצטרפות לקבוצה השקטה:\nhttps://abrahamgersten.github.io/zeh-kara-beemet/whatsapp/?c=map-status"},"fallback":{"count":null,"released":1,"next_at":2700,"chapters":[{"slug":"wondrous-map-ch01","title":"פרק 1: המלך שהיה לו הכול (חוץ מדבר אחד)","description":"למלך טוב הלב יש ארמון, גנים ואוצרות, ורק דבר אחד חסר לו. הרופאים שמגיעים לעזור מביאים איתם עצות מוזרות מאוד, ושום דבר לא עובד.","image":"assets/images/wondrous-map-ch01.jpeg","audio":"assets/audio/wondrous-map-ch01-sfx4.mp3"}]}}</script>
+<script type="application/json" id="map-config">{"serial":"wondrous-map","lang":"he","total":10,"goal":3500,"name":"המפה המופלאה","state":"https://abrahamgersten.github.io/zeh-kara-beemet-audio/map/state.json","fallback":{"count":null,"released":1,"next_at":2700,"chapters":[{"slug":"wondrous-map-ch01","title":"פרק 1: המלך שהיה לו הכול (חוץ מדבר אחד)","description":"למלך טוב הלב יש ארמון, גנים ואוצרות, ורק דבר אחד חסר לו. הרופאים שמגיעים לעזור מביאים איתם עצות מוזרות מאוד, ושום דבר לא עובד.","image":"assets/images/wondrous-map-ch01.jpeg","audio":"assets/audio/wondrous-map-ch01-sfx4.mp3"}]}}</script>
 <script type="application/json" id="serial-data">{}</script>
 <script src="../../js/progress.js" defer></script>
-<script src="../../js/map-campaign.js" defer></script>
+<script src="../../js/map-campaign.js?v=2" defer></script>
 </body>
 </html>
