@@ -78,11 +78,9 @@
       </header>
 
       <div id="map-now"></div>
-      <h2 class="map-earlier" id="map-earlier" hidden>הפרקים הקודמים</h2>
-      <div id="map-chapters" style="display:grid;gap:1.6rem" hidden></div>
 
       <div class="map-box" id="map-goal">
-        <h2 class="map-box__title">היעד של כולנו: 3,500 משפחות, וכל הסיפור פתוח</h2>
+        <h2 class="map-box__title">היעד של כולנו</h2>
         <p class="map-count" id="map-count" aria-live="polite"></p>
         <div class="map-bar" id="map-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="כמה התקדמנו אל הפרק הבא" hidden><div class="map-bar__fill"></div></div>
         <p class="map-box__text" id="map-left">הפרקים נפתחים כאן אחד אחרי השני, לכל המשפחות ביחד.</p>
@@ -91,6 +89,9 @@
           <a class="btn btn--outline" href="../../status/">להעלות לסטטוס</a>
         </div>
       </div>
+
+      <h2 class="map-earlier" id="map-earlier" hidden>הפרקים הקודמים</h2>
+      <div id="map-chapters" style="display:grid;gap:1.6rem" hidden></div>
 
       <div class="story-share story-share--two">
         <div class="story-share__item">
@@ -119,6 +120,6 @@
 <script type="application/json" id="map-config">{"serial":"wondrous-map","lang":"he","total":10,"goal":3500,"name":"המפה המופלאה","state":"https://abrahamgersten.github.io/zeh-kara-beemet-audio/map/state.json","fallback":{"count":null,"released":1,"next_at":2700,"chapters":[{"slug":"wondrous-map-ch01","title":"פרק 1: המלך שהיה לו הכול (חוץ מדבר אחד)","description":"למלך טוב הלב יש ארמון, גנים ואוצרות, ורק דבר אחד חסר לו. הרופאים שמגיעים לעזור מביאים איתם עצות מוזרות מאוד, ושום דבר לא עובד.","image":"assets/images/wondrous-map-ch01.jpeg","audio":"assets/audio/wondrous-map-ch01-sfx4.mp3"}]}}</script>
 <script type="application/json" id="serial-data">{}</script>
 <script src="../../js/progress.js" defer></script>
-<script src="../../js/map-campaign.js?v=2" defer></script>
+<script src="../../js/map-campaign.js?v=3" defer></script>
 </body>
 </html>

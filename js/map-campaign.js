@@ -36,7 +36,7 @@
       ? `<div class="content-card__media"><img class="content-card__main-img" src="${esc(UP + ch.image)}" alt="${esc(ch.title)}" width="1024" height="1024"${now ? ' fetchpriority="high"' : ' loading="lazy"'}></div>`
       : "";
     const row = now && i > 0
-      ? `<div class="map-row"><button class="btn btn--outline" type="button" id="map-play-all">נגן ברצף את כל ${i + 1} הפרקים, מפרק 1</button></div>`
+      ? `<div class="map-row"><button class="btn btn--outline" type="button" id="map-play-all">נגן ברצף את כל הפרקים הזמינים</button></div>`
       : "";
     return `<article class="content-card is-visible serial-chapter${now ? " serial-now" : ""}" id="${esc(ch.slug)}">${media}
       <div class="content-card__body">
