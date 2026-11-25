@@ -1005,6 +1005,24 @@ const CATEGORIES = [
         image: "assets/images/immortal-jellyfish.jpeg",
         audio: "assets/audio/immortal-jellyfish-sfx4.mp3",
       },
+      {
+        title: "הדיבור של הדולפינים",
+        description: "לכל דולפין יש שריקה משלו, שהיא כמו השם הפרטי שלו. איך הדולפינים מדברים, איך הם יודעים מה יש מסביב בלי להסתכל, ואיך הם תופסים דגים כצוות? ודודו הדולפין בא לומר לכם שלום בשפת הדולפינים.",
+        image: "assets/images/dolphins.jpeg",
+        audio: "assets/audio/dolphins-sfx4.mp3",
+      },
+      {
+        title: "איך השממית מטיילת על התקרה?",
+        description: "לטאה קטנה שאנחנו רואים בבית הולכת על התקרה הפוך ולא נופלת, ומטפסת על קיר כשהיא סוחבת פי שלושים מהמשקל שלה. מה הסוד שבכפות הרגליים שלה, ואיזה דבק המציאו בזכותה? ושמעון השממית מספר בעצמו, מלמעלה.",
+        image: "assets/images/gecko.jpeg",
+        audio: "assets/audio/gecko-sfx4.mp3",
+      },
+      {
+        title: "מיהו האקסולוטל?",
+        description: "יצור מהאגמים של מקסיקו, עם פה שתמיד מחייך, שנשאר ראשן כל החיים. ואם נחתכת לו רגל, צומחת לו רגל חדשה. ואקסל האקסולוטל מצטרף לפרק, אם רק תצליחו להגיד את השם שלו.",
+        image: "assets/images/axolotl.jpeg",
+        audio: "assets/audio/axolotl-sfx4.mp3",
+      },
     ],
   },
   {
@@ -1217,6 +1235,18 @@ const CATEGORIES = [
         description: "במשך רוב ההיסטוריה בני האדם יצרו הכול בידיים. ואז, באנגליה, הגיעו נול האריגה, מנועי הקיטור והרכבות, ושינו את הדרך שבה אנשים חיים, עובדים ומייצרים. והרשל החייט, שתופר הכול ביד, מצטרף לפרק.",
         image: "assets/images/industrial-revolution.jpeg",
         audio: "assets/audio/industrial-revolution-sfx4.mp3",
+      },
+      {
+        title: "המצאת המטוס: מהאחים רייט ועד היום",
+        description: "מאז ומעולם בני האדם חלמו לעוף. איך שני אחים הצליחו כשכל מי שניסה לפניהם נכשל, כמה זמן נמשכה הטיסה הראשונה, ואיך הגענו למטוסי הסילון? ושמריל העגלון, שכל חייו נסע בעגלה עם שני סוסים, מחליט לטוס בפעם הראשונה.",
+        image: "assets/images/airplane-invention.jpeg",
+        audio: "assets/audio/airplane-invention-sfx4.mp3",
+      },
+      {
+        title: "המצאות מפתיעות שהתגלו במקרה",
+        description: "מה משותף לתרופה חשובה, לצ'יפס, לסלוטייפ ולמיקרוגל? כולם התגלו במקרה: עובש בצלחת של מדען, לקוח שהתלונן שוב ושוב, צבעים שהתקשו לצבוע מכוניות ושוקולד שנמס בכיס. ושמשון הממציא, שאצלו כל יום משהו נשפך או נשרף, עוד מחכה להמצאה הגדולה שלו.",
+        image: "assets/images/accidental-inventions.jpeg",
+        audio: "assets/audio/accidental-inventions-sfx4.mp3",
       },
     ],
   },

@@ -18,6 +18,9 @@ from playwright.sync_api import sync_playwright
 
 SITE = Path(__file__).resolve().parents[1]
 CHROME = r"C:\Users\abrah\AppData\Local\ms-playwright\chromium-1237\chrome-win64\chrome.exe"
+# 2026-11-25: the Playwright chromium folder was gone (emptied by a cleanup); the installed Chrome renders the same.
+if not Path(CHROME).exists():
+    CHROME = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
 CONF = json.loads((SITE / "tools" / "status_shares.json").read_text(encoding="utf-8"))
 SAFE_TOP, SAFE_BOTTOM = 190, 330
 
