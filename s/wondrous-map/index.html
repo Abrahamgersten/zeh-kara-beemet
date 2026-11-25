@@ -85,8 +85,8 @@
         <div class="map-bar" id="map-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="כמה התקדמנו אל הפרק הבא" hidden><div class="map-bar__fill"></div></div>
         <p class="map-box__text" id="map-left">הפרקים נפתחים כאן אחד אחרי השני, לכל המשפחות ביחד.</p>
         <div class="map-actions">
-          <a class="btn btn--primary" href="../../share/">להזמין עוד משפחה</a>
-          <a class="btn btn--outline" href="../../status/">להעלות לסטטוס</a>
+          <a class="btn btn--primary" href="../../share/" data-step="to-share">להזמין עוד משפחה</a>
+          <a class="btn btn--outline" href="../../status/" data-step="to-status">להעלות לסטטוס</a>
         </div>
       </div>
 
@@ -96,11 +96,11 @@
       <div class="story-share story-share--two">
         <div class="story-share__item">
           <p class="story-share__text">עוד לא בקבוצה? סיפור חדש לילדים מחכה שם בכל שבוע, בחינם.</p>
-          <a class="btn btn--primary" href="../../whatsapp/?c=map-page" data-join>להצטרפות לקבוצה</a>
+          <a class="btn btn--primary" href="../../whatsapp/?c=map-page" data-join data-step="join">להצטרפות לקבוצה</a>
         </div>
         <div class="story-share__item">
           <p class="story-share__text">📌 שמרו את הקישור הזה, כדי לחזור לפרקים מתי שרוצים.</p>
-          <a class="btn btn--outline" href="https://wa.me/?text=%F0%9F%8E%A7%20%D7%94%D7%9E%D7%A4%D7%94%20%D7%94%D7%9E%D7%95%D7%A4%D7%9C%D7%90%D7%94%3A%20%D7%9B%D7%9C%20%D7%94%D7%A4%D7%A8%D7%A7%D7%99%D7%9D%20%D7%A9%D7%9B%D7%91%D7%A8%20%D7%A0%D7%A4%D7%AA%D7%97%D7%95%2C%20%D7%91%D7%A7%D7%99%D7%A9%D7%95%D7%A8%20%D7%90%D7%97%D7%93%0Ahttps%3A%2F%2Fabrahamgersten.github.io%2Fzeh-kara-beemet%2Fs%2Fwondrous-map%2F" target="_blank" rel="noopener">שליחת הקישור לעצמי</a>
+          <a class="btn btn--outline" href="https://wa.me/?text=%F0%9F%8E%A7%20%D7%94%D7%9E%D7%A4%D7%94%20%D7%94%D7%9E%D7%95%D7%A4%D7%9C%D7%90%D7%94%3A%20%D7%9B%D7%9C%20%D7%94%D7%A4%D7%A8%D7%A7%D7%99%D7%9D%20%D7%A9%D7%9B%D7%91%D7%A8%20%D7%A0%D7%A4%D7%AA%D7%97%D7%95%2C%20%D7%91%D7%A7%D7%99%D7%A9%D7%95%D7%A8%20%D7%90%D7%97%D7%93%0Ahttps%3A%2F%2Fabrahamgersten.github.io%2Fzeh-kara-beemet%2Fs%2Fwondrous-map%2F" target="_blank" rel="noopener" data-step="save-link">שליחת הקישור לעצמי</a>
         </div>
       </div>
     </div>
@@ -117,9 +117,9 @@
   </div>
 </footer>
 
-<script type="application/json" id="map-config">{"serial":"wondrous-map","lang":"he","total":10,"goal":3500,"name":"המפה המופלאה","state":"https://abrahamgersten.github.io/zeh-kara-beemet-audio/map/state.json","fallback":{"count":null,"released":1,"next_at":2700,"chapters":[{"slug":"wondrous-map-ch01","title":"פרק 1: המלך שהיה לו הכול (חוץ מדבר אחד)","description":"למלך טוב הלב יש ארמון, גנים ואוצרות, ורק דבר אחד חסר לו. הרופאים שמגיעים לעזור מביאים איתם עצות מוזרות מאוד, ושום דבר לא עובד.","image":"assets/images/wondrous-map-ch01.jpeg","audio":"assets/audio/wondrous-map-ch01-sfx4.mp3"}]}}</script>
+<script type="application/json" id="map-config">{"serial":"wondrous-map","lang":"he","total":10,"goal":3500,"name":"המפה המופלאה","state":"https://abrahamgersten.github.io/zeh-kara-beemet-audio/map/state.json","fallback":{"count":null,"released":1,"next_at":2800,"chapters":[{"slug":"wondrous-map-ch01","title":"פרק 1: המלך שהיה לו הכול (חוץ מדבר אחד)","description":"למלך טוב הלב יש ארמון, גנים ואוצרות, ורק דבר אחד חסר לו. הרופאים שמגיעים לעזור מביאים איתם עצות מוזרות מאוד, ושום דבר לא עובד.","image":"assets/images/wondrous-map-ch01.jpeg","audio":"assets/audio/wondrous-map-ch01-sfx4.mp3"}]}}</script>
 <script type="application/json" id="serial-data">{}</script>
 <script src="../../js/progress.js" defer></script>
-<script src="../../js/map-campaign.js?v=3" defer></script>
+<script src="../../js/map-campaign.js?v=4" defer></script>
 </body>
 </html>

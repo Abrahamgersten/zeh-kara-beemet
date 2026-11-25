@@ -44,9 +44,26 @@
   }
   function visitor() {
     try {
-      return localStorage.getItem("zkb_story_visitor");
+      let v = localStorage.getItem("zkb_story_visitor");
+      if (!v) {
+        v = (crypto.randomUUID ? crypto.randomUUID() : Array.from(crypto.getRandomValues(new Uint8Array(16)), (b) => b.toString(16).padStart(2, "0")).join(""));
+        localStorage.setItem("zkb_story_visitor", v);
+      }
+      return v;
     } catch (e) {
       return null;
+    }
+  }
+  // every step of the page is counted (Avraham, 26.11: "follow the clicks on everything in this move, to learn from it"):
+  // view, tap, done (the share menu finished), cancel (it was closed), retry (one more tap was needed), fail (no video)
+  const PAGE_NAME = KIND === "status" ? "status" : "share";
+  const SOURCE = (new URLSearchParams(location.search).get("c") || (/\/s\/wondrous-map\//.test(document.referrer) ? "page" : "direct")).toLowerCase();
+  function step(name) {
+    if (TEST || location.hostname !== "abrahamgersten.github.io") return;
+    try {
+      rpc("log_map_event", { p_action: PAGE_NAME + "-" + name, p_visitor: visitor(), p_source: SOURCE }).catch(() => {});
+    } catch (e) {
+      // never affects the page
     }
   }
   function track(event) {
@@ -137,6 +154,7 @@
   async function send() {
     track(KIND === "status" ? "status" : "share");
     if (!canShareFiles) {
+      step("done-computer");
       // a computer: the file is saved and the text is copied
       saveToComputer(ready);
       const ok = await copy(got.text);
@@ -150,17 +168,20 @@
       try {
         await navigator.share(data);
         note("תודה רבה! 💛");
+        step("done");
         return;
       } catch (err) {
-        if (err && err.name === "AbortError") return; // closed the share menu: the instructions stay
+        if (err && err.name === "AbortError") { step("cancel"); return; } // closed the share menu: the instructions stay
         if (err && err.name === "NotAllowedError") break; // the wait for the download used up the tap: one more tap works
       }
     }
     await copied;
+    step("retry");
     note("הסרטון מוכן. לחצו שוב על הכפתור.");
   }
 
   btn.addEventListener("click", async () => {
+    step("tap");
     if (ready && got) {
       send(); // one synchronous step from the tap: Safari needs that
       return;
@@ -174,11 +195,13 @@
     btn.disabled = false;
     btn.textContent = LABEL;
     if (!file) {
+      step("fail");
       note("לא הצלחנו להכין את הסרטון. בדקו את החיבור לאינטרנט ונסו שוב.");
       return;
     }
     send(); // a short wait usually keeps the tap; when not, send() asks for one more tap
   });
 
+  step("view");
   load(); // the page has one job, so the video starts coming down right away
 })();

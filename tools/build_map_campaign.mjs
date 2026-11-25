@@ -94,7 +94,7 @@ const config = {
   goal: GOAL,
   name: niche.name,
   state: `${AUDIO_URL}map/state.json`,
-  fallback: { count: null, released: 1, next_at: FIRST_AT + 100, chapters: chapters.slice(0, 1) },
+  fallback: { count: null, released: 1, next_at: 2800, chapters: chapters.slice(0, 1) },
 };
 const shareConfig = (kind) => ({
   serial: ID,
@@ -197,8 +197,8 @@ ${MARKER}
         <div class="map-bar" id="map-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="כמה התקדמנו אל הפרק הבא" hidden><div class="map-bar__fill"></div></div>
         <p class="map-box__text" id="map-left">הפרקים נפתחים כאן אחד אחרי השני, לכל המשפחות ביחד.</p>
         <div class="map-actions">
-          <a class="btn btn--primary" href="${up}${SHARE_PAGES.groups.dir}/">להזמין עוד משפחה</a>
-          <a class="btn btn--outline" href="${up}${SHARE_PAGES.status.dir}/">להעלות לסטטוס</a>
+          <a class="btn btn--primary" href="${up}${SHARE_PAGES.groups.dir}/" data-step="to-share">להזמין עוד משפחה</a>
+          <a class="btn btn--outline" href="${up}${SHARE_PAGES.status.dir}/" data-step="to-status">להעלות לסטטוס</a>
         </div>
       </div>
 
@@ -208,11 +208,11 @@ ${MARKER}
       <div class="story-share story-share--two">
         <div class="story-share__item">
           <p class="story-share__text">עוד לא בקבוצה? סיפור חדש לילדים מחכה שם בכל שבוע, בחינם.</p>
-          <a class="btn btn--primary" href="${up}whatsapp/?c=map-page" data-join>להצטרפות לקבוצה</a>
+          <a class="btn btn--primary" href="${up}whatsapp/?c=map-page" data-join data-step="join">להצטרפות לקבוצה</a>
         </div>
         <div class="story-share__item">
           <p class="story-share__text">📌 שמרו את הקישור הזה, כדי לחזור לפרקים מתי שרוצים.</p>
-          <a class="btn btn--outline" href="https://wa.me/?text=${encodeURIComponent(saveText)}" target="_blank" rel="noopener">שליחת הקישור לעצמי</a>
+          <a class="btn btn--outline" href="https://wa.me/?text=${encodeURIComponent(saveText)}" target="_blank" rel="noopener" data-step="save-link">שליחת הקישור לעצמי</a>
         </div>
       </div>
     </div>
@@ -232,7 +232,7 @@ ${MARKER}
 <script type="application/json" id="map-config">${data}</script>
 <script type="application/json" id="serial-data">{}</script>
 <script src="${up}js/progress.js" defer></script>
-<script src="${up}js/map-campaign.js?v=3" defer></script>
+<script src="${up}js/map-campaign.js?v=4" defer></script>
 </body>
 </html>
 `;
@@ -310,7 +310,7 @@ ${MARKER}
   <p id="note" role="status" aria-live="polite"></p>
 </main>
 <script type="application/json" id="share-config">${json(shareConfig(kind))}</script>
-<script src="../js/map-share.js"></script>
+<script src="../js/map-share.js?v=2"></script>
 </body>
 </html>
 `;

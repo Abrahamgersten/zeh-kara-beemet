@@ -27,6 +27,36 @@
     return;
   }
   const UP = "../../";
+  // every click of the campaign is counted in its own table (Avraham, 26.11; supabase/migrations/0034)
+  const TEST = params.get("t") === "1";
+  const API = "https://nuadpewhrhpdgznbbqbs.supabase.co/rest/v1/rpc/";
+  const KEY = "sb_publishable_AcpmlZnxKM4yJxr1OsoSjw_CG6Kt2pz"; // the publishable key, as in js/map-share.js
+  const SOURCE = (params.get("c") || "direct").toLowerCase();
+  function visitor() {
+    try {
+      let v = localStorage.getItem("zkb_story_visitor");
+      if (!v) {
+        v = (crypto.randomUUID ? crypto.randomUUID() : Array.from(crypto.getRandomValues(new Uint8Array(16)), (b) => b.toString(16).padStart(2, "0")).join(""));
+        localStorage.setItem("zkb_story_visitor", v);
+      }
+      return v;
+    } catch (e) {
+      return null;
+    }
+  }
+  function step(action) {
+    if (TEST || location.hostname !== "abrahamgersten.github.io") return;
+    try {
+      fetch(API + "log_map_event", {
+        method: "POST",
+        keepalive: true,
+        headers: { apikey: KEY, Authorization: "Bearer " + KEY, "Content-Type": "application/json" },
+        body: JSON.stringify({ p_action: action, p_visitor: visitor(), p_source: SOURCE }),
+      }).catch(() => {});
+    } catch (e) {
+      // never affects the page
+    }
+  }
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   const num = (n) => Number(n).toLocaleString("he-IL");
@@ -100,7 +130,7 @@
     s.src = UP + "js/serial.js?v=2";
     s.onload = () => {
       const all = $("map-play-all");
-      if (all && window.ZkbSerial) all.addEventListener("click", () => window.ZkbSerial.playAll());
+      if (all && window.ZkbSerial) all.addEventListener("click", () => { step("play-all"); window.ZkbSerial.playAll(); });
     };
     document.body.appendChild(s);
   }
@@ -114,5 +144,12 @@
       startPlayer();
     });
 
-  // "open" and "join" are counted by js/serial.js
+  // "open" and "join" are counted by js/serial.js for the story counters; here the same and the rest, for the campaign
+  step("page-open");
+  document.addEventListener("click", (e) => {
+    const a = e.target.closest && e.target.closest("[data-step]");
+    if (a) step(a.dataset.step);
+    const play = e.target.closest && e.target.closest(".player__btn");
+    if (play) step("play-ch-" + (play.closest(".player").dataset.order || "0"));
+  });
 })();
