@@ -27,7 +27,9 @@ const FIRST_AT = 2600; // chapter k opens at FIRST_AT + 100 * (k - 1): chapter 2
 const GOAL = 3500; // Avraham's goal (26.11: not "the whole story is open" there, the chapters open at round hundreds from the day the campaign starts)
 // Avraham, 25.11 evening: "a very simple link, one very clear button and nothing else" for each of the two shares
 const SHARE_PAGES = {
-  groups: { dir: "share", title: "הזמינו עוד משפחה לסיפור לפני השינה", button: "שליחת ההזמנה בוואטסאפ" },
+  groups: { dir: "share", title: "הזמינו עוד משפחה לסיפור לפני השינה", button: "שליחת ההזמנה בוואטסאפ",
+    // Avraham, 26.11: say where the invitation can be sent
+    where: ["לקבוצת הוואטסאפ הכיתתית", "לקבוצת הוואטסאפ המשפחתית", "לקבוצת הוואטסאפ הקהילתית"] },
   status: { dir: "status", title: "העלו את הסיפור של השבוע לסטטוס", button: "העלאה לסטטוס" },
 };
 const CHAPTERS_OUT = path.resolve(REPO, "..", "רוני המתכנת", "Tools", "map_campaign", "chapters.json");
@@ -298,6 +300,11 @@ button:active { transform: scale(0.97); }
 button:focus-visible { outline: 3px solid #0f8793; outline-offset: 4px; }
 button[disabled] { opacity: 0.8; cursor: progress; }
 @media (prefers-reduced-motion: reduce) { button { transition: none; } }
+.where { margin: -0.6rem 0 1.5rem; }
+.where__lead { margin: 0 0 0.6rem; font-weight: 800; font-size: 1.12rem; }
+.where ul { list-style: none; margin: 0 auto; padding: 0; display: inline-grid; gap: 0.3rem; text-align: start; }
+.where li { font-weight: 600; font-size: 1.08rem; line-height: 1.5; }
+.where li::before { content: ""; display: inline-block; width: 0.5rem; height: 0.5rem; margin-inline-end: 0.55rem; border-radius: 50%; background: #0f8793; vertical-align: 0.12em; }
 #note { min-height: 3.4em; margin: 1.2rem 0 0; font-weight: 600; font-size: 1.08rem; line-height: 1.6; white-space: pre-line; }
 </style>
 </head>
@@ -305,7 +312,13 @@ button[disabled] { opacity: 0.8; cursor: progress; }
 ${MARKER}
 <main>
   <img class="mark" src="../icons/brand-mark.png" alt="${BRAND}" width="56" height="56">
-  <h1>${esc(sp.title)}</h1>
+  <h1>${esc(sp.title)}</h1>${sp.where ? `
+  <div class="where">
+    <p class="where__lead" id="where-lead">לאן אפשר לשלוח את ההזמנה?</p>
+    <ul aria-labelledby="where-lead">${sp.where.map((w) => `
+      <li>${esc(w)}</li>`).join("")}
+    </ul>
+  </div>` : ""}
   <button type="button" id="go">${esc(sp.button)}</button>
   <p id="note" role="status" aria-live="polite"></p>
 </main>

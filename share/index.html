@@ -50,6 +50,11 @@ button:active { transform: scale(0.97); }
 button:focus-visible { outline: 3px solid #0f8793; outline-offset: 4px; }
 button[disabled] { opacity: 0.8; cursor: progress; }
 @media (prefers-reduced-motion: reduce) { button { transition: none; } }
+.where { margin: -0.6rem 0 1.5rem; }
+.where__lead { margin: 0 0 0.6rem; font-weight: 800; font-size: 1.12rem; }
+.where ul { list-style: none; margin: 0 auto; padding: 0; display: inline-grid; gap: 0.3rem; text-align: start; }
+.where li { font-weight: 600; font-size: 1.08rem; line-height: 1.5; }
+.where li::before { content: ""; display: inline-block; width: 0.5rem; height: 0.5rem; margin-inline-end: 0.55rem; border-radius: 50%; background: #0f8793; vertical-align: 0.12em; }
 #note { min-height: 3.4em; margin: 1.2rem 0 0; font-weight: 600; font-size: 1.08rem; line-height: 1.6; white-space: pre-line; }
 </style>
 </head>
@@ -58,6 +63,14 @@ button[disabled] { opacity: 0.8; cursor: progress; }
 <main>
   <img class="mark" src="../icons/brand-mark.png" alt="זה קרה באמת" width="56" height="56">
   <h1>הזמינו עוד משפחה לסיפור לפני השינה</h1>
+  <div class="where">
+    <p class="where__lead" id="where-lead">לאן אפשר לשלוח את ההזמנה?</p>
+    <ul aria-labelledby="where-lead">
+      <li>לקבוצת הוואטסאפ הכיתתית</li>
+      <li>לקבוצת הוואטסאפ המשפחתית</li>
+      <li>לקבוצת הוואטסאפ הקהילתית</li>
+    </ul>
+  </div>
   <button type="button" id="go">שליחת ההזמנה בוואטסאפ</button>
   <p id="note" role="status" aria-live="polite"></p>
 </main>
