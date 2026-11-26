@@ -21,6 +21,7 @@
   const m = /[?&]g=([a-f0-9]{20})(?:&|$)/.exec(location.search);
   if (!m) return;
   const TOKEN = m[1];
+  const OWNER_LINK = "fc45a53e1e484cbdb80a"; // see loadState()
   const API = "https://nuadpewhrhpdgznbbqbs.supabase.co/rest/v1/rpc/";
   const KEY = "sb_publishable_AcpmlZnxKM4yJxr1OsoSjw_CG6Kt2pz"; // the public key of js/supabase-config.js (this file is not a module)
   const EN = document.documentElement.lang === "en"; // the English site (en/index.html) loads this same file
@@ -55,7 +56,10 @@
       .then((s) => {
         state = s;
         if (on && s && s.valid === false) location.replace("login.html"); // not a gift link: the site's usual door
-        if (on && s && s.shared) handOver();
+        // Avraham's own test link of 10.11 went out in 22 of his posts to the story groups (12.11-23.11), so the
+        // members who opened it were judged by HIS account on the server (his day, his week, his bot status) and saw
+        // only the subscription window. It now works as the group's link does: the count is kept on each device.
+        if (on && s && (s.shared || (s.valid !== false && TOKEN === OWNER_LINK))) handOver();
       })
       .catch(() => {
         failed = true;
